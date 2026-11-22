@@ -63,3 +63,13 @@ declare module '@/data/stations.json' {
 declare module '@/data/od_summary.json' { const value: Record<string, unknown>; export default value; }
 declare module '@/data/forecast_demand.json' { const value: Record<string, unknown>; export default value; }
 declare module '@/data/simulator_baseline.json' { const value: Record<string, unknown>; export default value; }
+
+declare module '@/data/station_monthly_ridership.json' {
+  const value: {
+    global_max_ridership: number;
+    ridership_by_month: Record<string, Record<string, number>>;
+    yoy_by_month: Record<string, Record<string, number>>;
+  };
+  export default value;
+}
+

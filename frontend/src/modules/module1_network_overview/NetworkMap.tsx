@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -10,7 +10,46 @@ import {
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import stationsData from '@/data/stations.json';
+import stationMonthlyData from '@/data/station_monthly_ridership.json';
 import type { MapOverlay } from './NetworkOverview';
+
+// ── 1. CONFIG: OFFICIAL RAIL LINE COLOURS ────────────────────────────────────
+// Editable line colours across all Malaysian rail services
+export const LINE_COLORS: Record<string, string> = {
+  // Rapid Rail (Klang Valley)
+  'LRT Kelana Jaya': '#FF8C00',               // RapidKL Ruby / Dark Orange (Line 5)
+  'LRT Ampang': '#FF5A00',                    // Orange (Line 3)
+  'LRT Sri Petaling': '#800080',              // Maroon / Plum (Line 4)
+  'MRT Kajang': '#008542',                    // Emerald Green (Line 9)
+  'MRT Putrajaya': '#FFC400',                 // Gold / Cadmium Yellow (Line 12)
+  'KL Monorail': '#84BD00',                   // Lime Green (Line 8)
+  'LRT Shah Alam': '#0099DA',                 // Sky Blue (Line 11)
+  // KTMB (Malayan Railways)
+  'KTM Komuter (Batu Caves Line)': '#003882', // Royal Blue
+  'KTM Komuter (Port Klang Line)': '#002654', // Deep Navy
+  'KTM East Coast Line': '#0288D1',           // Jungle Railway Cyan Blue
+  'KTM Butterworth Branch': '#00A86B',        // Jade Green
+  // ETS (Electric Train Service)
+  'ETS North-South Trunk': '#F5A623',         // Electric Amber / Gold
+};
+
+// ── Geographic Bounding Boxes ────────────────────────────────────────────────
+const KLANG_VALLEY_BOUNDS: [[number, number], [number, number]] = [
+  [2.92, 101.38],
+  [3.28, 101.78],
+];
+
+const PENINSULAR_BOUNDS: [[number, number], [number, number]] = [
+  [1.35, 100.10],
+  [6.78, 103.85],
+];
+
+const MALAYSIA_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [0.8, 98.8],
+  [7.5, 105.0],
+];
+
+const GLOBAL_MAX_STATION_RIDERSHIP = stationMonthlyData.global_max_ridership || 1615488;
 
 interface MonthlyTrend {
   year_month: string;
@@ -32,8 +71,7 @@ interface Props {
 interface RailCorridor {
   id: string;
   name: string;
-  category: 'KTMB' | 'Rapid Rail' | 'ETS';
-  accentColor: string;
+  category: 'Rapid Rail' | 'KTMB' | 'ETS';
   coords: [number, number][];
 }
 
@@ -50,332 +88,195 @@ function getSequentialPoints(lineName: string, codePrefix: string): [number, num
   return matched.map((s) => [s.lat, s.lng] as [number, number]);
 }
 
-// ── Line Accent Colors ──────────────────────────────────────────────────────
-const LINE_ACCENT_COLORS: Record<string, string> = {
-  'KL Monorail': '#FFB300',
-  'LRT Kelana Jaya': '#FF8C00',
-  'LRT Ampang–Sri Petaling': '#FF5A00',
-  'LRT Shah Alam': '#00BCD4',
-  'MRT Kajang': '#00C48C',
-  'MRT Putrajaya': '#7B61FF',
-  'KTM Komuter': '#0066FF',
-  'KTM Intercity': '#0066FF',
-};
-
-// Check if a corridor corresponds to a selected rail line
-function isCorridorMatch(corridorId: string, line: string): boolean {
-  if (line === 'All Lines') return true;
-  switch (line) {
-    case 'KL Monorail':
-      return corridorId === 'kl_monorail';
-    case 'LRT Kelana Jaya':
-      return corridorId === 'lrt_kelana_jaya';
-    case 'LRT Ampang–Sri Petaling':
-      return corridorId === 'lrt_ampang' || corridorId === 'lrt_sri_petaling';
-    case 'LRT Shah Alam':
-      return corridorId === 'lrt_shah_alam';
-    case 'MRT Kajang':
-      return corridorId === 'mrt_kajang';
-    case 'MRT Putrajaya':
-      return corridorId === 'mrt_putrajaya';
-    case 'KTM Komuter':
-      return (
-        corridorId === 'ktm_batu_caves' ||
-        corridorId === 'ktm_port_klang' ||
-        corridorId === 'ets_north_south' ||
-        corridorId === 'ktm_butterworth_branch'
-      );
-    case 'KTM Intercity':
-      return corridorId === 'ktm_east_coast' || corridorId === 'ets_north_south';
-    default:
-      return corridorId.toLowerCase().includes(line.toLowerCase());
-  }
+// Check if a corridor corresponds to a selected rail line filter
+function isCorridorMatch(corridorName: string, selectedFilter: string): boolean {
+  if (selectedFilter === 'All Lines') return true;
+  const c = corridorName.toLowerCase();
+  const q = selectedFilter.toLowerCase();
+  if (q.includes('kelana jaya') && c.includes('kelana jaya')) return true;
+  if (q.includes('ampang') && (c.includes('ampang') || c.includes('sri petaling'))) return true;
+  if (q.includes('kajang') && c.includes('kajang')) return true;
+  if (q.includes('putrajaya') && c.includes('putrajaya')) return true;
+  if (q.includes('monorail') && c.includes('monorail')) return true;
+  if (q.includes('shah alam') && c.includes('shah alam')) return true;
+  if (q.includes('komuter') && c.includes('komuter')) return true;
+  if (q.includes('intercity') && (c.includes('east coast') || c.includes('trunk'))) return true;
+  return c.includes(q) || q.includes(c);
 }
 
 // ── All 12 Peninsular Malaysia & Klang Valley Rail Corridors ─────────────────
 const RAIL_CORRIDORS: RailCorridor[] = [
-  // 1. ETS / KTM North-South Main Line (Padang Besar down to JB Sentral)
+  // ETS
   {
     id: 'ets_north_south',
-    name: 'ETS / KTM North-South Trunk',
+    name: 'ETS North-South Trunk',
     category: 'ETS',
-    accentColor: '#00E5A3',
     coords: [
-      [6.6628, 100.3208], // Padang Besar
-      [6.4328, 100.2764], // Arau
-      [6.1133, 100.3686], // Alor Setar
-      [5.6436, 100.4908], // Sungai Petani
-      [5.4833, 100.495],  // Tasek Gelugor
-      [5.3639, 100.4608], // Bukit Mertajam
-      [5.2833, 100.4833], // Simpang Ampat
-      [5.1667, 100.4833], // Nibong Tebal
-      [5.125, 100.4889],  // Parit Buntar
-      [5.0111, 100.5333], // Bagan Serai
-      [4.8889, 100.7222], // Kamunting
-      [4.8519, 100.7308], // Taiping
-      [4.775, 100.8444],  // Padang Rengas
-      [4.7739, 100.9328], // Kuala Kangsar
-      [4.8167, 101.0667], // Sungai Siput
-      [4.5978, 101.0736], // Ipoh
-      [4.4758, 101.0428], // Batu Gajah
-      [4.3014, 101.1547], // Kampar
-      [4.175, 101.1897],  // Tapah Road
-      [3.9972, 101.3117], // Sungkai
-      [3.8333, 101.4],    // Slim River
-      [3.7431, 101.4489], // Behrang
-      [3.6811, 101.5208], // Tanjong Malim
-      [3.5658, 101.6583], // Kuala Kubu Bharu
-      [3.4983, 101.6328], // Rasa
-      [3.4667, 101.6389], // Batang Kali
-      [3.3633, 101.6047], // Serendah
-      [3.3211, 101.5756], // Rawang
-      [3.2575, 101.5547], // Kuang
-      [3.2064, 101.5806], // Sungai Buloh
-      [3.2106, 101.6339], // Kepong Sentral
-      [3.2047, 101.6389], // Kepong
-      [3.1869, 101.6644], // Segambut
-      [3.1656, 101.6914], // Putra
-      [3.155, 101.6933],  // Bank Negara
-      [3.1397, 101.6936], // Kuala Lumpur
-      [3.1342, 101.6861], // KL Sentral
-      [3.1189, 101.6789], // Midvalley
-      [3.1136, 101.6806], // Seputeh
-      [3.1044, 101.7061], // Salak Selatan
-      [3.0767, 101.7114], // Bandar Tasik Selatan
-      [3.0239, 101.7169], // Serdang
-      [2.9828, 101.7906], // Kajang
-      [2.964, 101.7915],  // Kajang 2
-      [2.9328, 101.7828], // UKM
-      [2.9028, 101.7872], // Bangi
-      [2.8367, 101.8197], // Batang Benar
-      [2.8028, 101.7997], // Nilai
-      [2.7519, 101.825],  // Labu
-      [2.7306, 101.8744], // Tiroi
-      [2.7194, 101.94],   // Seremban
-      [2.6867, 101.9792], // Senawang
-      [2.6567, 102.0044], // Sungai Gadut
-      [2.59, 102.0917],   // Rembau
-      [2.4647, 102.2289], // Pulau Sebang (Tampin)
-      [2.4667, 102.4167], // Batang Melaka
-      [2.5833, 102.6167], // Gemas
-      [2.51, 102.818],    // Segamat
-      [2.385, 103.02],    // Labis
-      [2.2967, 103.1283], // Bekok
-      [2.19, 103.195],    // Paloh
-      [2.0267, 103.3183], // Kluang
-      [1.8833, 103.4],    // Rengam
-      [1.8167, 103.4833], // Layang-Layang
-      [1.6583, 103.6],    // Kulai
-      [1.6, 103.645],     // Senai
-      [1.535, 103.715],   // Kempas Baru
-      [1.4625, 103.7639], // JB Sentral
+      [6.6628, 100.3208], [6.4328, 100.2764], [6.1133, 100.3686], [5.6436, 100.4908],
+      [5.4833, 100.4950], [5.3639, 100.4608], [5.2833, 100.4833], [5.1667, 100.4833],
+      [5.1250, 100.4889], [5.0111, 100.5333], [4.8889, 100.7222], [4.8519, 100.7308],
+      [4.7750, 100.8444], [4.7739, 100.9328], [4.8167, 101.0667], [4.5978, 101.0736],
+      [4.4758, 101.0428], [4.3014, 101.1547], [4.1750, 101.1897], [3.9972, 101.3117],
+      [3.8333, 101.4000], [3.7431, 101.4489], [3.6811, 101.5208], [3.5658, 101.6583],
+      [3.4983, 101.6328], [3.4667, 101.6389], [3.3633, 101.6047], [3.3211, 101.5756],
+      [3.2575, 101.5547], [3.2064, 101.5806], [3.2106, 101.6339], [3.2047, 101.6389],
+      [3.1869, 101.6644], [3.1656, 101.6914], [3.1550, 101.6933], [3.1397, 101.6936],
+      [3.1342, 101.6861], [3.1189, 101.6789], [3.1136, 101.6806], [3.1044, 101.7061],
+      [3.0767, 101.7114], [3.0239, 101.7169], [2.9828, 101.7906], [2.9640, 101.7915],
+      [2.9328, 101.7828], [2.9028, 101.7872], [2.8367, 101.8197], [2.8028, 101.7997],
+      [2.7519, 101.8250], [2.7306, 101.8744], [2.7194, 101.9400], [2.6867, 101.9792],
+      [2.6567, 102.0044], [2.5900, 102.0917], [2.4647, 102.2289], [2.4667, 102.4167],
+      [2.5833, 102.6167], [2.5100, 102.8180], [2.3850, 103.0200], [2.2967, 103.1283],
+      [2.1900, 103.1950], [2.0267, 103.3183], [1.8833, 103.4000], [1.8167, 103.4833],
+      [1.6583, 103.6000], [1.6000, 103.6450], [1.5350, 103.7150], [1.4625, 103.7639],
     ],
   },
-  // 2. KTM Butterworth Branch
+  // KTMB Lines
   {
     id: 'ktm_butterworth_branch',
     name: 'KTM Butterworth Branch',
-    category: 'ETS',
-    accentColor: '#00E5A3',
-    coords: [
-      [5.3639, 100.4608], // Bukit Mertajam
-      [5.3942, 100.3661], // Butterworth
-    ],
+    category: 'KTMB',
+    coords: [[5.3639, 100.4608], [5.3942, 100.3661]],
   },
-  // 3. KTM East Coast Jungle Railway (Tumpat ➔ Gemas)
   {
     id: 'ktm_east_coast',
-    name: 'KTM East Coast Line (Jungle Railway)',
+    name: 'KTM East Coast Line',
     category: 'KTMB',
-    accentColor: '#0066FF',
     coords: [
-      [6.1979, 102.1672], // Tumpat
-      [6.175, 102.19],    // Kampung Kok Pasir
-      [6.1189, 102.2039], // Wakaf Bharu
-      [6.068, 102.162],   // Bunut Susu
-      [6.0425, 102.1408], // Pasir Mas
-      [5.975, 102.138],   // To Uban
-      [5.92, 102.145],    // Sungai Keladi
-      [5.885, 102.152],   // Bukit Panau
-      [5.8083, 102.1472], // Tanah Merah
-      [5.75, 102.15],     // Kampung Berkam
-      [5.6889, 102.15],   // Temangan
-      [5.62, 102.18],     // Sungai Nal
-      [5.5317, 102.2008], // Krai
-      [5.47, 102.22],     // Pahi
-      [5.385, 102.238],   // Manek Urai
-      [5.335, 102.245],   // Kampung Baru Bukit Abu
-      [5.312, 102.248],   // Bukit Abu
-      [5.285, 102.24],    // Kuala Gris
-      [5.38, 102.012],    // Dabong
-      [5.32, 102.01],     // Kemubu
-      [5.26, 102.0],      // Sri Bintang
-      [5.16, 102.05],     // Bertam
-      [5.145, 102.04],    // Bertam Baru
-      [5.04, 102.05],     // Limau Kasturi
-      [4.98, 102.02],     // Sungai Sirian
-      [4.96, 102.01],     // Kampung Sirian
-      [4.8778, 101.9639], // Gua Musang
-      [4.78, 101.97],     // Mentara Baru
-      [4.6978, 102.005],  // Merapoh
-      [4.62, 102.05],     // Teluk Gunung
-      [4.56, 102.09],     // Sungai Tasin
-      [4.45, 102.08],     // Chegar Perah
-      [4.38, 102.05],     // Aur Gading
-      [4.32, 102.02],     // Bukit Betong
-      [4.23, 101.98],     // Padang Tungku
-      [4.1847, 102.0478], // Kuala Lipis
-      [4.1, 102.16],      // Kerambit
-      [4.01, 102.27],     // Mela
-      [3.9356, 102.3556], // Jerantut
-      [3.78, 102.38],     // Jenderak
-      [3.7083, 102.3667], // Kuala Krau
-      [3.4833, 102.35],   // Mentakab
-      [3.33, 102.43],     // Mengkarak
-      [3.25, 102.42],     // Triang
-      [3.13, 102.37],     // Kemayan
-      [2.8078, 102.4069], // Bahau
-      [2.5833, 102.6167], // Gemas
+      [6.1979, 102.1672], [6.1750, 102.1900], [6.1189, 102.2039], [6.0680, 102.1620],
+      [6.0425, 102.1408], [5.9750, 102.1380], [5.9200, 102.1450], [5.8850, 102.1520],
+      [5.8083, 102.1472], [5.7500, 102.1500], [5.6889, 102.1500], [5.6200, 102.1800],
+      [5.5317, 102.2008], [5.4700, 102.2200], [5.3850, 102.2380], [5.3350, 102.2450],
+      [5.3120, 102.2480], [5.2850, 102.2400], [5.3800, 102.0120], [5.3200, 102.0100],
+      [5.2600, 102.0000], [5.1600, 102.0500], [5.1450, 102.0400], [5.0400, 102.0500],
+      [4.9800, 102.0200], [4.9600, 102.0100], [4.8778, 101.9639], [4.7800, 101.9700],
+      [4.6978, 102.0050], [4.6200, 102.0500], [4.5600, 102.0900], [4.4500, 102.0800],
+      [4.3800, 102.0500], [4.3200, 102.0200], [4.2300, 101.9800], [4.1847, 102.0478],
+      [4.1000, 102.1600], [4.0100, 102.2700], [3.9356, 102.3556], [3.7800, 102.3800],
+      [3.7083, 102.3667], [3.4833, 102.3500], [3.3300, 102.4300], [3.2500, 102.4200],
+      [3.1300, 102.3700], [2.8078, 102.4069], [2.5833, 102.6167],
     ],
   },
-  // 4. KTM Komuter Batu Caves Line
   {
     id: 'ktm_batu_caves',
     name: 'KTM Komuter (Batu Caves Line)',
     category: 'KTMB',
-    accentColor: '#0066FF',
     coords: [
-      [3.2372, 101.6819], // Batu Caves
-      [3.215, 101.6719],  // Taman Wahyu
-      [3.2033, 101.6783], // Kampung Batu
-      [3.195, 101.6814],  // Batu Kentonmen
-      [3.1794, 101.6908], // Sentul
-      [3.1656, 101.6914], // Putra
+      [3.2372, 101.6819], [3.2150, 101.6719], [3.2033, 101.6783],
+      [3.1950, 101.6814], [3.1794, 101.6908], [3.1656, 101.6914],
     ],
   },
-  // 5. KTM Komuter Port Klang Line
   {
     id: 'ktm_port_klang',
     name: 'KTM Komuter (Port Klang Line)',
     category: 'KTMB',
-    accentColor: '#0066FF',
     coords: [
-      [3.1342, 101.6861], // KL Sentral
-      [3.1189, 101.6739], // Abdullah Hukum
-      [3.1128, 101.6719], // Angkasapuri
-      [3.0989, 101.6681], // Pantai Dalam
-      [3.0872, 101.6606], // Petaling
-      [3.0847, 101.6508], // Jalan Templer
-      [3.0844, 101.6322], // Kampung Dato Harun
-      [3.0839, 101.6169], // Seri Setia
-      [3.0828, 101.6067], // Setia Jaya
-      [3.08, 101.5878],   // Subang Jaya
-      [3.0767, 101.5544], // Batu Tiga
-      [3.0672, 101.5275], // Shah Alam
-      [3.0539, 101.4917], // Padang Jawa
-      [3.0456, 101.47],   // Bukit Badak
-      [3.0431, 101.4503], // Klang
-      [3.04, 101.4339],   // Telok Pulai
-      [3.0322, 101.4239], // Telok Gadong
-      [3.0189, 101.4089], // Kampung Raja Uda
-      [3.0039, 101.3989], // Jalan Kastam
-      [2.9989, 101.3917], // Pelabuhan Klang Selatan
+      [3.1342, 101.6861], [3.1189, 101.6739], [3.1128, 101.6719], [3.0989, 101.6681],
+      [3.0872, 101.6606], [3.0847, 101.6508], [3.0844, 101.6322], [3.0839, 101.6169],
+      [3.0828, 101.6067], [3.0800, 101.5878], [3.0767, 101.5544], [3.0672, 101.5275],
+      [3.0539, 101.4917], [3.0456, 101.4700], [3.0431, 101.4503], [3.0400, 101.4339],
+      [3.0322, 101.4239], [3.0189, 101.4089], [3.0039, 101.3989], [2.9989, 101.3917],
     ],
   },
-  // 6. LRT Kelana Jaya Line (KJ01 - KJ37)
+  // Rapid Rail Lines
   {
     id: 'lrt_kelana_jaya',
-    name: 'LRT Kelana Jaya Line',
+    name: 'LRT Kelana Jaya',
     category: 'Rapid Rail',
-    accentColor: '#FF8C00',
     coords: getSequentialPoints('LRT Kelana Jaya', 'KJ'),
   },
-  // 7. LRT Ampang Line (AG01 - AG18)
   {
     id: 'lrt_ampang',
-    name: 'LRT Ampang Line',
+    name: 'LRT Ampang',
     category: 'Rapid Rail',
-    accentColor: '#FF5A00',
     coords: getSequentialPoints('LRT Ampang–Sri Petaling', 'AG'),
   },
-  // 8. LRT Sri Petaling Line (SP01 - SP31)
   {
     id: 'lrt_sri_petaling',
-    name: 'LRT Sri Petaling Line',
+    name: 'LRT Sri Petaling',
     category: 'Rapid Rail',
-    accentColor: '#FF5A00',
     coords: getSequentialPoints('LRT Ampang–Sri Petaling', 'SP'),
   },
-  // 9. MRT Kajang Line (KG04 - KG35)
   {
     id: 'mrt_kajang',
-    name: 'MRT Kajang Line',
+    name: 'MRT Kajang',
     category: 'Rapid Rail',
-    accentColor: '#00C48C',
     coords: getSequentialPoints('MRT Kajang', 'KG'),
   },
-  // 10. MRT Putrajaya Line (PYL01 - PYL41)
   {
     id: 'mrt_putrajaya',
-    name: 'MRT Putrajaya Line',
+    name: 'MRT Putrajaya',
     category: 'Rapid Rail',
-    accentColor: '#7B61FF',
     coords: getSequentialPoints('MRT Putrajaya', 'PYL'),
   },
-  // 11. KL Monorail Line (MR01 - MR11)
   {
     id: 'kl_monorail',
     name: 'KL Monorail',
     category: 'Rapid Rail',
-    accentColor: '#FFB300',
     coords: getSequentialPoints('KL Monorail', 'MR'),
   },
-  // 12. LRT Shah Alam Line (SA01 - SA26)
   {
     id: 'lrt_shah_alam',
-    name: 'LRT Shah Alam Line',
+    name: 'LRT Shah Alam',
     category: 'Rapid Rail',
-    accentColor: '#00BCD4',
     coords: getSequentialPoints('LRT Shah Alam', 'SA'),
   },
 ];
 
-// Major hub stations that receive an accent color pip
-const MAJOR_HUBS = new Set([
-  'KL Sentral',
-  'Masjid Jamek',
-  'Pasar Seni',
-  'Tun Razak Exchange',
-  'Titiwangsa',
-  'Hang Tuah',
-  'Chan Sow Lin',
-  'Bandar Tasik Selatan',
-  'Bandar Tasek Selatan',
-  'Putrajaya Sentral',
-  'Butterworth',
-  'Gemas',
-  'JB Sentral',
-  'Ipoh',
-  'Alor Setar',
-  'Padang Besar',
-  'Tumpat',
-  'Gua Musang',
-]);
+// Helper to look up station ridership & yoy for a given month
+function getStationData(
+  station: (typeof stationsData.stations)[0],
+  ym: string
+): { ridership: number | null; yoy: number | null } {
+  const monthRecord = stationMonthlyData.ridership_by_month[ym];
+  if (!monthRecord) return { ridership: null, yoy: null };
 
-// ── Component: Auto-focus & Zoom Map to Station or Line on Apply ─────────────
-function MapAutoFocuser({
+  let key = '';
+  if (station.source === 'rapidrail') key = 'code_' + station.code;
+  else if (station.source === 'komuter') key = 'kom_' + station.name;
+  else key = 'ic_' + station.name;
+
+  const ridership = monthRecord[key] ?? null;
+  const yoy = stationMonthlyData.yoy_by_month[ym]?.[key] ?? null;
+  return { ridership, yoy };
+}
+
+// ── Square-root Radius Sizing (min 3px, max 14px) ────────────────────────────
+function getStationRadius(ridership: number | null): number {
+  if (!ridership || ridership <= 0) return 3.0; // small neutral node
+  const ratio = Math.sqrt(ridership) / Math.sqrt(GLOBAL_MAX_STATION_RIDERSHIP);
+  return Math.min(14, Math.max(3.5, 3.0 + ratio * 11.0));
+}
+
+// ── Soft Blue/Teal Sequential Gradient ───────────────────────────────────────
+function getStationFillColor(ridership: number | null): string {
+  if (!ridership || ridership <= 0) return '#CBD5E1'; // Neutral light grey
+  const ratio = Math.sqrt(ridership) / Math.sqrt(GLOBAL_MAX_STATION_RIDERSHIP);
+  if (ratio < 0.12) return '#D5EAF8'; // pale ice blue
+  if (ratio < 0.25) return '#A5D5F2'; // soft sky blue
+  if (ratio < 0.40) return '#62BAE8'; // cerulean
+  if (ratio < 0.60) return '#2397D6'; // deep cyan blue
+  if (ratio < 0.80) return '#0E73B9'; // dark blue
+  return '#084882';                   // deep navy blue
+}
+
+// ── Map View Controller (Auto-focus & Bounds Sync) ───────────────────────────
+function MapViewController({
   selectedLine,
   selectedStation,
+  viewScope,
 }: {
   selectedLine: string;
   selectedStation: string;
+  viewScope: 'klang_valley' | 'peninsular';
 }) {
   const map = useMap();
+  const hasMountedRef = useRef(false);
 
   useEffect(() => {
     map.invalidateSize();
 
-    // 1. Station takes top priority: zoom right into the station
+    // 1. Station has highest priority: fly to exact station coordinates (Zoom 15)
     if (selectedStation !== 'All Stations') {
       const target =
         stationsData.stations.find(
@@ -393,7 +294,7 @@ function MapAutoFocuser({
       return;
     }
 
-    // 2. Rail Line selected: fly to bounding box of all stations on this line
+    // 2. Line selected: fly to line bounding box
     if (selectedLine !== 'All Lines') {
       const lineStations = stationsData.stations.filter(
         (s) => s.line === selectedLine && s.lat && s.lng
@@ -413,7 +314,7 @@ function MapAutoFocuser({
             [maxLat, maxLng],
           ],
           {
-            padding: [50, 50],
+            padding: [45, 45],
             maxZoom,
             duration: 1.2,
           }
@@ -422,21 +323,27 @@ function MapAutoFocuser({
       return;
     }
 
-    // 3. Reset to full Peninsular Malaysia view
-    map.flyTo([4.15, 102.15], 7, {
-      duration: 1.0,
-    });
-  }, [selectedLine, selectedStation, map]);
+    // 3. Normal / Reset view: follow viewScope toggle ("Klang Valley" or "Peninsular")
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      // On load: fit bounds to Klang Valley (default) so rail network fills frame
+      map.fitBounds(KLANG_VALLEY_BOUNDS, { padding: [30, 30] });
+    } else {
+      if (viewScope === 'klang_valley') {
+        map.flyToBounds(KLANG_VALLEY_BOUNDS, { padding: [30, 30], duration: 1.1 });
+      } else {
+        map.flyToBounds(PENINSULAR_BOUNDS, { padding: [30, 30], duration: 1.2 });
+      }
+    }
+  }, [selectedLine, selectedStation, viewScope, map]);
 
   return null;
 }
 
-// ── Component: Track zoom level for zoom-dependent node radius ───────────────
-function ZoomHandler({ onZoomChange }: { onZoomChange: (z: number) => void }) {
+// ── Track Zoom Level ────────────────────────────────────────────────────────
+function ZoomTracker({ onZoomChange }: { onZoomChange: (z: number) => void }) {
   const map = useMapEvents({
-    zoomend: () => {
-      onZoomChange(map.getZoom());
-    },
+    zoomend: () => onZoomChange(map.getZoom()),
   });
   useEffect(() => {
     onZoomChange(map.getZoom());
@@ -453,19 +360,21 @@ export function NetworkMap({
   onResetFocus,
   onSelectStation,
 }: Props) {
-  const [currentZoom, setCurrentZoom] = useState<number>(7);
+  const [currentZoom, setCurrentZoom] = useState<number>(11);
+  const [viewScope, setViewScope] = useState<'klang_valley' | 'peninsular'>('klang_valley');
+  const [legendOpen, setLegendOpen] = useState<boolean>(true);
+
   const monthData = monthly_trend.find((m) => m.year_month === playbackMonth);
 
-  // Dynamic node radius based on zoom level:
-  // zoomed out (zoom <= 7): 2.5px -> prevents Klang Valley from turning into a blob
-  // medium zoom (8-10): 3.2px
-  // close-in (>= 11): 5px
-  const nodeRadius = useMemo(() => {
-    if (currentZoom <= 7) return 2.5;
-    if (currentZoom <= 9) return 3.2;
-    if (currentZoom <= 11) return 4.2;
-    return 5.5;
-  }, [currentZoom]);
+  // Maximum network ridership across all months (for line fading during low-ridership periods like 2020 COVID)
+  const maxNetworkTotal = useMemo(() => {
+    return Math.max(...monthly_trend.map((m) => m.total), 33000000);
+  }, [monthly_trend]);
+
+  const currentTotal = monthData?.total || 0;
+  const networkRatio = maxNetworkTotal > 0 ? currentTotal / maxNetworkTotal : 1;
+  // Dynamic line opacity: drops to ~0.35 during 2020 COVID MCO (faded network), brightens to ~0.90 at peak
+  const dynamicLineOpacity = Math.min(0.92, Math.max(0.32, 0.32 + 0.58 * networkRatio));
 
   // Lookup the selected station object if any
   const selectedStationObj = useMemo(() => {
@@ -481,6 +390,18 @@ export function NetworkMap({
 
   const isFilterActive = selectedLine !== 'All Lines' || selectedStation !== 'All Stations';
 
+  // ── Z-INDEX DRAWING ORDER: Draw smaller stations on top of bigger ones ─────
+  // In Leaflet SVG DOM, later elements render on top of earlier ones.
+  // Sorting DESCENDING by ridership ensures big circles are drawn first (at bottom),
+  // and small/neutral circles are drawn last (on top)!
+  const sortedStations = useMemo(() => {
+    return [...stationsData.stations].sort((a, b) => {
+      const { ridership: rA } = getStationData(a, playbackMonth);
+      const { ridership: rB } = getStationData(b, playbackMonth);
+      return (rB || 0) - (rA || 0);
+    });
+  }, [playbackMonth]);
+
   return (
     <div
       style={{
@@ -492,11 +413,19 @@ export function NetworkMap({
         background: '#DDE9F6',
       }}
     >
+      {/* Smooth CSS transition for circle radius and fill on timeline playback */}
+      <style>{`
+        .leaflet-interactive {
+          transition: r 300ms ease, fill 300ms ease, opacity 300ms ease, stroke-width 300ms ease;
+        }
+      `}</style>
+
       <MapContainer
-        center={[4.15, 102.15]}
-        zoom={7}
-        minZoom={5}
+        bounds={KLANG_VALLEY_BOUNDS}
+        minZoom={6}
         maxZoom={18}
+        maxBounds={MALAYSIA_MAX_BOUNDS}
+        maxBoundsViscosity={1.0}
         style={{ width: '100%', height: '100%', borderRadius: 12 }}
         zoomControl={true}
       >
@@ -507,14 +436,18 @@ export function NetworkMap({
           maxZoom={16}
         />
 
-        {/* Dynamic Zoom Tracker & Auto Focuser */}
-        <ZoomHandler onZoomChange={setCurrentZoom} />
-        <MapAutoFocuser selectedLine={selectedLine} selectedStation={selectedStation} />
+        {/* View Bounds & Zoom Controllers */}
+        <ZoomTracker onZoomChange={setCurrentZoom} />
+        <MapViewController
+          selectedLine={selectedLine}
+          selectedStation={selectedStation}
+          viewScope={viewScope}
+        />
 
-        {/* ── 1. RAIL NETWORK POLYLINES: Dual-Stroke Casing (Dark Navy + White Halo) ── */}
-        {/* Layer A: White Underlayer Casing */}
+        {/* ── 1. RAIL NETWORK POLYLINES: Dual-Stroke Casing (White Underlayer + Official Line Color) ── */}
+        {/* Layer A: White Underlayer Casing (3.5px) */}
         {RAIL_CORRIDORS.map((corridor) => {
-          const isMatch = isCorridorMatch(corridor.id, selectedLine);
+          const isMatch = isCorridorMatch(corridor.name, selectedLine);
           const isLineActive = selectedLine !== 'All Lines';
 
           return (
@@ -523,8 +456,8 @@ export function NetworkMap({
               positions={corridor.coords}
               pathOptions={{
                 color: '#FFFFFF',
-                weight: isLineActive ? (isMatch ? 6.5 : 2) : 4.5,
-                opacity: isLineActive ? (isMatch ? 1 : 0.2) : 0.9,
+                weight: isLineActive ? (isMatch ? 5.5 : 2.0) : 3.5,
+                opacity: isLineActive ? (isMatch ? 1.0 : 0.2) : 0.9,
                 lineCap: 'round',
                 lineJoin: 'round',
               }}
@@ -532,19 +465,24 @@ export function NetworkMap({
           );
         })}
 
-        {/* Layer B: Main Colored / Navy Stroke */}
+        {/* Layer B: Official Coloured Stroke (2px, fades when network ridership is low) */}
         {RAIL_CORRIDORS.map((corridor) => {
-          const isMatch = isCorridorMatch(corridor.id, selectedLine);
+          const isMatch = isCorridorMatch(corridor.name, selectedLine);
           const isLineActive = selectedLine !== 'All Lines';
+          const officialColor = LINE_COLORS[corridor.name] || '#0066FF';
 
           const strokeColor = isLineActive
             ? isMatch
-              ? (LINE_ACCENT_COLORS[selectedLine] || corridor.accentColor)
+              ? officialColor
               : '#94A3B8'
-            : '#0F2038';
+            : officialColor;
 
-          const strokeWidth = isLineActive ? (isMatch ? 4.5 : 1.5) : 2;
-          const strokeOpacity = isLineActive ? (isMatch ? 1.0 : 0.2) : 0.88;
+          const strokeWidth = isLineActive ? (isMatch ? 4.0 : 1.5) : 2.0;
+          const strokeOpacity = isLineActive
+            ? isMatch
+              ? 1.0
+              : 0.18
+            : dynamicLineOpacity;
 
           return (
             <Polyline
@@ -562,7 +500,7 @@ export function NetworkMap({
                 <div style={{ padding: '2px 4px', fontSize: 11 }}>
                   <div style={{ fontWeight: 700, color: '#0F1E36' }}>{corridor.name}</div>
                   <div style={{ fontSize: 10, color: '#64748B' }}>
-                    Category: <strong>{corridor.category}</strong>
+                    Service: <strong>{corridor.category}</strong>
                   </div>
                 </div>
               </Tooltip>
@@ -574,8 +512,8 @@ export function NetworkMap({
         {activeOverlay === 'heatmap' &&
           stationsData.stations.map((station) => {
             if (!station.lat || !station.lng) return null;
-            const isMajor = MAJOR_HUBS.has(station.name);
-            const heatRadius = isMajor ? (currentZoom >= 10 ? 28 : 18) : (currentZoom >= 10 ? 16 : 9);
+            const { ridership } = getStationData(station, playbackMonth);
+            const heatRadius = ridership && ridership > 200000 ? 24 : 14;
 
             return (
               <CircleMarker
@@ -586,14 +524,14 @@ export function NetworkMap({
                   fillColor: '#FF5A00',
                   color: '#FF2E00',
                   weight: 0,
-                  fillOpacity: isMajor ? 0.38 : 0.22,
+                  fillOpacity: ridership && ridership > 0 ? 0.38 : 0.15,
                 }}
               />
             );
           })}
 
-        {/* ── 3. STATION NODES: White fill, dark navy rim, radius 2.5–5.5px ── */}
-        {stationsData.stations.map((station) => {
+        {/* ── 3. STATIONS SIZED AND COLOURED BY RIDERSHIP ── */}
+        {sortedStations.map((station) => {
           if (!station.lat || !station.lng) return null;
 
           const isSelected =
@@ -601,42 +539,31 @@ export function NetworkMap({
             selectedStationObj.name === station.name &&
             selectedStationObj.line === station.line;
 
-          // If this is the explicitly selected station, render it separately with the beacon
+          // If this station is explicitly selected, render it separately with beacon
           if (isSelected) return null;
 
           const isLineActive = selectedLine !== 'All Lines';
-          const isLineMatch = !isLineActive || station.line === selectedLine;
-          const isMajor = MAJOR_HUBS.has(station.name);
+          const isLineMatch = !isLineActive || isCorridorMatch(station.line, selectedLine);
 
-          const category =
-            station.line.includes('ETS')
-              ? 'ETS'
-              : station.source === 'komuter' || station.source === 'intercity' || station.line.includes('KTM')
-              ? 'KTMB'
-              : 'Rapid Rail';
+          // Ridership & YoY for the currently selected playback month
+          const { ridership, yoy } = getStationData(station, playbackMonth);
+          const hasData = ridership !== null && ridership > 0;
 
-          const accentColor =
-            LINE_ACCENT_COLORS[station.line] ||
-            (category === 'KTMB' ? '#0066FF' : category === 'ETS' ? '#00E5A3' : '#FF8C00');
+          // Square-root scale (min 3px, max 14px)
+          const baseRadius = getStationRadius(ridership);
+          const radius = isLineActive ? (isLineMatch ? baseRadius : 2.5) : baseRadius;
 
-          const radius = isLineActive
+          // Sequential soft blue/teal gradient
+          const fillColor = isLineActive
             ? isLineMatch
-              ? (currentZoom >= 11 ? 5.5 : 4)
-              : 2
-            : isMajor
-            ? nodeRadius + 1.2
-            : nodeRadius;
+              ? getStationFillColor(ridership)
+              : '#E2E8F0'
+            : getStationFillColor(ridership);
 
-          const strokeColor = isLineActive
-            ? isLineMatch
-              ? accentColor
-              : '#CBD5E1'
-            : isMajor
-            ? accentColor
-            : '#0F2038';
-
-          const strokeWidth = isLineActive ? (isLineMatch ? 2.5 : 1) : isMajor ? 2 : 1.5;
-          const opacity = isLineActive ? (isLineMatch ? 1 : 0.15) : 0.95;
+          const strokeColor = hasData ? '#FFFFFF' : '#94A3B8';
+          const strokeWidth = hasData ? 1.0 : 0.8;
+          const fillOpacity = isLineActive ? (isLineMatch ? 0.95 : 0.2) : 0.92;
+          const strokeOpacity = isLineActive ? (isLineMatch ? 1.0 : 0.2) : 0.95;
 
           return (
             <CircleMarker
@@ -644,11 +571,11 @@ export function NetworkMap({
               center={[station.lat, station.lng]}
               radius={radius}
               pathOptions={{
-                fillColor: '#FFFFFF',
+                fillColor,
                 color: strokeColor,
                 weight: strokeWidth,
-                fillOpacity: opacity,
-                opacity: opacity,
+                fillOpacity,
+                opacity: strokeOpacity,
               }}
               eventHandlers={{
                 click: () => {
@@ -658,8 +585,8 @@ export function NetworkMap({
                 },
               }}
             >
-              {/* Permanent Station Labels in Station View or Line focus */}
-              {(activeOverlay === 'station' || (isLineActive && isLineMatch && currentZoom >= 11)) && (
+              {/* Permanent Station Labels in Station View or when zoomed in */}
+              {(activeOverlay === 'station' || (currentZoom >= 13 && hasData)) && (
                 <Tooltip permanent direction="top" offset={[0, -radius]}>
                   <span style={{ fontSize: 9.5, fontWeight: 600, color: '#0F1E36' }}>
                     {station.name}
@@ -667,22 +594,48 @@ export function NetworkMap({
                 </Tooltip>
               )}
 
-              {/* Standard Hover Tooltip */}
-              {activeOverlay !== 'station' && !(isLineActive && isLineMatch && currentZoom >= 11) && (
+              {/* Standard Interactive Hover Tooltip */}
+              {activeOverlay !== 'station' && !(currentZoom >= 13 && hasData) && (
                 <Tooltip>
-                  <div style={{ padding: '3px 5px', minWidth: 120 }}>
+                  <div style={{ padding: '3px 6px', minWidth: 135 }}>
                     <div style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36' }}>
                       {station.name}
                     </div>
                     <div style={{ fontSize: 10, color: '#0066FF', fontWeight: 600, marginTop: 1 }}>
                       {station.line} ({station.code})
                     </div>
-                    <div style={{ fontSize: 9.5, color: '#64748B', marginTop: 2 }}>
-                      Service: <strong>{category}</strong>
-                    </div>
-                    {monthData && (
-                      <div style={{ fontSize: 9.5, color: '#00C48C', marginTop: 3 }}>
-                        Monthly Trips: {(monthData.total / 1e6).toFixed(1)}M
+                    {hasData ? (
+                      <div style={{ marginTop: 4 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#0F1E36' }}>
+                          {ridership.toLocaleString()}{' '}
+                          <span style={{ fontSize: 9.5, fontWeight: 400, color: '#64748B' }}>
+                            trips ({playbackMonth})
+                          </span>
+                        </div>
+                        {yoy !== null && (
+                          <div
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 600,
+                              color: yoy >= 0 ? '#00C48C' : '#FF5A00',
+                              marginTop: 2,
+                            }}
+                          >
+                            {yoy >= 0 ? '▲ +' : '▼ '}
+                            {yoy}% vs last year
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: '#94A3B8',
+                          fontStyle: 'italic',
+                          marginTop: 3,
+                        }}
+                      >
+                        No ridership data
                       </div>
                     )}
                   </div>
@@ -698,7 +651,7 @@ export function NetworkMap({
             {/* Outer glowing pulsing ring 1 */}
             <CircleMarker
               center={[selectedStationObj.lat, selectedStationObj.lng]}
-              radius={26}
+              radius={24}
               pathOptions={{
                 fillColor: '#0066FF',
                 color: '#0066FF',
@@ -710,7 +663,7 @@ export function NetworkMap({
             {/* Outer glowing pulsing ring 2 */}
             <CircleMarker
               center={[selectedStationObj.lat, selectedStationObj.lng]}
-              radius={15}
+              radius={14}
               pathOptions={{
                 fillColor: '#0066FF',
                 color: '#0066FF',
@@ -742,11 +695,26 @@ export function NetworkMap({
                   <div style={{ fontSize: 10, color: '#64748B' }}>
                     Code: <strong>{selectedStationObj.code}</strong>
                   </div>
-                  {monthData && (
-                    <div style={{ fontSize: 9.5, color: '#00C48C', marginTop: 3 }}>
-                      Network: {(monthData.total / 1e6).toFixed(1)}M trips
-                    </div>
-                  )}
+                  {(() => {
+                    const { ridership, yoy } = getStationData(selectedStationObj, playbackMonth);
+                    return ridership && ridership > 0 ? (
+                      <div style={{ marginTop: 3 }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: '#00C48C' }}>
+                          {ridership.toLocaleString()} trips
+                        </div>
+                        {yoy !== null && (
+                          <div style={{ fontSize: 9.5, color: yoy >= 0 ? '#00C48C' : '#FF5A00' }}>
+                            {yoy >= 0 ? '▲ +' : '▼ '}
+                            {yoy}% YoY
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 9.5, color: '#94A3B8', marginTop: 2 }}>
+                        No ridership data
+                      </div>
+                    );
+                  })()}
                 </div>
               </Tooltip>
             </CircleMarker>
@@ -754,7 +722,7 @@ export function NetworkMap({
         )}
       </MapContainer>
 
-      {/* ── Soft Ice-Blue / Cyber Frost Tint Overlay (Recreates Image 1's land aesthetic) ── */}
+      {/* ── Soft Ice-Blue / Cyber Frost Tint Overlay ── */}
       <div
         style={{
           position: 'absolute',
@@ -767,20 +735,76 @@ export function NetworkMap({
         }}
       />
 
-      {/* ── Floating Focus Banner (When a line or station is selected) ── */}
+      {/* ── Top-Left: "Klang Valley" | "Peninsular Malaysia" Toggle Control ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 12,
+          left: 54,
+          zIndex: 1000,
+          display: 'flex',
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(0, 102, 255, 0.2)',
+          borderRadius: 8,
+          padding: 2,
+          boxShadow: '0 2px 10px rgba(15, 30, 54, 0.1)',
+        }}
+      >
+        <button
+          onClick={() => setViewScope('klang_valley')}
+          style={{
+            padding: '4px 10px',
+            fontSize: 11,
+            fontWeight: 600,
+            border: 'none',
+            borderRadius: 6,
+            cursor: 'pointer',
+            background: viewScope === 'klang_valley' ? '#0066FF' : 'transparent',
+            color: viewScope === 'klang_valley' ? '#FFFFFF' : '#475569',
+            boxShadow:
+              viewScope === 'klang_valley' ? '0 1px 4px rgba(0, 102, 255, 0.3)' : 'none',
+            transition: 'all 0.2s',
+          }}
+          title="Zoom to Rapid Rail & Klang Valley Network"
+        >
+          Klang Valley
+        </button>
+        <button
+          onClick={() => setViewScope('peninsular')}
+          style={{
+            padding: '4px 10px',
+            fontSize: 11,
+            fontWeight: 600,
+            border: 'none',
+            borderRadius: 6,
+            cursor: 'pointer',
+            background: viewScope === 'peninsular' ? '#0066FF' : 'transparent',
+            color: viewScope === 'peninsular' ? '#FFFFFF' : '#475569',
+            boxShadow:
+              viewScope === 'peninsular' ? '0 1px 4px rgba(0, 102, 255, 0.3)' : 'none',
+            transition: 'all 0.2s',
+          }}
+          title="Zoom to Entire Peninsular Malaysia Network"
+        >
+          Peninsular Malaysia
+        </button>
+      </div>
+
+      {/* ── Floating Focus Banner (When a line or station filter is applied) ── */}
       {isFilterActive && (
         <div
           style={{
             position: 'absolute',
-            top: 12,
+            top: 48,
             left: 54,
             zIndex: 1000,
             background: 'rgba(15, 30, 54, 0.94)',
             backdropFilter: 'blur(10px)',
             color: '#FFFFFF',
             borderRadius: 8,
-            padding: '6px 12px',
-            fontSize: 12,
+            padding: '5px 12px',
+            fontSize: 11.5,
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
@@ -790,16 +814,13 @@ export function NetworkMap({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 14 }}>🎯</span>
+            <span style={{ fontSize: 13 }}>🎯</span>
             <span>
               Focused:{' '}
               <strong style={{ color: '#00E5A3' }}>
                 {selectedStation !== 'All Stations' ? selectedStation : selectedLine}
               </strong>
             </span>
-            {selectedStation !== 'All Stations' && (
-              <span style={{ fontSize: 11, color: '#94A3B8' }}>({selectedLine})</span>
-            )}
           </div>
           {onResetFocus && (
             <button
@@ -810,11 +831,11 @@ export function NetworkMap({
                 color: '#FFF',
                 borderRadius: 5,
                 padding: '2px 8px',
-                fontSize: 11,
+                fontSize: 10.5,
                 cursor: 'pointer',
                 fontWeight: 600,
               }}
-              title="Reset View to All Lines"
+              title="Reset View"
             >
               Reset ✕
             </button>
@@ -822,60 +843,219 @@ export function NetworkMap({
         </div>
       )}
 
-      {/* ── Top-Right Map Legend Badges (KTMB, Rapid Rail, ETS) ── */}
+      {/* ── Top-Right: Comprehensive Line Legend Grouped by Service ── */}
       <div
         style={{
           position: 'absolute',
           top: 14,
           right: 76,
-          background: 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(0, 102, 255, 0.12)',
-          borderRadius: 10,
-          padding: '8px 14px',
-          fontSize: 11,
           zIndex: 1000,
-          boxShadow: '0 2px 10px rgba(15, 30, 54, 0.08)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 14,
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(0, 102, 255, 0.15)',
+          borderRadius: 10,
+          padding: '8px 12px',
+          fontSize: 10.5,
+          boxShadow: '0 2px 12px rgba(15, 30, 54, 0.1)',
+          maxWidth: 290,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div
-            style={{
-              width: 9,
-              height: 9,
-              borderRadius: '50%',
-              background: '#0066FF',
-              boxShadow: '0 0 6px rgba(0, 102, 255, 0.5)',
-            }}
-          />
-          <span style={{ fontWeight: 600, color: '#0F1E36', fontSize: 11 }}>KTMB</span>
+        <div
+          onClick={() => setLegendOpen((v) => !v)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+            fontWeight: 700,
+            color: '#0F1E36',
+            marginBottom: legendOpen ? 6 : 0,
+          }}
+        >
+          <span style={{ fontSize: 11, letterSpacing: '0.2px' }}>Rail Lines & Services</span>
+          <span style={{ fontSize: 10, color: '#0066FF' }}>{legendOpen ? '▴' : '▾'}</span>
+        </div>
+
+        {legendOpen && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {/* Rapid Rail */}
+            <div>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: '#64748B',
+                  textTransform: 'uppercase',
+                  marginBottom: 3,
+                }}
+              >
+                Rapid Rail (Klang Valley)
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '3px 8px',
+                }}
+              >
+                {[
+                  'LRT Kelana Jaya',
+                  'LRT Ampang',
+                  'LRT Sri Petaling',
+                  'MRT Kajang',
+                  'MRT Putrajaya',
+                  'KL Monorail',
+                  'LRT Shah Alam',
+                ].map((name) => (
+                  <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <div
+                      style={{
+                        width: 10,
+                        height: 3,
+                        borderRadius: 2,
+                        background: LINE_COLORS[name],
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 9.5,
+                        color: '#0F1E36',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* KTMB & ETS */}
+            <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: 4 }}>
+              <div
+                style={{
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  color: '#64748B',
+                  textTransform: 'uppercase',
+                  marginBottom: 3,
+                }}
+              >
+                KTMB & ETS Services
+              </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '3px 8px',
+                }}
+              >
+                {[
+                  'KTM Komuter (Batu Caves Line)',
+                  'KTM Komuter (Port Klang Line)',
+                  'KTM East Coast Line',
+                  'ETS North-South Trunk',
+                ].map((name) => (
+                  <div key={name} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <div
+                      style={{
+                        width: 10,
+                        height: 3,
+                        borderRadius: 2,
+                        background: LINE_COLORS[name] || '#0066FF',
+                        flexShrink: 0,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontSize: 9.5,
+                        color: '#0F1E36',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {name.replace('KTM Komuter (', '').replace(' Line)', '').replace('Line', '')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Bottom-Left: Monthly Station Ridership Scale Legend ── */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 14,
+          left: 14,
+          zIndex: 1000,
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(0, 102, 255, 0.15)',
+          borderRadius: 8,
+          padding: '6px 12px',
+          boxShadow: '0 2px 10px rgba(15, 30, 54, 0.08)',
+          fontSize: 10.5,
+          color: '#0F1E36',
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: 4, color: '#334155', fontSize: 10.5 }}>
+          Monthly Ridership ({playbackMonth})
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ fontSize: 9.5, color: '#64748B' }}>Low</span>
+          <div
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#D5EAF8',
+              border: '1px solid #FFF',
+              boxShadow: '0 0 2px rgba(0,0,0,0.1)',
+            }}
+            title="< 10k trips"
+          />
           <div
             style={{
               width: 9,
               height: 9,
               borderRadius: '50%',
-              background: '#FF8C00',
-              boxShadow: '0 0 6px rgba(255, 140, 0, 0.5)',
+              background: '#62BAE8',
+              border: '1px solid #FFF',
+              boxShadow: '0 0 2px rgba(0,0,0,0.1)',
             }}
+            title="50k – 150k trips"
           />
-          <span style={{ fontWeight: 600, color: '#0F1E36', fontSize: 11 }}>Rapid Rail</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div
             style={{
-              width: 9,
-              height: 9,
+              width: 13,
+              height: 13,
               borderRadius: '50%',
-              background: '#00E5A3',
-              boxShadow: '0 0 6px rgba(0, 229, 163, 0.5)',
+              background: '#084882',
+              border: '1px solid #FFF',
+              boxShadow: '0 0 2px rgba(0,0,0,0.1)',
             }}
+            title="> 800k trips"
           />
-          <span style={{ fontWeight: 600, color: '#0F1E36', fontSize: 11 }}>ETS</span>
+          <span style={{ fontSize: 9.5, color: '#64748B' }}>High</span>
+          <div style={{ width: 1, height: 11, background: '#CBD5E1', margin: '0 3px' }} />
+          <div
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#CBD5E1',
+              border: '1px solid #94A3B8',
+            }}
+            title="No ridership data"
+          />
+          <span style={{ fontSize: 9.5, color: '#94A3B8' }}>No data</span>
         </div>
       </div>
 
@@ -884,15 +1064,15 @@ export function NetworkMap({
         <div
           style={{
             position: 'absolute',
-            bottom: 16,
-            left: 16,
+            bottom: 14,
+            right: 76,
             zIndex: 1000,
             background: 'rgba(15, 30, 54, 0.88)',
             backdropFilter: 'blur(8px)',
             color: '#FFFFFF',
             borderRadius: 20,
-            padding: '6px 14px',
-            fontSize: 11,
+            padding: '5px 12px',
+            fontSize: 10.5,
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
