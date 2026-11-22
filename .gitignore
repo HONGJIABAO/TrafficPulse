@@ -1,4 +1,6 @@
-# Node / Frontend
+# ==============================================================================
+# Node & Frontend Build Artifacts
+# ==============================================================================
 node_modules/
 frontend/node_modules/
 dist/
@@ -8,7 +10,9 @@ frontend/dist-ssr/
 *.local
 .oxlint-cache
 
-# Python / Backend
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
 __pycache__/
 *.py[codz]
 *$py.class
@@ -27,8 +31,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Virtual Environments
 .venv/
 backend/.venv/
 venv/
@@ -36,35 +38,26 @@ backend/venv/
 ENV/
 env/
 
-# Data Files: Raw & Processed (Never commit large CSV, Parquet, or binary dumps)
-data/raw/*
-!data/raw/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
-backend/data/raw/*
-!backend/data/raw/.gitkeep
+# ==============================================================================
+# Datathon Datasets: Large File Exclusions (>50MB / GitHub push limits)
+# ==============================================================================
+# Specifically ignore the 333MB+ daily ridership file (exceeds GitHub's 100MB hard limit)
+backend/data/raw/rapidrail_2026_daily.csv
+
+# Intermediate pipeline cache (temporary heavy tables & features)
 backend/data/processed/*
 !backend/data/processed/.gitkeep
-**/data/raw/*
-!**/data/raw/.gitkeep
-**/data/processed/*
-!**/data/processed/.gitkeep
+backend/data/processed/**
+!backend/data/processed/**/.gitkeep
 
-# Large data formats anywhere in repo
-*.csv
-*.tsv
-*.parquet
-*.parquet.gzip
-*.feather
-*.h5
-*.hdf5
-*.pkl
-*.pickle
+# Archive / dump files
 *.zip
 *.tar.gz
 *.7z
 
-# IDE / OS
+# ==============================================================================
+# IDE & System Files
+# ==============================================================================
 .vscode/*
 !.vscode/extensions.json
 .idea/
