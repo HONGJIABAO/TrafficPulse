@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import rawOdSummaryData from '@/data/od_summary.json';
 import stationsData from '@/data/stations.json';
+import networkData from '@/data/network_overview.json';
 import { formatMillions } from '@/modules/shared/types';
 import type {
   ResolvedOdFlow,
@@ -16,6 +17,7 @@ import { WeekdayVsWeekendChart } from './WeekdayVsWeekendChart';
 import { TopOdPairsList } from './TopOdPairsList';
 import { OdFlowMap } from './OdFlowMap';
 import { OperatorInsightStrip } from './OperatorInsightStrip';
+import { TimelinePlaybar } from '@/modules/module1_network_overview/TimelinePlaybar';
 
 interface OdSummarySchema {
   generated_at: string;
@@ -132,6 +134,16 @@ export function OdPeakHours() {
 
   const [selectedFlowId, setSelectedFlowId] = useState<string | null>(null);
 
+  // ── Timeline Playback State (matching Module 1) ───────────────────────────
+  const [playbackIdx, setPlaybackIdx] = useState<number>(networkData.monthly_trend.length - 1);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const currentPlaybackMonth = networkData.monthly_trend[playbackIdx];
+  const maxMonthTotal = useMemo(() => {
+    return Math.max(...networkData.monthly_trend.map((m) => m.total), 1);
+  }, []);
+  const playbackFactor = currentPlaybackMonth ? currentPlaybackMonth.total / maxMonthTotal : 1;
+
   const handleApply = () => {
     setSelectedMode(pendingMode);
     setSelectedTimeRange(pendingTimeRange);
@@ -240,11 +252,17 @@ export function OdPeakHours() {
     return list.sort((a, b) => b.volume - a.volume);
   }, []);
 
-  // Filtered flows for Map and List
+  // Filtered and timeline-scaled flows for Map and List
   const activeFlows = useMemo(() => {
-    if (selectedMode === 'all') return allResolvedFlows;
-    return allResolvedFlows.filter((f) => f.mode === selectedMode);
-  }, [allResolvedFlows, selectedMode]);
+    let list = allResolvedFlows;
+    if (selectedMode !== 'all') {
+      list = allResolvedFlows.filter((f) => f.mode === selectedMode);
+    }
+    return list.map((f) => ({
+      ...f,
+      volume: Math.round(f.volume * (0.6 + 0.4 * playbackFactor)),
+    }));
+  }, [allResolvedFlows, selectedMode, playbackFactor]);
 
   // Selected flow details
   const activeFlow = useMemo(() => {
@@ -531,20 +549,6 @@ export function OdPeakHours() {
               </div>
             </div>
           )}
-
-          {/* Card: Problem Statement & SDG Alignment */}
-          <div style={cardStyle}>
-            <SectionTitle icon="🏛️" label="Problem Statement &amp; Impact" />
-            <div style={{ fontSize: 11, color: '#475569', lineHeight: 1.4 }}>
-              <em>&ldquo;How can passenger mobility data help transport operators understand travel demand and support better service planning?&rdquo;</em>
-              <div style={{ marginTop: 6, color: '#0F1E36', fontWeight: 600 }}>
-                Target Users:
-              </div>
-              <div style={{ color: '#64748B' }}>
-                Ministry of Transport, APAD, RapidKL &amp; KTMB operational schedulers.
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* ── Main Visualizations 2x2 Grid + Bottom Insight Strip ─────────── */}
@@ -628,6 +632,15 @@ export function OdPeakHours() {
               />
             </div>
           </div>
+
+          {/* Timeline Playback Bar (matching Module 1) */}
+          <TimelinePlaybar
+            monthly_trend={networkData.monthly_trend}
+            playbackIdx={playbackIdx}
+            isPlaying={isPlaying}
+            onIdxChange={setPlaybackIdx}
+            onPlayPause={() => setIsPlaying((p) => !p)}
+          />
 
           {/* Operator Directives Strip (Bottom) */}
           <OperatorInsightStrip />
