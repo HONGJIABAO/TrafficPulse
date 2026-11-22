@@ -36,11 +36,33 @@ backend/venv/
 ENV/
 env/
 
-# Data files (keep .gitkeep)
+# Data Files: Raw & Processed (Never commit large CSV, Parquet, or binary dumps)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 backend/data/raw/*
 !backend/data/raw/.gitkeep
 backend/data/processed/*
 !backend/data/processed/.gitkeep
+**/data/raw/*
+!**/data/raw/.gitkeep
+**/data/processed/*
+!**/data/processed/.gitkeep
+
+# Large data formats anywhere in repo
+*.csv
+*.tsv
+*.parquet
+*.parquet.gzip
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.zip
+*.tar.gz
+*.7z
 
 # IDE / OS
 .vscode/*
