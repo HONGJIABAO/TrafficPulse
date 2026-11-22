@@ -9,6 +9,7 @@ import type {
   OdModeFilter,
   DayTypeFilter,
   TimeRangeFilter,
+  HaulFilter,
   HeatmapPoint,
   WeekdayVsWeekendData,
 } from './types';
@@ -18,6 +19,7 @@ import { TopOdPairsList } from './TopOdPairsList';
 import { OdFlowMap } from './OdFlowMap';
 import { OperatorInsightStrip } from './OperatorInsightStrip';
 import { TimelinePlaybar } from '@/modules/module1_network_overview/TimelinePlaybar';
+import { TripDistanceProfileCard } from './TripDistanceProfileCard';
 
 interface OdSummarySchema {
   generated_at: string;
@@ -41,6 +43,27 @@ const odSummaryData = rawOdSummaryData as unknown as OdSummarySchema;
 // ── Clean name helper ─────────────────────────────────────────────────────────
 function cleanStationName(raw: string): string {
   return raw.replace(/^[A-Z0-9]+:\s*/, '').trim();
+}
+
+// ── Haversine Distance Helper ────────────────────────────────────────────────
+function haversineDistanceKm(p1: [number, number], p2: [number, number]): number {
+  const R = 6371; // Earth radius in km
+  const dLat = ((p2[0] - p1[0]) * Math.PI) / 180;
+  const dLon = ((p2[1] - p1[1]) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((p1[0] * Math.PI) / 180) *
+      Math.cos((p2[0] * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
+}
+
+function getHaulCategory(dist: number): 'short' | 'medium' | 'long' {
+  if (dist < 5) return 'short';
+  if (dist <= 25) return 'medium';
+  return 'long';
 }
 
 // ── Card Styles matching Network Overview ────────────────────────────────────
@@ -133,6 +156,7 @@ export function OdPeakHours() {
   const [pendingDayType, setPendingDayType] = useState<DayTypeFilter>('all');
 
   const [selectedFlowId, setSelectedFlowId] = useState<string | null>(null);
+  const [activeHaul, setActiveHaul] = useState<HaulFilter>('all');
 
   // ── Timeline Playback State (matching Module 1) ───────────────────────────
   const [playbackIdx, setPlaybackIdx] = useState<number>(networkData.monthly_trend.length - 1);
@@ -158,6 +182,7 @@ export function OdPeakHours() {
     setSelectedTimeRange('12m');
     setSelectedDayType('all');
     setSelectedFlowId(null);
+    setActiveHaul('all');
   };
 
   // ── Resolve Stations & Flows ───────────────────────────────────────────────
@@ -192,6 +217,7 @@ export function OdPeakHours() {
     odSummaryData.top_od_pairs.rapid_rail?.forEach((pair, idx) => {
       const o = resolveCoords(pair.origin);
       const d = resolveCoords(pair.destination);
+      const dist = haversineDistanceKm(o.coords, d.coords);
       list.push({
         id: `rr-${idx}`,
         rank: idx + 1,
@@ -205,6 +231,8 @@ export function OdPeakHours() {
         originCoords: o.coords,
         destCoords: d.coords,
         corridorType: 'CBD Core Transit',
+        distanceKm: dist,
+        haulCategory: getHaulCategory(dist),
       });
     });
 
@@ -212,6 +240,7 @@ export function OdPeakHours() {
     odSummaryData.top_od_pairs.komuter?.forEach((pair, idx) => {
       const o = resolveCoords(pair.origin);
       const d = resolveCoords(pair.destination);
+      const dist = haversineDistanceKm(o.coords, d.coords);
       list.push({
         id: `komuter-${idx}`,
         rank: idx + 1,
@@ -225,6 +254,8 @@ export function OdPeakHours() {
         originCoords: o.coords,
         destCoords: d.coords,
         corridorType: 'Suburban Commuter Trunk',
+        distanceKm: dist,
+        haulCategory: getHaulCategory(dist),
       });
     });
 
@@ -232,6 +263,7 @@ export function OdPeakHours() {
     odSummaryData.top_od_pairs.intercity?.forEach((pair, idx) => {
       const o = resolveCoords(pair.origin);
       const d = resolveCoords(pair.destination);
+      const dist = haversineDistanceKm(o.coords, d.coords);
       list.push({
         id: `intercity-${idx}`,
         rank: idx + 1,
@@ -245,6 +277,8 @@ export function OdPeakHours() {
         originCoords: o.coords,
         destCoords: d.coords,
         corridorType: 'Interstate Long-Distance',
+        distanceKm: dist,
+        haulCategory: getHaulCategory(dist),
       });
     });
 
@@ -252,17 +286,20 @@ export function OdPeakHours() {
     return list.sort((a, b) => b.volume - a.volume);
   }, []);
 
-  // Filtered and timeline-scaled flows for Map and List
+  // Filtered and timeline-scaled flows for Map and List (supports mode and distance haul filtering)
   const activeFlows = useMemo(() => {
     let list = allResolvedFlows;
     if (selectedMode !== 'all') {
       list = allResolvedFlows.filter((f) => f.mode === selectedMode);
     }
+    if (activeHaul !== 'all') {
+      list = list.filter((f) => f.haulCategory === activeHaul);
+    }
     return list.map((f) => ({
       ...f,
       volume: Math.round(f.volume * (0.6 + 0.4 * playbackFactor)),
     }));
-  }, [allResolvedFlows, selectedMode, playbackFactor]);
+  }, [allResolvedFlows, selectedMode, activeHaul, playbackFactor]);
 
   // Selected flow details
   const activeFlow = useMemo(() => {
@@ -518,11 +555,15 @@ export function OdPeakHours() {
                   <strong style={{ color: '#0066FF' }}>{activeFlow.volume.toLocaleString()}</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Distance:</span>
+                  <strong style={{ color: '#0066FF' }}>{activeFlow.distanceKm} km</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Network:</span>
                   <span style={{ fontWeight: 600 }}>{activeFlow.modeLabel}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Classification:</span>
+                  <span>Haul Classification:</span>
                   <span style={{ fontWeight: 600, color: '#00A389' }}>{activeFlow.corridorType}</span>
                 </div>
               </div>
@@ -538,7 +579,7 @@ export function OdPeakHours() {
                   lineHeight: 1.3,
                 }}
               >
-                💡 <strong>Planner Tip:</strong> High morning directional skew requires reverse-direction empty express turnaround.
+                💡 <strong>Planner Tip:</strong> {activeFlow.distanceKm < 5 ? 'High passenger exchange rate; require 100% longitudinal seating.' : 'High trip dwell time; assign 6-car trainsets with balanced seating.'}
               </div>
             </div>
           ) : (
@@ -549,6 +590,9 @@ export function OdPeakHours() {
               </div>
             </div>
           )}
+
+          {/* Trip Distance & Haul Profile */}
+          <TripDistanceProfileCard activeHaul={activeHaul} onSelectHaul={setActiveHaul} />
         </div>
 
         {/* ── Main Visualizations 2x2 Grid + Bottom Insight Strip ─────────── */}

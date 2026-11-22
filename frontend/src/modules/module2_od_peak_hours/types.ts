@@ -21,6 +21,8 @@ export interface ResolvedOdFlow {
   destCoords: [number, number];
   corridorType: string;
   asymmetryRatio?: number;
+  distanceKm: number;
+  haulCategory: 'short' | 'medium' | 'long';
 }
 
 export interface HeatmapPoint {
@@ -42,3 +44,5 @@ export interface WeekdayVsWeekendData {
 export type OdModeFilter = 'all' | 'rapid_rail' | 'komuter' | 'intercity';
 export type DayTypeFilter = 'all' | 'weekday' | 'weekend';
 export type TimeRangeFilter = '12m' | 'q4' | 'q3' | 'q2' | 'q1';
+export type PeakTimeFilter = 'all' | 'am_peak' | 'midday' | 'pm_peak';
+export type HaulFilter = 'all' | 'short' | 'medium' | 'long';
