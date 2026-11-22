@@ -44,14 +44,14 @@ export const LINE_COLORS: Record<string, string> = {
   'KL Monorail':              '#FF8C00',
   'LRT Shah Alam':            '#00BCD4',
   'KTM Komuter':              '#FF5A00',
-  'KTM Komuter Utara':        '#8B4513',
-  'KTM ETS':                  '#4CAF50',
+  'KTM Komuter Utara':        '#0288D1',
+  'KTM ETS':                  '#10B981',
   'KTM Tebrau Shuttle':       '#9E9E9E',
   'KTM Intercity':            '#795548',
   // KTMB services
   'komuter':                  '#FF5A00',
-  'komuter_utara':            '#8B4513',
-  'ets':                      '#4CAF50',
+  'komuter_utara':            '#0288D1',
+  'ets':                      '#10B981',
   'shuttle_tebrau':           '#9E9E9E',
   'intercity':                '#795548',
 };
