@@ -1,0 +1,10 @@
+# TrafficPulse - Backend Data Processing Dependencies
+# Placeholder for Python packages (e.g., pandas, numpy, polars, fastapi, etc.)
+
+# Core Data Processing (uncomment when needed)
+# pandas>=2.2.0
+# numpy>=1.26.0
+
+# API / Server (if needed)
+# fastapi>=0.110.0
+# uvicorn>=0.28.0
