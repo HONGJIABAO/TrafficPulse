@@ -1,0 +1,2396 @@
+{
+  "generated_at": "2026-11-22",
+  "weekday_hour_heatmap": {
+    "komuter": [
+      {
+        "weekday": 1,
+        "hour": 0,
+        "ridership": 14725
+      },
+      {
+        "weekday": 1,
+        "hour": 1,
+        "ridership": 2953
+      },
+      {
+        "weekday": 1,
+        "hour": 2,
+        "ridership": 3963
+      },
+      {
+        "weekday": 1,
+        "hour": 3,
+        "ridership": 2062
+      },
+      {
+        "weekday": 1,
+        "hour": 4,
+        "ridership": 8107
+      },
+      {
+        "weekday": 1,
+        "hour": 5,
+        "ridership": 21887
+      },
+      {
+        "weekday": 1,
+        "hour": 6,
+        "ridership": 261126
+      },
+      {
+        "weekday": 1,
+        "hour": 7,
+        "ridership": 607963
+      },
+      {
+        "weekday": 1,
+        "hour": 8,
+        "ridership": 642247
+      },
+      {
+        "weekday": 1,
+        "hour": 9,
+        "ridership": 306327
+      },
+      {
+        "weekday": 1,
+        "hour": 10,
+        "ridership": 181201
+      },
+      {
+        "weekday": 1,
+        "hour": 11,
+        "ridership": 193833
+      },
+      {
+        "weekday": 1,
+        "hour": 12,
+        "ridership": 161227
+      },
+      {
+        "weekday": 1,
+        "hour": 13,
+        "ridership": 160607
+      },
+      {
+        "weekday": 1,
+        "hour": 14,
+        "ridership": 152697
+      },
+      {
+        "weekday": 1,
+        "hour": 15,
+        "ridership": 151723
+      },
+      {
+        "weekday": 1,
+        "hour": 16,
+        "ridership": 181026
+      },
+      {
+        "weekday": 1,
+        "hour": 17,
+        "ridership": 281025
+      },
+      {
+        "weekday": 1,
+        "hour": 18,
+        "ridership": 550814
+      },
+      {
+        "weekday": 1,
+        "hour": 19,
+        "ridership": 573478
+      },
+      {
+        "weekday": 1,
+        "hour": 20,
+        "ridership": 278777
+      },
+      {
+        "weekday": 1,
+        "hour": 21,
+        "ridership": 149139
+      },
+      {
+        "weekday": 1,
+        "hour": 22,
+        "ridership": 84029
+      },
+      {
+        "weekday": 1,
+        "hour": 23,
+        "ridership": 45652
+      },
+      {
+        "weekday": 2,
+        "hour": 0,
+        "ridership": 13300
+      },
+      {
+        "weekday": 2,
+        "hour": 1,
+        "ridership": 4085
+      },
+      {
+        "weekday": 2,
+        "hour": 2,
+        "ridership": 5227
+      },
+      {
+        "weekday": 2,
+        "hour": 3,
+        "ridership": 5093
+      },
+      {
+        "weekday": 2,
+        "hour": 4,
+        "ridership": 6711
+      },
+      {
+        "weekday": 2,
+        "hour": 5,
+        "ridership": 18330
+      },
+      {
+        "weekday": 2,
+        "hour": 6,
+        "ridership": 259080
+      },
+      {
+        "weekday": 2,
+        "hour": 7,
+        "ridership": 640300
+      },
+      {
+        "weekday": 2,
+        "hour": 8,
+        "ridership": 686617
+      },
+      {
+        "weekday": 2,
+        "hour": 9,
+        "ridership": 314706
+      },
+      {
+        "weekday": 2,
+        "hour": 10,
+        "ridership": 169543
+      },
+      {
+        "weekday": 2,
+        "hour": 11,
+        "ridership": 183155
+      },
+      {
+        "weekday": 2,
+        "hour": 12,
+        "ridership": 141579
+      },
+      {
+        "weekday": 2,
+        "hour": 13,
+        "ridership": 140703
+      },
+      {
+        "weekday": 2,
+        "hour": 14,
+        "ridership": 136482
+      },
+      {
+        "weekday": 2,
+        "hour": 15,
+        "ridership": 135554
+      },
+      {
+        "weekday": 2,
+        "hour": 16,
+        "ridership": 168126
+      },
+      {
+        "weekday": 2,
+        "hour": 17,
+        "ridership": 285702
+      },
+      {
+        "weekday": 2,
+        "hour": 18,
+        "ridership": 586927
+      },
+      {
+        "weekday": 2,
+        "hour": 19,
+        "ridership": 618695
+      },
+      {
+        "weekday": 2,
+        "hour": 20,
+        "ridership": 293215
+      },
+      {
+        "weekday": 2,
+        "hour": 21,
+        "ridership": 150621
+      },
+      {
+        "weekday": 2,
+        "hour": 22,
+        "ridership": 83867
+      },
+      {
+        "weekday": 2,
+        "hour": 23,
+        "ridership": 44359
+      },
+      {
+        "weekday": 3,
+        "hour": 0,
+        "ridership": 10177
+      },
+      {
+        "weekday": 3,
+        "hour": 1,
+        "ridership": 1701
+      },
+      {
+        "weekday": 3,
+        "hour": 2,
+        "ridership": 2831
+      },
+      {
+        "weekday": 3,
+        "hour": 3,
+        "ridership": 1658
+      },
+      {
+        "weekday": 3,
+        "hour": 4,
+        "ridership": 6169
+      },
+      {
+        "weekday": 3,
+        "hour": 5,
+        "ridership": 15999
+      },
+      {
+        "weekday": 3,
+        "hour": 6,
+        "ridership": 254459
+      },
+      {
+        "weekday": 3,
+        "hour": 7,
+        "ridership": 636355
+      },
+      {
+        "weekday": 3,
+        "hour": 8,
+        "ridership": 680799
+      },
+      {
+        "weekday": 3,
+        "hour": 9,
+        "ridership": 314973
+      },
+      {
+        "weekday": 3,
+        "hour": 10,
+        "ridership": 175272
+      },
+      {
+        "weekday": 3,
+        "hour": 11,
+        "ridership": 185166
+      },
+      {
+        "weekday": 3,
+        "hour": 12,
+        "ridership": 143915
+      },
+      {
+        "weekday": 3,
+        "hour": 13,
+        "ridership": 142720
+      },
+      {
+        "weekday": 3,
+        "hour": 14,
+        "ridership": 136778
+      },
+      {
+        "weekday": 3,
+        "hour": 15,
+        "ridership": 139270
+      },
+      {
+        "weekday": 3,
+        "hour": 16,
+        "ridership": 171380
+      },
+      {
+        "weekday": 3,
+        "hour": 17,
+        "ridership": 284827
+      },
+      {
+        "weekday": 3,
+        "hour": 18,
+        "ridership": 589180
+      },
+      {
+        "weekday": 3,
+        "hour": 19,
+        "ridership": 629975
+      },
+      {
+        "weekday": 3,
+        "hour": 20,
+        "ridership": 295669
+      },
+      {
+        "weekday": 3,
+        "hour": 21,
+        "ridership": 159257
+      },
+      {
+        "weekday": 3,
+        "hour": 22,
+        "ridership": 94794
+      },
+      {
+        "weekday": 3,
+        "hour": 23,
+        "ridership": 45862
+      },
+      {
+        "weekday": 4,
+        "hour": 0,
+        "ridership": 13334
+      },
+      {
+        "weekday": 4,
+        "hour": 1,
+        "ridership": 2840
+      },
+      {
+        "weekday": 4,
+        "hour": 2,
+        "ridership": 4153
+      },
+      {
+        "weekday": 4,
+        "hour": 3,
+        "ridership": 2898
+      },
+      {
+        "weekday": 4,
+        "hour": 4,
+        "ridership": 6941
+      },
+      {
+        "weekday": 4,
+        "hour": 5,
+        "ridership": 17369
+      },
+      {
+        "weekday": 4,
+        "hour": 6,
+        "ridership": 249762
+      },
+      {
+        "weekday": 4,
+        "hour": 7,
+        "ridership": 622451
+      },
+      {
+        "weekday": 4,
+        "hour": 8,
+        "ridership": 658219
+      },
+      {
+        "weekday": 4,
+        "hour": 9,
+        "ridership": 310713
+      },
+      {
+        "weekday": 4,
+        "hour": 10,
+        "ridership": 176099
+      },
+      {
+        "weekday": 4,
+        "hour": 11,
+        "ridership": 187680
+      },
+      {
+        "weekday": 4,
+        "hour": 12,
+        "ridership": 148549
+      },
+      {
+        "weekday": 4,
+        "hour": 13,
+        "ridership": 149798
+      },
+      {
+        "weekday": 4,
+        "hour": 14,
+        "ridership": 148015
+      },
+      {
+        "weekday": 4,
+        "hour": 15,
+        "ridership": 150360
+      },
+      {
+        "weekday": 4,
+        "hour": 16,
+        "ridership": 186464
+      },
+      {
+        "weekday": 4,
+        "hour": 17,
+        "ridership": 299125
+      },
+      {
+        "weekday": 4,
+        "hour": 18,
+        "ridership": 592955
+      },
+      {
+        "weekday": 4,
+        "hour": 19,
+        "ridership": 626090
+      },
+      {
+        "weekday": 4,
+        "hour": 20,
+        "ridership": 304871
+      },
+      {
+        "weekday": 4,
+        "hour": 21,
+        "ridership": 168769
+      },
+      {
+        "weekday": 4,
+        "hour": 22,
+        "ridership": 93021
+      },
+      {
+        "weekday": 4,
+        "hour": 23,
+        "ridership": 52499
+      },
+      {
+        "weekday": 5,
+        "hour": 0,
+        "ridership": 12351
+      },
+      {
+        "weekday": 5,
+        "hour": 1,
+        "ridership": 2875
+      },
+      {
+        "weekday": 5,
+        "hour": 2,
+        "ridership": 3524
+      },
+      {
+        "weekday": 5,
+        "hour": 3,
+        "ridership": 1428
+      },
+      {
+        "weekday": 5,
+        "hour": 4,
+        "ridership": 4527
+      },
+      {
+        "weekday": 5,
+        "hour": 5,
+        "ridership": 14497
+      },
+      {
+        "weekday": 5,
+        "hour": 6,
+        "ridership": 247325
+      },
+      {
+        "weekday": 5,
+        "hour": 7,
+        "ridership": 553770
+      },
+      {
+        "weekday": 5,
+        "hour": 8,
+        "ridership": 583924
+      },
+      {
+        "weekday": 5,
+        "hour": 9,
+        "ridership": 285319
+      },
+      {
+        "weekday": 5,
+        "hour": 10,
+        "ridership": 182451
+      },
+      {
+        "weekday": 5,
+        "hour": 11,
+        "ridership": 208934
+      },
+      {
+        "weekday": 5,
+        "hour": 12,
+        "ridership": 184991
+      },
+      {
+        "weekday": 5,
+        "hour": 13,
+        "ridership": 193091
+      },
+      {
+        "weekday": 5,
+        "hour": 14,
+        "ridership": 200528
+      },
+      {
+        "weekday": 5,
+        "hour": 15,
+        "ridership": 211200
+      },
+      {
+        "weekday": 5,
+        "hour": 16,
+        "ridership": 251162
+      },
+      {
+        "weekday": 5,
+        "hour": 17,
+        "ridership": 354544
+      },
+      {
+        "weekday": 5,
+        "hour": 18,
+        "ridership": 606072
+      },
+      {
+        "weekday": 5,
+        "hour": 19,
+        "ridership": 616321
+      },
+      {
+        "weekday": 5,
+        "hour": 20,
+        "ridership": 332598
+      },
+      {
+        "weekday": 5,
+        "hour": 21,
+        "ridership": 212997
+      },
+      {
+        "weekday": 5,
+        "hour": 22,
+        "ridership": 123594
+      },
+      {
+        "weekday": 5,
+        "hour": 23,
+        "ridership": 64536
+      },
+      {
+        "weekday": 6,
+        "hour": 0,
+        "ridership": 17713
+      },
+      {
+        "weekday": 6,
+        "hour": 1,
+        "ridership": 2081
+      },
+      {
+        "weekday": 6,
+        "hour": 2,
+        "ridership": 3836
+      },
+      {
+        "weekday": 6,
+        "hour": 3,
+        "ridership": 3515
+      },
+      {
+        "weekday": 6,
+        "hour": 4,
+        "ridership": 4913
+      },
+      {
+        "weekday": 6,
+        "hour": 5,
+        "ridership": 8590
+      },
+      {
+        "weekday": 6,
+        "hour": 6,
+        "ridership": 125522
+      },
+      {
+        "weekday": 6,
+        "hour": 7,
+        "ridership": 179863
+      },
+      {
+        "weekday": 6,
+        "hour": 8,
+        "ridership": 217407
+      },
+      {
+        "weekday": 6,
+        "hour": 9,
+        "ridership": 230314
+      },
+      {
+        "weekday": 6,
+        "hour": 10,
+        "ridership": 234821
+      },
+      {
+        "weekday": 6,
+        "hour": 11,
+        "ridership": 268180
+      },
+      {
+        "weekday": 6,
+        "hour": 12,
+        "ridership": 218101
+      },
+      {
+        "weekday": 6,
+        "hour": 13,
+        "ridership": 213529
+      },
+      {
+        "weekday": 6,
+        "hour": 14,
+        "ridership": 208782
+      },
+      {
+        "weekday": 6,
+        "hour": 15,
+        "ridership": 200764
+      },
+      {
+        "weekday": 6,
+        "hour": 16,
+        "ridership": 208137
+      },
+      {
+        "weekday": 6,
+        "hour": 17,
+        "ridership": 218227
+      },
+      {
+        "weekday": 6,
+        "hour": 18,
+        "ridership": 251310
+      },
+      {
+        "weekday": 6,
+        "hour": 19,
+        "ridership": 213660
+      },
+      {
+        "weekday": 6,
+        "hour": 20,
+        "ridership": 176929
+      },
+      {
+        "weekday": 6,
+        "hour": 21,
+        "ridership": 136410
+      },
+      {
+        "weekday": 6,
+        "hour": 22,
+        "ridership": 96963
+      },
+      {
+        "weekday": 6,
+        "hour": 23,
+        "ridership": 63190
+      },
+      {
+        "weekday": 7,
+        "hour": 0,
+        "ridership": 21416
+      },
+      {
+        "weekday": 7,
+        "hour": 1,
+        "ridership": 8966
+      },
+      {
+        "weekday": 7,
+        "hour": 2,
+        "ridership": 6298
+      },
+      {
+        "weekday": 7,
+        "hour": 3,
+        "ridership": 3658
+      },
+      {
+        "weekday": 7,
+        "hour": 4,
+        "ridership": 7005
+      },
+      {
+        "weekday": 7,
+        "hour": 5,
+        "ridership": 7152
+      },
+      {
+        "weekday": 7,
+        "hour": 6,
+        "ridership": 128629
+      },
+      {
+        "weekday": 7,
+        "hour": 7,
+        "ridership": 105184
+      },
+      {
+        "weekday": 7,
+        "hour": 8,
+        "ridership": 159977
+      },
+      {
+        "weekday": 7,
+        "hour": 9,
+        "ridership": 200240
+      },
+      {
+        "weekday": 7,
+        "hour": 10,
+        "ridership": 217468
+      },
+      {
+        "weekday": 7,
+        "hour": 11,
+        "ridership": 255239
+      },
+      {
+        "weekday": 7,
+        "hour": 12,
+        "ridership": 223642
+      },
+      {
+        "weekday": 7,
+        "hour": 13,
+        "ridership": 222732
+      },
+      {
+        "weekday": 7,
+        "hour": 14,
+        "ridership": 218489
+      },
+      {
+        "weekday": 7,
+        "hour": 15,
+        "ridership": 226342
+      },
+      {
+        "weekday": 7,
+        "hour": 16,
+        "ridership": 247736
+      },
+      {
+        "weekday": 7,
+        "hour": 17,
+        "ridership": 249314
+      },
+      {
+        "weekday": 7,
+        "hour": 18,
+        "ridership": 277595
+      },
+      {
+        "weekday": 7,
+        "hour": 19,
+        "ridership": 223975
+      },
+      {
+        "weekday": 7,
+        "hour": 20,
+        "ridership": 191033
+      },
+      {
+        "weekday": 7,
+        "hour": 21,
+        "ridership": 150411
+      },
+      {
+        "weekday": 7,
+        "hour": 22,
+        "ridership": 100284
+      },
+      {
+        "weekday": 7,
+        "hour": 23,
+        "ridership": 58286
+      }
+    ],
+    "intercity": [
+      {
+        "weekday": 1,
+        "hour": 0,
+        "ridership": 1911
+      },
+      {
+        "weekday": 1,
+        "hour": 1,
+        "ridership": 2540
+      },
+      {
+        "weekday": 1,
+        "hour": 2,
+        "ridership": 915
+      },
+      {
+        "weekday": 1,
+        "hour": 3,
+        "ridership": 1948
+      },
+      {
+        "weekday": 1,
+        "hour": 4,
+        "ridership": 5190
+      },
+      {
+        "weekday": 1,
+        "hour": 5,
+        "ridership": 2285
+      },
+      {
+        "weekday": 1,
+        "hour": 6,
+        "ridership": 4408
+      },
+      {
+        "weekday": 1,
+        "hour": 7,
+        "ridership": 4535
+      },
+      {
+        "weekday": 1,
+        "hour": 8,
+        "ridership": 4791
+      },
+      {
+        "weekday": 1,
+        "hour": 9,
+        "ridership": 4016
+      },
+      {
+        "weekday": 1,
+        "hour": 10,
+        "ridership": 12013
+      },
+      {
+        "weekday": 1,
+        "hour": 11,
+        "ridership": 3205
+      },
+      {
+        "weekday": 1,
+        "hour": 12,
+        "ridership": 1836
+      },
+      {
+        "weekday": 1,
+        "hour": 13,
+        "ridership": 852
+      },
+      {
+        "weekday": 1,
+        "hour": 14,
+        "ridership": 4060
+      },
+      {
+        "weekday": 1,
+        "hour": 15,
+        "ridership": 4587
+      },
+      {
+        "weekday": 1,
+        "hour": 16,
+        "ridership": 10047
+      },
+      {
+        "weekday": 1,
+        "hour": 17,
+        "ridership": 5297
+      },
+      {
+        "weekday": 1,
+        "hour": 18,
+        "ridership": 4785
+      },
+      {
+        "weekday": 1,
+        "hour": 19,
+        "ridership": 10446
+      },
+      {
+        "weekday": 1,
+        "hour": 20,
+        "ridership": 3732
+      },
+      {
+        "weekday": 1,
+        "hour": 21,
+        "ridership": 10005
+      },
+      {
+        "weekday": 1,
+        "hour": 22,
+        "ridership": 3309
+      },
+      {
+        "weekday": 1,
+        "hour": 23,
+        "ridership": 2590
+      },
+      {
+        "weekday": 2,
+        "hour": 0,
+        "ridership": 1591
+      },
+      {
+        "weekday": 2,
+        "hour": 1,
+        "ridership": 2319
+      },
+      {
+        "weekday": 2,
+        "hour": 2,
+        "ridership": 745
+      },
+      {
+        "weekday": 2,
+        "hour": 3,
+        "ridership": 1661
+      },
+      {
+        "weekday": 2,
+        "hour": 4,
+        "ridership": 5708
+      },
+      {
+        "weekday": 2,
+        "hour": 5,
+        "ridership": 1889
+      },
+      {
+        "weekday": 2,
+        "hour": 6,
+        "ridership": 4289
+      },
+      {
+        "weekday": 2,
+        "hour": 7,
+        "ridership": 4239
+      },
+      {
+        "weekday": 2,
+        "hour": 8,
+        "ridership": 3692
+      },
+      {
+        "weekday": 2,
+        "hour": 9,
+        "ridership": 3696
+      },
+      {
+        "weekday": 2,
+        "hour": 10,
+        "ridership": 6774
+      },
+      {
+        "weekday": 2,
+        "hour": 11,
+        "ridership": 2920
+      },
+      {
+        "weekday": 2,
+        "hour": 12,
+        "ridership": 1656
+      },
+      {
+        "weekday": 2,
+        "hour": 13,
+        "ridership": 861
+      },
+      {
+        "weekday": 2,
+        "hour": 14,
+        "ridership": 4532
+      },
+      {
+        "weekday": 2,
+        "hour": 15,
+        "ridership": 4942
+      },
+      {
+        "weekday": 2,
+        "hour": 16,
+        "ridership": 9917
+      },
+      {
+        "weekday": 2,
+        "hour": 17,
+        "ridership": 4794
+      },
+      {
+        "weekday": 2,
+        "hour": 18,
+        "ridership": 4548
+      },
+      {
+        "weekday": 2,
+        "hour": 19,
+        "ridership": 10165
+      },
+      {
+        "weekday": 2,
+        "hour": 20,
+        "ridership": 3809
+      },
+      {
+        "weekday": 2,
+        "hour": 21,
+        "ridership": 9723
+      },
+      {
+        "weekday": 2,
+        "hour": 22,
+        "ridership": 3433
+      },
+      {
+        "weekday": 2,
+        "hour": 23,
+        "ridership": 2006
+      },
+      {
+        "weekday": 3,
+        "hour": 0,
+        "ridership": 1604
+      },
+      {
+        "weekday": 3,
+        "hour": 1,
+        "ridership": 2003
+      },
+      {
+        "weekday": 3,
+        "hour": 2,
+        "ridership": 652
+      },
+      {
+        "weekday": 3,
+        "hour": 3,
+        "ridership": 1489
+      },
+      {
+        "weekday": 3,
+        "hour": 4,
+        "ridership": 5114
+      },
+      {
+        "weekday": 3,
+        "hour": 5,
+        "ridership": 1775
+      },
+      {
+        "weekday": 3,
+        "hour": 6,
+        "ridership": 4276
+      },
+      {
+        "weekday": 3,
+        "hour": 7,
+        "ridership": 4588
+      },
+      {
+        "weekday": 3,
+        "hour": 8,
+        "ridership": 3778
+      },
+      {
+        "weekday": 3,
+        "hour": 9,
+        "ridership": 4661
+      },
+      {
+        "weekday": 3,
+        "hour": 10,
+        "ridership": 7236
+      },
+      {
+        "weekday": 3,
+        "hour": 11,
+        "ridership": 3444
+      },
+      {
+        "weekday": 3,
+        "hour": 12,
+        "ridership": 2273
+      },
+      {
+        "weekday": 3,
+        "hour": 13,
+        "ridership": 826
+      },
+      {
+        "weekday": 3,
+        "hour": 14,
+        "ridership": 4310
+      },
+      {
+        "weekday": 3,
+        "hour": 15,
+        "ridership": 4937
+      },
+      {
+        "weekday": 3,
+        "hour": 16,
+        "ridership": 11276
+      },
+      {
+        "weekday": 3,
+        "hour": 17,
+        "ridership": 5746
+      },
+      {
+        "weekday": 3,
+        "hour": 18,
+        "ridership": 5035
+      },
+      {
+        "weekday": 3,
+        "hour": 19,
+        "ridership": 10188
+      },
+      {
+        "weekday": 3,
+        "hour": 20,
+        "ridership": 3706
+      },
+      {
+        "weekday": 3,
+        "hour": 21,
+        "ridership": 10645
+      },
+      {
+        "weekday": 3,
+        "hour": 22,
+        "ridership": 3069
+      },
+      {
+        "weekday": 3,
+        "hour": 23,
+        "ridership": 1863
+      },
+      {
+        "weekday": 4,
+        "hour": 0,
+        "ridership": 2154
+      },
+      {
+        "weekday": 4,
+        "hour": 1,
+        "ridership": 2312
+      },
+      {
+        "weekday": 4,
+        "hour": 2,
+        "ridership": 685
+      },
+      {
+        "weekday": 4,
+        "hour": 3,
+        "ridership": 1595
+      },
+      {
+        "weekday": 4,
+        "hour": 4,
+        "ridership": 5425
+      },
+      {
+        "weekday": 4,
+        "hour": 5,
+        "ridership": 1889
+      },
+      {
+        "weekday": 4,
+        "hour": 6,
+        "ridership": 4723
+      },
+      {
+        "weekday": 4,
+        "hour": 7,
+        "ridership": 5241
+      },
+      {
+        "weekday": 4,
+        "hour": 8,
+        "ridership": 3729
+      },
+      {
+        "weekday": 4,
+        "hour": 9,
+        "ridership": 4245
+      },
+      {
+        "weekday": 4,
+        "hour": 10,
+        "ridership": 7500
+      },
+      {
+        "weekday": 4,
+        "hour": 11,
+        "ridership": 3532
+      },
+      {
+        "weekday": 4,
+        "hour": 12,
+        "ridership": 2194
+      },
+      {
+        "weekday": 4,
+        "hour": 13,
+        "ridership": 1036
+      },
+      {
+        "weekday": 4,
+        "hour": 14,
+        "ridership": 7154
+      },
+      {
+        "weekday": 4,
+        "hour": 15,
+        "ridership": 6509
+      },
+      {
+        "weekday": 4,
+        "hour": 16,
+        "ridership": 19208
+      },
+      {
+        "weekday": 4,
+        "hour": 17,
+        "ridership": 12634
+      },
+      {
+        "weekday": 4,
+        "hour": 18,
+        "ridership": 7122
+      },
+      {
+        "weekday": 4,
+        "hour": 19,
+        "ridership": 14730
+      },
+      {
+        "weekday": 4,
+        "hour": 20,
+        "ridership": 5322
+      },
+      {
+        "weekday": 4,
+        "hour": 21,
+        "ridership": 15361
+      },
+      {
+        "weekday": 4,
+        "hour": 22,
+        "ridership": 4759
+      },
+      {
+        "weekday": 4,
+        "hour": 23,
+        "ridership": 2007
+      },
+      {
+        "weekday": 5,
+        "hour": 0,
+        "ridership": 2868
+      },
+      {
+        "weekday": 5,
+        "hour": 1,
+        "ridership": 2754
+      },
+      {
+        "weekday": 5,
+        "hour": 2,
+        "ridership": 1049
+      },
+      {
+        "weekday": 5,
+        "hour": 3,
+        "ridership": 3003
+      },
+      {
+        "weekday": 5,
+        "hour": 4,
+        "ridership": 9622
+      },
+      {
+        "weekday": 5,
+        "hour": 5,
+        "ridership": 2542
+      },
+      {
+        "weekday": 5,
+        "hour": 6,
+        "ridership": 5510
+      },
+      {
+        "weekday": 5,
+        "hour": 7,
+        "ridership": 7799
+      },
+      {
+        "weekday": 5,
+        "hour": 8,
+        "ridership": 5824
+      },
+      {
+        "weekday": 5,
+        "hour": 9,
+        "ridership": 5400
+      },
+      {
+        "weekday": 5,
+        "hour": 10,
+        "ridership": 11026
+      },
+      {
+        "weekday": 5,
+        "hour": 11,
+        "ridership": 3915
+      },
+      {
+        "weekday": 5,
+        "hour": 12,
+        "ridership": 2613
+      },
+      {
+        "weekday": 5,
+        "hour": 13,
+        "ridership": 1318
+      },
+      {
+        "weekday": 5,
+        "hour": 14,
+        "ridership": 8259
+      },
+      {
+        "weekday": 5,
+        "hour": 15,
+        "ridership": 8928
+      },
+      {
+        "weekday": 5,
+        "hour": 16,
+        "ridership": 18592
+      },
+      {
+        "weekday": 5,
+        "hour": 17,
+        "ridership": 7938
+      },
+      {
+        "weekday": 5,
+        "hour": 18,
+        "ridership": 7543
+      },
+      {
+        "weekday": 5,
+        "hour": 19,
+        "ridership": 15487
+      },
+      {
+        "weekday": 5,
+        "hour": 20,
+        "ridership": 4561
+      },
+      {
+        "weekday": 5,
+        "hour": 21,
+        "ridership": 20734
+      },
+      {
+        "weekday": 5,
+        "hour": 22,
+        "ridership": 9655
+      },
+      {
+        "weekday": 5,
+        "hour": 23,
+        "ridership": 3971
+      },
+      {
+        "weekday": 6,
+        "hour": 0,
+        "ridership": 3303
+      },
+      {
+        "weekday": 6,
+        "hour": 1,
+        "ridership": 3240
+      },
+      {
+        "weekday": 6,
+        "hour": 2,
+        "ridership": 1172
+      },
+      {
+        "weekday": 6,
+        "hour": 3,
+        "ridership": 2977
+      },
+      {
+        "weekday": 6,
+        "hour": 4,
+        "ridership": 8900
+      },
+      {
+        "weekday": 6,
+        "hour": 5,
+        "ridership": 3138
+      },
+      {
+        "weekday": 6,
+        "hour": 6,
+        "ridership": 5740
+      },
+      {
+        "weekday": 6,
+        "hour": 7,
+        "ridership": 9328
+      },
+      {
+        "weekday": 6,
+        "hour": 8,
+        "ridership": 8268
+      },
+      {
+        "weekday": 6,
+        "hour": 9,
+        "ridership": 8721
+      },
+      {
+        "weekday": 6,
+        "hour": 10,
+        "ridership": 14521
+      },
+      {
+        "weekday": 6,
+        "hour": 11,
+        "ridership": 6244
+      },
+      {
+        "weekday": 6,
+        "hour": 12,
+        "ridership": 4086
+      },
+      {
+        "weekday": 6,
+        "hour": 13,
+        "ridership": 1440
+      },
+      {
+        "weekday": 6,
+        "hour": 14,
+        "ridership": 8179
+      },
+      {
+        "weekday": 6,
+        "hour": 15,
+        "ridership": 9536
+      },
+      {
+        "weekday": 6,
+        "hour": 16,
+        "ridership": 21907
+      },
+      {
+        "weekday": 6,
+        "hour": 17,
+        "ridership": 8981
+      },
+      {
+        "weekday": 6,
+        "hour": 18,
+        "ridership": 8309
+      },
+      {
+        "weekday": 6,
+        "hour": 19,
+        "ridership": 13881
+      },
+      {
+        "weekday": 6,
+        "hour": 20,
+        "ridership": 4374
+      },
+      {
+        "weekday": 6,
+        "hour": 21,
+        "ridership": 15628
+      },
+      {
+        "weekday": 6,
+        "hour": 22,
+        "ridership": 4228
+      },
+      {
+        "weekday": 6,
+        "hour": 23,
+        "ridership": 6734
+      },
+      {
+        "weekday": 7,
+        "hour": 0,
+        "ridership": 2530
+      },
+      {
+        "weekday": 7,
+        "hour": 1,
+        "ridership": 2514
+      },
+      {
+        "weekday": 7,
+        "hour": 2,
+        "ridership": 833
+      },
+      {
+        "weekday": 7,
+        "hour": 3,
+        "ridership": 2167
+      },
+      {
+        "weekday": 7,
+        "hour": 4,
+        "ridership": 6947
+      },
+      {
+        "weekday": 7,
+        "hour": 5,
+        "ridership": 2318
+      },
+      {
+        "weekday": 7,
+        "hour": 6,
+        "ridership": 4967
+      },
+      {
+        "weekday": 7,
+        "hour": 7,
+        "ridership": 5965
+      },
+      {
+        "weekday": 7,
+        "hour": 8,
+        "ridership": 7430
+      },
+      {
+        "weekday": 7,
+        "hour": 9,
+        "ridership": 7133
+      },
+      {
+        "weekday": 7,
+        "hour": 10,
+        "ridership": 17030
+      },
+      {
+        "weekday": 7,
+        "hour": 11,
+        "ridership": 4648
+      },
+      {
+        "weekday": 7,
+        "hour": 12,
+        "ridership": 5801
+      },
+      {
+        "weekday": 7,
+        "hour": 13,
+        "ridership": 2357
+      },
+      {
+        "weekday": 7,
+        "hour": 14,
+        "ridership": 5692
+      },
+      {
+        "weekday": 7,
+        "hour": 15,
+        "ridership": 7933
+      },
+      {
+        "weekday": 7,
+        "hour": 16,
+        "ridership": 18093
+      },
+      {
+        "weekday": 7,
+        "hour": 17,
+        "ridership": 6826
+      },
+      {
+        "weekday": 7,
+        "hour": 18,
+        "ridership": 8314
+      },
+      {
+        "weekday": 7,
+        "hour": 19,
+        "ridership": 12951
+      },
+      {
+        "weekday": 7,
+        "hour": 20,
+        "ridership": 4322
+      },
+      {
+        "weekday": 7,
+        "hour": 21,
+        "ridership": 14408
+      },
+      {
+        "weekday": 7,
+        "hour": 22,
+        "ridership": 4761
+      },
+      {
+        "weekday": 7,
+        "hour": 23,
+        "ridership": 4428
+      }
+    ],
+    "note": "Rapid Rail data is daily-resolution only; no hourly heatmap available."
+  },
+  "top_od_pairs": {
+    "komuter": [
+      {
+        "origin": "KL Sentral",
+        "destination": "Batu Caves",
+        "total_ridership": 927775
+      },
+      {
+        "origin": "Batu Caves",
+        "destination": "KL Sentral",
+        "total_ridership": 915132
+      },
+      {
+        "origin": "KL Sentral",
+        "destination": "Seremban",
+        "total_ridership": 502471
+      },
+      {
+        "origin": "Seremban",
+        "destination": "KL Sentral",
+        "total_ridership": 465615
+      },
+      {
+        "origin": "Rawang",
+        "destination": "Sungai Buloh",
+        "total_ridership": 422150
+      },
+      {
+        "origin": "Sungai Buloh",
+        "destination": "Rawang",
+        "total_ridership": 417396
+      },
+      {
+        "origin": "KL Sentral",
+        "destination": "Tanjong Malim",
+        "total_ridership": 350012
+      },
+      {
+        "origin": "Tanjong Malim",
+        "destination": "KL Sentral",
+        "total_ridership": 345690
+      },
+      {
+        "origin": "KL Sentral",
+        "destination": "Rawang",
+        "total_ridership": 336751
+      },
+      {
+        "origin": "KL Sentral",
+        "destination": "Klang",
+        "total_ridership": 305637
+      },
+      {
+        "origin": "Rawang",
+        "destination": "KL Sentral",
+        "total_ridership": 288839
+      },
+      {
+        "origin": "Seremban",
+        "destination": "Kajang",
+        "total_ridership": 280679
+      },
+      {
+        "origin": "Subang Jaya",
+        "destination": "Klang",
+        "total_ridership": 250389
+      },
+      {
+        "origin": "Klang",
+        "destination": "Subang Jaya",
+        "total_ridership": 249730
+      },
+      {
+        "origin": "Klang",
+        "destination": "KL Sentral",
+        "total_ridership": 249305
+      },
+      {
+        "origin": "Kajang",
+        "destination": "Seremban",
+        "total_ridership": 243952
+      },
+      {
+        "origin": "Batu Caves",
+        "destination": "Kuala Lumpur",
+        "total_ridership": 242858
+      },
+      {
+        "origin": "Subang Jaya",
+        "destination": "Shah Alam",
+        "total_ridership": 242570
+      },
+      {
+        "origin": "Bangi",
+        "destination": "Kajang",
+        "total_ridership": 224774
+      },
+      {
+        "origin": "KL Sentral",
+        "destination": "Pantai Dalam",
+        "total_ridership": 221697
+      }
+    ],
+    "intercity": [
+      {
+        "origin": "Wakaf Bharu",
+        "destination": "Dabong",
+        "total_ridership": 24305
+      },
+      {
+        "origin": "Dabong",
+        "destination": "Wakaf Bharu",
+        "total_ridership": 23053
+      },
+      {
+        "origin": "Kluang",
+        "destination": "JB Sentral",
+        "total_ridership": 21664
+      },
+      {
+        "origin": "JB Sentral",
+        "destination": "Kluang",
+        "total_ridership": 21228
+      },
+      {
+        "origin": "Tanah Merah",
+        "destination": "Dabong",
+        "total_ridership": 18195
+      },
+      {
+        "origin": "Dabong",
+        "destination": "Tanah Merah",
+        "total_ridership": 12944
+      },
+      {
+        "origin": "Kuala Lipis",
+        "destination": "Mentakab",
+        "total_ridership": 12320
+      },
+      {
+        "origin": "Mentakab",
+        "destination": "Kuala Lipis",
+        "total_ridership": 12096
+      },
+      {
+        "origin": "Wakaf Bharu",
+        "destination": "Krai",
+        "total_ridership": 11904
+      },
+      {
+        "origin": "Krai",
+        "destination": "Wakaf Bharu",
+        "total_ridership": 11130
+      },
+      {
+        "origin": "Jerantut",
+        "destination": "Kuala Lipis",
+        "total_ridership": 10338
+      },
+      {
+        "origin": "Kuala Lipis",
+        "destination": "Jerantut",
+        "total_ridership": 9997
+      },
+      {
+        "origin": "Tanah Merah",
+        "destination": "Wakaf Bharu",
+        "total_ridership": 9649
+      },
+      {
+        "origin": "Wakaf Bharu",
+        "destination": "Tanah Merah",
+        "total_ridership": 9490
+      },
+      {
+        "origin": "Pasir Mas",
+        "destination": "Dabong",
+        "total_ridership": 9271
+      },
+      {
+        "origin": "Gua Musang",
+        "destination": "Pasir Mas",
+        "total_ridership": 9076
+      },
+      {
+        "origin": "Pasir Mas",
+        "destination": "Gua Musang",
+        "total_ridership": 8647
+      },
+      {
+        "origin": "Gua Musang",
+        "destination": "Wakaf Bharu",
+        "total_ridership": 8613
+      },
+      {
+        "origin": "Dabong",
+        "destination": "Pasir Mas",
+        "total_ridership": 8363
+      },
+      {
+        "origin": "Kempas Baru",
+        "destination": "Pasir Mas",
+        "total_ridership": 8356
+      }
+    ],
+    "rapid_rail": [
+      {
+        "origin": "KJ10: KLCC",
+        "destination": "KJ09: Ampang Park",
+        "total_ridership": 764062
+      },
+      {
+        "origin": "KG20: Tun Razak Exchange",
+        "destination": "KG18: Bukit Bintang",
+        "total_ridership": 678792
+      },
+      {
+        "origin": "KJ09: Ampang Park",
+        "destination": "KJ10: KLCC",
+        "total_ridership": 657580
+      },
+      {
+        "origin": "KG18: Bukit Bintang",
+        "destination": "KG22: Maluri",
+        "total_ridership": 650730
+      },
+      {
+        "origin": "KG22: Maluri",
+        "destination": "KG18: Bukit Bintang",
+        "total_ridership": 645017
+      },
+      {
+        "origin": "KG18: Bukit Bintang",
+        "destination": "KG20: Tun Razak Exchange",
+        "total_ridership": 619277
+      },
+      {
+        "origin": "KJ09: Ampang Park",
+        "destination": "KJ03: Wangsa Maju",
+        "total_ridership": 582549
+      },
+      {
+        "origin": "KJ15: KL Sentral",
+        "destination": "KJ10: KLCC",
+        "total_ridership": 541063
+      },
+      {
+        "origin": "KJ03: Wangsa Maju",
+        "destination": "KJ09: Ampang Park",
+        "total_ridership": 524082
+      },
+      {
+        "origin": "KJ15: KL Sentral",
+        "destination": "KJ16: Bank Rakyat Bangsar",
+        "total_ridership": 513800
+      },
+      {
+        "origin": "KJ10: KLCC",
+        "destination": "KJ15: KL Sentral",
+        "total_ridership": 500686
+      },
+      {
+        "origin": "KJ16: Bank Rakyat Bangsar",
+        "destination": "KJ15: KL Sentral",
+        "total_ridership": 496487
+      },
+      {
+        "origin": "KJ17: Abdullah Hukum",
+        "destination": "KJ15: KL Sentral",
+        "total_ridership": 471592
+      },
+      {
+        "origin": "MR01: KL Sentral",
+        "destination": "MR06: Bukit Bintang",
+        "total_ridership": 462293
+      },
+      {
+        "origin": "MR08: Bukit Nanas",
+        "destination": "MR06: Bukit Bintang",
+        "total_ridership": 459446
+      },
+      {
+        "origin": "KJ15: KL Sentral",
+        "destination": "KJ17: Abdullah Hukum",
+        "total_ridership": 453669
+      },
+      {
+        "origin": "KG18: Bukit Bintang",
+        "destination": "KG21: Cochrane",
+        "total_ridership": 444567
+      },
+      {
+        "origin": "MR06: Bukit Bintang",
+        "destination": "MR08: Bukit Nanas",
+        "total_ridership": 429260
+      },
+      {
+        "origin": "KG20: Tun Razak Exchange",
+        "destination": "KG22: Maluri",
+        "total_ridership": 417935
+      },
+      {
+        "origin": "KG20: Tun Razak Exchange",
+        "destination": "KG21: Cochrane",
+        "total_ridership": 410174
+      }
+    ]
+  },
+  "weekday_vs_weekend": {
+    "komuter": {
+      "weekday": [
+        {
+          "hour": 0,
+          "avg_ridership": 77.3
+        },
+        {
+          "hour": 1,
+          "avg_ridership": 17.8
+        },
+        {
+          "hour": 2,
+          "avg_ridership": 28.1
+        },
+        {
+          "hour": 3,
+          "avg_ridership": 22.0
+        },
+        {
+          "hour": 4,
+          "avg_ridership": 41.9
+        },
+        {
+          "hour": 5,
+          "avg_ridership": 110.2
+        },
+        {
+          "hour": 6,
+          "avg_ridership": 1533.6
+        },
+        {
+          "hour": 7,
+          "avg_ridership": 3753.1
+        },
+        {
+          "hour": 8,
+          "avg_ridership": 3993.8
+        },
+        {
+          "hour": 9,
+          "avg_ridership": 1866.3
+        },
+        {
+          "hour": 10,
+          "avg_ridership": 1051.1
+        },
+        {
+          "hour": 11,
+          "avg_ridership": 1122.5
+        },
+        {
+          "hour": 12,
+          "avg_ridership": 891.1
+        },
+        {
+          "hour": 13,
+          "avg_ridership": 889.0
+        },
+        {
+          "hour": 14,
+          "avg_ridership": 859.2
+        },
+        {
+          "hour": 15,
+          "avg_ridership": 863.6
+        },
+        {
+          "hour": 16,
+          "avg_ridership": 1058.4
+        },
+        {
+          "hour": 17,
+          "avg_ridership": 1722.6
+        },
+        {
+          "hour": 18,
+          "avg_ridership": 3472.9
+        },
+        {
+          "hour": 19,
+          "avg_ridership": 3665.0
+        },
+        {
+          "hour": 20,
+          "avg_ridership": 1755.3
+        },
+        {
+          "hour": 21,
+          "avg_ridership": 939.8
+        },
+        {
+          "hour": 22,
+          "avg_ridership": 532.5
+        },
+        {
+          "hour": 23,
+          "avg_ridership": 282.0
+        }
+      ],
+      "weekend": [
+        {
+          "hour": 0,
+          "avg_ridership": 103.0
+        },
+        {
+          "hour": 1,
+          "avg_ridership": 28.6
+        },
+        {
+          "hour": 2,
+          "avg_ridership": 30.1
+        },
+        {
+          "hour": 3,
+          "avg_ridership": 20.4
+        },
+        {
+          "hour": 4,
+          "avg_ridership": 34.7
+        },
+        {
+          "hour": 5,
+          "avg_ridership": 60.5
+        },
+        {
+          "hour": 6,
+          "avg_ridership": 1003.0
+        },
+        {
+          "hour": 7,
+          "avg_ridership": 1677.6
+        },
+        {
+          "hour": 8,
+          "avg_ridership": 1922.6
+        },
+        {
+          "hour": 9,
+          "avg_ridership": 1431.7
+        },
+        {
+          "hour": 10,
+          "avg_ridership": 1269.5
+        },
+        {
+          "hour": 11,
+          "avg_ridership": 1464.7
+        },
+        {
+          "hour": 12,
+          "avg_ridership": 1253.5
+        },
+        {
+          "hour": 13,
+          "avg_ridership": 1258.7
+        },
+        {
+          "hour": 14,
+          "avg_ridership": 1255.6
+        },
+        {
+          "hour": 15,
+          "avg_ridership": 1276.6
+        },
+        {
+          "hour": 16,
+          "avg_ridership": 1414.1
+        },
+        {
+          "hour": 17,
+          "avg_ridership": 1644.2
+        },
+        {
+          "hour": 18,
+          "avg_ridership": 2270.0
+        },
+        {
+          "hour": 19,
+          "avg_ridership": 2107.9
+        },
+        {
+          "hour": 20,
+          "avg_ridership": 1401.1
+        },
+        {
+          "hour": 21,
+          "avg_ridership": 999.6
+        },
+        {
+          "hour": 22,
+          "avg_ridership": 641.7
+        },
+        {
+          "hour": 23,
+          "avg_ridership": 372.0
+        }
+      ]
+    },
+    "intercity": {
+      "weekday": [
+        {
+          "hour": 0,
+          "avg_ridership": 39.2
+        },
+        {
+          "hour": 1,
+          "avg_ridership": 49.6
+        },
+        {
+          "hour": 2,
+          "avg_ridership": 16.3
+        },
+        {
+          "hour": 3,
+          "avg_ridership": 36.2
+        },
+        {
+          "hour": 4,
+          "avg_ridership": 115.9
+        },
+        {
+          "hour": 5,
+          "avg_ridership": 42.4
+        },
+        {
+          "hour": 6,
+          "avg_ridership": 95.7
+        },
+        {
+          "hour": 7,
+          "avg_ridership": 100.6
+        },
+        {
+          "hour": 8,
+          "avg_ridership": 86.4
+        },
+        {
+          "hour": 9,
+          "avg_ridership": 89.8
+        },
+        {
+          "hour": 10,
+          "avg_ridership": 181.2
+        },
+        {
+          "hour": 11,
+          "avg_ridership": 70.8
+        },
+        {
+          "hour": 12,
+          "avg_ridership": 43.0
+        },
+        {
+          "hour": 13,
+          "avg_ridership": 20.4
+        },
+        {
+          "hour": 14,
+          "avg_ridership": 108.4
+        },
+        {
+          "hour": 15,
+          "avg_ridership": 113.4
+        },
+        {
+          "hour": 16,
+          "avg_ridership": 272.7
+        },
+        {
+          "hour": 17,
+          "avg_ridership": 153.9
+        },
+        {
+          "hour": 18,
+          "avg_ridership": 116.2
+        },
+        {
+          "hour": 19,
+          "avg_ridership": 246.1
+        },
+        {
+          "hour": 20,
+          "avg_ridership": 89.6
+        },
+        {
+          "hour": 21,
+          "avg_ridership": 247.2
+        },
+        {
+          "hour": 22,
+          "avg_ridership": 78.8
+        },
+        {
+          "hour": 23,
+          "avg_ridership": 45.8
+        }
+      ],
+      "weekend": [
+        {
+          "hour": 0,
+          "avg_ridership": 62.6
+        },
+        {
+          "hour": 1,
+          "avg_ridership": 61.2
+        },
+        {
+          "hour": 2,
+          "avg_ridership": 22.0
+        },
+        {
+          "hour": 3,
+          "avg_ridership": 58.6
+        },
+        {
+          "hour": 4,
+          "avg_ridership": 183.2
+        },
+        {
+          "hour": 5,
+          "avg_ridership": 57.5
+        },
+        {
+          "hour": 6,
+          "avg_ridership": 116.7
+        },
+        {
+          "hour": 7,
+          "avg_ridership": 166.1
+        },
+        {
+          "hour": 8,
+          "avg_ridership": 154.8
+        },
+        {
+          "hour": 9,
+          "avg_ridership": 152.9
+        },
+        {
+          "hour": 10,
+          "avg_ridership": 306.3
+        },
+        {
+          "hour": 11,
+          "avg_ridership": 106.5
+        },
+        {
+          "hour": 12,
+          "avg_ridership": 89.9
+        },
+        {
+          "hour": 13,
+          "avg_ridership": 38.5
+        },
+        {
+          "hour": 14,
+          "avg_ridership": 159.2
+        },
+        {
+          "hour": 15,
+          "avg_ridership": 189.9
+        },
+        {
+          "hour": 16,
+          "avg_ridership": 421.5
+        },
+        {
+          "hour": 17,
+          "avg_ridership": 170.8
+        },
+        {
+          "hour": 18,
+          "avg_ridership": 173.9
+        },
+        {
+          "hour": 19,
+          "avg_ridership": 304.5
+        },
+        {
+          "hour": 20,
+          "avg_ridership": 95.4
+        },
+        {
+          "hour": 21,
+          "avg_ridership": 365.3
+        },
+        {
+          "hour": 22,
+          "avg_ridership": 134.1
+        },
+        {
+          "hour": 23,
+          "avg_ridership": 108.9
+        }
+      ]
+    }
+  }
+}

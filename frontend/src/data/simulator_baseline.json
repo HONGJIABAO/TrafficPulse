@@ -1,0 +1,374 @@
+{
+  "generated_at": "2026-11-22",
+  "slider_bounds": {
+    "trains_per_hour": {
+      "min": 1,
+      "max": 20,
+      "step": 1
+    },
+    "seats_per_train": {
+      "min": 50,
+      "max": 600,
+      "step": 10
+    }
+  },
+  "co2_model": {
+    "rail_co2_kg_per_pass_km": 0.0141,
+    "car_co2_kg_per_pass_km": 0.192,
+    "source": "UITP 2023, IPCC AR6"
+  },
+  "services": {
+    "komuter": {
+      "profile": {
+        "service": "komuter",
+        "n_days_observed": 1168,
+        "avg_daily_ridership": 28139.4,
+        "peak_hour": 8,
+        "peak_hour_avg_ridership": 3107.2,
+        "hourly_profile": [
+          {
+            "hour": 0,
+            "avg_ridership": 88.2
+          },
+          {
+            "hour": 1,
+            "avg_ridership": 21.8
+          },
+          {
+            "hour": 2,
+            "avg_ridership": 25.5
+          },
+          {
+            "hour": 3,
+            "avg_ridership": 17.4
+          },
+          {
+            "hour": 4,
+            "avg_ridership": 38.0
+          },
+          {
+            "hour": 5,
+            "avg_ridership": 88.9
+          },
+          {
+            "hour": 6,
+            "avg_ridership": 1306.4
+          },
+          {
+            "hour": 7,
+            "avg_ridership": 2864.6
+          },
+          {
+            "hour": 8,
+            "avg_ridership": 3107.2
+          },
+          {
+            "hour": 9,
+            "avg_ridership": 1680.3
+          },
+          {
+            "hour": 10,
+            "avg_ridership": 1144.6
+          },
+          {
+            "hour": 11,
+            "avg_ridership": 1269.0
+          },
+          {
+            "hour": 12,
+            "avg_ridership": 1046.2
+          },
+          {
+            "hour": 13,
+            "avg_ridership": 1047.2
+          },
+          {
+            "hour": 14,
+            "avg_ridership": 1028.9
+          },
+          {
+            "hour": 15,
+            "avg_ridership": 1040.4
+          },
+          {
+            "hour": 16,
+            "avg_ridership": 1210.6
+          },
+          {
+            "hour": 17,
+            "avg_ridership": 1689.0
+          },
+          {
+            "hour": 18,
+            "avg_ridership": 2957.9
+          },
+          {
+            "hour": 19,
+            "avg_ridership": 2998.5
+          },
+          {
+            "hour": 20,
+            "avg_ridership": 1603.7
+          },
+          {
+            "hour": 21,
+            "avg_ridership": 965.4
+          },
+          {
+            "hour": 22,
+            "avg_ridership": 579.2
+          },
+          {
+            "hour": 23,
+            "avg_ridership": 320.5
+          }
+        ]
+      },
+      "capacity_baseline": {
+        "trains_per_hour_default": 4,
+        "seats_per_train_default": 200,
+        "capacity_per_hour_default": 800,
+        "avg_load_factor_pct": 146.6,
+        "hours_above_capacity_default": 16,
+        "peak_demand": 3107.2,
+        "co2_saved_vs_car_kg_per_day": 125150.0,
+        "avg_trip_distance_km": 25.0
+      }
+    },
+    "intercity": {
+      "profile": {
+        "service": "intercity",
+        "n_days_observed": 324,
+        "avg_daily_ridership": 2990.5,
+        "peak_hour": 16,
+        "peak_hour_avg_ridership": 336.5,
+        "hourly_profile": [
+          {
+            "hour": 0,
+            "avg_ridership": 49.3
+          },
+          {
+            "hour": 1,
+            "avg_ridership": 54.6
+          },
+          {
+            "hour": 2,
+            "avg_ridership": 18.7
+          },
+          {
+            "hour": 3,
+            "avg_ridership": 45.8
+          },
+          {
+            "hour": 4,
+            "avg_ridership": 144.8
+          },
+          {
+            "hour": 5,
+            "avg_ridership": 48.9
+          },
+          {
+            "hour": 6,
+            "avg_ridership": 104.7
+          },
+          {
+            "hour": 7,
+            "avg_ridership": 128.7
+          },
+          {
+            "hour": 8,
+            "avg_ridership": 115.8
+          },
+          {
+            "hour": 9,
+            "avg_ridership": 116.9
+          },
+          {
+            "hour": 10,
+            "avg_ridership": 234.9
+          },
+          {
+            "hour": 11,
+            "avg_ridership": 86.1
+          },
+          {
+            "hour": 12,
+            "avg_ridership": 63.1
+          },
+          {
+            "hour": 13,
+            "avg_ridership": 26.8
+          },
+          {
+            "hour": 14,
+            "avg_ridership": 130.2
+          },
+          {
+            "hour": 15,
+            "avg_ridership": 146.2
+          },
+          {
+            "hour": 16,
+            "avg_ridership": 336.5
+          },
+          {
+            "hour": 17,
+            "avg_ridership": 161.2
+          },
+          {
+            "hour": 18,
+            "avg_ridership": 140.9
+          },
+          {
+            "hour": 19,
+            "avg_ridership": 271.1
+          },
+          {
+            "hour": 20,
+            "avg_ridership": 92.1
+          },
+          {
+            "hour": 21,
+            "avg_ridership": 297.9
+          },
+          {
+            "hour": 22,
+            "avg_ridership": 102.5
+          },
+          {
+            "hour": 23,
+            "avg_ridership": 72.8
+          }
+        ]
+      },
+      "capacity_baseline": {
+        "trains_per_hour_default": 2,
+        "seats_per_train_default": 100,
+        "capacity_per_hour_default": 200,
+        "avg_load_factor_pct": 62.3,
+        "hours_above_capacity_default": 4,
+        "peak_demand": 336.5,
+        "co2_saved_vs_car_kg_per_day": 79801.5,
+        "avg_trip_distance_km": 150.0
+      }
+    },
+    "rapid_rail": {
+      "profile": {
+        "service": "rapid_rail",
+        "n_days_observed": 324,
+        "avg_daily_ridership": 606886.4,
+        "peak_hour": 8,
+        "peak_hour_avg_ridership": 67013.4,
+        "hourly_profile": [
+          {
+            "hour": 0,
+            "avg_ridership": 1902.2
+          },
+          {
+            "hour": 1,
+            "avg_ridership": 470.2
+          },
+          {
+            "hour": 2,
+            "avg_ridership": 550.0
+          },
+          {
+            "hour": 3,
+            "avg_ridership": 375.3
+          },
+          {
+            "hour": 4,
+            "avg_ridership": 819.6
+          },
+          {
+            "hour": 5,
+            "avg_ridership": 1917.3
+          },
+          {
+            "hour": 6,
+            "avg_ridership": 28175.3
+          },
+          {
+            "hour": 7,
+            "avg_ridership": 61781.2
+          },
+          {
+            "hour": 8,
+            "avg_ridership": 67013.4
+          },
+          {
+            "hour": 9,
+            "avg_ridership": 36239.3
+          },
+          {
+            "hour": 10,
+            "avg_ridership": 24685.7
+          },
+          {
+            "hour": 11,
+            "avg_ridership": 27368.7
+          },
+          {
+            "hour": 12,
+            "avg_ridership": 22563.5
+          },
+          {
+            "hour": 13,
+            "avg_ridership": 22585.1
+          },
+          {
+            "hour": 14,
+            "avg_ridership": 22190.4
+          },
+          {
+            "hour": 15,
+            "avg_ridership": 22438.5
+          },
+          {
+            "hour": 16,
+            "avg_ridership": 26109.2
+          },
+          {
+            "hour": 17,
+            "avg_ridership": 36426.9
+          },
+          {
+            "hour": 18,
+            "avg_ridership": 63793.4
+          },
+          {
+            "hour": 19,
+            "avg_ridership": 64669.1
+          },
+          {
+            "hour": 20,
+            "avg_ridership": 34587.2
+          },
+          {
+            "hour": 21,
+            "avg_ridership": 20820.9
+          },
+          {
+            "hour": 22,
+            "avg_ridership": 12491.7
+          },
+          {
+            "hour": 23,
+            "avg_ridership": 6912.3
+          }
+        ],
+        "note": "Hourly profile scaled from Komuter distribution (Rapid Rail data is daily only)"
+      },
+      "capacity_baseline": {
+        "trains_per_hour_default": 6,
+        "seats_per_train_default": 300,
+        "capacity_per_hour_default": 1800,
+        "avg_load_factor_pct": 1404.8,
+        "hours_above_capacity_default": 20,
+        "peak_demand": 67013.4,
+        "co2_saved_vs_car_kg_per_day": 1295581.1,
+        "avg_trip_distance_km": 12.0
+      }
+    }
+  }
+}

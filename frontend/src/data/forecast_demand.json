@@ -1,0 +1,938 @@
+{
+  "generated_at": "2026-11-22",
+  "air_pollution_data_cutoff": "2024-12-31",
+  "driver_correlations": [
+    {
+      "feature": "u_rate",
+      "correlation": -0.9251
+    },
+    {
+      "feature": "lf_employed",
+      "correlation": 0.8033
+    },
+    {
+      "feature": "diesel_avg",
+      "correlation": 0.6742
+    },
+    {
+      "feature": "registrations",
+      "correlation": 0.602
+    },
+    {
+      "feature": "ron95_avg",
+      "correlation": 0.5398
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "registrations",
+      "importance": 102.0
+    },
+    {
+      "feature": "u_rate",
+      "importance": 70.0
+    },
+    {
+      "feature": "lf_employed",
+      "importance": 51.0
+    },
+    {
+      "feature": "diesel_avg",
+      "importance": 21.0
+    },
+    {
+      "feature": "ron95_avg",
+      "importance": 18.0
+    }
+  ],
+  "forecasts": [
+    {
+      "horizon": "3_months",
+      "mape_pct": 6.76,
+      "rmse": 2597640.0,
+      "model": "LightGBM + Holt-Winters Ensemble",
+      "forecasts": [
+        {
+          "date": "2026-09-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-10-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-11-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        }
+      ]
+    },
+    {
+      "horizon": "6_months",
+      "mape_pct": 6.76,
+      "rmse": 2597640.0,
+      "model": "LightGBM + Holt-Winters Ensemble",
+      "forecasts": [
+        {
+          "date": "2026-09-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-10-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-11-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-12-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-01-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-02-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        }
+      ]
+    },
+    {
+      "horizon": "12_months",
+      "mape_pct": 6.76,
+      "rmse": 2597640.0,
+      "model": "LightGBM + Holt-Winters Ensemble",
+      "forecasts": [
+        {
+          "date": "2026-09-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-10-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-11-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2026-12-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-01-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-02-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-03-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-04-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-05-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-06-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-07-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        },
+        {
+          "date": "2027-08-01",
+          "predicted": 28719969.0,
+          "lower_ci": 25805047.0,
+          "upper_ci": 31634891.0
+        }
+      ]
+    }
+  ],
+  "monthly_driver_trend": [
+    {
+      "month_start": "2019-01-01",
+      "ron95_avg": 2.002,
+      "diesel_avg": 2.124,
+      "registrations": 114644,
+      "u_rate": 3.3,
+      "rail_total": 19447972.0
+    },
+    {
+      "month_start": "2019-02-01",
+      "ron95_avg": 1.99,
+      "diesel_avg": 2.18,
+      "registrations": 82585,
+      "u_rate": 3.3,
+      "rail_total": 16154104.0
+    },
+    {
+      "month_start": "2019-03-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 111982,
+      "u_rate": 3.4,
+      "rail_total": 20157497.0
+    },
+    {
+      "month_start": "2019-04-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 109052,
+      "u_rate": 3.4,
+      "rail_total": 20055305.0
+    },
+    {
+      "month_start": "2019-05-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 119446,
+      "u_rate": 3.3,
+      "rail_total": 19295470.0
+    },
+    {
+      "month_start": "2019-06-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 80715,
+      "u_rate": 3.3,
+      "rail_total": 17619475.0
+    },
+    {
+      "month_start": "2019-07-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 113018,
+      "u_rate": 3.3,
+      "rail_total": 21036499.0
+    },
+    {
+      "month_start": "2019-08-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 107914,
+      "u_rate": 3.3,
+      "rail_total": 20420797.0
+    },
+    {
+      "month_start": "2019-09-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 96019,
+      "u_rate": 3.3,
+      "rail_total": 18631618.0
+    },
+    {
+      "month_start": "2019-10-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 108761,
+      "u_rate": 3.2,
+      "rail_total": 21429132.0
+    },
+    {
+      "month_start": "2019-11-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 102526,
+      "u_rate": 3.2,
+      "rail_total": 20938307.0
+    },
+    {
+      "month_start": "2019-12-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 112357,
+      "u_rate": 3.3,
+      "rail_total": 21107563.0
+    },
+    {
+      "month_start": "2020-01-01",
+      "ron95_avg": 2.08,
+      "diesel_avg": 2.18,
+      "registrations": 106116,
+      "u_rate": 3.2,
+      "rail_total": 20077950.0
+    },
+    {
+      "month_start": "2020-02-01",
+      "ron95_avg": 2.068,
+      "diesel_avg": 2.134,
+      "registrations": 104794,
+      "u_rate": 3.3,
+      "rail_total": 19194226.0
+    },
+    {
+      "month_start": "2020-03-01",
+      "ron95_avg": 1.6324999999999998,
+      "diesel_avg": 1.815,
+      "registrations": 59449,
+      "u_rate": 3.8,
+      "rail_total": 11314882.0
+    },
+    {
+      "month_start": "2020-04-01",
+      "ron95_avg": 1.2625,
+      "diesel_avg": 1.4675,
+      "registrations": 1585,
+      "u_rate": 5.0,
+      "rail_total": 1253891.0
+    },
+    {
+      "month_start": "2020-05-01",
+      "ron95_avg": 1.324,
+      "diesel_avg": 1.474,
+      "registrations": 59899,
+      "u_rate": 5.3,
+      "rail_total": 3800296.0
+    },
+    {
+      "month_start": "2020-06-01",
+      "ron95_avg": 1.58,
+      "diesel_avg": 1.7475,
+      "registrations": 102203,
+      "u_rate": 4.9,
+      "rail_total": 7597898.0
+    },
+    {
+      "month_start": "2020-07-01",
+      "ron95_avg": 1.6925,
+      "diesel_avg": 1.85,
+      "registrations": 125712,
+      "u_rate": 4.7,
+      "rail_total": 10919988.0
+    },
+    {
+      "month_start": "2020-08-01",
+      "ron95_avg": 1.684,
+      "diesel_avg": 1.8039999999999998,
+      "registrations": 111551,
+      "u_rate": 4.7,
+      "rail_total": 11031750.0
+    },
+    {
+      "month_start": "2020-09-01",
+      "ron95_avg": 1.67,
+      "diesel_avg": 1.72,
+      "registrations": 122910,
+      "u_rate": 4.6,
+      "rail_total": 12309875.0
+    },
+    {
+      "month_start": "2020-10-01",
+      "ron95_avg": 1.668,
+      "diesel_avg": 1.722,
+      "registrations": 121921,
+      "u_rate": 4.7,
+      "rail_total": 8426279.0
+    },
+    {
+      "month_start": "2020-11-01",
+      "ron95_avg": 1.635,
+      "diesel_avg": 1.77,
+      "registrations": 117671,
+      "u_rate": 4.8,
+      "rail_total": 6862420.0
+    },
+    {
+      "month_start": "2020-12-01",
+      "ron95_avg": 1.7525,
+      "diesel_avg": 1.9425,
+      "registrations": 130187,
+      "u_rate": 4.8,
+      "rail_total": 8082092.0
+    },
+    {
+      "month_start": "2021-01-01",
+      "ron95_avg": 1.8739999999999999,
+      "diesel_avg": 2.0479999999999996,
+      "registrations": 98133,
+      "u_rate": 4.9,
+      "rail_total": 5840917.0
+    },
+    {
+      "month_start": "2021-02-01",
+      "ron95_avg": 1.9849999999999999,
+      "diesel_avg": 2.1399999999999997,
+      "registrations": 102747,
+      "u_rate": 4.8,
+      "rail_total": 5353886.0
+    },
+    {
+      "month_start": "2021-03-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 157601,
+      "u_rate": 4.7,
+      "rail_total": 8765590.0
+    },
+    {
+      "month_start": "2021-04-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 133921,
+      "u_rate": 4.6,
+      "rail_total": 9308866.0
+    },
+    {
+      "month_start": "2021-05-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 103197,
+      "u_rate": 4.5,
+      "rail_total": 5657887.0
+    },
+    {
+      "month_start": "2021-06-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 11219,
+      "u_rate": 4.8,
+      "rail_total": 2304574.0
+    },
+    {
+      "month_start": "2021-07-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 28597,
+      "u_rate": 4.8,
+      "rail_total": 2521856.0
+    },
+    {
+      "month_start": "2021-08-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 46521,
+      "u_rate": 4.6,
+      "rail_total": 3142352.0
+    },
+    {
+      "month_start": "2021-09-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 100715,
+      "u_rate": 4.5,
+      "rail_total": 4831984.0
+    },
+    {
+      "month_start": "2021-10-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 130564,
+      "u_rate": 4.3,
+      "rail_total": 6882170.0
+    },
+    {
+      "month_start": "2021-11-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 127477,
+      "u_rate": 4.3,
+      "rail_total": 8481569.0
+    },
+    {
+      "month_start": "2021-12-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 152167,
+      "u_rate": 4.2,
+      "rail_total": 9755655.0
+    },
+    {
+      "month_start": "2022-01-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 93644,
+      "u_rate": 4.2,
+      "rail_total": 10014385.0
+    },
+    {
+      "month_start": "2022-02-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 91616,
+      "u_rate": 4.1,
+      "rail_total": 7654617.0
+    },
+    {
+      "month_start": "2022-03-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 138691,
+      "u_rate": 4.1,
+      "rail_total": 9511375.0
+    },
+    {
+      "month_start": "2022-04-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 137392,
+      "u_rate": 3.9,
+      "rail_total": 11000360.0
+    },
+    {
+      "month_start": "2022-05-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 120308,
+      "u_rate": 3.9,
+      "rail_total": 12479562.0
+    },
+    {
+      "month_start": "2022-06-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 146022,
+      "u_rate": 3.8,
+      "rail_total": 16328341.0
+    },
+    {
+      "month_start": "2022-07-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 120539,
+      "u_rate": 3.7,
+      "rail_total": 16939915.0
+    },
+    {
+      "month_start": "2022-08-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 143386,
+      "u_rate": 3.7,
+      "rail_total": 16793997.0
+    },
+    {
+      "month_start": "2022-09-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 138783,
+      "u_rate": 3.6,
+      "rail_total": 16913781.0
+    },
+    {
+      "month_start": "2022-10-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 126248,
+      "u_rate": 3.6,
+      "rail_total": 17072868.0
+    },
+    {
+      "month_start": "2022-11-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 127984,
+      "u_rate": 3.6,
+      "rail_total": 15366822.0
+    },
+    {
+      "month_start": "2022-12-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 138112,
+      "u_rate": 3.6,
+      "rail_total": 18328783.0
+    },
+    {
+      "month_start": "2023-01-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 111343,
+      "u_rate": 3.6,
+      "rail_total": 17206118.0
+    },
+    {
+      "month_start": "2023-02-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 126976,
+      "u_rate": 3.5,
+      "rail_total": 16159839.0
+    },
+    {
+      "month_start": "2023-03-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 150692,
+      "u_rate": 3.5,
+      "rail_total": 21032166.0
+    },
+    {
+      "month_start": "2023-04-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 103569,
+      "u_rate": 3.5,
+      "rail_total": 18192786.0
+    },
+    {
+      "month_start": "2023-05-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 131132,
+      "u_rate": 3.5,
+      "rail_total": 20651957.0
+    },
+    {
+      "month_start": "2023-06-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 124759,
+      "u_rate": 3.4,
+      "rail_total": 20572190.0
+    },
+    {
+      "month_start": "2023-07-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 128433,
+      "u_rate": 3.4,
+      "rail_total": 21462982.0
+    },
+    {
+      "month_start": "2023-08-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 134837,
+      "u_rate": 3.4,
+      "rail_total": 22785178.0
+    },
+    {
+      "month_start": "2023-09-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 122001,
+      "u_rate": 3.4,
+      "rail_total": 22004078.0
+    },
+    {
+      "month_start": "2023-10-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 137372,
+      "u_rate": 3.4,
+      "rail_total": 24663447.0
+    },
+    {
+      "month_start": "2023-11-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 131362,
+      "u_rate": 3.3,
+      "rail_total": 24572716.0
+    },
+    {
+      "month_start": "2023-12-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 130828,
+      "u_rate": 3.3,
+      "rail_total": 25540627.0
+    },
+    {
+      "month_start": "2024-01-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 129676,
+      "u_rate": 3.3,
+      "rail_total": 25161545.0
+    },
+    {
+      "month_start": "2024-02-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 119048,
+      "u_rate": 3.3,
+      "rail_total": 24023348.0
+    },
+    {
+      "month_start": "2024-03-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 136057,
+      "u_rate": 3.3,
+      "rail_total": 26264470.0
+    },
+    {
+      "month_start": "2024-04-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 115213,
+      "u_rate": 3.3,
+      "rail_total": 24873693.0
+    },
+    {
+      "month_start": "2024-05-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.15,
+      "registrations": 136270,
+      "u_rate": 3.3,
+      "rail_total": 27868543.0
+    },
+    {
+      "month_start": "2024-06-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.1100000000000003,
+      "registrations": 117906,
+      "u_rate": 3.3,
+      "rail_total": 26027396.0
+    },
+    {
+      "month_start": "2024-07-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.35,
+      "registrations": 144275,
+      "u_rate": 3.3,
+      "rail_total": 28834706.0
+    },
+    {
+      "month_start": "2024-08-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.2619999999999996,
+      "registrations": 140710,
+      "u_rate": 3.2,
+      "rail_total": 29231479.0
+    },
+    {
+      "month_start": "2024-09-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.0175,
+      "registrations": 119552,
+      "u_rate": 3.2,
+      "rail_total": 27083671.0
+    },
+    {
+      "month_start": "2024-10-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.95,
+      "registrations": 138076,
+      "u_rate": 3.2,
+      "rail_total": 29811656.0
+    },
+    {
+      "month_start": "2024-11-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.95,
+      "registrations": 128956,
+      "u_rate": 3.2,
+      "rail_total": 28908097.0
+    },
+    {
+      "month_start": "2024-12-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.95,
+      "registrations": 144931,
+      "u_rate": 3.1,
+      "rail_total": 29811986.0
+    },
+    {
+      "month_start": "2025-01-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.08,
+      "registrations": 109815,
+      "u_rate": 3.1,
+      "rail_total": 28575493.0
+    },
+    {
+      "month_start": "2025-02-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.18,
+      "registrations": 127062,
+      "u_rate": 3.1,
+      "rail_total": 27289936.0
+    },
+    {
+      "month_start": "2025-03-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 3.0625,
+      "registrations": 143861,
+      "u_rate": 3.1,
+      "rail_total": 27836525.0
+    },
+    {
+      "month_start": "2025-04-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.9425,
+      "registrations": 123964,
+      "u_rate": 3.1,
+      "rail_total": 28491810.0
+    },
+    {
+      "month_start": "2025-05-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.804,
+      "registrations": 141124,
+      "u_rate": 3.1,
+      "rail_total": 30145183.0
+    },
+    {
+      "month_start": "2025-06-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.7925,
+      "registrations": 119343,
+      "u_rate": 3.0,
+      "rail_total": 28498125.0
+    },
+    {
+      "month_start": "2025-07-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.8920000000000003,
+      "registrations": 149176,
+      "u_rate": 3.0,
+      "rail_total": 31957431.0
+    },
+    {
+      "month_start": "2025-08-01",
+      "ron95_avg": 2.05,
+      "diesel_avg": 2.8925,
+      "registrations": 147780,
+      "u_rate": 3.0,
+      "rail_total": 31772421.0
+    },
+    {
+      "month_start": "2025-09-01",
+      "ron95_avg": 2.1599999999999997,
+      "diesel_avg": 2.914,
+      "registrations": 120066,
+      "u_rate": 3.0,
+      "rail_total": 28586281.0
+    },
+    {
+      "month_start": "2025-10-01",
+      "ron95_avg": 2.6,
+      "diesel_avg": 2.9250000000000003,
+      "registrations": 146828,
+      "u_rate": 3.0,
+      "rail_total": 30717764.0
+    },
+    {
+      "month_start": "2025-11-01",
+      "ron95_avg": 2.6325,
+      "diesel_avg": 3.0675,
+      "registrations": 138443,
+      "u_rate": 2.9,
+      "rail_total": 29630394.0
+    },
+    {
+      "month_start": "2025-12-01",
+      "ron95_avg": 2.62,
+      "diesel_avg": 3.025,
+      "registrations": 162090,
+      "u_rate": 2.9,
+      "rail_total": 31434024.0
+    },
+    {
+      "month_start": "2026-01-01",
+      "ron95_avg": 2.54,
+      "diesel_avg": 2.8939999999999997,
+      "registrations": 141075,
+      "u_rate": 2.9,
+      "rail_total": 31287211.0
+    },
+    {
+      "month_start": "2026-02-01",
+      "ron95_avg": 2.5525,
+      "diesel_avg": 2.995,
+      "registrations": 116154,
+      "u_rate": 2.9,
+      "rail_total": 26489579.0
+    },
+    {
+      "month_start": "2026-03-01",
+      "ron95_avg": 3.27,
+      "diesel_avg": 4.32,
+      "registrations": 131863,
+      "u_rate": 2.9,
+      "rail_total": 29604128.0
+    },
+    {
+      "month_start": "2026-04-01",
+      "ron95_avg": 4.0,
+      "diesel_avg": 5.79,
+      "registrations": 156866,
+      "u_rate": 3.0,
+      "rail_total": 31238681.0
+    },
+    {
+      "month_start": "2026-05-01",
+      "ron95_avg": 3.9699999999999998,
+      "diesel_avg": 4.97,
+      "registrations": 137561,
+      "u_rate": 3.0,
+      "rail_total": 30117736.0
+    },
+    {
+      "month_start": "2026-06-01",
+      "ron95_avg": 3.6575,
+      "diesel_avg": 4.445,
+      "registrations": 143834,
+      "u_rate": 3.0,
+      "rail_total": 29195347.0
+    },
+    {
+      "month_start": "2026-07-01",
+      "ron95_avg": 3.5200000000000005,
+      "diesel_avg": 4.21,
+      "registrations": 160534,
+      "u_rate": 3.0,
+      "rail_total": 34471693.0
+    },
+    {
+      "month_start": "2026-08-01",
+      "ron95_avg": 3.745,
+      "diesel_avg": 4.6075,
+      "registrations": 151050,
+      "u_rate": 2.9,
+      "rail_total": 32569085.0
+    }
+  ]
+}

@@ -1,0 +1,4077 @@
+{
+  "generated_at": "2026-11-22",
+  "kpis": {
+    "total_rail_trips": 1781070919,
+    "data_period": "2025",
+    "yoy_growth_pct": 8.24,
+    "comparison_year": 2024,
+    "busiest_line": "LRT Kelana Jaya",
+    "busiest_line_total": 527722321,
+    "busiest_line_share_pct": 29.63,
+    "peak_hour_window": "07:00–09:00 & 17:00–19:00",
+    "peak_hour_note": "Based on typical KTM Komuter service patterns"
+  },
+  "monthly_trend": [
+    {
+      "year_month": "2019-01",
+      "year": 2019,
+      "month": 1,
+      "total": 19447972,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5363000,
+        "MRT Kajang": 5206125,
+        "LRT Kelana Jaya": 7900483,
+        "KL Monorail": 978364,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-02",
+      "year": 2019,
+      "month": 2,
+      "total": 16154104,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4454115,
+        "MRT Kajang": 4319140,
+        "LRT Kelana Jaya": 6523515,
+        "KL Monorail": 857334,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-03",
+      "year": 2019,
+      "month": 3,
+      "total": 20157497,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5617697,
+        "MRT Kajang": 5393067,
+        "LRT Kelana Jaya": 8127743,
+        "KL Monorail": 1018990,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-04",
+      "year": 2019,
+      "month": 4,
+      "total": 20055305,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5571821,
+        "MRT Kajang": 5294479,
+        "LRT Kelana Jaya": 8189219,
+        "KL Monorail": 999786,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-05",
+      "year": 2019,
+      "month": 5,
+      "total": 19295470,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5458497,
+        "MRT Kajang": 5155333,
+        "LRT Kelana Jaya": 7746135,
+        "KL Monorail": 935505,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-06",
+      "year": 2019,
+      "month": 6,
+      "total": 17619475,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4906864,
+        "MRT Kajang": 4793691,
+        "LRT Kelana Jaya": 7000564,
+        "KL Monorail": 918356,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-07",
+      "year": 2019,
+      "month": 7,
+      "total": 21036499,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5757222,
+        "MRT Kajang": 5729242,
+        "LRT Kelana Jaya": 8515230,
+        "KL Monorail": 1034805,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-08",
+      "year": 2019,
+      "month": 8,
+      "total": 20420797,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5577557,
+        "MRT Kajang": 5556259,
+        "LRT Kelana Jaya": 8237693,
+        "KL Monorail": 1049288,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-09",
+      "year": 2019,
+      "month": 9,
+      "total": 18631618,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5182224,
+        "MRT Kajang": 5084785,
+        "LRT Kelana Jaya": 7371250,
+        "KL Monorail": 993359,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-10",
+      "year": 2019,
+      "month": 10,
+      "total": 21429132,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5816211,
+        "MRT Kajang": 5870709,
+        "LRT Kelana Jaya": 8571260,
+        "KL Monorail": 1170952,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-11",
+      "year": 2019,
+      "month": 11,
+      "total": 20938307,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5735068,
+        "MRT Kajang": 5715953,
+        "LRT Kelana Jaya": 8281889,
+        "KL Monorail": 1205397,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2019-12",
+      "year": 2019,
+      "month": 12,
+      "total": 21107563,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5706946,
+        "MRT Kajang": 5834022,
+        "LRT Kelana Jaya": 8192993,
+        "KL Monorail": 1373602,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-01",
+      "year": 2020,
+      "month": 1,
+      "total": 20077950,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5389518,
+        "MRT Kajang": 5576657,
+        "LRT Kelana Jaya": 7895017,
+        "KL Monorail": 1216758,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-02",
+      "year": 2020,
+      "month": 2,
+      "total": 19194226,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5161307,
+        "MRT Kajang": 5318955,
+        "LRT Kelana Jaya": 7628423,
+        "KL Monorail": 1085541,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-03",
+      "year": 2020,
+      "month": 3,
+      "total": 11314882,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3144777,
+        "MRT Kajang": 3078103,
+        "LRT Kelana Jaya": 4465478,
+        "KL Monorail": 626524,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-04",
+      "year": 2020,
+      "month": 4,
+      "total": 1253891,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 394171,
+        "MRT Kajang": 309718,
+        "LRT Kelana Jaya": 477372,
+        "KL Monorail": 72630,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-05",
+      "year": 2020,
+      "month": 5,
+      "total": 3800296,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1205494,
+        "MRT Kajang": 1022762,
+        "LRT Kelana Jaya": 1332920,
+        "KL Monorail": 239120,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-06",
+      "year": 2020,
+      "month": 6,
+      "total": 7597898,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2297520,
+        "MRT Kajang": 2074057,
+        "LRT Kelana Jaya": 2763468,
+        "KL Monorail": 462853,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-07",
+      "year": 2020,
+      "month": 7,
+      "total": 10919988,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3195946,
+        "MRT Kajang": 3033868,
+        "LRT Kelana Jaya": 4037258,
+        "KL Monorail": 652916,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-08",
+      "year": 2020,
+      "month": 8,
+      "total": 11031750,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3227890,
+        "MRT Kajang": 3097549,
+        "LRT Kelana Jaya": 4047143,
+        "KL Monorail": 659168,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-09",
+      "year": 2020,
+      "month": 9,
+      "total": 12309875,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3549250,
+        "MRT Kajang": 3476687,
+        "LRT Kelana Jaya": 4574478,
+        "KL Monorail": 709460,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-10",
+      "year": 2020,
+      "month": 10,
+      "total": 8426279,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2592837,
+        "MRT Kajang": 2250818,
+        "LRT Kelana Jaya": 2976066,
+        "KL Monorail": 501175,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 16411,
+        "KTM Intercity": 22575,
+        "KTM Komuter Utara": 66397,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-11",
+      "year": 2020,
+      "month": 11,
+      "total": 6862420,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2126946,
+        "MRT Kajang": 1794618,
+        "LRT Kelana Jaya": 2362797,
+        "KL Monorail": 432777,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 35212,
+        "KTM Intercity": 25866,
+        "KTM Komuter Utara": 84204,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2020-12",
+      "year": 2020,
+      "month": 12,
+      "total": 8082092,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2429909,
+        "MRT Kajang": 2134543,
+        "LRT Kelana Jaya": 2746762,
+        "KL Monorail": 484612,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 109849,
+        "KTM Intercity": 31629,
+        "KTM Komuter Utara": 144788,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-01",
+      "year": 2021,
+      "month": 1,
+      "total": 5840917,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1824666,
+        "MRT Kajang": 1510475,
+        "LRT Kelana Jaya": 1980365,
+        "KL Monorail": 352306,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 68828,
+        "KTM Intercity": 12780,
+        "KTM Komuter Utara": 91497,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-02",
+      "year": 2021,
+      "month": 2,
+      "total": 5353886,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1698744,
+        "MRT Kajang": 1423721,
+        "LRT Kelana Jaya": 1824987,
+        "KL Monorail": 312303,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28999,
+        "KTM Intercity": 7338,
+        "KTM Komuter Utara": 57794,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-03",
+      "year": 2021,
+      "month": 3,
+      "total": 8765590,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2601245,
+        "MRT Kajang": 2435248,
+        "LRT Kelana Jaya": 3033861,
+        "KL Monorail": 502882,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 56682,
+        "KTM Intercity": 29785,
+        "KTM Komuter Utara": 105887,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-04",
+      "year": 2021,
+      "month": 4,
+      "total": 9308866,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2705960,
+        "MRT Kajang": 2609911,
+        "LRT Kelana Jaya": 3266042,
+        "KL Monorail": 523031,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 66256,
+        "KTM Intercity": 25091,
+        "KTM Komuter Utara": 112575,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-05",
+      "year": 2021,
+      "month": 5,
+      "total": 5657887,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1799251,
+        "MRT Kajang": 1524387,
+        "LRT Kelana Jaya": 1904752,
+        "KL Monorail": 320320,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 36410,
+        "KTM Intercity": 13178,
+        "KTM Komuter Utara": 59589,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-06",
+      "year": 2021,
+      "month": 6,
+      "total": 2304574,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 731375,
+        "MRT Kajang": 580487,
+        "LRT Kelana Jaya": 833847,
+        "KL Monorail": 125639,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 3556,
+        "KTM Intercity": 2128,
+        "KTM Komuter Utara": 27542,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-07",
+      "year": 2021,
+      "month": 7,
+      "total": 2521856,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 824844,
+        "MRT Kajang": 614041,
+        "LRT Kelana Jaya": 897012,
+        "KL Monorail": 137369,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 5055,
+        "KTM Intercity": 3322,
+        "KTM Komuter Utara": 40213,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-08",
+      "year": 2021,
+      "month": 8,
+      "total": 3142352,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1061950,
+        "MRT Kajang": 758049,
+        "LRT Kelana Jaya": 1093605,
+        "KL Monorail": 179144,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 5544,
+        "KTM Intercity": 3934,
+        "KTM Komuter Utara": 40126,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-09",
+      "year": 2021,
+      "month": 9,
+      "total": 4831984,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 1557367,
+        "MRT Kajang": 1294304,
+        "LRT Kelana Jaya": 1634423,
+        "KL Monorail": 274935,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 8146,
+        "KTM Intercity": 12274,
+        "KTM Komuter Utara": 50535,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-10",
+      "year": 2021,
+      "month": 10,
+      "total": 6882170,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2034527,
+        "MRT Kajang": 1870652,
+        "LRT Kelana Jaya": 2355921,
+        "KL Monorail": 407268,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 58988,
+        "KTM Intercity": 58390,
+        "KTM Komuter Utara": 96424,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-11",
+      "year": 2021,
+      "month": 11,
+      "total": 8481569,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2392406,
+        "MRT Kajang": 2278009,
+        "LRT Kelana Jaya": 2962250,
+        "KL Monorail": 501210,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 123610,
+        "KTM Intercity": 65644,
+        "KTM Komuter Utara": 158440,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2021-12",
+      "year": 2021,
+      "month": 12,
+      "total": 9755655,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2706638,
+        "MRT Kajang": 2673726,
+        "LRT Kelana Jaya": 3336549,
+        "KL Monorail": 589922,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 172260,
+        "KTM Intercity": 70588,
+        "KTM Komuter Utara": 205972,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-01",
+      "year": 2022,
+      "month": 1,
+      "total": 10014385,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2828567,
+        "MRT Kajang": 2737126,
+        "LRT Kelana Jaya": 3470403,
+        "KL Monorail": 576678,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 166474,
+        "KTM Intercity": 52615,
+        "KTM Komuter Utara": 182522,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-02",
+      "year": 2022,
+      "month": 2,
+      "total": 7654617,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2171266,
+        "MRT Kajang": 2000682,
+        "LRT Kelana Jaya": 2642564,
+        "KL Monorail": 463079,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 174186,
+        "KTM Intercity": 57405,
+        "KTM Komuter Utara": 145435,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-03",
+      "year": 2022,
+      "month": 3,
+      "total": 9511375,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 2693615,
+        "MRT Kajang": 2497966,
+        "LRT Kelana Jaya": 3328621,
+        "KL Monorail": 563548,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 193275,
+        "KTM Intercity": 69685,
+        "KTM Komuter Utara": 164665,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-04",
+      "year": 2022,
+      "month": 4,
+      "total": 11000360,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3228674,
+        "MRT Kajang": 2853546,
+        "LRT Kelana Jaya": 3819735,
+        "KL Monorail": 659124,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 212394,
+        "KTM Intercity": 40753,
+        "KTM Komuter Utara": 186134,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-05",
+      "year": 2022,
+      "month": 5,
+      "total": 12479562,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3339042,
+        "MRT Kajang": 3375471,
+        "LRT Kelana Jaya": 4335519,
+        "KL Monorail": 783838,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 303930,
+        "KTM Intercity": 89824,
+        "KTM Komuter Utara": 251938,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-06",
+      "year": 2022,
+      "month": 6,
+      "total": 16328341,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4344595,
+        "MRT Kajang": 4441552,
+        "LRT Kelana Jaya": 5426364,
+        "KL Monorail": 991170,
+        "MRT Putrajaya": 369564,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 306601,
+        "KTM Intercity": 116726,
+        "KTM Komuter Utara": 266991,
+        "KTM Tebrau Shuttle": 64778,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-07",
+      "year": 2022,
+      "month": 7,
+      "total": 16939915,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4266733,
+        "MRT Kajang": 4666497,
+        "LRT Kelana Jaya": 5360964,
+        "KL Monorail": 1059131,
+        "MRT Putrajaya": 688844,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 314801,
+        "KTM Intercity": 121606,
+        "KTM Komuter Utara": 274593,
+        "KTM Tebrau Shuttle": 186746,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-08",
+      "year": 2022,
+      "month": 8,
+      "total": 16793997,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4293066,
+        "MRT Kajang": 4513422,
+        "LRT Kelana Jaya": 5491587,
+        "KL Monorail": 1027788,
+        "MRT Putrajaya": 579156,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 296386,
+        "KTM Intercity": 107909,
+        "KTM Komuter Utara": 266267,
+        "KTM Tebrau Shuttle": 218416,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-09",
+      "year": 2022,
+      "month": 9,
+      "total": 16913781,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4286962,
+        "MRT Kajang": 4508174,
+        "LRT Kelana Jaya": 5456094,
+        "KL Monorail": 1038355,
+        "MRT Putrajaya": 605209,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 322210,
+        "KTM Intercity": 142348,
+        "KTM Komuter Utara": 314011,
+        "KTM Tebrau Shuttle": 240418,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-10",
+      "year": 2022,
+      "month": 10,
+      "total": 17072868,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4259135,
+        "MRT Kajang": 4542720,
+        "LRT Kelana Jaya": 5470987,
+        "KL Monorail": 1104800,
+        "MRT Putrajaya": 629934,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 342914,
+        "KTM Intercity": 137410,
+        "KTM Komuter Utara": 334629,
+        "KTM Tebrau Shuttle": 250339,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-11",
+      "year": 2022,
+      "month": 11,
+      "total": 15366822,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3963991,
+        "MRT Kajang": 4336909,
+        "LRT Kelana Jaya": 4391529,
+        "KL Monorail": 1079915,
+        "MRT Putrajaya": 610845,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 324250,
+        "KTM Intercity": 106616,
+        "KTM Komuter Utara": 309087,
+        "KTM Tebrau Shuttle": 243680,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2022-12",
+      "year": 2022,
+      "month": 12,
+      "total": 18328783,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4475686,
+        "MRT Kajang": 4874144,
+        "LRT Kelana Jaya": 5821398,
+        "KL Monorail": 1320643,
+        "MRT Putrajaya": 664025,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 381110,
+        "KTM Intercity": 144801,
+        "KTM Komuter Utara": 361211,
+        "KTM Tebrau Shuttle": 285765,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-01",
+      "year": 2023,
+      "month": 1,
+      "total": 17206118,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4319239,
+        "MRT Kajang": 4557793,
+        "LRT Kelana Jaya": 5465184,
+        "KL Monorail": 1207697,
+        "MRT Putrajaya": 640429,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 335155,
+        "KTM Intercity": 114038,
+        "KTM Komuter Utara": 316838,
+        "KTM Tebrau Shuttle": 249745,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-02",
+      "year": 2023,
+      "month": 2,
+      "total": 16159839,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3616881,
+        "MRT Kajang": 4392381,
+        "LRT Kelana Jaya": 5350230,
+        "KL Monorail": 1311483,
+        "MRT Putrajaya": 541466,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 314452,
+        "KTM Intercity": 116062,
+        "KTM Komuter Utara": 297460,
+        "KTM Tebrau Shuttle": 219424,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-03",
+      "year": 2023,
+      "month": 3,
+      "total": 21032166,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4308679,
+        "MRT Kajang": 5525715,
+        "LRT Kelana Jaya": 6489551,
+        "KL Monorail": 1580507,
+        "MRT Putrajaya": 2036718,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 348738,
+        "KTM Intercity": 129938,
+        "KTM Komuter Utara": 343741,
+        "KTM Tebrau Shuttle": 268579,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-04",
+      "year": 2023,
+      "month": 4,
+      "total": 18192786,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 3338686,
+        "MRT Kajang": 4908411,
+        "LRT Kelana Jaya": 5399898,
+        "KL Monorail": 1377627,
+        "MRT Putrajaya": 2137546,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 346644,
+        "KTM Intercity": 102008,
+        "KTM Komuter Utara": 321869,
+        "KTM Tebrau Shuttle": 260097,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-05",
+      "year": 2023,
+      "month": 5,
+      "total": 20651957,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4094851,
+        "MRT Kajang": 5444245,
+        "LRT Kelana Jaya": 6067411,
+        "KL Monorail": 1439986,
+        "MRT Putrajaya": 2543049,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 340300,
+        "KTM Intercity": 117771,
+        "KTM Komuter Utara": 340075,
+        "KTM Tebrau Shuttle": 264269,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-06",
+      "year": 2023,
+      "month": 6,
+      "total": 20572190,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4143689,
+        "MRT Kajang": 5405343,
+        "LRT Kelana Jaya": 5940788,
+        "KL Monorail": 1453674,
+        "MRT Putrajaya": 2542969,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 345721,
+        "KTM Intercity": 121531,
+        "KTM Komuter Utara": 345313,
+        "KTM Tebrau Shuttle": 273162,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-07",
+      "year": 2023,
+      "month": 7,
+      "total": 21462982,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4237733,
+        "MRT Kajang": 5626647,
+        "LRT Kelana Jaya": 6229737,
+        "KL Monorail": 1507056,
+        "MRT Putrajaya": 2781645,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 349585,
+        "KTM Intercity": 119388,
+        "KTM Komuter Utara": 342690,
+        "KTM Tebrau Shuttle": 268501,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-08",
+      "year": 2023,
+      "month": 8,
+      "total": 22785178,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4482065,
+        "MRT Kajang": 5906244,
+        "LRT Kelana Jaya": 6583736,
+        "KL Monorail": 1601305,
+        "MRT Putrajaya": 3099685,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 349916,
+        "KTM Intercity": 130094,
+        "KTM Komuter Utara": 362258,
+        "KTM Tebrau Shuttle": 269875,
+        "KTM Komuter": 0
+      }
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "total": 22004078,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4282036,
+        "MRT Kajang": 5714336,
+        "LRT Kelana Jaya": 6302197,
+        "KL Monorail": 1519717,
+        "MRT Putrajaya": 2987450,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 330003,
+        "KTM Intercity": 130036,
+        "KTM Komuter Utara": 367046,
+        "KTM Tebrau Shuttle": 263373,
+        "KTM Komuter": 107884
+      }
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "total": 24663447,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4633424,
+        "MRT Kajang": 6137159,
+        "LRT Kelana Jaya": 6824938,
+        "KL Monorail": 1622435,
+        "MRT Putrajaya": 3299662,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 332235,
+        "KTM Intercity": 121307,
+        "KTM Komuter Utara": 415717,
+        "KTM Tebrau Shuttle": 257896,
+        "KTM Komuter": 1018674
+      }
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "total": 24572716,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4572190,
+        "MRT Kajang": 6133584,
+        "LRT Kelana Jaya": 6630252,
+        "KL Monorail": 1683327,
+        "MRT Putrajaya": 3320682,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 344658,
+        "KTM Intercity": 126438,
+        "KTM Komuter Utara": 430372,
+        "KTM Tebrau Shuttle": 259504,
+        "KTM Komuter": 1071709
+      }
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "total": 25540627,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4561106,
+        "MRT Kajang": 6749650,
+        "LRT Kelana Jaya": 6479670,
+        "KL Monorail": 1802759,
+        "MRT Putrajaya": 3624550,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 377571,
+        "KTM Intercity": 144339,
+        "KTM Komuter Utara": 475584,
+        "KTM Tebrau Shuttle": 290351,
+        "KTM Komuter": 1035047
+      }
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "total": 25161545,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4505943,
+        "MRT Kajang": 6506378,
+        "LRT Kelana Jaya": 6591331,
+        "KL Monorail": 1680097,
+        "MRT Putrajaya": 3651371,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 329142,
+        "KTM Intercity": 99485,
+        "KTM Komuter Utara": 402829,
+        "KTM Tebrau Shuttle": 269985,
+        "KTM Komuter": 1124984
+      }
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "total": 24023348,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4430513,
+        "MRT Kajang": 6167840,
+        "LRT Kelana Jaya": 6236607,
+        "KL Monorail": 1602411,
+        "MRT Putrajaya": 3364322,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 367019,
+        "KTM Intercity": 152152,
+        "KTM Komuter Utara": 446509,
+        "KTM Tebrau Shuttle": 248788,
+        "KTM Komuter": 1007187
+      }
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "total": 26264470,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5196908,
+        "MRT Kajang": 6650215,
+        "LRT Kelana Jaya": 6937237,
+        "KL Monorail": 1607756,
+        "MRT Putrajaya": 3746093,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 336265,
+        "KTM Intercity": 107004,
+        "KTM Komuter Utara": 422021,
+        "KTM Tebrau Shuttle": 274319,
+        "KTM Komuter": 986652
+      }
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "total": 24873693,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 4894934,
+        "MRT Kajang": 6262373,
+        "LRT Kelana Jaya": 6445256,
+        "KL Monorail": 1557086,
+        "MRT Putrajaya": 3575514,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 348036,
+        "KTM Intercity": 111059,
+        "KTM Komuter Utara": 436305,
+        "KTM Tebrau Shuttle": 257278,
+        "KTM Komuter": 985852
+      }
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "total": 27868543,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5607473,
+        "MRT Kajang": 7112851,
+        "LRT Kelana Jaya": 7206997,
+        "KL Monorail": 1605161,
+        "MRT Putrajaya": 4045346,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 351439,
+        "KTM Intercity": 130500,
+        "KTM Komuter Utara": 483189,
+        "KTM Tebrau Shuttle": 265032,
+        "KTM Komuter": 1060555
+      }
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "total": 26027396,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5196642,
+        "MRT Kajang": 6723816,
+        "LRT Kelana Jaya": 6555829,
+        "KL Monorail": 1610528,
+        "MRT Putrajaya": 3729030,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 354583,
+        "KTM Intercity": 132199,
+        "KTM Komuter Utara": 466485,
+        "KTM Tebrau Shuttle": 265919,
+        "KTM Komuter": 992365
+      }
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "total": 28834706,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5626609,
+        "MRT Kajang": 7471333,
+        "LRT Kelana Jaya": 7559800,
+        "KL Monorail": 1681693,
+        "MRT Putrajaya": 4277136,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 349288,
+        "KTM Intercity": 121347,
+        "KTM Komuter Utara": 451598,
+        "KTM Tebrau Shuttle": 261564,
+        "KTM Komuter": 1034338
+      }
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "total": 29231479,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5781159,
+        "MRT Kajang": 7515992,
+        "LRT Kelana Jaya": 7596795,
+        "KL Monorail": 1752025,
+        "MRT Putrajaya": 4390005,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 338725,
+        "KTM Intercity": 128585,
+        "KTM Komuter Utara": 457774,
+        "KTM Tebrau Shuttle": 257851,
+        "KTM Komuter": 1012568
+      }
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "total": 27083671,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5365130,
+        "MRT Kajang": 7035573,
+        "LRT Kelana Jaya": 6900403,
+        "KL Monorail": 1579005,
+        "MRT Putrajaya": 4046549,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 339388,
+        "KTM Intercity": 145849,
+        "KTM Komuter Utara": 465274,
+        "KTM Tebrau Shuttle": 249984,
+        "KTM Komuter": 956516
+      }
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "total": 29811656,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5918334,
+        "MRT Kajang": 7720239,
+        "LRT Kelana Jaya": 7724881,
+        "KL Monorail": 1735628,
+        "MRT Putrajaya": 4468723,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 331835,
+        "KTM Intercity": 128913,
+        "KTM Komuter Utara": 496935,
+        "KTM Tebrau Shuttle": 248413,
+        "KTM Komuter": 1037755
+      }
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "total": 28908097,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5718327,
+        "MRT Kajang": 7499351,
+        "LRT Kelana Jaya": 7437276,
+        "KL Monorail": 1719825,
+        "MRT Putrajaya": 4360372,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 335093,
+        "KTM Intercity": 117741,
+        "KTM Komuter Utara": 489318,
+        "KTM Tebrau Shuttle": 242252,
+        "KTM Komuter": 988542
+      }
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "total": 29811986,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5780943,
+        "MRT Kajang": 7855033,
+        "LRT Kelana Jaya": 7540885,
+        "KL Monorail": 1901177,
+        "MRT Putrajaya": 4471649,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 364307,
+        "KTM Intercity": 118940,
+        "KTM Komuter Utara": 510873,
+        "KTM Tebrau Shuttle": 272814,
+        "KTM Komuter": 995365
+      }
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "total": 28575493,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5583947,
+        "MRT Kajang": 7474956,
+        "LRT Kelana Jaya": 7199444,
+        "KL Monorail": 1812766,
+        "MRT Putrajaya": 4324708,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 352896,
+        "KTM Intercity": 133433,
+        "KTM Komuter Utara": 500608,
+        "KTM Tebrau Shuttle": 254481,
+        "KTM Komuter": 938254
+      }
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "total": 27289936,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5412652,
+        "MRT Kajang": 7039197,
+        "LRT Kelana Jaya": 6969645,
+        "KL Monorail": 1630089,
+        "MRT Putrajaya": 4147600,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 324802,
+        "KTM Intercity": 122070,
+        "KTM Komuter Utara": 477093,
+        "KTM Tebrau Shuttle": 220409,
+        "KTM Komuter": 946379
+      }
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "total": 27836525,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5755933,
+        "MRT Kajang": 7142305,
+        "LRT Kelana Jaya": 7174483,
+        "KL Monorail": 1632663,
+        "MRT Putrajaya": 4305723,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 314978,
+        "KTM Intercity": 89333,
+        "KTM Komuter Utara": 428116,
+        "KTM Tebrau Shuttle": 245619,
+        "KTM Komuter": 747372
+      }
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "total": 28491810,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5661642,
+        "MRT Kajang": 7389774,
+        "LRT Kelana Jaya": 7285351,
+        "KL Monorail": 1659426,
+        "MRT Putrajaya": 4485310,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 338999,
+        "KTM Intercity": 112140,
+        "KTM Komuter Utara": 507736,
+        "KTM Tebrau Shuttle": 234132,
+        "KTM Komuter": 817300
+      }
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "total": 30145183,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6216005,
+        "MRT Kajang": 7823203,
+        "LRT Kelana Jaya": 7531075,
+        "KL Monorail": 1773505,
+        "MRT Putrajaya": 4716456,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 339822,
+        "KTM Intercity": 123250,
+        "KTM Komuter Utara": 522560,
+        "KTM Tebrau Shuttle": 249334,
+        "KTM Komuter": 849973
+      }
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "total": 28498125,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5710467,
+        "MRT Kajang": 7527345,
+        "LRT Kelana Jaya": 7055985,
+        "KL Monorail": 1689666,
+        "MRT Putrajaya": 4479168,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 351007,
+        "KTM Intercity": 135602,
+        "KTM Komuter Utara": 500609,
+        "KTM Tebrau Shuttle": 260245,
+        "KTM Komuter": 788031
+      }
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "total": 31957431,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6350274,
+        "MRT Kajang": 8322586,
+        "LRT Kelana Jaya": 8236230,
+        "KL Monorail": 1858680,
+        "MRT Putrajaya": 5110482,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 343546,
+        "KTM Intercity": 116298,
+        "KTM Komuter Utara": 492985,
+        "KTM Tebrau Shuttle": 256739,
+        "KTM Komuter": 869611
+      }
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "total": 31772421,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6343844,
+        "MRT Kajang": 8301044,
+        "LRT Kelana Jaya": 8095935,
+        "KL Monorail": 1892143,
+        "MRT Putrajaya": 5052583,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 347571,
+        "KTM Intercity": 125877,
+        "KTM Komuter Utara": 518134,
+        "KTM Tebrau Shuttle": 260846,
+        "KTM Komuter": 834444
+      }
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "total": 28586281,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5664639,
+        "MRT Kajang": 7530148,
+        "LRT Kelana Jaya": 7143358,
+        "KL Monorail": 1657494,
+        "MRT Putrajaya": 4543928,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 355639,
+        "KTM Intercity": 146832,
+        "KTM Komuter Utara": 520094,
+        "KTM Tebrau Shuttle": 256284,
+        "KTM Komuter": 767865
+      }
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "total": 30717764,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6205243,
+        "MRT Kajang": 8015428,
+        "LRT Kelana Jaya": 7739381,
+        "KL Monorail": 1846749,
+        "MRT Putrajaya": 4753510,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 359132,
+        "KTM Intercity": 135050,
+        "KTM Komuter Utara": 545795,
+        "KTM Tebrau Shuttle": 260238,
+        "KTM Komuter": 857238
+      }
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "total": 29630394,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5909107,
+        "MRT Kajang": 7803280,
+        "LRT Kelana Jaya": 7417502,
+        "KL Monorail": 1731604,
+        "MRT Putrajaya": 4759332,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 342808,
+        "KTM Intercity": 115331,
+        "KTM Komuter Utara": 501232,
+        "KTM Tebrau Shuttle": 249801,
+        "KTM Komuter": 800397
+      }
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "total": 31434024,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6205647,
+        "MRT Kajang": 8368266,
+        "LRT Kelana Jaya": 7784113,
+        "KL Monorail": 1916425,
+        "MRT Putrajaya": 4991264,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 403496,
+        "KTM Intercity": 129098,
+        "KTM Komuter Utara": 524058,
+        "KTM Tebrau Shuttle": 283314,
+        "KTM Komuter": 828343
+      }
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "total": 31287211,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6356549,
+        "MRT Kajang": 8165137,
+        "LRT Kelana Jaya": 7693134,
+        "KL Monorail": 1814236,
+        "MRT Putrajaya": 5030622,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 448030,
+        "KTM Intercity": 86673,
+        "KTM Komuter Utara": 526947,
+        "KTM Tebrau Shuttle": 258988,
+        "KTM Komuter": 906895
+      }
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "total": 26489579,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5384630,
+        "MRT Kajang": 6840419,
+        "LRT Kelana Jaya": 6455188,
+        "KL Monorail": 1582355,
+        "MRT Putrajaya": 4132878,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 492479,
+        "KTM Intercity": 79394,
+        "KTM Komuter Utara": 464928,
+        "KTM Tebrau Shuttle": 236708,
+        "KTM Komuter": 820600
+      }
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "total": 29604128,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6072461,
+        "MRT Kajang": 7672604,
+        "LRT Kelana Jaya": 7282363,
+        "KL Monorail": 1710637,
+        "MRT Putrajaya": 4724175,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 540151,
+        "KTM Intercity": 82130,
+        "KTM Komuter Utara": 482573,
+        "KTM Tebrau Shuttle": 269584,
+        "KTM Komuter": 767450
+      }
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "total": 31238681,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6326276,
+        "MRT Kajang": 8120567,
+        "LRT Kelana Jaya": 7794066,
+        "KL Monorail": 1718981,
+        "MRT Putrajaya": 5146938,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 496083,
+        "KTM Intercity": 76871,
+        "KTM Komuter Utara": 526576,
+        "KTM Tebrau Shuttle": 251813,
+        "KTM Komuter": 780510
+      }
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "total": 30117736,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6086516,
+        "MRT Kajang": 7971849,
+        "LRT Kelana Jaya": 7243507,
+        "KL Monorail": 1755233,
+        "MRT Putrajaya": 4864956,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 586676,
+        "KTM Intercity": 103873,
+        "KTM Komuter Utara": 561315,
+        "KTM Tebrau Shuttle": 265784,
+        "KTM Komuter": 678027
+      }
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "total": 29195347,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 5862313,
+        "MRT Kajang": 7695249,
+        "LRT Kelana Jaya": 7092898,
+        "KL Monorail": 1601861,
+        "MRT Putrajaya": 4747437,
+        "LRT Shah Alam": 113575,
+        "KTM ETS": 558461,
+        "KTM Intercity": 98631,
+        "KTM Komuter Utara": 515768,
+        "KTM Tebrau Shuttle": 270625,
+        "KTM Komuter": 638529
+      }
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "total": 34471693,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6391809,
+        "MRT Kajang": 8695843,
+        "LRT Kelana Jaya": 8221224,
+        "KL Monorail": 1781955,
+        "MRT Putrajaya": 5260925,
+        "LRT Shah Alam": 1990198,
+        "KTM ETS": 567572,
+        "KTM Intercity": 92368,
+        "KTM Komuter Utara": 566584,
+        "KTM Tebrau Shuttle": 266988,
+        "KTM Komuter": 636227
+      }
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "total": 32569085,
+      "lines": {
+        "LRT Ampang–Sri Petaling": 6205763,
+        "MRT Kajang": 8402066,
+        "LRT Kelana Jaya": 7706015,
+        "KL Monorail": 1849520,
+        "MRT Putrajaya": 5144265,
+        "LRT Shah Alam": 1180138,
+        "KTM ETS": 570571,
+        "KTM Intercity": 100428,
+        "KTM Komuter Utara": 555282,
+        "KTM Tebrau Shuttle": 266180,
+        "KTM Komuter": 588857
+      }
+    }
+  ],
+  "line_performance": [
+    {
+      "line": "LRT Kelana Jaya",
+      "column": "rail_lrt_kj",
+      "total_ridership": 527722321,
+      "share_pct": 29.63,
+      "yoy_growth_pct": 5.78
+    },
+    {
+      "line": "MRT Kajang",
+      "column": "rail_mrt_kajang",
+      "total_ridership": 469366127,
+      "share_pct": 26.35,
+      "yoy_growth_pct": 9.72
+    },
+    {
+      "line": "LRT Ampang–Sri Petaling",
+      "column": "rail_lrt_ampang",
+      "total_ridership": 400272303,
+      "share_pct": 22.47,
+      "yoy_growth_pct": 10.93
+    },
+    {
+      "line": "MRT Putrajaya",
+      "column": "rail_mrt_pjy",
+      "total_ridership": 176551798,
+      "share_pct": 9.91,
+      "yoy_growth_pct": 15.68
+    },
+    {
+      "line": "KL Monorail",
+      "column": "rail_monorail",
+      "total_ridership": 107629623,
+      "share_pct": 6.04,
+      "yoy_growth_pct": 5.34
+    },
+    {
+      "line": "KTM Komuter",
+      "column": "rail_komuter",
+      "total_ridership": 31278295,
+      "share_pct": 1.76,
+      "yoy_growth_pct": -17.55
+    },
+    {
+      "line": "KTM Komuter Utara",
+      "column": "rail_komuter_utara",
+      "total_ridership": 24526532,
+      "share_pct": 1.38,
+      "yoy_growth_pct": 9.22
+    },
+    {
+      "line": "KTM ETS",
+      "column": "rail_ets",
+      "total_ridership": 20829154,
+      "share_pct": 1.17,
+      "yoy_growth_pct": 0.71
+    },
+    {
+      "line": "KTM Tebrau Shuttle",
+      "column": "rail_tebrau",
+      "total_ridership": 12867229,
+      "share_pct": 0.72,
+      "yoy_growth_pct": -2.66
+    },
+    {
+      "line": "KTM Intercity",
+      "column": "rail_intercity",
+      "total_ridership": 6743626,
+      "share_pct": 0.38,
+      "yoy_growth_pct": -0.63
+    },
+    {
+      "line": "LRT Shah Alam",
+      "column": "rail_lrt_shah_alam",
+      "total_ridership": 3283911,
+      "share_pct": 0.18,
+      "yoy_growth_pct": null
+    }
+  ],
+  "ktmb_services": [
+    {
+      "service": "komuter",
+      "total_ridership": 32879232,
+      "share_pct": 32.31
+    },
+    {
+      "service": "komuter_utara",
+      "total_ridership": 26017553,
+      "share_pct": 25.57
+    },
+    {
+      "service": "ets",
+      "total_ridership": 22288230,
+      "share_pct": 21.91
+    },
+    {
+      "service": "shuttle_tebrau",
+      "total_ridership": 13567517,
+      "share_pct": 13.33
+    },
+    {
+      "service": "intercity",
+      "total_ridership": 6995316,
+      "share_pct": 6.88
+    }
+  ],
+  "ktmb_monthly_trend": [
+    {
+      "year_month": "2020-10",
+      "year": 2020,
+      "month": 10,
+      "service": "ets",
+      "ridership": 16411
+    },
+    {
+      "year_month": "2020-10",
+      "year": 2020,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 22575
+    },
+    {
+      "year_month": "2020-10",
+      "year": 2020,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 66397
+    },
+    {
+      "year_month": "2020-11",
+      "year": 2020,
+      "month": 11,
+      "service": "ets",
+      "ridership": 35212
+    },
+    {
+      "year_month": "2020-11",
+      "year": 2020,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 25866
+    },
+    {
+      "year_month": "2020-11",
+      "year": 2020,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 84204
+    },
+    {
+      "year_month": "2020-12",
+      "year": 2020,
+      "month": 12,
+      "service": "ets",
+      "ridership": 109849
+    },
+    {
+      "year_month": "2020-12",
+      "year": 2020,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 31629
+    },
+    {
+      "year_month": "2020-12",
+      "year": 2020,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 144788
+    },
+    {
+      "year_month": "2021-01",
+      "year": 2021,
+      "month": 1,
+      "service": "ets",
+      "ridership": 68828
+    },
+    {
+      "year_month": "2021-01",
+      "year": 2021,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 12780
+    },
+    {
+      "year_month": "2021-01",
+      "year": 2021,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 91497
+    },
+    {
+      "year_month": "2021-02",
+      "year": 2021,
+      "month": 2,
+      "service": "ets",
+      "ridership": 28999
+    },
+    {
+      "year_month": "2021-02",
+      "year": 2021,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 7338
+    },
+    {
+      "year_month": "2021-02",
+      "year": 2021,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 57794
+    },
+    {
+      "year_month": "2021-03",
+      "year": 2021,
+      "month": 3,
+      "service": "ets",
+      "ridership": 56682
+    },
+    {
+      "year_month": "2021-03",
+      "year": 2021,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 29785
+    },
+    {
+      "year_month": "2021-03",
+      "year": 2021,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 105887
+    },
+    {
+      "year_month": "2021-04",
+      "year": 2021,
+      "month": 4,
+      "service": "ets",
+      "ridership": 66256
+    },
+    {
+      "year_month": "2021-04",
+      "year": 2021,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 25091
+    },
+    {
+      "year_month": "2021-04",
+      "year": 2021,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 112575
+    },
+    {
+      "year_month": "2021-05",
+      "year": 2021,
+      "month": 5,
+      "service": "ets",
+      "ridership": 36410
+    },
+    {
+      "year_month": "2021-05",
+      "year": 2021,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 13178
+    },
+    {
+      "year_month": "2021-05",
+      "year": 2021,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 59589
+    },
+    {
+      "year_month": "2021-06",
+      "year": 2021,
+      "month": 6,
+      "service": "ets",
+      "ridership": 3556
+    },
+    {
+      "year_month": "2021-06",
+      "year": 2021,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 2128
+    },
+    {
+      "year_month": "2021-06",
+      "year": 2021,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 27542
+    },
+    {
+      "year_month": "2021-07",
+      "year": 2021,
+      "month": 7,
+      "service": "ets",
+      "ridership": 5055
+    },
+    {
+      "year_month": "2021-07",
+      "year": 2021,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 3322
+    },
+    {
+      "year_month": "2021-07",
+      "year": 2021,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 40213
+    },
+    {
+      "year_month": "2021-08",
+      "year": 2021,
+      "month": 8,
+      "service": "ets",
+      "ridership": 5544
+    },
+    {
+      "year_month": "2021-08",
+      "year": 2021,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 3934
+    },
+    {
+      "year_month": "2021-08",
+      "year": 2021,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 40126
+    },
+    {
+      "year_month": "2021-09",
+      "year": 2021,
+      "month": 9,
+      "service": "ets",
+      "ridership": 8146
+    },
+    {
+      "year_month": "2021-09",
+      "year": 2021,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 12274
+    },
+    {
+      "year_month": "2021-09",
+      "year": 2021,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 50535
+    },
+    {
+      "year_month": "2021-10",
+      "year": 2021,
+      "month": 10,
+      "service": "ets",
+      "ridership": 58988
+    },
+    {
+      "year_month": "2021-10",
+      "year": 2021,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 58390
+    },
+    {
+      "year_month": "2021-10",
+      "year": 2021,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 96424
+    },
+    {
+      "year_month": "2021-11",
+      "year": 2021,
+      "month": 11,
+      "service": "ets",
+      "ridership": 123610
+    },
+    {
+      "year_month": "2021-11",
+      "year": 2021,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 65644
+    },
+    {
+      "year_month": "2021-11",
+      "year": 2021,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 158440
+    },
+    {
+      "year_month": "2021-12",
+      "year": 2021,
+      "month": 12,
+      "service": "ets",
+      "ridership": 172260
+    },
+    {
+      "year_month": "2021-12",
+      "year": 2021,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 70588
+    },
+    {
+      "year_month": "2021-12",
+      "year": 2021,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 205972
+    },
+    {
+      "year_month": "2022-01",
+      "year": 2022,
+      "month": 1,
+      "service": "ets",
+      "ridership": 166474
+    },
+    {
+      "year_month": "2022-01",
+      "year": 2022,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 52615
+    },
+    {
+      "year_month": "2022-01",
+      "year": 2022,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 182522
+    },
+    {
+      "year_month": "2022-02",
+      "year": 2022,
+      "month": 2,
+      "service": "ets",
+      "ridership": 174186
+    },
+    {
+      "year_month": "2022-02",
+      "year": 2022,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 57405
+    },
+    {
+      "year_month": "2022-02",
+      "year": 2022,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 145435
+    },
+    {
+      "year_month": "2022-03",
+      "year": 2022,
+      "month": 3,
+      "service": "ets",
+      "ridership": 193275
+    },
+    {
+      "year_month": "2022-03",
+      "year": 2022,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 69685
+    },
+    {
+      "year_month": "2022-03",
+      "year": 2022,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 164665
+    },
+    {
+      "year_month": "2022-04",
+      "year": 2022,
+      "month": 4,
+      "service": "ets",
+      "ridership": 212394
+    },
+    {
+      "year_month": "2022-04",
+      "year": 2022,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 40753
+    },
+    {
+      "year_month": "2022-04",
+      "year": 2022,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 186134
+    },
+    {
+      "year_month": "2022-05",
+      "year": 2022,
+      "month": 5,
+      "service": "ets",
+      "ridership": 303930
+    },
+    {
+      "year_month": "2022-05",
+      "year": 2022,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 89824
+    },
+    {
+      "year_month": "2022-05",
+      "year": 2022,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 251938
+    },
+    {
+      "year_month": "2022-06",
+      "year": 2022,
+      "month": 6,
+      "service": "ets",
+      "ridership": 306601
+    },
+    {
+      "year_month": "2022-06",
+      "year": 2022,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 116726
+    },
+    {
+      "year_month": "2022-06",
+      "year": 2022,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 266991
+    },
+    {
+      "year_month": "2022-06",
+      "year": 2022,
+      "month": 6,
+      "service": "shuttle_tebrau",
+      "ridership": 64778
+    },
+    {
+      "year_month": "2022-07",
+      "year": 2022,
+      "month": 7,
+      "service": "ets",
+      "ridership": 314801
+    },
+    {
+      "year_month": "2022-07",
+      "year": 2022,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 121606
+    },
+    {
+      "year_month": "2022-07",
+      "year": 2022,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 274593
+    },
+    {
+      "year_month": "2022-07",
+      "year": 2022,
+      "month": 7,
+      "service": "shuttle_tebrau",
+      "ridership": 186746
+    },
+    {
+      "year_month": "2022-08",
+      "year": 2022,
+      "month": 8,
+      "service": "ets",
+      "ridership": 296386
+    },
+    {
+      "year_month": "2022-08",
+      "year": 2022,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 107909
+    },
+    {
+      "year_month": "2022-08",
+      "year": 2022,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 266267
+    },
+    {
+      "year_month": "2022-08",
+      "year": 2022,
+      "month": 8,
+      "service": "shuttle_tebrau",
+      "ridership": 218416
+    },
+    {
+      "year_month": "2022-09",
+      "year": 2022,
+      "month": 9,
+      "service": "ets",
+      "ridership": 322210
+    },
+    {
+      "year_month": "2022-09",
+      "year": 2022,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 142348
+    },
+    {
+      "year_month": "2022-09",
+      "year": 2022,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 314011
+    },
+    {
+      "year_month": "2022-09",
+      "year": 2022,
+      "month": 9,
+      "service": "shuttle_tebrau",
+      "ridership": 240418
+    },
+    {
+      "year_month": "2022-10",
+      "year": 2022,
+      "month": 10,
+      "service": "ets",
+      "ridership": 342914
+    },
+    {
+      "year_month": "2022-10",
+      "year": 2022,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 137410
+    },
+    {
+      "year_month": "2022-10",
+      "year": 2022,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 334629
+    },
+    {
+      "year_month": "2022-10",
+      "year": 2022,
+      "month": 10,
+      "service": "shuttle_tebrau",
+      "ridership": 250339
+    },
+    {
+      "year_month": "2022-11",
+      "year": 2022,
+      "month": 11,
+      "service": "ets",
+      "ridership": 324250
+    },
+    {
+      "year_month": "2022-11",
+      "year": 2022,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 106616
+    },
+    {
+      "year_month": "2022-11",
+      "year": 2022,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 309087
+    },
+    {
+      "year_month": "2022-11",
+      "year": 2022,
+      "month": 11,
+      "service": "shuttle_tebrau",
+      "ridership": 243680
+    },
+    {
+      "year_month": "2022-12",
+      "year": 2022,
+      "month": 12,
+      "service": "ets",
+      "ridership": 381110
+    },
+    {
+      "year_month": "2022-12",
+      "year": 2022,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 144801
+    },
+    {
+      "year_month": "2022-12",
+      "year": 2022,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 361211
+    },
+    {
+      "year_month": "2022-12",
+      "year": 2022,
+      "month": 12,
+      "service": "shuttle_tebrau",
+      "ridership": 285765
+    },
+    {
+      "year_month": "2023-01",
+      "year": 2023,
+      "month": 1,
+      "service": "ets",
+      "ridership": 335155
+    },
+    {
+      "year_month": "2023-01",
+      "year": 2023,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 114038
+    },
+    {
+      "year_month": "2023-01",
+      "year": 2023,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 316838
+    },
+    {
+      "year_month": "2023-01",
+      "year": 2023,
+      "month": 1,
+      "service": "shuttle_tebrau",
+      "ridership": 249745
+    },
+    {
+      "year_month": "2023-02",
+      "year": 2023,
+      "month": 2,
+      "service": "ets",
+      "ridership": 314452
+    },
+    {
+      "year_month": "2023-02",
+      "year": 2023,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 116062
+    },
+    {
+      "year_month": "2023-02",
+      "year": 2023,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 297460
+    },
+    {
+      "year_month": "2023-02",
+      "year": 2023,
+      "month": 2,
+      "service": "shuttle_tebrau",
+      "ridership": 219424
+    },
+    {
+      "year_month": "2023-03",
+      "year": 2023,
+      "month": 3,
+      "service": "ets",
+      "ridership": 348738
+    },
+    {
+      "year_month": "2023-03",
+      "year": 2023,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 129938
+    },
+    {
+      "year_month": "2023-03",
+      "year": 2023,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 343741
+    },
+    {
+      "year_month": "2023-03",
+      "year": 2023,
+      "month": 3,
+      "service": "shuttle_tebrau",
+      "ridership": 268579
+    },
+    {
+      "year_month": "2023-04",
+      "year": 2023,
+      "month": 4,
+      "service": "ets",
+      "ridership": 346644
+    },
+    {
+      "year_month": "2023-04",
+      "year": 2023,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 102008
+    },
+    {
+      "year_month": "2023-04",
+      "year": 2023,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 321869
+    },
+    {
+      "year_month": "2023-04",
+      "year": 2023,
+      "month": 4,
+      "service": "shuttle_tebrau",
+      "ridership": 260097
+    },
+    {
+      "year_month": "2023-05",
+      "year": 2023,
+      "month": 5,
+      "service": "ets",
+      "ridership": 340300
+    },
+    {
+      "year_month": "2023-05",
+      "year": 2023,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 117771
+    },
+    {
+      "year_month": "2023-05",
+      "year": 2023,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 340075
+    },
+    {
+      "year_month": "2023-05",
+      "year": 2023,
+      "month": 5,
+      "service": "shuttle_tebrau",
+      "ridership": 264269
+    },
+    {
+      "year_month": "2023-06",
+      "year": 2023,
+      "month": 6,
+      "service": "ets",
+      "ridership": 345721
+    },
+    {
+      "year_month": "2023-06",
+      "year": 2023,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 121531
+    },
+    {
+      "year_month": "2023-06",
+      "year": 2023,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 345313
+    },
+    {
+      "year_month": "2023-06",
+      "year": 2023,
+      "month": 6,
+      "service": "shuttle_tebrau",
+      "ridership": 273162
+    },
+    {
+      "year_month": "2023-07",
+      "year": 2023,
+      "month": 7,
+      "service": "ets",
+      "ridership": 349585
+    },
+    {
+      "year_month": "2023-07",
+      "year": 2023,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 119388
+    },
+    {
+      "year_month": "2023-07",
+      "year": 2023,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 342690
+    },
+    {
+      "year_month": "2023-07",
+      "year": 2023,
+      "month": 7,
+      "service": "shuttle_tebrau",
+      "ridership": 268501
+    },
+    {
+      "year_month": "2023-08",
+      "year": 2023,
+      "month": 8,
+      "service": "ets",
+      "ridership": 349916
+    },
+    {
+      "year_month": "2023-08",
+      "year": 2023,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 130094
+    },
+    {
+      "year_month": "2023-08",
+      "year": 2023,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 362258
+    },
+    {
+      "year_month": "2023-08",
+      "year": 2023,
+      "month": 8,
+      "service": "shuttle_tebrau",
+      "ridership": 269875
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "service": "ets",
+      "ridership": 330003
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 130036
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "service": "komuter",
+      "ridership": 107884
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 367046
+    },
+    {
+      "year_month": "2023-09",
+      "year": 2023,
+      "month": 9,
+      "service": "shuttle_tebrau",
+      "ridership": 263373
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "service": "ets",
+      "ridership": 332235
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 121307
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "service": "komuter",
+      "ridership": 1018674
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 415717
+    },
+    {
+      "year_month": "2023-10",
+      "year": 2023,
+      "month": 10,
+      "service": "shuttle_tebrau",
+      "ridership": 257896
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "service": "ets",
+      "ridership": 344658
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 126438
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "service": "komuter",
+      "ridership": 1071709
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 430372
+    },
+    {
+      "year_month": "2023-11",
+      "year": 2023,
+      "month": 11,
+      "service": "shuttle_tebrau",
+      "ridership": 259504
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "service": "ets",
+      "ridership": 377571
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 144339
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "service": "komuter",
+      "ridership": 1035047
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 475584
+    },
+    {
+      "year_month": "2023-12",
+      "year": 2023,
+      "month": 12,
+      "service": "shuttle_tebrau",
+      "ridership": 290351
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "service": "ets",
+      "ridership": 329142
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 99485
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "service": "komuter",
+      "ridership": 1124984
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 402829
+    },
+    {
+      "year_month": "2024-01",
+      "year": 2024,
+      "month": 1,
+      "service": "shuttle_tebrau",
+      "ridership": 269985
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "service": "ets",
+      "ridership": 367019
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 152152
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "service": "komuter",
+      "ridership": 1007187
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 446509
+    },
+    {
+      "year_month": "2024-02",
+      "year": 2024,
+      "month": 2,
+      "service": "shuttle_tebrau",
+      "ridership": 248788
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "service": "ets",
+      "ridership": 336265
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 107004
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "service": "komuter",
+      "ridership": 986652
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 422021
+    },
+    {
+      "year_month": "2024-03",
+      "year": 2024,
+      "month": 3,
+      "service": "shuttle_tebrau",
+      "ridership": 274319
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "service": "ets",
+      "ridership": 348036
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 111059
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "service": "komuter",
+      "ridership": 985852
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 436305
+    },
+    {
+      "year_month": "2024-04",
+      "year": 2024,
+      "month": 4,
+      "service": "shuttle_tebrau",
+      "ridership": 257278
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "service": "ets",
+      "ridership": 351439
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 130500
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "service": "komuter",
+      "ridership": 1060555
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 483189
+    },
+    {
+      "year_month": "2024-05",
+      "year": 2024,
+      "month": 5,
+      "service": "shuttle_tebrau",
+      "ridership": 265032
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "service": "ets",
+      "ridership": 354583
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 132199
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "service": "komuter",
+      "ridership": 992365
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 466485
+    },
+    {
+      "year_month": "2024-06",
+      "year": 2024,
+      "month": 6,
+      "service": "shuttle_tebrau",
+      "ridership": 265919
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "service": "ets",
+      "ridership": 349288
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 121347
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "service": "komuter",
+      "ridership": 1034338
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 451598
+    },
+    {
+      "year_month": "2024-07",
+      "year": 2024,
+      "month": 7,
+      "service": "shuttle_tebrau",
+      "ridership": 261564
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "service": "ets",
+      "ridership": 338725
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 128585
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "service": "komuter",
+      "ridership": 1012568
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 457774
+    },
+    {
+      "year_month": "2024-08",
+      "year": 2024,
+      "month": 8,
+      "service": "shuttle_tebrau",
+      "ridership": 257851
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "service": "ets",
+      "ridership": 339388
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 145849
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "service": "komuter",
+      "ridership": 956516
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 465274
+    },
+    {
+      "year_month": "2024-09",
+      "year": 2024,
+      "month": 9,
+      "service": "shuttle_tebrau",
+      "ridership": 249984
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "service": "ets",
+      "ridership": 331835
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 128913
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "service": "komuter",
+      "ridership": 1037755
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 496935
+    },
+    {
+      "year_month": "2024-10",
+      "year": 2024,
+      "month": 10,
+      "service": "shuttle_tebrau",
+      "ridership": 248413
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "service": "ets",
+      "ridership": 335093
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 117741
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "service": "komuter",
+      "ridership": 988542
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 489318
+    },
+    {
+      "year_month": "2024-11",
+      "year": 2024,
+      "month": 11,
+      "service": "shuttle_tebrau",
+      "ridership": 242252
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "service": "ets",
+      "ridership": 364307
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 118940
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "service": "komuter",
+      "ridership": 995365
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 510873
+    },
+    {
+      "year_month": "2024-12",
+      "year": 2024,
+      "month": 12,
+      "service": "shuttle_tebrau",
+      "ridership": 272814
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "service": "ets",
+      "ridership": 352896
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 133433
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "service": "komuter",
+      "ridership": 938254
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 500608
+    },
+    {
+      "year_month": "2025-01",
+      "year": 2025,
+      "month": 1,
+      "service": "shuttle_tebrau",
+      "ridership": 254481
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "service": "ets",
+      "ridership": 324802
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 122070
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "service": "komuter",
+      "ridership": 946379
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 477093
+    },
+    {
+      "year_month": "2025-02",
+      "year": 2025,
+      "month": 2,
+      "service": "shuttle_tebrau",
+      "ridership": 220409
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "service": "ets",
+      "ridership": 314978
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 89333
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "service": "komuter",
+      "ridership": 747372
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 428116
+    },
+    {
+      "year_month": "2025-03",
+      "year": 2025,
+      "month": 3,
+      "service": "shuttle_tebrau",
+      "ridership": 245619
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "service": "ets",
+      "ridership": 338999
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 112140
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "service": "komuter",
+      "ridership": 817300
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 507736
+    },
+    {
+      "year_month": "2025-04",
+      "year": 2025,
+      "month": 4,
+      "service": "shuttle_tebrau",
+      "ridership": 234132
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "service": "ets",
+      "ridership": 339822
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 123250
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "service": "komuter",
+      "ridership": 849973
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 522560
+    },
+    {
+      "year_month": "2025-05",
+      "year": 2025,
+      "month": 5,
+      "service": "shuttle_tebrau",
+      "ridership": 249334
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "service": "ets",
+      "ridership": 351007
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 135602
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "service": "komuter",
+      "ridership": 788031
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 500609
+    },
+    {
+      "year_month": "2025-06",
+      "year": 2025,
+      "month": 6,
+      "service": "shuttle_tebrau",
+      "ridership": 260245
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "service": "ets",
+      "ridership": 343546
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 116298
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "service": "komuter",
+      "ridership": 869611
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 492985
+    },
+    {
+      "year_month": "2025-07",
+      "year": 2025,
+      "month": 7,
+      "service": "shuttle_tebrau",
+      "ridership": 256739
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "service": "ets",
+      "ridership": 347571
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 125877
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "service": "komuter",
+      "ridership": 834444
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 518134
+    },
+    {
+      "year_month": "2025-08",
+      "year": 2025,
+      "month": 8,
+      "service": "shuttle_tebrau",
+      "ridership": 260846
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "service": "ets",
+      "ridership": 355639
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 146832
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "service": "komuter",
+      "ridership": 767865
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 520094
+    },
+    {
+      "year_month": "2025-09",
+      "year": 2025,
+      "month": 9,
+      "service": "shuttle_tebrau",
+      "ridership": 256284
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "service": "ets",
+      "ridership": 359132
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 135050
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "service": "komuter",
+      "ridership": 857238
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 545795
+    },
+    {
+      "year_month": "2025-10",
+      "year": 2025,
+      "month": 10,
+      "service": "shuttle_tebrau",
+      "ridership": 260238
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "service": "ets",
+      "ridership": 342808
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 115331
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "service": "komuter",
+      "ridership": 800397
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 501232
+    },
+    {
+      "year_month": "2025-11",
+      "year": 2025,
+      "month": 11,
+      "service": "shuttle_tebrau",
+      "ridership": 249801
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "service": "ets",
+      "ridership": 403496
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "service": "intercity",
+      "ridership": 129098
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "service": "komuter",
+      "ridership": 828343
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "service": "komuter_utara",
+      "ridership": 524058
+    },
+    {
+      "year_month": "2025-12",
+      "year": 2025,
+      "month": 12,
+      "service": "shuttle_tebrau",
+      "ridership": 283314
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "service": "ets",
+      "ridership": 448030
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "service": "intercity",
+      "ridership": 86673
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "service": "komuter",
+      "ridership": 906895
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "service": "komuter_utara",
+      "ridership": 526947
+    },
+    {
+      "year_month": "2026-01",
+      "year": 2026,
+      "month": 1,
+      "service": "shuttle_tebrau",
+      "ridership": 258988
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "service": "ets",
+      "ridership": 492479
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "service": "intercity",
+      "ridership": 79394
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "service": "komuter",
+      "ridership": 820600
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "service": "komuter_utara",
+      "ridership": 464928
+    },
+    {
+      "year_month": "2026-02",
+      "year": 2026,
+      "month": 2,
+      "service": "shuttle_tebrau",
+      "ridership": 236708
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "service": "ets",
+      "ridership": 540151
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "service": "intercity",
+      "ridership": 82130
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "service": "komuter",
+      "ridership": 767450
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "service": "komuter_utara",
+      "ridership": 482573
+    },
+    {
+      "year_month": "2026-03",
+      "year": 2026,
+      "month": 3,
+      "service": "shuttle_tebrau",
+      "ridership": 269584
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "service": "ets",
+      "ridership": 496083
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "service": "intercity",
+      "ridership": 76871
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "service": "komuter",
+      "ridership": 780510
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "service": "komuter_utara",
+      "ridership": 526576
+    },
+    {
+      "year_month": "2026-04",
+      "year": 2026,
+      "month": 4,
+      "service": "shuttle_tebrau",
+      "ridership": 251813
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "service": "ets",
+      "ridership": 586676
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "service": "intercity",
+      "ridership": 103873
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "service": "komuter",
+      "ridership": 678027
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "service": "komuter_utara",
+      "ridership": 561315
+    },
+    {
+      "year_month": "2026-05",
+      "year": 2026,
+      "month": 5,
+      "service": "shuttle_tebrau",
+      "ridership": 265784
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "service": "ets",
+      "ridership": 558461
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "service": "intercity",
+      "ridership": 98631
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "service": "komuter",
+      "ridership": 638529
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "service": "komuter_utara",
+      "ridership": 515768
+    },
+    {
+      "year_month": "2026-06",
+      "year": 2026,
+      "month": 6,
+      "service": "shuttle_tebrau",
+      "ridership": 270625
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "service": "ets",
+      "ridership": 567572
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "service": "intercity",
+      "ridership": 92368
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "service": "komuter",
+      "ridership": 636227
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "service": "komuter_utara",
+      "ridership": 566584
+    },
+    {
+      "year_month": "2026-07",
+      "year": 2026,
+      "month": 7,
+      "service": "shuttle_tebrau",
+      "ridership": 266988
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "service": "ets",
+      "ridership": 570571
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "service": "intercity",
+      "ridership": 100428
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "service": "komuter",
+      "ridership": 588857
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "service": "komuter_utara",
+      "ridership": 555282
+    },
+    {
+      "year_month": "2026-08",
+      "year": 2026,
+      "month": 8,
+      "service": "shuttle_tebrau",
+      "ridership": 266180
+    },
+    {
+      "year_month": "2026-09",
+      "year": 2026,
+      "month": 9,
+      "service": "ets",
+      "ridership": 532276
+    },
+    {
+      "year_month": "2026-09",
+      "year": 2026,
+      "month": 9,
+      "service": "intercity",
+      "ridership": 100774
+    },
+    {
+      "year_month": "2026-09",
+      "year": 2026,
+      "month": 9,
+      "service": "komuter",
+      "ridership": 565531
+    },
+    {
+      "year_month": "2026-09",
+      "year": 2026,
+      "month": 9,
+      "service": "komuter_utara",
+      "ridership": 520989
+    },
+    {
+      "year_month": "2026-09",
+      "year": 2026,
+      "month": 9,
+      "service": "shuttle_tebrau",
+      "ridership": 258540
+    },
+    {
+      "year_month": "2026-10",
+      "year": 2026,
+      "month": 10,
+      "service": "ets",
+      "ridership": 532932
+    },
+    {
+      "year_month": "2026-10",
+      "year": 2026,
+      "month": 10,
+      "service": "intercity",
+      "ridership": 86416
+    },
+    {
+      "year_month": "2026-10",
+      "year": 2026,
+      "month": 10,
+      "service": "komuter",
+      "ridership": 613161
+    },
+    {
+      "year_month": "2026-10",
+      "year": 2026,
+      "month": 10,
+      "service": "komuter_utara",
+      "ridership": 568721
+    },
+    {
+      "year_month": "2026-10",
+      "year": 2026,
+      "month": 10,
+      "service": "shuttle_tebrau",
+      "ridership": 261401
+    },
+    {
+      "year_month": "2026-11",
+      "year": 2026,
+      "month": 11,
+      "service": "ets",
+      "ridership": 393868
+    },
+    {
+      "year_month": "2026-11",
+      "year": 2026,
+      "month": 11,
+      "service": "intercity",
+      "ridership": 64500
+    },
+    {
+      "year_month": "2026-11",
+      "year": 2026,
+      "month": 11,
+      "service": "komuter",
+      "ridership": 422245
+    },
+    {
+      "year_month": "2026-11",
+      "year": 2026,
+      "month": 11,
+      "service": "komuter_utara",
+      "ridership": 401311
+    },
+    {
+      "year_month": "2026-11",
+      "year": 2026,
+      "month": 11,
+      "service": "shuttle_tebrau",
+      "ridership": 180347
+    }
+  ]
+}

@@ -1,17 +1,17 @@
 # TrafficPulse - Backend Data Processing Dependencies
 # MDIT: Global Challenge 2026 — TransitPulse Malaysia
 
-# Core Data Processing (Polars is highly recommended for 333MB+ CSVs and Parquets)
-pandas>=2.2.0
+# Core Data Processing
 polars>=1.0.0
 pyarrow>=15.0.0
 numpy>=1.26.0
+pandas>=2.2.0
 
-# Geospatial & Statistics (for Module 1 GIS & Module 3 Forecasting)
-# geopandas>=0.14.0
-# scikit-learn>=1.4.0
-# statsmodels>=0.14.0
+# Machine Learning & Forecasting
+lightgbm>=4.3.0
+scikit-learn>=1.4.0
+statsmodels>=0.14.0
 
-# Optional API Server (if live simulation endpoints are needed)
+# API Server (optional — uncomment if serving live data)
 # fastapi>=0.110.0
 # uvicorn>=0.28.0

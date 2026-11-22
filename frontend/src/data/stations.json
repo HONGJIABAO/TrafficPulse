@@ -1,0 +1,1911 @@
+{
+  "generated_at": "2026-11-22",
+  "total_stations": 316,
+  "stations": [
+    {
+      "code": "Alor Setar",
+      "name": "Alor Setar",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Arau",
+      "name": "Arau",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Aur Gading",
+      "name": "Aur Gading",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bahau",
+      "name": "Bahau",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bandar Tasek Selatan",
+      "name": "Bandar Tasek Selatan",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Batu Gajah",
+      "name": "Batu Gajah",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bertam",
+      "name": "Bertam",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bertam Baru",
+      "name": "Bertam Baru",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bukit Abu",
+      "name": "Bukit Abu",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bukit Betong",
+      "name": "Bukit Betong",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bukit Mertajam",
+      "name": "Bukit Mertajam",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bukit Panau",
+      "name": "Bukit Panau",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Bunut Susu",
+      "name": "Bunut Susu",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Butterworth",
+      "name": "Butterworth",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Chegar Perah",
+      "name": "Chegar Perah",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Chicha Tinggi",
+      "name": "Chicha Tinggi",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Dabong",
+      "name": "Dabong",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Gemas",
+      "name": "Gemas",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Gua Musang",
+      "name": "Gua Musang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Hat Yai",
+      "name": "Hat Yai",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Ipoh",
+      "name": "Ipoh",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "JB Sentral",
+      "name": "JB Sentral",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Jenderak",
+      "name": "Jenderak",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Jerantut",
+      "name": "Jerantut",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Jerek Baru",
+      "name": "Jerek Baru",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "KL Sentral",
+      "name": "KL Sentral",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kajang",
+      "name": "Kajang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kampar",
+      "name": "Kampar",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kampung Baru Bukit Abu",
+      "name": "Kampung Baru Bukit Abu",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kampung Berkam",
+      "name": "Kampung Berkam",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kampung Kok Pasir",
+      "name": "Kampung Kok Pasir",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kampung Sirian",
+      "name": "Kampung Sirian",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kemayan",
+      "name": "Kemayan",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kempas Baru",
+      "name": "Kempas Baru",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kemubu",
+      "name": "Kemubu",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kluang",
+      "name": "Kluang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Krai",
+      "name": "Krai",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Krambit",
+      "name": "Krambit",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kuala Gris",
+      "name": "Kuala Gris",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kuala Kangsar",
+      "name": "Kuala Kangsar",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kuala Krau",
+      "name": "Kuala Krau",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kuala Lipis",
+      "name": "Kuala Lipis",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kuala Lumpur",
+      "name": "Kuala Lumpur",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Kulai",
+      "name": "Kulai",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Limau Kasturi",
+      "name": "Limau Kasturi",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Manek Urai",
+      "name": "Manek Urai",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Mela",
+      "name": "Mela",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Mengkarak",
+      "name": "Mengkarak",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Mentakab",
+      "name": "Mentakab",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Mentara Baru",
+      "name": "Mentara Baru",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Merapoh",
+      "name": "Merapoh",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Padang Besar",
+      "name": "Padang Besar",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Padang Tungku",
+      "name": "Padang Tungku",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Pahi",
+      "name": "Pahi",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Pan Malayan",
+      "name": "Pan Malayan",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Pasir Mas",
+      "name": "Pasir Mas",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Pulau Sebang (Tampin)",
+      "name": "Pulau Sebang (Tampin)",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Segamat",
+      "name": "Segamat",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Seremban",
+      "name": "Seremban",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sg Mengkuang Baru",
+      "name": "Sg Mengkuang Baru",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sri Bintang",
+      "name": "Sri Bintang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sri Jaya",
+      "name": "Sri Jaya",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sri Mahligai",
+      "name": "Sri Mahligai",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Buloh",
+      "name": "Sungai Buloh",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Keladi",
+      "name": "Sungai Keladi",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Nal",
+      "name": "Sungai Nal",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Petani",
+      "name": "Sungai Petani",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Sirian",
+      "name": "Sungai Sirian",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Tasin",
+      "name": "Sungai Tasin",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Sungai Temau",
+      "name": "Sungai Temau",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Taiping",
+      "name": "Taiping",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Tanah Merah",
+      "name": "Tanah Merah",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Tanjong Malim",
+      "name": "Tanjong Malim",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Teluk Gunung",
+      "name": "Teluk Gunung",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Temangan",
+      "name": "Temangan",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "To Uban",
+      "name": "To Uban",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Triang",
+      "name": "Triang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Tumpat",
+      "name": "Tumpat",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Ulu Temiang",
+      "name": "Ulu Temiang",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Wakaf Bharu",
+      "name": "Wakaf Bharu",
+      "line": "KTM Intercity",
+      "source": "intercity"
+    },
+    {
+      "code": "Abdullah Hukum",
+      "name": "Abdullah Hukum",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Angkasapuri",
+      "name": "Angkasapuri",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Bandar Tasek Selatan",
+      "name": "Bandar Tasek Selatan",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Bangi",
+      "name": "Bangi",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Bank Negara",
+      "name": "Bank Negara",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Batang Benar",
+      "name": "Batang Benar",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Batang Kali",
+      "name": "Batang Kali",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Batu Caves",
+      "name": "Batu Caves",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Batu Kentonmen",
+      "name": "Batu Kentonmen",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Batu Tiga",
+      "name": "Batu Tiga",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Bukit Badak",
+      "name": "Bukit Badak",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Jalan Kastam",
+      "name": "Jalan Kastam",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Jalan Templer",
+      "name": "Jalan Templer",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "KL Sentral",
+      "name": "KL Sentral",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kajang",
+      "name": "Kajang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kajang 2",
+      "name": "Kajang 2",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kampar",
+      "name": "Kampar",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kampung Batu",
+      "name": "Kampung Batu",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kampung Dato Harun",
+      "name": "Kampung Dato Harun",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kampung Raja Uda",
+      "name": "Kampung Raja Uda",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kempas Baru",
+      "name": "Kempas Baru",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kepong",
+      "name": "Kepong",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kepong Sentral",
+      "name": "Kepong Sentral",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Klang",
+      "name": "Klang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kuala Kubu Bharu",
+      "name": "Kuala Kubu Bharu",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kuala Lumpur",
+      "name": "Kuala Lumpur",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kuang",
+      "name": "Kuang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Kulai",
+      "name": "Kulai",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Labu",
+      "name": "Labu",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Layang-Layang",
+      "name": "Layang-Layang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Midvalley",
+      "name": "Midvalley",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Nilai",
+      "name": "Nilai",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Padang Jawa",
+      "name": "Padang Jawa",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Pantai Dalam",
+      "name": "Pantai Dalam",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Pasir Gudang",
+      "name": "Pasir Gudang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Pelabuhan Klang Selatan",
+      "name": "Pelabuhan Klang Selatan",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Penalty",
+      "name": "Penalty",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Petaling",
+      "name": "Petaling",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Pulau Sebang (Tampin)",
+      "name": "Pulau Sebang (Tampin)",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Putra",
+      "name": "Putra",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Rasa",
+      "name": "Rasa",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Rawang",
+      "name": "Rawang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Rembau",
+      "name": "Rembau",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Rengam",
+      "name": "Rengam",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Salak Selatan",
+      "name": "Salak Selatan",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Segambut",
+      "name": "Segambut",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Segambut 2",
+      "name": "Segambut 2",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Segambut Utara",
+      "name": "Segambut Utara",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Senawang",
+      "name": "Senawang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Sentul",
+      "name": "Sentul",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Seputeh",
+      "name": "Seputeh",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Serdang",
+      "name": "Serdang",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Seremban",
+      "name": "Seremban",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Serendah",
+      "name": "Serendah",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Seri Setia",
+      "name": "Seri Setia",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Setia Jaya",
+      "name": "Setia Jaya",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Shah Alam",
+      "name": "Shah Alam",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Slim River",
+      "name": "Slim River",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Subang Jaya",
+      "name": "Subang Jaya",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Sungai Buloh",
+      "name": "Sungai Buloh",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Sungai Gadut",
+      "name": "Sungai Gadut",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Sungkai",
+      "name": "Sungkai",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Taman Wahyu",
+      "name": "Taman Wahyu",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Tanjong Malim",
+      "name": "Tanjong Malim",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Tapah Road",
+      "name": "Tapah Road",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Telok Gadong",
+      "name": "Telok Gadong",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Telok Pulai",
+      "name": "Telok Pulai",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Tiroi",
+      "name": "Tiroi",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "UKM",
+      "name": "UKM",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "Unknown",
+      "name": "Unknown",
+      "line": "KTM Komuter",
+      "source": "komuter"
+    },
+    {
+      "code": "AG18",
+      "name": "Ampang",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG06",
+      "name": "Bandaraya",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG17",
+      "name": "Cahaya",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG16",
+      "name": "Cempaka",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG11",
+      "name": "Chan Sow Lin",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG09",
+      "name": "Hang Tuah",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG13",
+      "name": "Maluri",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG07",
+      "name": "Masjid Jamek",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG12",
+      "name": "Miharja",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG04",
+      "name": "PWTC",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG15",
+      "name": "Pandan Indah",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG14",
+      "name": "Pandan Jaya",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG08",
+      "name": "Plaza Rakyat",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG10",
+      "name": "Pudu",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG02",
+      "name": "Sentul",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG01",
+      "name": "Sentul Timur",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG05",
+      "name": "Sultan Ismail",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "AG03",
+      "name": "Titiwangsa",
+      "line": "LRT Ampang–Sri Petaling",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ17",
+      "name": "Abdullah Hukum",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ35",
+      "name": "Alam Megah",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ09",
+      "name": "Ampang Park",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ26",
+      "name": "Ara Damansara",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ21",
+      "name": "Asia Jaya",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ16",
+      "name": "Bank Rakyat Bangsar",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ27",
+      "name": "Cgc Glenmarie",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ08",
+      "name": "Damai",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ12",
+      "name": "Dang Wangi",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ07",
+      "name": "Dato' Keramat",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ01",
+      "name": "Gombak",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ06",
+      "name": "Jelatek",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ15",
+      "name": "KL Sentral",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ10",
+      "name": "KLCC",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ11",
+      "name": "Kampung Baru",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ24",
+      "name": "Kelana Jaya",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ18",
+      "name": "Kerinchi",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ25",
+      "name": "Lembah Subang",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ13",
+      "name": "Masjid Jamek",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ14",
+      "name": "Pasar Seni",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ29",
+      "name": "SS 15",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ30",
+      "name": "SS 18",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ05",
+      "name": "Setiawangsa",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ04",
+      "name": "Sri Rampai",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ36",
+      "name": "Subang Alam",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ28",
+      "name": "Subang Jaya",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ32",
+      "name": "Taipan",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ23",
+      "name": "Taman Bahagia",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ20",
+      "name": "Taman Jaya",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ02",
+      "name": "Taman Melati",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ22",
+      "name": "Taman Paramount",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ34",
+      "name": "USJ 21",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ31",
+      "name": "USJ 7",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ19",
+      "name": "Universiti",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ03",
+      "name": "Wangsa Maju",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KJ33",
+      "name": "Wawasan",
+      "line": "LRT Kelana Jaya",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA17",
+      "name": "Bandar Baru Klang",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA24",
+      "name": "Bandar Bukit Tinggi",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA01",
+      "name": "Bandar Utama",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA03",
+      "name": "Bandar Utama 11",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA05",
+      "name": "Damansara Idaman",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA12",
+      "name": "Dato' Menteri - SA Sentral",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA07",
+      "name": "Glenmarie 2",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA19",
+      "name": "Jalan Meru",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA20",
+      "name": "Jambatan Kota",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA26",
+      "name": "Johan Setia",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA02",
+      "name": "Kayu Ara",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA09",
+      "name": "Kerjaya",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA23",
+      "name": "Klang Jaya",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA18",
+      "name": "Pasar Klang",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA15",
+      "name": "Seksyen 7",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA22",
+      "name": "Seri Andalas",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA10",
+      "name": "Stadium Shah Alam",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA06",
+      "name": "Subang",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA21",
+      "name": "Taman Selatan",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SA14",
+      "name": "UiTM Shah Alam",
+      "line": "LRT Shah Alam",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR06",
+      "name": "Bukit Bintang",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR08",
+      "name": "Bukit Nanas",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR10",
+      "name": "Chow Kit",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR04",
+      "name": "Hang Tuah",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR05",
+      "name": "Imbi",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR01",
+      "name": "KL Sentral",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR03",
+      "name": "Maharajalela",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR09",
+      "name": "Medan Tuanku",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR07",
+      "name": "Raja Chulan",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR11",
+      "name": "Titiwangsa",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "MR02",
+      "name": "Tun Sambanthan",
+      "line": "Monorail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL38",
+      "name": "16 Sierra",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP21",
+      "name": "Alam Sutera",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL20",
+      "name": "Ampang Park",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP19",
+      "name": "Awan Besar",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP27",
+      "name": "Bandar Puteri",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP15",
+      "name": "Bandar Tasik Selatan",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG29",
+      "name": "Bandar Tun Hussien Onn",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP14",
+      "name": "Bandar Tun Razak",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG09",
+      "name": "Bandar Utama",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG30",
+      "name": "Batu 11 Cheras",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG18",
+      "name": "Bukit Bintang",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG31",
+      "name": "Bukit Dukung",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP17",
+      "name": "Bukit Jalil",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL24",
+      "name": "Chan Sow Lin",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP12",
+      "name": "Cheras",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG21",
+      "name": "Cochrane",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL22",
+      "name": "Conlay",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL40",
+      "name": "Cyberjaya City Centre",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL39",
+      "name": "Cyberjaya Utara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL05",
+      "name": "Damansara Damai",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL18",
+      "name": "Hospital Kuala Lumpur",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP24",
+      "name": "IOI Puchong Jaya",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL15",
+      "name": "Jalan Ipoh",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL11",
+      "name": "Jinjang",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG35",
+      "name": "Kajang",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL13",
+      "name": "Kampung Batu",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL03",
+      "name": "Kampung Selamat",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL14",
+      "name": "Kentomen",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL10",
+      "name": "Kepong Baru",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP22",
+      "name": "Kinrara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG06",
+      "name": "Kota Damansara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL27",
+      "name": "Kuchai",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG04",
+      "name": "Kwasa Damansara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG05",
+      "name": "Kwasa Sentral",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG22",
+      "name": "Maluri",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG17",
+      "name": "Merdeka",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL09",
+      "name": "Metro Prima",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP20",
+      "name": "Muhibbah",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG08",
+      "name": "Mutiara Damansara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG15",
+      "name": "Muzium Negara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG16",
+      "name": "Pasar Seni",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL21",
+      "name": "Persiaran KLCC",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG12",
+      "name": "Phileo Damansara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP28",
+      "name": "Puchong Perdana",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP29",
+      "name": "Puchong Prima",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG13",
+      "name": "Pusat Bandar Damansara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP25",
+      "name": "Pusat Bandar Puchong",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP31",
+      "name": "Putra Heights",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL37",
+      "name": "Putra Permai",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL41",
+      "name": "Putrajaya Sentral",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL19",
+      "name": "Raja Uda",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP13",
+      "name": "Salak Selatan",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG14",
+      "name": "Semantan",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL16",
+      "name": "Sentul Barat",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL33",
+      "name": "Serdang Jaya",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL32",
+      "name": "Serdang Raya Selatan",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL31",
+      "name": "Serdang Raya Utara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL06",
+      "name": "Sri Damansara Barat",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL07",
+      "name": "Sri Damansara Sentral",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL08",
+      "name": "Sri Damansara Timur",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL12",
+      "name": "Sri Delima",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP18",
+      "name": "Sri Petaling",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG28",
+      "name": "Sri Raya",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG34",
+      "name": "Stadium Kajang",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL29",
+      "name": "Sungai Besi",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP16",
+      "name": "Sungai Besi",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL04",
+      "name": "Sungai Buloh",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG33",
+      "name": "Sungai Jernih",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG07",
+      "name": "Surian",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG10",
+      "name": "TTDI",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG26",
+      "name": "Taman Connaught",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL36",
+      "name": "Taman Equine",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG24",
+      "name": "Taman Midah",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG25",
+      "name": "Taman Mutiara",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL28",
+      "name": "Taman Naga Emas",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "SP26",
+      "name": "Taman Perindustrian Puchong",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG23",
+      "name": "Taman Pertama",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG27",
+      "name": "Taman Suntex",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL17",
+      "name": "Titiwangsa",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "KG20",
+      "name": "Tun Razak Exchange",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    },
+    {
+      "code": "PYL34",
+      "name": "UPM",
+      "line": "Rapid Rail",
+      "source": "rapidrail"
+    }
+  ],
+  "lines": [
+    "KTM Intercity",
+    "KTM Komuter",
+    "LRT Ampang–Sri Petaling",
+    "LRT Kelana Jaya",
+    "LRT Shah Alam",
+    "Monorail",
+    "Rapid Rail"
+  ]
+}
