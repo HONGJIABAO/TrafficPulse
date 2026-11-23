@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import rawOdSummaryData from '@/data/od_summary.json';
 import stationsData from '@/data/stations.json';
 import networkData from '@/data/network_overview.json';
@@ -311,17 +311,18 @@ export function OdPeakHours() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: 'calc(100vh - 58px)',
+        minHeight: 'calc(100vh - 58px)',
         background: '#F1F4F9',
-        overflow: 'hidden',
+        overflowY: 'auto',
+        overflowX: 'hidden',
       }}
     >
       {/* ── Top Metric KPI Strip (Matching Network Overview) ───────────────── */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 12,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 10,
           padding: '12px 16px 0',
         }}
       >
@@ -445,8 +446,9 @@ export function OdPeakHours() {
           flex: 1,
           gap: 12,
           padding: '12px 16px',
-          overflow: 'hidden',
+          overflow: 'visible',
           minHeight: 0,
+          flexWrap: 'wrap',
         }}
       >
         {/* ── Left Sidebar (Filters + Inspector) ───────────────────────────── */}
@@ -456,9 +458,10 @@ export function OdPeakHours() {
             flexDirection: 'column',
             gap: 10,
             width: 240,
+            minWidth: 220,
             flexShrink: 0,
-            overflowY: 'auto',
-            paddingBottom: 4,
+            overflowY: 'visible',
+            paddingBottom: 8,
           }}
         >
           {/* Card: OD Filters */}
@@ -568,19 +571,33 @@ export function OdPeakHours() {
                 </div>
               </div>
 
-              <div
-                style={{
-                  marginTop: 8,
-                  padding: '6px 8px',
-                  borderRadius: 6,
-                  background: '#E8F0FF',
-                  fontSize: 10,
-                  color: '#0052CC',
-                  lineHeight: 1.3,
-                }}
-              >
-                💡 <strong>Planner Tip:</strong> {activeFlow.distanceKm < 5 ? 'High passenger exchange rate; require 100% longitudinal seating.' : 'High trip dwell time; assign 6-car trainsets with balanced seating.'}
-              </div>
+              {(() => {
+                const dist = activeFlow.distanceKm ?? 0;
+                const tip =
+                  dist > 0 && dist < 5
+                    ? 'Short-haul: high exchange rate — mandate longitudinal seating.'
+                    : dist >= 5 && dist <= 25
+                    ? `Suburban haul (${dist} km) — assign 6-car EMUs, 60% seated.`
+                    : dist > 25
+                    ? `Long-distance (${dist} km) — transverse seats + luggage racks.`
+                    : 'Peak directional skew — deploy reverse empty express turnaround.';
+                return (
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: '6px 8px',
+                      borderRadius: 6,
+                      background: '#E8F0FF',
+                      fontSize: 10,
+                      color: '#0052CC',
+                      lineHeight: 1.4,
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    💡 <strong>Planner Tip:</strong> {tip}
+                  </div>
+                );
+              })()}
             </div>
           ) : (
             <div style={cardStyle}>
@@ -602,7 +619,7 @@ export function OdPeakHours() {
             display: 'flex',
             flexDirection: 'column',
             gap: 10,
-            overflowY: 'auto',
+            overflowY: 'visible',
             minWidth: 0,
             paddingRight: 2,
           }}
@@ -611,9 +628,9 @@ export function OdPeakHours() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '3fr 2fr',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
               gap: 10,
-              minHeight: 310,
+              minHeight: 280,
             }}
           >
             {/* Center-Top: Weekday x Hour Demand Heatmap */}
@@ -648,9 +665,9 @@ export function OdPeakHours() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '3fr 2fr',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
               gap: 10,
-              minHeight: 290,
+              minHeight: 270,
             }}
           >
             {/* Center-Bottom: OD Flow Map */}
