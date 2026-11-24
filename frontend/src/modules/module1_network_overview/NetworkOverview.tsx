@@ -7,6 +7,7 @@ import { RidershipTrendChart } from './RidershipTrendChart';
 import { LinePerformanceCard } from './LinePerformanceCard';
 import { KtmbDonutChart } from './KtmbDonutChart';
 import { NetworkMap } from './NetworkMap';
+import { MAP_STATIONS } from './networkMapData';
 import { KpiCard } from './KpiCard';
 import { TimelinePlaybar } from './TimelinePlaybar';
 import { QuickActionStrip } from './QuickActionStrip';
@@ -36,7 +37,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
 
   // Filtered and deduplicated station list based on pendingLine
   const filteredStations = useMemo(() => {
-    const base = stationsData.stations;
+    const base = MAP_STATIONS;
     const list =
       pendingLine === 'All Lines'
         ? base.map((s) => s.name)
@@ -84,7 +85,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   };
 
   return (
-    <div
+    <div className="network-overview"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -94,7 +95,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
       }}
     >
       {/* ── KPI Strip ──────────────────────────────────────────────────────── */}
-      <div
+      <div className="network-overview-kpis"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -130,7 +131,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
       </div>
 
       {/* ── Main Content Row ───────────────────────────────────────────────── */}
-      <div
+      <div className="network-overview-main"
         style={{
           display: 'flex',
           flex: 1,
@@ -141,7 +142,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         }}
       >
         {/* ── Left Sidebar ───────────────────────────────────────────────── */}
-        <div
+        <div className="network-overview-sidebar"
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -158,6 +159,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <FilterRow label="Rail Line">
                 <select
+                  aria-label="Rail line"
                   value={pendingLine}
                   onChange={(e) => {
                     setPendingLine(e.target.value);
@@ -174,6 +176,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
               </FilterRow>
               <FilterRow label="Station">
                 <select
+                  aria-label="Station"
                   value={pendingStation}
                   onChange={(e) => setPendingStation(e.target.value)}
                   style={selectStyle}
@@ -242,7 +245,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         </div>
 
         {/* ── Map Area ───────────────────────────────────────────────────── */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
+        <div className="network-overview-map-area" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
           <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
             {/* Map Card */}
             <div

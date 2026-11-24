@@ -8,7 +8,7 @@ interface NavbarProps {
 
 export function Navbar({ activeTab, onTabChange }: NavbarProps) {
   return (
-    <header style={{
+    <header className="transit-navbar" style={{
       background: '#FFFFFF',
       borderBottom: '1px solid rgba(0,102,255,0.1)',
       boxShadow: '0 2px 12px rgba(0,102,255,0.06)',
@@ -19,6 +19,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
       alignItems: 'center',
       padding: '0 20px',
       height: '58px',
+      flexShrink: 0,
       gap: '24px',
     }}>
       {/* Logo */}
@@ -44,7 +45,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
       <div style={{ flex: 1 }} />
 
       {/* Nav Tabs */}
-      <nav style={{ display: 'flex', gap: '4px' }}>
+      <nav aria-label="Dashboard modules" style={{ display: 'flex', gap: '4px', minWidth: 0, overflowX: 'auto' }}>
         {NAV_TABS.map(tab => {
           const isActive = activeTab === tab.id;
           return (
