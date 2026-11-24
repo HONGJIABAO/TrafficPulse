@@ -43,6 +43,8 @@ env/
 # ==============================================================================
 # Specifically ignore the 333MB+ daily ridership file (exceeds GitHub's 100MB hard limit)
 backend/data/raw/rapidrail_2026_daily.csv
+backend/data/raw/malaysia-states.geojson
+backend/data/raw/malaysia-country.geojson
 
 # Intermediate pipeline cache (temporary heavy tables & features)
 backend/data/processed/*

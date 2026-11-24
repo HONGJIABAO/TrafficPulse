@@ -55,10 +55,18 @@ pip install -r requirements.txt
 
 The Overview uses MapLibre GL with OpenFreeMap/OpenStreetMap vector tiles and
 extruded building footprints. No API key is required. The country mask isolates
-Malaysia (including Sabah and Sarawak); **Kuala Lumpur 2.5D** opens the city-scale
-building view. Buildings depend on internet access and WebGL; heights can be
-estimated where OSM does not have measured heights. Local station and route
-data remains available when the tile service fails.
+Malaysia, including Sabah and Sarawak. One **2D / 2.5D** switch applies nationwide;
+there are no region-view tabs. In 2D, both landmark models and building
+footprints are hidden. In 2.5D, 16 white landmark models stand at their geographic
+coordinates, using the same extrusion renderer as the city buildings. Select a
+model to zoom in; city scale adds small white building blocks automatically.
+Landmark dimensions are exaggerated at country scale and settle to architectural
+massing at city scale; these are not surveyed models. The initial camera fits
+both halves of Malaysia to the available panel and refits on resize/fullscreen
+until the user pans, zooms or selects a destination. Buildings depend on
+internet access, OSM coverage and WebGL. Local station and route data remains
+available when the tile service fails. Fullscreen preserves the map controls,
+landmarks, route overlays and selected station details.
 
 Rapid Rail geometry and station positions come from the official
 [data.gov.my GTFS API](https://developer.data.gov.my/realtime-api/gtfs-static)
@@ -71,16 +79,32 @@ python backend/pipelines/module1_rail_geometry.py --refresh
 
 Without `--refresh`, the pipeline uses `backend/data/raw/rapid-rail-gtfs.zip`
 when available. It validates the feed before replacing the previous snapshot.
-KTM/ETS corridors retain the previous approximate reference geometry and are
-marked with an asterisk in the map legend. Route geometry represents the current
-snapshot at every timeline date, not historical service availability.
+The atlas displays 20 route/service layers: seven Rapid Rail routes, nine KTMB
+services, ERL Ekspres and Transit, Sabah State Railway, and Penang Hill Railway.
+KTMB's official feed has no track shapes, so its longest published stop sequence
+per service is drawn as a schematic corridor. ERL, Sabah and Penang Hill use
+approximate reference corridors, with no invented ridership. All reference
+geometry is marked with an asterisk in the map legend. Route geometry represents
+the current snapshot at every timeline date, not historical service availability.
+
+Country/state outlines come from [DOSM geodata](https://github.com/dosm-malaysia/data-open/tree/main/datasets/geodata).
+Refresh the outlines and KTMB services with:
+
+```powershell
+python backend/pipelines/module1_national_context.py --refresh
+```
+
+Omit `--refresh` to rebuild from the public-data cache in `backend/data/raw`.
+Landmark locations and supplementary corridors are maintained in
+`frontend/src/modules/module1_network_overview/nationalAtlas.ts`; white architectural
+massing geometry is in `landmarkModels.ts` in the same directory.
 
 Small red station circles identify the top 10% of positive monthly boardings
 within the selected line (90th percentile, including ties). Grey means missing
 observations; hollow circles mean recorded zero. These are origin-trip totals,
 not capacity, occupancy, unique people, or realtime crowding. `Unknown`,
 `Penalty`, foreign stops and invalid positions are excluded from the map and
-its station filter. Rail data currently covers Peninsular Malaysia only.
+its station filter. Sabah and other reference-only stations show **No data**.
 
 Run the map's geographic, missing-data and style checks with Node 24+:
 

@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import spec from '@maplibre/maplibre-gl-style-spec';
 import { createNetworkStyle } from '../src/modules/module1_network_overview/networkMapStyle.ts';
 import { getStationSnapshot, getStationData, isInMalaysia, MAP_STATIONS, OFFICIAL_ROUTES, stationPosition } from '../src/modules/module1_network_overview/networkMapData.ts';
+import { getNationalRoutes } from '../src/modules/module1_network_overview/nationalRailNetwork.ts';
+import { NATIONAL_LANDMARKS, STATE_LABELS, CONTEXT_STATIONS } from '../src/modules/module1_network_overview/nationalAtlas.ts';
+import states from '../src/data/malaysia_states.json' with { type: 'json' };
+import { createLandmarkModels } from '../src/modules/module1_network_overview/landmarkModels.ts';
 
 test('Malaysia geography includes both regions and excludes neighbouring countries', () => {
   for (const position of [[101.7, 3.15], [116.1, 5.98], [110.34, 1.55]]) assert.equal(isInMalaysia(position), true);
@@ -54,4 +58,56 @@ test('the map style is valid and masks foreign geography above buildings and rai
   assert.ok(ids.indexOf('rail-country-mask') > ids.indexOf('rail-lines'));
   // MapLibre within does not support Polygon features; do not hide all buildings.
   assert.equal(style.layers.find(l => l.id === 'buildings-3d').filter, undefined);
+  assert.ok(ids.indexOf('state-labels') > ids.indexOf('rail-country-mask'), 'coastal state labels must not be clipped by the country mask');
+});
+
+test('national atlas includes every state and territory, with recognizable landmark destinations', () => {
+  assert.equal(states.features.length, 16);
+  assert.equal(new Set(STATE_LABELS.features.map(f => f.properties.name)).size, 16);
+  assert.deepEqual(new Set(NATIONAL_LANDMARKS.map(l => l.state)), new Set(STATE_LABELS.features.map(f => f.properties.name)));
+  assert.equal(NATIONAL_LANDMARKS.find(l => l.name === 'A Famosa').state, 'Melaka');
+  assert.equal(NATIONAL_LANDMARKS.find(l => l.name === 'Petronas Twin Towers').state, 'Kuala Lumpur');
+});
+
+test('national routes preserve source precision and filter supplementary services', () => {
+  const routes = getNationalRoutes('All Lines').features;
+  assert.equal(routes.length, 20);
+  assert.equal(new Set(routes.map(r => r.properties.id)).size, routes.length);
+  assert.equal(routes.filter(r => r.properties.geometrySource === 'Official GTFS').length, 7);
+  assert.equal(routes.filter(r => r.properties.geometrySource === 'GTFS stop-to-stop reference').length, 9);
+  for (const line of ['Sabah State Railway', 'ERL KLIA Transit', 'Penang Hill Railway']) {
+    const selected = getNationalRoutes(line).features.filter(r => r.properties.inScope);
+    assert.equal(selected.length, 1);
+    assert.equal(selected[0].properties.name, line);
+  }
+});
+
+test('reference stations including the Sabah coastal stops stay mapped without invented demand', () => {
+  for (const station of CONTEXT_STATIONS) {
+    assert.ok(MAP_STATIONS.some(s => s.code === station.code && s.source === 'reference'), station.name);
+    assert.deepEqual(getStationData(station, '2026-08'), { ridership: null, yoy: null });
+  }
+  const sabah = getStationSnapshot('2026-08', 'Sabah State Railway', 'All Stations');
+  assert.equal(sabah.measured, 0);
+  assert.equal(sabah.threshold, null);
+  assert.ok(sabah.data.features.filter(f => f.properties.inScope).every(f => f.properties.value === null && !f.properties.busy));
+});
+
+test('landmarks use ground-anchored 3D geometry at national and city scales', () => {
+  for (const zoom of [4, 6, 10, 15.6, 18]) {
+    const models = createLandmarkModels(zoom).features;
+    assert.equal(new Set(models.map(f => f.properties.id)).size, 16);
+    for (const landmark of NATIONAL_LANDMARKS) {
+      const parts = models.filter(f => f.properties.id === landmark.id);
+      assert.ok(parts.some(f => f.properties.base === 0), `${landmark.name} must touch the map`);
+      for (const part of parts) {
+        assert.ok(Number.isFinite(part.properties.height) && part.properties.height > part.properties.base);
+        const ring = part.geometry.coordinates[0];
+        assert.deepEqual(ring[0], ring.at(-1));
+        assert.ok(ring.flat().every(Number.isFinite));
+      }
+      const podium = parts[0].geometry.coordinates[0].slice(0,-1);
+      for (const axis of [0,1]) assert.ok(Math.abs(podium.reduce((sum,p)=>sum+p[axis],0)/podium.length-landmark.position[axis]) < 1e-8);
+    }
+  }
 });
