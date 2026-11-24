@@ -9,7 +9,6 @@ import { NetworkMap } from './NetworkMap';
 import { MAP_STATIONS } from './networkMapData';
 import { KpiCard } from './KpiCard';
 import { TimelinePlaybar } from './TimelinePlaybar';
-import { QuickActionStrip } from './QuickActionStrip';
 
 export type MapOverlay = 'map' | 'station' | 'od' | 'heatmap' | 'forecast';
 
@@ -267,13 +266,6 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
                 onSelectStation={handleStationClick}
               />
             </div>
-
-            {/* Quick-Action Strip (right side) */}
-            <QuickActionStrip
-              activeOverlay={activeOverlay}
-              onOverlayChange={setActiveOverlay}
-              onNavigateTab={onNavigateTab}
-            />
           </div>
 
           {/* Timeline Playback Bar */}

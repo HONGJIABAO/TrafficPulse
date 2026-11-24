@@ -1,5 +1,5 @@
 // Module 2: OD Flow & Peak Hours — TypeScript Definitions
-// TransitPulse Malaysia — MDIT Datathon 2026
+// TransitPulse Malaysia — Rail Mobility Analytics
 
 export interface OdRawPair {
   origin: string;

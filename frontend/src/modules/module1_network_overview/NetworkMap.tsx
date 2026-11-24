@@ -28,7 +28,7 @@ const lineName = (name: string) => name.replace('KTM Komuter (', '').replace(' L
 function fitMalaysia(map: Map, is3D: boolean, animate = true) {
   if (map.getContainer().clientWidth < 160 || map.getContainer().clientHeight < 160) return;
   const small = map.getContainer().clientWidth < 650;
-  map.fitBounds(MALAYSIA_BOUNDS, { padding: { top: small ? 150 : 36, right: small ? 80 : 85, bottom: 55, left: small ? 25 : 190 },
+  map.fitBounds(MALAYSIA_BOUNDS, { padding: { top: small ? 150 : 36, right: small ? 20 : 35, bottom: 55, left: small ? 25 : 190 },
     absolutePadding: true, linear: true, pitch: is3D ? 40 : 0, bearing: 0, duration: animate ? animationDuration() : 0 });
 }
 
@@ -192,7 +192,7 @@ export function NetworkMap(props: Props) {
       fitOnResize.current = false;
       setView(selected.name);
       map.flyTo({ center: stationPosition(selected), zoom: 15.7, pitch: tilted ? 55 : 0, bearing: -18,
-        padding: { top: 85, bottom: 80, left: map.getContainer().clientWidth > 800 ? 250 : 30, right: 85 }, duration: animationDuration() });
+        padding: { top: 85, bottom: 80, left: map.getContainer().clientWidth > 800 ? 250 : 30, right: 35 }, duration: animationDuration() });
     } else if (selectedLine !== 'All Lines') {
       fitOnResize.current = false;
       const points = MAP_STATIONS.filter(s => s.line === selectedLine).map(stationPosition);
@@ -200,7 +200,7 @@ export function NetworkMap(props: Props) {
         setView(selectedLine);
         map.fitBounds([[Math.min(...points.map(p => p[0])), Math.min(...points.map(p => p[1]))],
           [Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))]],
-        { padding: { top: 100, bottom: 110, left: 40, right: 90 }, maxZoom: 14, pitch: tilted ? 35 : 0, bearing: 0, duration: animationDuration() });
+        { padding: { top: 100, bottom: 110, left: 40, right: 40 }, maxZoom: 14, pitch: tilted ? 35 : 0, bearing: 0, duration: animationDuration() });
       }
     } else { fitOnResize.current = true; setView('Malaysia'); fitMalaysia(map, tilted); }
     // Camera follows filter changes only; the building toggle preserves its center.
@@ -214,7 +214,7 @@ export function NetworkMap(props: Props) {
     fitOnResize.current = false;
     setView(`${landmark.name} · ${landmark.state}`);
     map.flyTo({ center: landmark.position, zoom: 15.6, pitch: tiltedRef.current ? 50 : 0, bearing: -16,
-      padding: { top: 70, bottom: 65, left: 40, right: 85 }, duration: animationDuration() });
+      padding: { top: 70, bottom: 65, left: 40, right: 35 }, duration: animationDuration() });
   }
 
   const selectStation = (station: RailStation) => onSelectStation?.(station.name, station.line);

@@ -1,12 +1,101 @@
+import { useState, useRef, useEffect, useCallback } from 'react';
 import type { TabId } from './types';
 import { NAV_TABS } from './types';
+import './Navbar.css';
 
 interface NavbarProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
 }
 
+interface Ripple {
+  id: number;
+  tabId: TabId;
+  x: number;
+  y: number;
+  size: number;
+}
+
 export function Navbar({ activeTab, onTabChange }: NavbarProps) {
+  const navRef = useRef<HTMLElement | null>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [hasMounted, setHasMounted] = useState(false);
+  const [ripples, setRipples] = useState<Ripple[]>([]);
+  const [pillStyle, setPillStyle] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    ready: boolean;
+  }>({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    ready: false,
+  });
+
+  const updatePill = useCallback(() => {
+    const navEl = navRef.current;
+    const activeEl = tabRefs.current[activeTab];
+    if (navEl && activeEl) {
+      const navRect = navEl.getBoundingClientRect();
+      const tabRect = activeEl.getBoundingClientRect();
+      setPillStyle({
+        left: tabRect.left - navRect.left + navEl.scrollLeft,
+        top: tabRect.top - navRect.top,
+        width: tabRect.width,
+        height: tabRect.height,
+        ready: true,
+      });
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    updatePill();
+    // Enable sliding transition after initial placement
+    const timer = setTimeout(() => setHasMounted(true), 60);
+    return () => clearTimeout(timer);
+  }, [updatePill]);
+
+  useEffect(() => {
+    window.addEventListener('resize', updatePill);
+    const navEl = navRef.current;
+    let ro: ResizeObserver | null = null;
+    if (navEl) {
+      navEl.addEventListener('scroll', updatePill);
+      ro = new ResizeObserver(() => updatePill());
+      ro.observe(navEl);
+    }
+    return () => {
+      window.removeEventListener('resize', updatePill);
+      if (navEl) navEl.removeEventListener('scroll', updatePill);
+      ro?.disconnect();
+    };
+  }, [updatePill]);
+
+  const handleTabClick = (e: React.MouseEvent<HTMLButtonElement>, tabId: TabId) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const size = Math.max(rect.width, rect.height) * 2.4;
+
+    const newRipple: Ripple = {
+      id: Date.now() + Math.random(),
+      tabId,
+      x,
+      y,
+      size,
+    };
+
+    setRipples(prev => [...prev, newRipple]);
+    setTimeout(() => {
+      setRipples(prev => prev.filter(r => r.id !== newRipple.id));
+    }, 800);
+
+    onTabChange(tabId);
+  };
+
   return (
     <header className="transit-navbar" style={{
       background: '#FFFFFF',
@@ -45,53 +134,63 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
       <div style={{ flex: 1 }} />
 
       {/* Nav Tabs */}
-      <nav aria-label="Dashboard modules" style={{ display: 'flex', gap: '4px', minWidth: 0, overflowX: 'auto' }}>
+      <nav
+        ref={navRef}
+        aria-label="Dashboard modules"
+        className="nav-tabs-container"
+      >
+        {/* Shared Animated Sliding Active Pill */}
+        <div
+          className={`nav-sliding-pill ${hasMounted ? 'has-transition' : ''}`}
+          style={{
+            left: pillStyle.left,
+            top: pillStyle.top,
+            width: pillStyle.width,
+            height: pillStyle.height,
+            opacity: pillStyle.ready ? 1 : 0,
+          }}
+          aria-hidden="true"
+        >
+          {/* Layer: Animated Pastel Gradient + Shimmer */}
+          <div className="nav-pill-base">
+            <div className="nav-pill-shimmer" />
+          </div>
+        </div>
+
+        {/* Tab Buttons */}
         {NAV_TABS.map(tab => {
           const isActive = activeTab === tab.id;
+          const tabRipples = ripples.filter(r => r.tabId === tab.id);
+
           return (
             <button
               key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
-                padding: '7px 14px',
-                borderRadius: 8,
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: 13,
-                fontWeight: isActive ? 600 : 400,
-                color: isActive ? '#fff' : '#64748B',
-                background: isActive
-                  ? 'linear-gradient(135deg, #0066FF 0%, #0052CC 100%)'
-                  : 'transparent',
-                boxShadow: isActive ? '0 2px 10px rgba(0,102,255,0.35)' : 'none',
-                transition: 'all 0.2s ease',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={e => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F1F4F9';
-              }}
-              onMouseLeave={e => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-              }}
+              ref={el => { tabRefs.current[tab.id] = el; }}
+              onClick={e => handleTabClick(e, tab.id)}
+              className={`nav-tab-btn ${isActive ? 'is-active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
             >
-              <span style={{ fontSize: 14 }}>{tab.icon}</span>
-              {tab.label}
+              <span className="tab-label">{tab.label}</span>
+
+              {/* Water Ripple Layer */}
+              <span className="tab-ripple-container">
+                {tabRipples.map(r => (
+                  <span
+                    key={r.id}
+                    className="tab-ripple-bubble"
+                    style={{
+                      left: r.x - r.size / 2,
+                      top: r.y - r.size / 2,
+                      width: r.size,
+                      height: r.size,
+                    }}
+                  />
+                ))}
+              </span>
             </button>
           );
         })}
       </nav>
-
-      {/* Badge */}
-      <div style={{
-        background: 'linear-gradient(135deg, #0066FF10, #00E5A310)',
-        border: '1px solid rgba(0,102,255,0.2)',
-        borderRadius: 6, padding: '3px 8px',
-        fontSize: 10, fontWeight: 600, color: '#0066FF',
-        letterSpacing: '0.5px', flexShrink: 0,
-      }}>
-        MDIT 2026
-      </div>
     </header>
   );
 }

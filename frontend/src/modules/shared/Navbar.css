@@ -1,0 +1,212 @@
+/* ==========================================================================
+   TransitPulse Malaysia — Premium Navigation Tabs
+   Visual design: Clean white navbar with soft pastel-blue glowing oval active tab.
+   Animations:
+     1. Shimmer Effect (sweeping white light reflection)
+     2. Sliding Pill Animation (shared sliding indicator with cubic-bezier easing)
+     3. Breathing Glow (soft atmospheric pulsing glow)
+     4. Animated Gradient (flowing pastel multi-stop gradient)
+     5. Ripple Effect (water-ripple originating from exact click position)
+   ========================================================================== */
+
+/* ── Container ───────────────────────────────────────────────────────────── */
+.nav-tabs-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  min-width: 0;
+  overflow: visible;
+  padding: 4px 0;
+}
+
+/* ── Tab Buttons ─────────────────────────────────────────────────────────── */
+.nav-tab-btn {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  color: #64748B;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 250ms ease;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-tab-btn:hover {
+  color: #174785;
+}
+
+.nav-tab-btn.is-active {
+  color: #174785;
+  font-weight: 600;
+}
+
+.nav-tab-btn:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}
+
+.tab-label {
+  position: relative;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ── Animation 2: Sliding Pill Indicator ─────────────────────────────────── */
+.nav-sliding-pill {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 9999px;
+  /* Animation 3: Breathing Glow applied to outer pill */
+  animation: breathingGlow 3s ease-in-out infinite;
+  will-change: left, width;
+}
+
+.nav-sliding-pill.has-transition {
+  transition: left 550ms cubic-bezier(0.22, 1, 0.36, 1),
+              width 550ms cubic-bezier(0.22, 1, 0.36, 1),
+              top 550ms cubic-bezier(0.22, 1, 0.36, 1),
+              height 550ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 200ms ease;
+}
+
+/* ── Animation 4: Flowing Pastel Gradient inside Pill ────────────────────── */
+.nav-pill-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    110deg,
+    #BFD9FC,
+    #A9CCFA,
+    #CBE2FF,
+    #BFD9FC
+  );
+  background-size: 300% 100%;
+  animation: flowingGradient 5s ease-in-out infinite;
+  overflow: hidden;
+}
+
+@keyframes flowingGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ── Animation 3: Breathing Glow Keyframes ───────────────────────────────── */
+@keyframes breathingGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.20), 0 1px 3px rgba(59, 130, 246, 0.10);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(59, 130, 246, 0.35), 0 2px 6px rgba(59, 130, 246, 0.16);
+  }
+}
+
+/* ── Animation 1: Shimmer Effect ─────────────────────────────────────────── */
+.nav-pill-shimmer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 36%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shimmerSwipe 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSwipe {
+  0% {
+    left: -45%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    left: 125%;
+    opacity: 1;
+  }
+  55%, 100% {
+    left: 125%;
+    opacity: 0;
+  }
+}
+
+/* ── Animation 5: Water Ripple Effect ────────────────────────────────────── */
+.tab-ripple-container {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tab-ripple-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(59, 130, 246, 0.30) 50%,
+    rgba(59, 130, 246, 0) 75%
+  );
+  transform: scale(0);
+  opacity: 0.85;
+  animation: tabRippleAnim 750ms ease-out forwards;
+}
+
+@keyframes tabRippleAnim {
+  0% {
+    transform: scale(0);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ── Accessibility: Prefers Reduced Motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .nav-sliding-pill {
+    transition: none !important;
+    animation: none !important;
+  }
+  .nav-pill-base {
+    animation: none !important;
+  }
+  .nav-pill-shimmer {
+    animation: none !important;
+    display: none;
+  }
+  .tab-ripple-bubble {
+    animation: none !important;
+    display: none;
+  }
+}
