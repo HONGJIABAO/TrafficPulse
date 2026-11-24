@@ -2,7 +2,8 @@ import type { FeatureCollection, LineString, Point, MultiPolygon } from 'geojson
 import stationData from '../../data/stations.json' with { type: 'json' };
 import monthlyData from '../../data/station_monthly_ridership.json' with { type: 'json' };
 import geometry from '../../data/rapid_rail_geometry.json' with { type: 'json' };
-import boundary from '../../data/malaysia_boundary.json' with { type: 'json' };
+import boundary from '../../data/malaysia_country.json' with { type: 'json' };
+import { CONTEXT_STATIONS } from './nationalAtlas.ts';
 
 export type RailStation = (typeof stationData.stations)[number];
 export const MALAYSIA_GEOMETRY = boundary.features[0].geometry as MultiPolygon;
@@ -45,13 +46,14 @@ export function isInMalaysia(point: number[]) {
 }
 
 // Exclude foreign stops (e.g. Woodlands) and unmapped positions, including on hover.
-export const MAP_STATIONS = stationData.stations.filter(s => {
+export const MAP_STATIONS = [...stationData.stations, ...CONTEXT_STATIONS].filter(s => {
   if (/^(unknown|penalty)$/i.test(s.name)) return false;
   const point = stationPosition(s);
   return point.every(Number.isFinite) && isInMalaysia(point);
 });
 
 export function getStationData(station: RailStation, month: string) {
+  if (station.source === 'reference') return { ridership: null, yoy: null };
   const key = stationKey(station);
   return { ridership: ridership[month]?.[key] ?? null, yoy: yearlyChange[month]?.[key] ?? null };
 }

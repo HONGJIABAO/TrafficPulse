@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import networkData from '@/data/network_overview.json';
-import stationsData from '@/data/stations.json';
 import type { TabId } from '@/modules/shared/types';
 import { LINE_COLORS, formatMillions, formatServiceLabel } from '@/modules/shared/types';
 import { RidershipTrendChart } from './RidershipTrendChart';
@@ -33,7 +32,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Unique lines from stations
-  const lines = useMemo(() => ['All Lines', ...stationsData.lines], []);
+  const lines = useMemo(() => ['All Lines', ...new Set(MAP_STATIONS.map(station => station.line))], []);
 
   // Filtered and deduplicated station list based on pendingLine
   const filteredStations = useMemo(() => {
@@ -62,6 +61,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
     ...kpis,
     total_rail_trips: selectedLine === 'All Lines' ? kpis.total_rail_trips : filteredTotal,
   };
+  const hasLineData = selectedLine === 'All Lines' || visibleMonths.some(m => Object.hasOwn(m.lines, selectedLine));
 
   const handleApply = () => {
     setSelectedLine(pendingLine);
@@ -107,10 +107,10 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           icon="👤"
           iconColor="#0066FF"
           label="Total Trips"
-          value={formatMillions(displayKpi.total_rail_trips)}
-          badge={`▲ ${kpis.yoy_growth_pct}% YoY`}
+          value={hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
+          badge={hasLineData ? `▲ ${kpis.yoy_growth_pct}% YoY` : undefined}
           badgeColor="#00E5A3"
-          sub={`vs ${kpis.comparison_year}`}
+          sub={hasLineData ? `vs ${kpis.comparison_year}` : 'No ridership supplied for this line'}
         />
         <KpiCard
           icon="🏆"
@@ -246,7 +246,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
 
         {/* ── Map Area ───────────────────────────────────────────────────── */}
         <div className="network-overview-map-area" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
-          <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+          <div className="network-map-frame" style={{ flex: 1, position: 'relative', minHeight: 0 }}>
             {/* Map Card */}
             <div
               style={{

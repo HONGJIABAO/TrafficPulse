@@ -1,4 +1,4 @@
-import stationsData from '@/data/stations.json';
+import stationsData from '../../data/stations.json' with { type: 'json' };
 
 // ── 1. CONFIG: OFFICIAL RAIL LINE COLOURS ────────────────────────────────────
 export const LINE_COLORS: Record<string, string> = {
@@ -52,7 +52,7 @@ export function isCorridorMatch(corridorName: string, selectedFilter: string): b
   if (q.includes('monorail') && c.includes('monorail')) return true;
   if (q.includes('shah alam') && c.includes('shah alam')) return true;
   if (q.includes('komuter') && c.includes('komuter')) return true;
-  if (q.includes('intercity') && (c.includes('east coast') || c.includes('trunk'))) return true;
+  if (q.includes('intercity') && ['east coast', 'trunk', 'ets', 'timuran', 'tebrau', 'intercity'].some(name => c.includes(name))) return true;
   return c.includes(q) || q.includes(c);
 }
 

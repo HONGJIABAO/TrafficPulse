@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { LngLat, Map, NavigationControl, Popup, ScaleControl, setWorkerUrl } from 'maplibre-gl';
 import type { GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl';
-import type { FeatureCollection, LineString } from 'geojson';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { RAIL_CORRIDORS, LINE_COLORS, isCorridorMatch } from './railCorridors';
 import { createNetworkStyle } from './networkMapStyle';
+import { getNationalRoutes } from './nationalRailNetwork';
+import { NATIONAL_LANDMARKS } from './nationalAtlas';
+import { createLandmarkModels } from './landmarkModels';
 import { GEOMETRY_DATE, getStationData, getStationSnapshot, MALAYSIA_BOUNDS, MALAYSIA_MAX_BOUNDS,
-  MAP_STATIONS, OFFICIAL_ROUTES, stationId, stationPosition } from './networkMapData';
+  MAP_STATIONS, stationId, stationPosition } from './networkMapData';
 import type { RailStation } from './networkMapData';
 import type { MapOverlay } from './NetworkOverview';
 import './NetworkMap.css';
@@ -24,10 +25,11 @@ const compact = new Intl.NumberFormat('en-MY', { notation: 'compact', maximumFra
 const animationDuration = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900;
 const lineName = (name: string) => name.replace('KTM Komuter (', '').replace(' Line)', '').replace('ETS North-South Trunk', 'ETS North–South');
 
-function fitMalaysia(map: Map) {
+function fitMalaysia(map: Map, is3D: boolean, animate = true) {
+  if (map.getContainer().clientWidth < 160 || map.getContainer().clientHeight < 160) return;
   const small = map.getContainer().clientWidth < 650;
-  map.fitBounds(MALAYSIA_BOUNDS, { padding: { top: small ? 150 : 100, right: 82, bottom: 110, left: 45 },
-    pitch: 0, bearing: 0, duration: animationDuration() });
+  map.fitBounds(MALAYSIA_BOUNDS, { padding: { top: small ? 150 : 36, right: small ? 80 : 85, bottom: 55, left: small ? 25 : 190 },
+    absolutePadding: true, linear: true, pitch: is3D ? 40 : 0, bearing: 0, duration: animate ? animationDuration() : 0 });
 }
 
 export function NetworkMap(props: Props) {
@@ -44,26 +46,19 @@ export function NetworkMap(props: Props) {
   const [retry, setRetry] = useState(0);
   const [zoom, setZoom] = useState(5);
   const [tilted, setTilted] = useState(true);
+  const tiltedRef = useRef(tilted);
+  tiltedRef.current = tilted;
+  const fitOnResize = useRef(true);
   const [legendOpen, setLegendOpen] = useState(false);
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [view, setView] = useState('Malaysia');
+  const [expanded, setExpanded] = useState(false);
   const snapshot = useMemo(() => getStationSnapshot(playbackMonth, selectedLine, selectedStation),
     [playbackMonth, selectedLine, selectedStation]);
   const selected = MAP_STATIONS.find(s => s.name === selectedStation && (selectedLine === 'All Lines' || s.line === selectedLine));
   const currentMonth = monthly_trend.find(m => m.year_month === playbackMonth);
   const busiestLine = Object.entries(currentMonth?.lines ?? {}).filter(([, value]) => value > 0).sort((a, b) => b[1] - a[1])[0];
-  const routes = useMemo(() => {
-    const officialNames = new Set(OFFICIAL_ROUTES.features.map(f => f.properties?.name));
-    const features = [
-      ...RAIL_CORRIDORS.filter(c => !officialNames.has(c.name)).map(c => ({
-        type: 'Feature' as const, properties: { id: c.id, name: c.name, category: c.category,
-          color: LINE_COLORS[c.name], geometrySource: 'Approximate reference corridor' },
-        geometry: { type: 'LineString' as const, coordinates: c.coords.map(([lat, lng]) => [lng, lat]) },
-      })), ...OFFICIAL_ROUTES.features,
-    ].map(feature => ({ ...feature, properties: { ...feature.properties,
-      inScope: isCorridorMatch(feature.properties?.name, selectedLine) } }));
-    return { type: 'FeatureCollection', features } as FeatureCollection<LineString>;
-  }, [selectedLine]);
+  const routes = useMemo(() => getNationalRoutes(selectedLine), [selectedLine]);
 
   useEffect(() => {
     if (!container.current) return;
@@ -86,7 +81,17 @@ export function NetworkMap(props: Props) {
     popupRef.current = popup;
     map.addControl(new NavigationControl({ visualizePitch: true }), 'bottom-right');
     map.addControl(new ScaleControl({ maxWidth: 90 }), 'bottom-left');
-    map.on('style.load', () => { fitMalaysia(map); setReady(true); });
+    let modelFrame = 0;
+    const updateModels = () => {
+      cancelAnimationFrame(modelFrame);
+      modelFrame = requestAnimationFrame(() => {
+        (map.getSource('landmarks') as GeoJSONSource | undefined)?.setData(createLandmarkModels(map.getZoom()));
+      });
+    };
+    let styleReady = false;
+    map.on('style.load', () => { styleReady = true; fitMalaysia(map, tiltedRef.current, false); updateModels(); setReady(true); });
+    map.on('zoom', updateModels);
+    map.on('movestart', event => { if (event.originalEvent) fitOnResize.current = false; });
     map.on('zoomend', () => setZoom(map.getZoom()));
     map.on('sourcedata', event => {
       if (event.sourceId === 'openmaptiles' && event.isSourceLoaded) setTilesReady(true);
@@ -108,9 +113,17 @@ export function NetworkMap(props: Props) {
       return MAP_STATIONS.find(s => stationId(s) === nearest?.properties?.id);
     };
     map.on('click', 'station-hit-area', event => {
+      if (map.queryRenderedFeatures(event.point, { layers: ['landmark-models'] }).length) return;
       const station = hit(event);
       if (station) { popup.remove(); latest.current.onSelectStation?.(station.name, station.line); }
     });
+    map.on('click', 'landmark-models', event => {
+      const landmark = NATIONAL_LANDMARKS.find(l => l.id === event.features?.[0]?.properties?.id);
+      if (!landmark) return;
+      exploreLandmark(landmark.id);
+    });
+    map.on('mouseenter', 'landmark-models', () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', 'landmark-models', () => { map.getCanvas().style.cursor = ''; });
     map.on('mousemove', 'station-hit-area', event => {
       const station = hit(event);
       if (!station) return;
@@ -125,10 +138,28 @@ export function NetworkMap(props: Props) {
       popup.setLngLat(stationPosition(station)).setDOMContent(content).addTo(map);
     });
     map.on('mouseleave', 'station-hit-area', () => { map.getCanvas().style.cursor = ''; popup.remove(); });
-    const observer = new ResizeObserver(() => map.resize());
+    let resizeFrame = 0;
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        // Hidden/resizing panels can briefly report zero width. Never fit that
+        // transient size, and don't gate the next fit on pending vector tiles.
+        if (!container.current?.clientWidth || !container.current.clientHeight) return;
+        map.resize();
+        if (fitOnResize.current && styleReady) fitMalaysia(map, tiltedRef.current, false);
+      });
+    });
     observer.observe(container.current);
-    return () => { observer.disconnect(); popup.remove(); map.remove(); mapRef.current = null; popupRef.current = null; };
+    return () => { cancelAnimationFrame(modelFrame); cancelAnimationFrame(resizeFrame); observer.disconnect(); popup.remove(); map.remove(); mapRef.current = null; popupRef.current = null; };
   }, [retry]);
+
+  useEffect(() => {
+    const frame = container.current?.closest<HTMLElement>('.network-map-frame');
+    frame?.classList.toggle('is-expanded', expanded);
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setExpanded(false); };
+    if (expanded) document.addEventListener('keydown', escape);
+    return () => { frame?.classList.remove('is-expanded'); document.removeEventListener('keydown', escape); };
+  }, [expanded]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -148,41 +179,42 @@ export function NetworkMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    map.setLayoutProperty('buildings-3d', 'visibility', tilted ? 'visible' : 'none');
+    for (const layer of ['buildings-3d', 'building-footprints', 'landmark-models']) map.setLayoutProperty(layer, 'visibility', tilted ? 'visible' : 'none');
+    map.setMaxPitch(tilted ? 65 : 0);
+    if (fitOnResize.current) fitMalaysia(map, tilted);
+    else map.easeTo({ pitch: tilted ? (map.getZoom() >= 10 ? 50 : 40) : 0, duration: animationDuration() });
   }, [ready, tilted]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
     if (selected) {
+      fitOnResize.current = false;
       setView(selected.name);
       map.flyTo({ center: stationPosition(selected), zoom: 15.7, pitch: tilted ? 55 : 0, bearing: -18,
         padding: { top: 85, bottom: 80, left: map.getContainer().clientWidth > 800 ? 250 : 30, right: 85 }, duration: animationDuration() });
     } else if (selectedLine !== 'All Lines') {
+      fitOnResize.current = false;
       const points = MAP_STATIONS.filter(s => s.line === selectedLine).map(stationPosition);
       if (points.length) {
         setView(selectedLine);
         map.fitBounds([[Math.min(...points.map(p => p[0])), Math.min(...points.map(p => p[1]))],
           [Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))]],
-        { padding: { top: 100, bottom: 110, left: 40, right: 90 }, maxZoom: 14, pitch: 0, bearing: 0, duration: animationDuration() });
+        { padding: { top: 100, bottom: 110, left: 40, right: 90 }, maxZoom: 14, pitch: tilted ? 35 : 0, bearing: 0, duration: animationDuration() });
       }
-    } else { setView('Malaysia'); fitMalaysia(map); }
+    } else { fitOnResize.current = true; setView('Malaysia'); fitMalaysia(map, tilted); }
     // Camera follows filter changes only; the building toggle preserves its center.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, selectedLine, selectedStation]);
 
-  function changeView(target: 'Malaysia' | 'Klang Valley' | 'Kuala Lumpur') {
+  function exploreLandmark(id: string) {
     const map = mapRef.current;
-    if (!map || !ready) return;
-    setView(target);
-    if (target === 'Malaysia') fitMalaysia(map);
-    else if (target === 'Klang Valley') map.fitBounds([[101.38, 2.9], [101.84, 3.36]],
-      { padding: { top: 90, bottom: 100, left: 35, right: 85 }, pitch: 0, bearing: 0, duration: animationDuration() });
-    else {
-      setTilted(true);
-      map.flyTo({ center: [101.708, 3.151], zoom: 15.3, pitch: 55, bearing: -22,
-        padding: { top: 50, bottom: 75, left: 15, right: 85 }, duration: animationDuration() });
-    }
+    const landmark = NATIONAL_LANDMARKS.find(l => l.id === id);
+    if (!map || !landmark) return;
+    fitOnResize.current = false;
+    setView(`${landmark.name} · ${landmark.state}`);
+    map.flyTo({ center: landmark.position, zoom: 15.6, pitch: tiltedRef.current ? 50 : 0, bearing: -16,
+      padding: { top: 70, bottom: 65, left: 40, right: 85 }, duration: animationDuration() });
   }
 
   const selectStation = (station: RailStation) => onSelectStation?.(station.name, station.line);
@@ -193,19 +225,22 @@ export function NetworkMap(props: Props) {
     <div className="rail-map-canvas" ref={container} />
     <div className="rail-map-heading">
       <span className="rail-map-eyebrow">MALAYSIA RAIL ATLAS</span><h2>{view}</h2>
-      <span className="rail-map-subtitle">{zoom >= 13 && tilted ? '2.5D buildings · station-level detail' : 'Explore the network, then zoom into the city'}</span>
+      <span className="rail-map-subtitle">{tilted ? (zoom >= 13 ? 'Landmark architecture · white city blocks · rail network' : 'State landmarks · nationwide rail network') : 'State boundaries · rail routes · passenger demand'}</span>
     </div>
-    <div className="rail-map-toolbar" aria-label="Map views">
-      {(['Malaysia', 'Klang Valley', 'Kuala Lumpur'] as const).map(target => <button key={target} disabled={!ready}
-        onClick={() => changeView(target)} aria-pressed={view === target}>{target}{target === 'Kuala Lumpur' ? ' 2.5D' : ''}</button>)}
-      <button disabled={!ready} aria-pressed={tilted} onClick={() => {
-        setTilted(value => !value);
-        const map = mapRef.current;
-        map?.easeTo({ pitch: !tilted && map.getZoom() >= 12 ? 55 : 0, duration: animationDuration() });
-      }}>Buildings {tilted ? 'on' : 'off'}</button>
+    <div className="rail-map-toolbar" aria-label="Map dimension">
+      <button disabled={!ready} aria-pressed={!tilted} onClick={() => setTilted(false)}>2D</button>
+      <button disabled={!ready} aria-pressed={tilted} onClick={() => setTilted(true)}>2.5D</button>
+      <button disabled={!ready} onClick={() => { if (mapRef.current) { fitOnResize.current = true; setView('Malaysia'); fitMalaysia(mapRef.current, tilted); } }}>Reset view</button>
+      <button aria-label={expanded ? 'Collapse map' : 'Expand map'} title={expanded ? 'Collapse map (Esc)' : 'Expand map'} aria-pressed={expanded} onClick={() => setExpanded(value => !value)}>
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d={expanded ? 'M7 2v5H2m11-5v5h5M7 18v-5H2m11 5v-5h5' : 'M2 7V2h5m6 0h5v5M2 13v5h5m6 0h5v-5'} /></svg>
+      </button>
     </div>
+    {tilted && <div className="rail-map-explore"><select aria-label="Explore landmark" value="" disabled={!ready} onChange={event => exploreLandmark(event.target.value)}>
+        <option value="" disabled>Landmarks</option>
+        {NATIONAL_LANDMARKS.map(l => <option key={l.id} value={l.id}>{l.state} · {l.name}</option>)}
+      </select></div>}
     {filtered && <div className="rail-map-focus"><span>{selectedLine}{selectedStation !== 'All Stations' ? ` · ${selectedStation}` : ''}</span>
-      <button onClick={() => { onResetFocus?.(); if (mapRef.current) fitMalaysia(mapRef.current); }}>Clear filter</button></div>}
+      <button onClick={() => { onResetFocus?.(); if (mapRef.current) fitMalaysia(mapRef.current, tilted); }}>Clear filter</button></div>}
     {selected && selectedValues && <aside className="rail-station-card" aria-label="Selected station details" aria-live="polite">
       <span className="rail-map-eyebrow">SELECTED STATION · {selected.code}</span>
       <h3>{selected.name}</h3><p>{selected.line}</p>
@@ -221,7 +256,7 @@ export function NetworkMap(props: Props) {
         {routes.features.map(feature => <div key={feature.properties?.id} className={feature.properties?.inScope ? '' : 'rail-line-muted'}>
           <i style={{ background: feature.properties?.color }} /><span>{lineName(feature.properties?.name)}</span>
           {feature.properties?.geometrySource !== 'Official GTFS' && <span title="Approximate reference corridor">*</span>}
-        </div>)}<p>* Approximate corridor. Rapid Rail uses official GTFS geometry.</p>
+        </div>)}<p>* Reference corridor. KTMB follows official stop sequences; Rapid Rail uses official route shapes.</p>
       </div>}
     </div>
     <div className="rail-map-bottom">
@@ -245,16 +280,17 @@ export function NetworkMap(props: Props) {
         </details>
       </div>
     </div>
-    <div className="rail-source-bar"><span>Rail dataset: Peninsular Malaysia</span>
+    <div className="rail-source-bar"><span>{routes.features.length} rail routes · {tilted ? 'White architectural models' : 'Malaysia 2D'}</span>
       <button onClick={() => setSourcesOpen(open => !open)} aria-expanded={sourcesOpen}>Data & map sources</button></div>
     {sourcesOpen && <aside className="rail-source-panel" aria-label="Map data sources">
       <button className="rail-source-close" onClick={() => setSourcesOpen(false)} aria-label="Close data sources">×</button>
       <h3>About this map</h3>
-      <p>Buildings and streets: <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a> / OpenStreetMap vector tiles. Coverage varies; building heights may be estimated.</p>
-      <p>Rapid Rail routes and station coordinates: <a href="https://developer.data.gov.my/realtime-api/gtfs-static" target="_blank" rel="noreferrer">data.gov.my GTFS</a>, CC BY 4.0. Snapshot: {GEOMETRY_DATE}. Other corridors are approximate.</p>
+      <p>Buildings and streets: <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a> / OpenStreetMap vector tiles. Ordinary buildings are simplified white blocks. Landmark massing models stand at their map coordinates and are exaggerated at national scale; they are not surveyed architectural models. Select a model to zoom to its location.</p>
+      <p>Rapid Rail routes and station coordinates: <a href="https://developer.data.gov.my/realtime-api/gtfs-static" target="_blank" rel="noreferrer">data.gov.my GTFS</a>, CC BY 4.0. Snapshot: {GEOMETRY_DATE}. KTMB routes follow the longest published stop sequence in its GTFS feed; that feed has no track shapes. These lines are schematic.</p>
+      <p>Airport rail, Sabah State Railway and Penang Hill Railway are approximate reference corridors. Their grey stations have no passenger data in this project. State boundaries: <a href="https://github.com/dosm-malaysia/data-open/tree/main/datasets/geodata" target="_blank" rel="noreferrer">DOSM geodata</a>.</p>
       <p>Boardings: the project's monthly origin-trip aggregates. Grey means missing; zero is shown separately. Red marks the top 10% of positive recorded station values in the selected line and month, including ties.</p>
-      <p>The timeline changes demand, not historical route availability. Current route geometry is shown at every date. Sabah and Sarawak are included geographically; this dataset has no rail coverage there.</p>
-      <p>Country outline: existing project boundary, simplified for display. This is not a cadastral map.</p>
+      <p>The timeline changes demand, not historical route availability. Current route geometry is shown at every date. No railway is inferred for a state without a supplied route.</p>
+      <p>Country and state outlines: DOSM geodata, simplified for display. This is not a cadastral map.</p>
     </aside>}
     {!rendererError && (!ready || !tilesReady || tileError) && <div className="rail-map-status" role="status">
       {tileError ? <>Building tiles unavailable; local rail and ridership remain available. <button onClick={() => setRetry(n => n + 1)}>Retry map</button></>
