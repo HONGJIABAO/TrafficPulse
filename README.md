@@ -57,10 +57,17 @@ The Overview uses MapLibre GL with OpenFreeMap/OpenStreetMap vector tiles and
 extruded building footprints. No API key is required. The country mask isolates
 Malaysia, including Sabah and Sarawak. One **2D / 2.5D** switch applies nationwide;
 there are no region-view tabs. In 2D, both landmark models and building
-footprints are hidden. In 2.5D, 16 white landmark models stand at their geographic
-coordinates, using the same extrusion renderer as the city buildings. Select a
+footprints are hidden. In 2.5D, 36 grey landmark models use distinctive architectural silhouettes,
+with white OSM blocks around them at city scale. The national atlas places East
+Malaysia closer at 70% scale (explicitly labelled, with its distance scale hidden).
+Station, route, state and landmark layers share this display-only transform;
+zooming to level 9 or selecting a destination restores geographic coordinates. Select a
 model to zoom in; city scale adds small white building blocks automatically.
-Landmark dimensions are exaggerated at country scale and settle to architectural
+At national scale, KTMB Shuttle and ERT share the express reference corridor to
+avoid zigzags caused by inconsistent published shuttle-stop coordinates; detailed
+views retain the source stop sequences.
+Nearby landmarks appear progressively as the map zooms in, and models expose
+their names on hover and in the destination selector. Landmark dimensions are exaggerated at country scale and settle to architectural
 massing at city scale; these are not surveyed models. The initial camera fits
 both halves of Malaysia to the available panel and refits on resize/fullscreen
 until the user pans, zooms or selects a destination. Buildings depend on
@@ -96,7 +103,7 @@ python backend/pipelines/module1_national_context.py --refresh
 
 Omit `--refresh` to rebuild from the public-data cache in `backend/data/raw`.
 Landmark locations and supplementary corridors are maintained in
-`frontend/src/modules/module1_network_overview/nationalAtlas.ts`; white architectural
+`frontend/src/modules/module1_network_overview/nationalAtlas.ts`; grey architectural
 massing geometry is in `landmarkModels.ts` in the same directory.
 
 Small red station circles identify the top 10% of positive monthly boardings

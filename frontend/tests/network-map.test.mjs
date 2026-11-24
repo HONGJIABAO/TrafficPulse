@@ -7,6 +7,25 @@ import { getNationalRoutes } from '../src/modules/module1_network_overview/natio
 import { NATIONAL_LANDMARKS, STATE_LABELS, CONTEXT_STATIONS } from '../src/modules/module1_network_overview/nationalAtlas.ts';
 import states from '../src/data/malaysia_states.json' with { type: 'json' };
 import { createLandmarkModels } from '../src/modules/module1_network_overview/landmarkModels.ts';
+import { atlasData, atlasPoint, geographicPoint } from '../src/modules/module1_network_overview/atlasLayout.ts';
+
+test('compact atlas is reversible and keeps route/station coordinates aligned without mutating data', () => {
+  for (const station of MAP_STATIONS) {
+    const original = stationPosition(station);
+    const restored = geographicPoint(atlasPoint(original));
+    assert.ok(restored.every((n,i) => Math.abs(n-original[i]) < 1e-9));
+  }
+  const source = getStationSnapshot('2026-08', 'All Lines', 'All Stations').data;
+  const before = structuredClone(source);
+  const display = atlasData(source);
+  assert.deepEqual(source, before);
+  source.features.forEach((f,i) => {
+    assert.deepEqual(display.features[i].properties, f.properties);
+    assert.deepEqual(display.features[i].geometry.coordinates, atlasPoint(f.geometry.coordinates));
+  });
+  assert.deepEqual(spec.validateStyleMin(createNetworkStyle(true)), []);
+  assert.ok(atlasPoint([116.1,6])[0] - 101.7 < 8);
+});
 
 test('Malaysia geography includes both regions and excludes neighbouring countries', () => {
   for (const position of [[101.7, 3.15], [116.1, 5.98], [110.34, 1.55]]) assert.equal(isInMalaysia(position), true);
@@ -96,7 +115,7 @@ test('reference stations including the Sabah coastal stops stay mapped without i
 test('landmarks use ground-anchored 3D geometry at national and city scales', () => {
   for (const zoom of [4, 6, 10, 15.6, 18]) {
     const models = createLandmarkModels(zoom).features;
-    assert.equal(new Set(models.map(f => f.properties.id)).size, 16);
+    assert.equal(new Set(models.map(f => f.properties.id)).size, NATIONAL_LANDMARKS.length);
     for (const landmark of NATIONAL_LANDMARKS) {
       const parts = models.filter(f => f.properties.id === landmark.id);
       assert.ok(parts.some(f => f.properties.base === 0), `${landmark.name} must touch the map`);

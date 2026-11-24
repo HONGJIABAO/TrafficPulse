@@ -72,9 +72,9 @@
   .transit-navbar nav { order: 2; width: 100%; margin-left: 0 !important; }
   .network-overview { height: 100% !important; overflow-y: auto !important; }
   .network-overview-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; flex-shrink: 0; }
-  .network-overview-kpis > div { padding: 12px !important; gap: 8px !important; }
-  .network-overview-kpis > div > div:first-child { display: none !important; }
-  .network-overview-kpis > div:last-child > div:last-child { display: none !important; }
+  .network-overview-kpis .kpi-card { padding: 12px !important; gap: 8px !important; }
+  .network-overview-kpis .kpi-icon-container { display: none !important; }
+  .network-overview-kpis .kpi-minichart-container { display: none !important; }
   .network-overview-main { flex-direction: column !important; flex: none !important; overflow: visible !important; }
   .network-overview-sidebar { flex-direction: row !important; width: 100% !important; overflow-x: auto !important; overflow-y: hidden !important; }
   .network-overview-sidebar > div { width: 230px; }
@@ -95,3 +95,8 @@
 .rail-map-explore select { width: 130px; border: 1px solid #d7e2e7; background: #fffffff5; color: #3d5565; font: inherit; font-size: 11px; border-radius: 7px; padding: 8px; cursor: pointer; }
 .rail-map:has(.rail-map-focus) .rail-map-explore { display: none; }
 @media(max-width:760px) { .rail-map-explore { top: 145px; left: 14px; }.rail-map-explore select { width: 100px; font-size: 10px; } }
+
+/* The inset is deliberately not a geographic distance map. */
+.rail-map-atlas .maplibregl-ctrl-scale { display: none; }
+.rail-map-atlas .rail-source-bar { flex-wrap: wrap; gap: 4px 12px; max-width: calc(100% - 65px); }
+.rail-map-atlas .rail-source-bar > span:first-child { color: #43545e; }

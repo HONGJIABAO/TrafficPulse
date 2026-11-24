@@ -12,7 +12,7 @@ export const STATE_LABELS: FeatureCollection<Point> = {
     geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] } })),
 };
 
-export type LandmarkKind = 'twins' | 'fort' | 'needle' | 'pagoda' | 'mosque' | 'palace' | 'clock' | 'cylinder' | 'assembly' | 'chimney';
+export type LandmarkKind = 'twins' | 'fort' | 'needle' | 'pagoda' | 'mosque' | 'palace' | 'clock' | 'cylinder' | 'assembly' | 'chimney' | 'spire' | 'skyscraper' | 'church' | 'colonial' | 'leaning';
 export interface NationalLandmark {
   id: string; name: string; state: string; position: [number, number]; kind: LandmarkKind;
   side: 'left' | 'right'; priority: number;
@@ -37,6 +37,26 @@ export const NATIONAL_LANDMARKS: NationalLandmark[] = [
   { id: 'sarawak-dun', name: 'Sarawak State Assembly', state: 'Sarawak', position: [110.3502, 1.5611], kind: 'assembly', side: 'left', priority: 3 },
   { id: 'tun-mustapha', name: 'Tun Mustapha Tower', state: 'Sabah', position: [116.1097, 6.0186], kind: 'cylinder', side: 'right', priority: 3 },
   { id: 'labuan-chimney', name: 'Labuan Chimney', state: 'Labuan', position: [115.2494, 5.3876], kind: 'chimney', side: 'left', priority: 8 },
+  { id: 'kl-tower', name: 'KL Tower', state: 'Kuala Lumpur', position: [101.7033, 3.1528], kind: 'needle', side: 'right', priority: 2 },
+  { id: 'merdeka-118', name: 'Merdeka 118', state: 'Kuala Lumpur', position: [101.7007, 3.1413], kind: 'spire', side: 'right', priority: 2 },
+  { id: 'trx', name: 'The Exchange 106', state: 'Kuala Lumpur', position: [101.7187, 3.1423], kind: 'skyscraper', side: 'right', priority: 3 },
+  { id: 'abdul-samad', name: 'Sultan Abdul Samad Building', state: 'Kuala Lumpur', position: [101.6935, 3.1486], kind: 'clock', side: 'right', priority: 3 },
+  { id: 'thean-hou', name: 'Thean Hou Temple', state: 'Kuala Lumpur', position: [101.6873, 3.1216], kind: 'pagoda', side: 'right', priority: 4 },
+  { id: 'stadthuys', name: 'The Stadthuys', state: 'Melaka', position: [102.2493, 2.1946], kind: 'colonial', side: 'right', priority: 3 },
+  { id: 'christ-church', name: 'Christ Church Melaka', state: 'Melaka', position: [102.2495, 2.1948], kind: 'church', side: 'right', priority: 4 },
+  { id: 'taming-sari', name: 'Menara Taming Sari', state: 'Melaka', position: [102.2482, 2.1905], kind: 'needle', side: 'right', priority: 4 },
+  { id: 'komtar', name: 'KOMTAR', state: 'Pulau Pinang', position: [100.3303, 5.4145], kind: 'cylinder', side: 'right', priority: 3 },
+  { id: 'teluk-intan', name: 'Leaning Tower of Teluk Intan', state: 'Perak', position: [101.0184, 4.0258], kind: 'leaning', side: 'right', priority: 3 },
+  { id: 'ipoh-station', name: 'Ipoh Railway Station', state: 'Perak', position: [101.0734, 4.5973], kind: 'colonial', side: 'right', priority: 4 },
+  { id: 'zahir', name: 'Zahir Mosque', state: 'Kedah', position: [100.3626, 6.1196], kind: 'mosque', side: 'right', priority: 5 },
+  { id: 'maha-tower', name: 'Maha Tower', state: 'Kedah', position: [99.8473, 6.3201], kind: 'spire', side: 'right', priority: 3 },
+  { id: 'fort-margherita', name: 'Fort Margherita', state: 'Sarawak', position: [110.3508, 1.5607], kind: 'fort', side: 'right', priority: 4 },
+  { id: 'sibu-pagoda', name: 'Tua Pek Kong Pagoda', state: 'Sarawak', position: [111.8304, 2.2854], kind: 'pagoda', side: 'right', priority: 3 },
+  { id: 'atkinson', name: 'Atkinson Clock Tower', state: 'Sabah', position: [116.0773, 5.9828], kind: 'clock', side: 'right', priority: 4 },
+  { id: 'kk-city-mosque', name: 'Kota Kinabalu City Mosque', state: 'Sabah', position: [116.1076, 5.9959], kind: 'mosque', side: 'right', priority: 4 },
+  { id: 'sandakan-memorial', name: 'St Michael and All Angels Church', state: 'Sabah', position: [118.1126, 5.8395], kind: 'church', side: 'right', priority: 3 },
+  { id: 'abidin', name: 'Abidin Mosque', state: 'Terengganu', position: [103.1373, 5.3324], kind: 'mosque', side: 'right', priority: 5 },
+  { id: 'sultan-abu-bakar', name: 'Sultan Abu Bakar Mosque', state: 'Johor', position: [103.7516, 1.4561], kind: 'mosque', side: 'right', priority: 4 },
 ];
 
 const erl: [number, number][] = [[101.6861, 3.1342], [101.6787, 3.113], [101.7102, 3.0765], [101.721, 3.017],

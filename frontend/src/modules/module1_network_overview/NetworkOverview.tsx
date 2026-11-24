@@ -103,26 +103,25 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         }}
       >
         <KpiCard
-          icon="👤"
-          iconColor="#0066FF"
-          label="Total Trips"
+          type="trips"
+          delayIndex={0}
+          label="Total trips"
           value={hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
           badge={hasLineData ? `▲ ${kpis.yoy_growth_pct}% YoY` : undefined}
-          badgeColor="#00E5A3"
           sub={hasLineData ? `vs ${kpis.comparison_year}` : 'No ridership supplied for this line'}
         />
         <KpiCard
-          icon="🏆"
-          iconColor="#FF8C00"
-          label="Busiest Line"
+          type="busiest"
+          delayIndex={1}
+          label="Busiest line"
           value={kpis.busiest_line}
           sub={`${kpis.busiest_line_share_pct}% of total ridership`}
         />
         <KpiCard
-          icon="🕐"
-          iconColor="#FF5A00"
-          label="Peak Hour"
-          value="7AM – 9AM"
+          type="peak"
+          delayIndex={2}
+          label="Peak hour"
+          value="7 – 9 AM"
           sub="17:00–19:00 evening peak"
           withBarChart
           monthly_trend={monthly_trend}

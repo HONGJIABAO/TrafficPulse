@@ -1,0 +1,453 @@
+/* ==========================================================================
+   TransitPulse Malaysia — Rail Intelligence KPI Cards
+   Interactive Spotlight Edition (1:1 Visual Replication):
+     - Compact refined Inter typography (22px main value, 12px label, 11px sub)
+     - Peak hour "7 – 9 AM" formatted with 12px baseline-aligned AM suffix
+     - Standalone 28px duotone SVGs directly on white background
+     - Enhanced 2.2px railway track (0.75 opacity) with station nodes at endpoints
+     - Station nodes illuminate as moving light passes
+     - 54px gradient light trail & 7.5px dual-glow moving head
+     - Mouse Spotlight radial glow
+     - Cursor-following thin interactive border glow
+     - Count-up animation for numeric values
+     - Smooth hover lift & cinematic entrance
+   ========================================================================== */
+
+.kpi-card {
+  --spotlight-opacity: 0;
+  position: relative;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 102, 255, 0.07);
+  padding: 14px 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 300ms ease;
+  user-select: none;
+  isolation: isolate;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.kpi-card:hover,
+.kpi-card.is-hovered {
+  --spotlight-opacity: 1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Base static subtle border */
+.kpi-border-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 102, 255, 0.09);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Mouse Spotlight Layer */
+.kpi-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: var(--spotlight-opacity, 0);
+  transition: opacity 300ms ease;
+  background: radial-gradient(
+    ellipse 140px 110px at var(--mouse-x, -100px) var(--mouse-y, -100px),
+    rgba(var(--accent-rgb), 0.29),
+    rgba(var(--accent-rgb), 0.08) 55%,
+    transparent 100%
+  );
+}
+
+/* Interactive Cursor-following Border Glow */
+.kpi-border-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1.5px;
+  background: radial-gradient(
+    circle 130px at var(--mouse-x, -100px) var(--mouse-y, -100px),
+    rgba(var(--accent-rgb), 0.85),
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: var(--spotlight-opacity, 0);
+  transition: opacity 300ms ease;
+  z-index: 2;
+}
+
+/* ── Standalone Icon (26-28px, directly on white background) ─────────────── */
+.kpi-icon-container {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  transition: transform 300ms ease, filter 300ms ease;
+}
+
+.kpi-card:hover .kpi-icon-container svg {
+  filter: drop-shadow(0 2px 7px rgba(var(--accent-rgb), 0.32));
+}
+
+/* ── Content & Typography ────────────────────────────────────────────────── */
+.kpi-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #66778E;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: none; /* Sentence case */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: #12243E;
+  line-height: 1.25;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.kpi-value.is-text-value {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Peak Hour "7 – 9 AM" formatted */
+.kpi-peak-val {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.kpi-peak-digits {
+  font-size: 22px;
+  font-weight: 600;
+  color: #12243E;
+  letter-spacing: -0.5px;
+}
+
+.kpi-peak-meridiem {
+  font-size: 12px;
+  font-weight: 500;
+  color: #12243E;
+  margin-left: 4px;
+}
+
+/* Sub-row styling */
+.kpi-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 3px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.kpi-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: rgba(0, 229, 163, 0.12);
+  color: #00A870;
+}
+
+.kpi-sub-text {
+  font-size: 11px;
+  color: #7C8DA3;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Enhanced Railway Track & Stations ───────────────────────────────────── */
+.kpi-rail-track-wrap {
+  position: absolute;
+  bottom: 11px;
+  left: 20px;
+  right: 20px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.kpi-rail-track-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2.2px;
+  transform: translateY(-50%);
+  background: var(--rail-track-color);
+  opacity: 0.75;
+  border-radius: 1.5px;
+}
+
+.kpi-rail-station-node {
+  position: absolute;
+  top: 50%;
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.8px solid var(--rail-station-outline);
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+}
+
+.kpi-rail-station-node.node-1 {
+  animation: nodePulse1 3.6s linear infinite;
+}
+
+.kpi-rail-station-node.node-2 {
+  animation: nodePulse2 3.6s linear infinite;
+}
+
+.kpi-rail-station-node.node-3 {
+  animation: nodePulse3 3.6s linear infinite;
+}
+
+.kpi-rail-station-node.node-4 {
+  animation: nodePulse4 3.6s linear infinite;
+}
+
+@keyframes nodePulse1 {
+  0%, 100% {
+    background: #FFFFFF;
+    box-shadow: none;
+  }
+  2%, 5% {
+    background: var(--rail-moving-light);
+    box-shadow: 0 0 6px var(--rail-moving-light);
+  }
+  8% {
+    background: #FFFFFF;
+    box-shadow: none;
+  }
+}
+
+@keyframes nodePulse2 {
+  0%, 30%, 40%, 100% {
+    background: #FFFFFF;
+    box-shadow: none;
+  }
+  33%, 36% {
+    background: var(--rail-moving-light);
+    box-shadow: 0 0 6px var(--rail-moving-light);
+  }
+}
+
+@keyframes nodePulse3 {
+  0%, 63%, 73%, 100% {
+    background: #FFFFFF;
+    box-shadow: none;
+  }
+  66%, 69% {
+    background: var(--rail-moving-light);
+    box-shadow: 0 0 6px var(--rail-moving-light);
+  }
+}
+
+@keyframes nodePulse4 {
+  0%, 93%, 100% {
+    background: #FFFFFF;
+    box-shadow: none;
+  }
+  96%, 99% {
+    background: var(--rail-moving-light);
+    box-shadow: 0 0 6px var(--rail-moving-light);
+  }
+}
+
+.kpi-rail-train-light {
+  position: absolute;
+  top: 50%;
+  height: 10px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  transform: translateY(-50%);
+  pointer-events: none;
+  animation: railLightFlow 3.6s linear infinite;
+  will-change: left;
+}
+
+.kpi-rail-train-trail {
+  height: 2.6px;
+  width: 54px;
+  background: linear-gradient(90deg, transparent, var(--rail-moving-light));
+  border-radius: 1px;
+  opacity: 0.85;
+}
+
+.kpi-rail-train-head {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--rail-moving-light);
+  box-shadow: 0 0 6px var(--rail-moving-light), 0 0 12px var(--rail-moving-light);
+  flex-shrink: 0;
+  margin-left: -2px;
+  box-sizing: border-box;
+}
+
+@keyframes railLightFlow {
+  0% {
+    left: -60px;
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* ── Icon Micro-Interactions ─────────────────────────────────────────────── */
+.kpi-icon-ticket {
+  transition: transform 300ms ease;
+  display: block;
+}
+
+.kpi-card:hover .kpi-icon-ticket {
+  transform: rotate(-5deg) scale(1.04);
+}
+
+.kpi-icon-train {
+  transition: transform 300ms ease;
+  display: block;
+}
+
+.kpi-card:hover .kpi-icon-train {
+  transform: translateY(-1.5px);
+}
+
+.train-headlight {
+  transition: filter 300ms ease;
+}
+
+.kpi-card:hover .train-headlight {
+  filter: drop-shadow(0 0 3px #38BDF8);
+}
+
+.pulse-waveform-path {
+  transition: filter 300ms ease;
+  animation: pulseWaveformGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseWaveformGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 2.5px rgba(238, 121, 56, 0.45));
+  }
+}
+
+.kpi-card:hover .pulse-waveform-path {
+  filter: drop-shadow(0 0 4px rgba(238, 121, 56, 0.75));
+}
+
+/* ── Mini Bar Chart ──────────────────────────────────────────────────────── */
+.kpi-minichart-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 36px;
+  width: 72px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+
+.kpi-minichart-bar {
+  flex: 1;
+  border-radius: 2px;
+  background: #EE7938;
+  transition: height 400ms ease, opacity 300ms ease;
+}
+
+/* ── Cinematic Entrance ──────────────────────────────────────────────────── */
+@keyframes kpiCardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kpi-card-entrance {
+  animation: kpiCardEntrance 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Accessibility: Prefers Reduced Motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .kpi-card,
+  .kpi-card:hover,
+  .kpi-card.is-hovered {
+    transform: none !important;
+    transition: none !important;
+  }
+  .kpi-rail-train-light {
+    animation: none !important;
+    display: none;
+  }
+  .kpi-rail-station-node {
+    animation: none !important;
+  }
+  .pulse-waveform-path {
+    animation: none !important;
+  }
+  .kpi-card-entrance {
+    animation: none !important;
+  }
+}

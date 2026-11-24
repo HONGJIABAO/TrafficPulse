@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { LngLat, Map, NavigationControl, Popup, ScaleControl, setWorkerUrl } from 'maplibre-gl';
+import type { GeoJSON } from 'geojson';
+import { atlasData, atlasPoint, geographicPoint, ATLAS_BOUNDS } from './atlasLayout';
 import type { GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { createNetworkStyle } from './networkMapStyle';
-import { getNationalRoutes } from './nationalRailNetwork';
+import { getNationalRoutes, getAtlasRoutes } from './nationalRailNetwork';
 import { NATIONAL_LANDMARKS } from './nationalAtlas';
-import { createLandmarkModels } from './landmarkModels';
-import { GEOMETRY_DATE, getStationData, getStationSnapshot, MALAYSIA_BOUNDS, MALAYSIA_MAX_BOUNDS,
+import { createLandmarkModels, landmarkLabels } from './landmarkModels';
+import { GEOMETRY_DATE, getStationData, getStationSnapshot, MALAYSIA_MAX_BOUNDS,
   MAP_STATIONS, stationId, stationPosition } from './networkMapData';
 import type { RailStation } from './networkMapData';
 import type { MapOverlay } from './NetworkOverview';
@@ -28,8 +30,8 @@ const lineName = (name: string) => name.replace('KTM Komuter (', '').replace(' L
 function fitMalaysia(map: Map, is3D: boolean, animate = true) {
   if (map.getContainer().clientWidth < 160 || map.getContainer().clientHeight < 160) return;
   const small = map.getContainer().clientWidth < 650;
-  map.fitBounds(MALAYSIA_BOUNDS, { padding: { top: small ? 150 : 36, right: small ? 20 : 35, bottom: 55, left: small ? 25 : 190 },
-    absolutePadding: true, linear: true, pitch: is3D ? 40 : 0, bearing: 0, duration: animate ? animationDuration() : 0 });
+  map.fitBounds(ATLAS_BOUNDS, { padding: { top: small ? 170 : 20, right: small ? 20 : 25, bottom: small ? 150 : 25, left: small ? 25 : 190 },
+    absolutePadding: true, linear: true, pitch: is3D ? 30 : 0, bearing: 0, duration: animate ? animationDuration() : 0 });
 }
 
 export function NetworkMap(props: Props) {
@@ -49,6 +51,8 @@ export function NetworkMap(props: Props) {
   const tiltedRef = useRef(tilted);
   tiltedRef.current = tilted;
   const fitOnResize = useRef(true);
+  const compactRef = useRef(true);
+  const [compactLayout, setCompactLayout] = useState(true);
   const [legendOpen, setLegendOpen] = useState(false);
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [view, setView] = useState('Malaysia');
@@ -65,7 +69,7 @@ export function NetworkMap(props: Props) {
     setReady(false); setRendererError(false); setTileError(false); setTilesReady(false);
     let map: Map;
     try {
-      map = new Map({ container: container.current, style: createNetworkStyle(), center: [109.5, 4], zoom: 4.6,
+      map = new Map({ container: container.current, style: createNetworkStyle(true), center: [109.5, 4], zoom: 4.6,
         minZoom: 1.5, maxZoom: 18.5, maxPitch: 65,
         transformConstrain: (center, nextZoom) => ({ center: new LngLat(
           Math.max(MALAYSIA_MAX_BOUNDS[0][0], Math.min(MALAYSIA_MAX_BOUNDS[1][0], center.lng)),
@@ -85,14 +89,22 @@ export function NetworkMap(props: Props) {
     const updateModels = () => {
       cancelAnimationFrame(modelFrame);
       modelFrame = requestAnimationFrame(() => {
-        (map.getSource('landmarks') as GeoJSONSource | undefined)?.setData(createLandmarkModels(map.getZoom()));
+        (map.getSource('landmarks') as GeoJSONSource | undefined)?.setData(atlasData(createLandmarkModels(map.getZoom()), compactRef.current));
+        (map.getSource('landmark-labels') as GeoJSONSource | undefined)?.setData(atlasData(landmarkLabels(map.getZoom()), compactRef.current));
       });
     };
     let styleReady = false;
-    map.on('style.load', () => { styleReady = true; fitMalaysia(map, tiltedRef.current, false); updateModels(); setReady(true); });
+    map.on('style.load', () => { styleReady = true; setMapLayout(true); fitMalaysia(map, tiltedRef.current, false); updateModels(); setReady(true); });
     map.on('zoom', updateModels);
     map.on('movestart', event => { if (event.originalEvent) fitOnResize.current = false; });
-    map.on('zoomend', () => setZoom(map.getZoom()));
+    map.on('zoomend', () => {
+      setZoom(map.getZoom());
+      if (compactRef.current && !fitOnResize.current && map.getZoom() >= 9) {
+        const center = map.getCenter();
+        setMapLayout(false);
+        map.jumpTo({ center: geographicPoint([center.lng, center.lat]) });
+      }
+    });
     map.on('sourcedata', event => {
       if (event.sourceId === 'openmaptiles' && event.isSourceLoaded) setTilesReady(true);
     });
@@ -122,9 +134,19 @@ export function NetworkMap(props: Props) {
       if (!landmark) return;
       exploreLandmark(landmark.id);
     });
-    map.on('mouseenter', 'landmark-models', () => { map.getCanvas().style.cursor = 'pointer'; });
-    map.on('mouseleave', 'landmark-models', () => { map.getCanvas().style.cursor = ''; });
+    map.on('mousemove', 'landmark-models', event => {
+      map.getCanvas().style.cursor = 'pointer';
+      const landmark = NATIONAL_LANDMARKS.find(l => l.id === event.features?.[0]?.properties?.id);
+      if (!landmark) return;
+      const content = document.createElement('div');
+      const title = document.createElement('strong'); title.textContent = landmark.name;
+      const detail = document.createElement('p'); detail.textContent = `${landmark.state} · Click to explore`;
+      content.append(title, detail);
+      popup.setLngLat((compactRef.current ? atlasPoint(landmark.position) : landmark.position) as [number, number]).setDOMContent(content).addTo(map);
+    });
+    map.on('mouseleave', 'landmark-models', () => { map.getCanvas().style.cursor = ''; popup.remove(); });
     map.on('mousemove', 'station-hit-area', event => {
+      if (map.queryRenderedFeatures(event.point, { layers: ['landmark-models'] }).length) return;
       const station = hit(event);
       if (!station) return;
       map.getCanvas().style.cursor = 'pointer';
@@ -135,7 +157,7 @@ export function NetworkMap(props: Props) {
       const value = document.createElement('p'); value.textContent = ridership === null ? 'No station data for this month'
         : `${number.format(ridership)} boardings · ${latest.current.playbackMonth}`;
       content.append(title, detail, value);
-      popup.setLngLat(stationPosition(station)).setDOMContent(content).addTo(map);
+      popup.setLngLat((compactRef.current ? atlasPoint(stationPosition(station)) : stationPosition(station)) as [number, number]).setDOMContent(content).addTo(map);
     });
     map.on('mouseleave', 'station-hit-area', () => { map.getCanvas().style.cursor = ''; popup.remove(); });
     let resizeFrame = 0;
@@ -164,8 +186,8 @@ export function NetworkMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    (map.getSource('stations') as GeoJSONSource).setData(snapshot.data);
-    (map.getSource('routes') as GeoJSONSource).setData(routes);
+    (map.getSource('stations') as GeoJSONSource).setData(atlasData(snapshot.data, compactRef.current));
+    (map.getSource('routes') as GeoJSONSource).setData(atlasData(compactRef.current ? getAtlasRoutes(selectedLine) : routes, compactRef.current));
     popupRef.current?.remove();
   }, [ready, snapshot, routes]);
 
@@ -179,7 +201,7 @@ export function NetworkMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    for (const layer of ['buildings-3d', 'building-footprints', 'landmark-models']) map.setLayoutProperty(layer, 'visibility', tilted ? 'visible' : 'none');
+    for (const layer of ['buildings-3d', 'building-footprints', 'landmark-models', 'landmark-names']) map.setLayoutProperty(layer, 'visibility', tilted && (layer.startsWith('landmark-') || !compactRef.current) ? 'visible' : 'none');
     map.setMaxPitch(tilted ? 65 : 0);
     if (fitOnResize.current) fitMalaysia(map, tilted);
     else map.easeTo({ pitch: tilted ? (map.getZoom() >= 10 ? 50 : 40) : 0, duration: animationDuration() });
@@ -189,11 +211,13 @@ export function NetworkMap(props: Props) {
     const map = mapRef.current;
     if (!ready || !map) return;
     if (selected) {
+      setMapLayout(false);
       fitOnResize.current = false;
       setView(selected.name);
       map.flyTo({ center: stationPosition(selected), zoom: 15.7, pitch: tilted ? 55 : 0, bearing: -18,
         padding: { top: 85, bottom: 80, left: map.getContainer().clientWidth > 800 ? 250 : 30, right: 35 }, duration: animationDuration() });
     } else if (selectedLine !== 'All Lines') {
+      setMapLayout(false);
       fitOnResize.current = false;
       const points = MAP_STATIONS.filter(s => s.line === selectedLine).map(stationPosition);
       if (points.length) {
@@ -202,15 +226,36 @@ export function NetworkMap(props: Props) {
           [Math.max(...points.map(p => p[0])), Math.max(...points.map(p => p[1]))]],
         { padding: { top: 100, bottom: 110, left: 40, right: 40 }, maxZoom: 14, pitch: tilted ? 35 : 0, bearing: 0, duration: animationDuration() });
       }
-    } else { fitOnResize.current = true; setView('Malaysia'); fitMalaysia(map, tilted); }
+    } else { fitOnResize.current = true; setMapLayout(true); setView('Malaysia'); fitMalaysia(map, tilted); }
     // Camera follows filter changes only; the building toggle preserves its center.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, selectedLine, selectedStation]);
+
+  function setMapLayout(compact: boolean) {
+    const map = mapRef.current;
+    if (!map) return;
+    compactRef.current = compact;
+    setCompactLayout(compact);
+    const style = createNetworkStyle(compact);
+    for (const id of ['malaysia', 'outside', 'states', 'state-names']) {
+      const source = style.sources[id];
+      if (source.type === 'geojson') (map.getSource(id) as GeoJSONSource)?.setData(source.data as GeoJSON);
+    }
+    (map.getSource('routes') as GeoJSONSource)?.setData(atlasData(compact ? getAtlasRoutes(latest.current.selectedLine) : getNationalRoutes(latest.current.selectedLine), compact));
+    (map.getSource('stations') as GeoJSONSource)?.setData(atlasData(getStationSnapshot(latest.current.playbackMonth, latest.current.selectedLine, latest.current.selectedStation).data, compact));
+    (map.getSource('landmarks') as GeoJSONSource)?.setData(atlasData(createLandmarkModels(map.getZoom()), compact));
+    (map.getSource('landmark-labels') as GeoJSONSource)?.setData(atlasData(landmarkLabels(map.getZoom()), compact));
+    for (const layer of style.layers) if ('source' in layer && layer.source === 'openmaptiles') {
+      const building = ['buildings-3d', 'building-footprints'].includes(layer.id);
+      map.setLayoutProperty(layer.id, 'visibility', compact || (building && !tiltedRef.current) ? 'none' : 'visible');
+    }
+  }
 
   function exploreLandmark(id: string) {
     const map = mapRef.current;
     const landmark = NATIONAL_LANDMARKS.find(l => l.id === id);
     if (!map || !landmark) return;
+    setMapLayout(false);
     fitOnResize.current = false;
     setView(`${landmark.name} · ${landmark.state}`);
     map.flyTo({ center: landmark.position, zoom: 15.6, pitch: tiltedRef.current ? 50 : 0, bearing: -16,
@@ -221,16 +266,16 @@ export function NetworkMap(props: Props) {
   const selectedValues = selected ? getStationData(selected, playbackMonth) : null;
   const filtered = selectedLine !== 'All Lines' || selectedStation !== 'All Stations';
 
-  return <section className="rail-map" aria-label="Interactive Malaysia rail network">
+  return <section className={`rail-map ${compactLayout ? 'rail-map-atlas' : ''}`} aria-label="Interactive Malaysia rail network">
     <div className="rail-map-canvas" ref={container} />
     <div className="rail-map-heading">
       <span className="rail-map-eyebrow">MALAYSIA RAIL ATLAS</span><h2>{view}</h2>
-      <span className="rail-map-subtitle">{tilted ? (zoom >= 13 ? 'Landmark architecture · white city blocks · rail network' : 'State landmarks · nationwide rail network') : 'State boundaries · rail routes · passenger demand'}</span>
+      <span className="rail-map-subtitle">{tilted ? (zoom >= 13 ? 'Landmark architecture · white city blocks · rail network' : 'Grey landmarks · nationwide rail network') : 'State boundaries · rail routes · passenger demand'}</span>
     </div>
     <div className="rail-map-toolbar" aria-label="Map dimension">
       <button disabled={!ready} aria-pressed={!tilted} onClick={() => setTilted(false)}>2D</button>
       <button disabled={!ready} aria-pressed={tilted} onClick={() => setTilted(true)}>2.5D</button>
-      <button disabled={!ready} onClick={() => { if (mapRef.current) { fitOnResize.current = true; setView('Malaysia'); fitMalaysia(mapRef.current, tilted); } }}>Reset view</button>
+      <button disabled={!ready} onClick={() => { if (mapRef.current) { fitOnResize.current = true; setMapLayout(true); setView('Malaysia'); fitMalaysia(mapRef.current, tilted); } }}>Reset view</button>
       <button aria-label={expanded ? 'Collapse map' : 'Expand map'} title={expanded ? 'Collapse map (Esc)' : 'Expand map'} aria-pressed={expanded} onClick={() => setExpanded(value => !value)}>
         <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d={expanded ? 'M7 2v5H2m11-5v5h5M7 18v-5H2m11 5v-5h5' : 'M2 7V2h5m6 0h5v5M2 13v5h5m6 0h5v-5'} /></svg>
       </button>
@@ -240,7 +285,7 @@ export function NetworkMap(props: Props) {
         {NATIONAL_LANDMARKS.map(l => <option key={l.id} value={l.id}>{l.state} · {l.name}</option>)}
       </select></div>}
     {filtered && <div className="rail-map-focus"><span>{selectedLine}{selectedStation !== 'All Stations' ? ` · ${selectedStation}` : ''}</span>
-      <button onClick={() => { onResetFocus?.(); if (mapRef.current) fitMalaysia(mapRef.current, tilted); }}>Clear filter</button></div>}
+      <button onClick={() => { onResetFocus?.(); if (mapRef.current) { setMapLayout(true); fitMalaysia(mapRef.current, tilted); } }}>Clear filter</button></div>}
     {selected && selectedValues && <aside className="rail-station-card" aria-label="Selected station details" aria-live="polite">
       <span className="rail-map-eyebrow">SELECTED STATION · {selected.code}</span>
       <h3>{selected.name}</h3><p>{selected.line}</p>
@@ -256,7 +301,7 @@ export function NetworkMap(props: Props) {
         {routes.features.map(feature => <div key={feature.properties?.id} className={feature.properties?.inScope ? '' : 'rail-line-muted'}>
           <i style={{ background: feature.properties?.color }} /><span>{lineName(feature.properties?.name)}</span>
           {feature.properties?.geometrySource !== 'Official GTFS' && <span title="Approximate reference corridor">*</span>}
-        </div>)}<p>* Reference corridor. KTMB follows official stop sequences; Rapid Rail uses official route shapes.</p>
+        </div>)}<p>* Reference corridor. KTMB uses reference corridors; shared east-coast tracks are grouped in the atlas. Rapid Rail uses official route shapes.</p>
       </div>}
     </div>
     <div className="rail-map-bottom">
@@ -280,12 +325,12 @@ export function NetworkMap(props: Props) {
         </details>
       </div>
     </div>
-    <div className="rail-source-bar"><span>{routes.features.length} rail routes · {tilted ? 'White architectural models' : 'Malaysia 2D'}</span>
+    <div className="rail-source-bar">{compactLayout && <span>Compact atlas · East Malaysia repositioned, 70% scale</span>}<span>{routes.features.length} rail routes · {tilted ? `${NATIONAL_LANDMARKS.length} landmark models` : 'Malaysia 2D'}</span>
       <button onClick={() => setSourcesOpen(open => !open)} aria-expanded={sourcesOpen}>Data & map sources</button></div>
     {sourcesOpen && <aside className="rail-source-panel" aria-label="Map data sources">
       <button className="rail-source-close" onClick={() => setSourcesOpen(false)} aria-label="Close data sources">×</button>
       <h3>About this map</h3>
-      <p>Buildings and streets: <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a> / OpenStreetMap vector tiles. Ordinary buildings are simplified white blocks. Landmark massing models stand at their map coordinates and are exaggerated at national scale; they are not surveyed architectural models. Select a model to zoom to its location.</p>
+      <p>Buildings and streets: <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a> / OpenStreetMap vector tiles. Ordinary buildings are simplified white blocks. Grey landmark models use simplified, distinctive silhouettes. The compact national atlas moves East Malaysia closer at 70% scale; zooming into a destination restores geographic coordinates. Landmark massing models stand at their map coordinates and are exaggerated at national scale; they are not surveyed architectural models. Select a model to zoom to its location.</p>
       <p>Rapid Rail routes and station coordinates: <a href="https://developer.data.gov.my/realtime-api/gtfs-static" target="_blank" rel="noreferrer">data.gov.my GTFS</a>, CC BY 4.0. Snapshot: {GEOMETRY_DATE}. KTMB routes follow the longest published stop sequence in its GTFS feed; that feed has no track shapes. These lines are schematic.</p>
       <p>Airport rail, Sabah State Railway and Penang Hill Railway are approximate reference corridors. Their grey stations have no passenger data in this project. State boundaries: <a href="https://github.com/dosm-malaysia/data-open/tree/main/datasets/geodata" target="_blank" rel="noreferrer">DOSM geodata</a>.</p>
       <p>Boardings: the project's monthly origin-trip aggregates. Grey means missing; zero is shown separately. Red marks the top 10% of positive recorded station values in the selected line and month, including ties.</p>
