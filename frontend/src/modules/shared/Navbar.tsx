@@ -104,12 +104,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 20px',
-      height: '58px',
       flexShrink: 0,
-      gap: '24px',
     }}>
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
@@ -129,9 +124,6 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
           </div>
         </div>
       </div>
-
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
 
       {/* Nav Tabs */}
       <nav

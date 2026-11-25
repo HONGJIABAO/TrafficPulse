@@ -58,6 +58,32 @@
   outline-offset: 2px;
 }
 
+.transit-navbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 58px;
+  padding: 0 20px;
+}
+
+@media (max-width: 900px) {
+  .transit-navbar {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px 12px 4px;
+  }
+
+  .nav-tabs-container {
+    flex: 1 0 100%;
+    overflow-x: auto;
+    padding-inline: 4px;
+  }
+
+  .nav-tab-btn {
+    flex-shrink: 0;
+  }
+}
+
 .tab-label {
   position: relative;
   z-index: 4;
