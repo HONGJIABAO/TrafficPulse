@@ -1,0 +1,33 @@
+{
+  "forecast_days": 90,
+  "dashboard_windows": [30, 60, 90],
+  "validation_horizons": [7, 14, 28],
+  "seasonal_period": 7,
+  "mature_min_history_days": 730,
+  "mature_lookback_days": 730,
+  "mature_min_fold_training_days": 365,
+  "mature_fold_step_days": 28,
+  "mature_max_folds": 8,
+  "mature_holdout_days": 28,
+  "short_min_fold_training_days": 42,
+  "short_fold_step_days": 7,
+  "short_max_folds": 8,
+  "short_holdout_days": 14,
+  "intervention_min_training_days": 28,
+  "intervention_min_common_folds_for_selection": 3,
+  "ridge_penalty": 10,
+  "ridge_lags_days": [7, 14],
+  "ridge_annual_min_training_days": 730,
+  "ridge_future_trend_damping_days": 28,
+  "recent_baseline_days": 28,
+  "scenarios": {
+    "low_day_90_offset_from_base": -0.20,
+    "high_day_90_offset_from_base": 0.20
+  },
+  "uncertainty": {
+    "quantiles": [0.10, 0.90],
+    "lead_bands": [[1, 7], [8, 14], [15, 28]],
+    "minimum_residuals_per_band": 14
+  },
+  "evaluation_as_of_date": "2026-11-24"
+}

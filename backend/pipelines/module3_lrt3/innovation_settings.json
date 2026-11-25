@@ -1,0 +1,14 @@
+{
+  "as_of_date": "2026-11-24",
+  "transfer_weights": [0.25, 0.5, 0.75],
+  "primary_transfer_weight": 0.5,
+  "profile_lookback_days": 56,
+  "recent_baseline_days": 28,
+  "short_training_window_days": 56,
+  "watchlist": {
+    "material_change_pct": 3.0,
+    "rolling_28d_wape_pct": 12.0,
+    "rolling_28d_naive_deficit_pp": 2.0,
+    "candidate_mean_spread_pct": 10.0
+  }
+}

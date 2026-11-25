@@ -1,0 +1,20 @@
+{
+  "as_of_date": "2026-11-24",
+  "recent_baseline_days": 28,
+  "windows_hours": {
+    "am_peak": [7, 9],
+    "pm_peak": [18, 20],
+    "off_peak": [11, 16]
+  },
+  "nominal_train_capacity": {
+    "passenger_places": 624,
+    "unit": "passenger_places_per_three_car_train",
+    "source_reported_passenger_places": 624,
+    "source_reported_seats": 102,
+    "source_description": "MRCB Integrated Annual Report 2024, LRV Specifications, Sustainability and Operations",
+    "source_url": "https://ir2.chartnexus.com/mrcb/docs/AR/2024.pdf",
+    "publisher_index_url": "https://www.mrcb.com/financial-reports/",
+    "verified_on": "2026-11-24",
+    "limitations": "Design carrying capacity, including seats and standing places. The report does not establish the actual consist, delivered train frequency, occupancy or throughput for any future departure."
+  }
+}
