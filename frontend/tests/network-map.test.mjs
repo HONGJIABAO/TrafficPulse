@@ -1,4 +1,5 @@
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import spec from '@maplibre/maplibre-gl-style-spec';
 import { createNetworkStyle } from '../src/modules/module1_network_overview/networkMapStyle.ts';
@@ -8,6 +9,58 @@ import { NATIONAL_LANDMARKS, STATE_LABELS, CONTEXT_STATIONS } from '../src/modul
 import states from '../src/data/malaysia_states.json' with { type: 'json' };
 import { createLandmarkModels } from '../src/modules/module1_network_overview/landmarkModels.ts';
 import { atlasData, atlasPoint, geographicPoint } from '../src/modules/module1_network_overview/atlasLayout.ts';
+import { classifyDemand, DEMAND_COLORS, stationMatchesLine } from '../src/modules/module1_network_overview/networkMapData.ts';
+import { regionSummary, displayStations, inKlangValley } from '../src/modules/module1_network_overview/railSemantics.ts';
+import { scaledModels, arrangeAtlas, DEFAULT_LANDMARK_IDS, inLandmarkState } from '../src/modules/module1_network_overview/atlasPresentation.ts';
+import { getAtlasRoutes } from '../src/modules/module1_network_overview/nationalRailNetwork.ts';
+
+test('all six demand classes use positive percentiles, consistent ties, and fixed marker size', () => {
+  const thresholds={p50:50,p75:75,p90:90};
+  assert.deepEqual([null,0,20,50,75,90,100].map(v=>classifyDemand(v,thresholds)),['missing','zero','lower','moderate','high','top','top']);
+  const snapshot=getStationSnapshot('2026-08','All Lines','All Stations');
+  assert.equal(new Set(snapshot.data.features.map(f=>f.properties.radius)).size,1);
+  for(const f of snapshot.data.features) assert.equal(f.properties.color,DEMAND_COLORS[classifyDemand(f.properties.value,snapshot.thresholds)]);
+});
+
+test('Klang Valley inherits the highest category and does not call partial zero coverage zero', () => {
+  const data=(categories)=>({type:'FeatureCollection',features:categories.map(category=>({type:'Feature',geometry:{type:'Point',coordinates:[101.7,3.1]},properties:{category,inScope:true,value:category==='missing'?null:category==='zero'?0:100}}))});
+  for(const category of ['lower','moderate','high','top']) assert.equal(regionSummary(data(['missing','zero',category])).category,category);
+  assert.equal(regionSummary(data(['zero','missing'])).category,'missing');
+  assert.equal(regionSummary(data(['zero','zero'])).category,'zero');
+  assert.equal(regionSummary(data(['missing','missing'])).category,'missing');
+  const actual=getStationSnapshot('2026-08','All Lines','All Stations').data;
+  assert.equal(regionSummary(actual).category,'top');
+  const display=displayStations(actual,true);
+  assert.equal(display.features.filter(f=>f.properties.regional).length,1);
+  assert.equal(display.features.filter(f=>inKlangValley(f.geometry.coordinates)&&!f.properties.regional).length,0);
+  assert.deepEqual(displayStations(actual,false),actual);
+  assert.equal(regionSummary(getStationSnapshot('2019-01','All Lines','All Stations').data).category,'missing');
+});
+
+test('atlas scales every model dimension exactly 0.8 while detailed geometry/materials remain original', () => {
+  for(const zoom of [4,6,7]) {
+    const base=createLandmarkModels(zoom), scaled=scaledModels(zoom,true);
+    base.features.forEach((feature,i)=>{
+      const actual=scaled.features[i], anchor=NATIONAL_LANDMARKS.find(l=>l.id===feature.properties.id).position;
+      assert.equal(actual.properties.height,feature.properties.height*.8);
+      assert.equal(actual.properties.base,feature.properties.base*.8);
+      feature.geometry.coordinates[0].forEach((p,j)=>{
+        const expected=atlasPoint([anchor[0]+(p[0]-anchor[0])*.8,anchor[1]+(p[1]-anchor[1])*.8]);
+        assert.deepEqual(actual.geometry.coordinates[0][j],expected);
+      });
+    });
+  }
+  assert.deepEqual(scaledModels(15.6,false),createLandmarkModels(15.6));
+});
+
+test('atlas preserves every source route; exact route filters include verified stations', () => {
+  assert.deepEqual(getAtlasRoutes('All Lines'),getNationalRoutes('All Lines'));
+  for(const route of getNationalRoutes('All Lines').features) {
+    const name=route.properties.name;
+    assert.ok(MAP_STATIONS.some(s=>stationMatchesLine(s,name)),`No stations for ${name}`);
+    assert.equal(getNationalRoutes(name).features.filter(f=>f.properties.inScope).length,1,name);
+  }
+});
 
 test('compact atlas is reversible and keeps route/station coordinates aligned without mutating data', () => {
   for (const station of MAP_STATIONS) {
@@ -129,4 +182,35 @@ test('landmarks use ground-anchored 3D geometry at national and city scales', ()
       for (const axis of [0,1]) assert.ok(Math.abs(podium.reduce((sum,p)=>sum+p[axis],0)/podium.length-landmark.position[axis]) < 1e-8);
     }
   }
+});
+
+
+test('detailed models retain the pre-refinement geometry and materials at regional and city zooms',()=>{
+  const hash=createHash('sha256').update(JSON.stringify([9,11,15.6].map(z=>createLandmarkModels(z)))).digest('hex');
+  assert.equal(hash,'ee0bac164ce8d2c1de3581229e70c9d7c08eb7c2ef86d2f1efc6e692e8579953');
+});
+
+test('national composition keeps the thirteen selected miniatures at 0.8 without collision shrinking',()=>{
+  const map={getZoom:()=>6,getPitch:()=>30,
+    getContainer:()=>({clientWidth:1400,clientHeight:600,getBoundingClientRect:()=>({x:0,y:0}),parentElement:null}),
+    project:p=>({x:(p[0]-99)*95+80,y:(7.3-p[1])*60+30}),
+    unproject:p=>({lng:(p[0]-80)/95+99,lat:7.3-(p[1]-30)/60})};
+  const routes=atlasData(getNationalRoutes('All Lines'));
+  const stations=atlasData(displayStations(getStationSnapshot('2026-08','All Lines','All Stations').data,true));
+  const before=JSON.stringify([routes,stations]);
+  const result=arrangeAtlas(map,routes,stations);
+  const visible=result.models.features.filter(f=>f.properties.visible);
+  assert.deepEqual(new Set(visible.map(f=>f.properties.id)),DEFAULT_LANDMARK_IDS);
+  for(const f of visible){
+    assert.ok(f.properties.height>f.properties.base, `${f.properties.id} must have outward-facing extrusion surfaces`);
+    assert.equal(f.properties.modelScale,.8);
+    assert.equal(f.properties.collisionScale,1);
+    const landmark=NATIONAL_LANDMARKS.find(l=>l.id===f.properties.id);
+    assert.deepEqual([f.properties.anchorLng,f.properties.anchorLat],landmark.position);
+    if(landmark.id==='penang-bridge')continue;
+    const placement=geographicPoint([f.properties.placementLng,f.properties.placementLat]);
+    assert.ok(inLandmarkState(placement,landmark.state)||(landmark.id==='petronas'&&inLandmarkState(placement,'Selangor')),landmark.id);
+  }
+  assert.equal(result.stateNames.features.filter(f=>!f.properties.territory).length,13);
+  assert.equal(JSON.stringify([routes,stations]),before);
 });

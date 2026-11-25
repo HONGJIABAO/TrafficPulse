@@ -100,3 +100,23 @@
 .rail-map-atlas .maplibregl-ctrl-scale { display: none; }
 .rail-map-atlas .rail-source-bar { flex-wrap: wrap; gap: 4px 12px; max-width: calc(100% - 65px); }
 .rail-map-atlas .rail-source-bar > span:first-child { color: #43545e; }
+
+/* Living rail atlas: keep controls compact and overlays in separate corners. */
+.klang-label { border:1px solid #dce5ed; border-radius:7px; background:#fff; color:#12243e; padding:6px 9px; font:600 11px/1.2 Inter,system-ui,sans-serif; box-shadow:0 3px 10px #33415522; cursor:pointer; white-space:nowrap; }
+.klang-label:focus-visible { outline:3px solid #1262d3; outline-offset:3px; }
+.klang-label { transition:opacity 220ms ease; }
+.klang-label.is-leaving { opacity:0; pointer-events:none; }
+.rail-line-list > button { display:flex; align-items:center; gap:8px; width:100%; padding:7px 0; border:0; background:transparent; font-size:11px; text-align:left; color:inherit; }
+.rail-line-list > button:hover { background:#edf3f7; }
+.rail-demand-legend { width:290px; padding:10px 12px; }
+.rail-demand-scale { display:grid; grid-template-columns:repeat(3,1fr); gap:7px 10px; }
+.rail-demand-scale i { width:7px !important; height:7px !important; }
+.rail-demand-legend details { position:relative; margin-top:7px; font-size:10px; color:#526a7b; }
+.rail-demand-legend summary { cursor:pointer; }
+.rail-demand-legend details[open] { position:absolute; bottom:100%; width:290px; left:0; padding:12px; background:#fff; border:1px solid #d7e2e7; border-radius:9px; box-shadow:0 3px 15px #33415518; }
+.rail-map-bottom { right:auto; max-width:calc(100% - 65px); }
+.rail-map .rail-station-card { left:auto; right:18px; top:72px; width:220px; max-height:calc(100% - 110px); overflow:auto; }
+.rail-map .rail-station-card h3 { margin:5px 0; }
+.rail-map .rail-station-value { font-size:23px; }
+@media(max-width:760px) { .rail-map .rail-station-card { top:238px; right:14px; width:185px; max-height:190px; }.rail-demand-legend { width:270px; }.rail-demand-legend details[open] { width:270px; } }
+@media(prefers-reduced-motion:reduce) { .klang-label { transition:none; } }

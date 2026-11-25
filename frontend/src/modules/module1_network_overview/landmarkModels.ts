@@ -4,7 +4,7 @@ import { NATIONAL_LANDMARKS } from './nationalAtlas.ts';
 // Original architectural massing models, anchored to each landmark's coordinates.
 // At country scale the models are exaggerated for legibility; at city scale they
 // settle into compact grey architectural models. These are not surveyed models.
-export function createLandmarkModels(zoom: number): FeatureCollection<Polygon> {
+export function createLandmarkModels(zoom: number, nationwideRefinement = false): FeatureCollection<Polygon> {
   const features: Feature<Polygon>[] = [];
   const ordered = [...NATIONAL_LANDMARKS].sort((a,b)=>a.priority-b.priority);
   const shown: typeof ordered = [];
@@ -32,8 +32,36 @@ export function createLandmarkModels(zoom: number): FeatureCollection<Polygon> {
       for (let i=0;i<5;i++) box(x,y,size*(1-i*.17),size*.7*(1-i*.17),base+(peak-base)*i/5,base+(peak-base)*(i+1)/5,'#656b70');
     };
     // A low podium makes every model read as architecture planted on the map.
-    box(0,0,1,.65,0,.035,'#c9ccce');
-    switch (landmark.kind) {
+    box(0,0,nationwideRefinement===true&&tall?.56:1,nationwideRefinement===true&&tall?.50:.65,0,.035,'#c9ccce');
+    // The nationwide Maha Tower silhouette has an observation deck and spire.
+    // This optional branch never changes detailed-view assets or their sizing.
+    const kind=nationwideRefinement===true&&landmark.id==='maha-tower'?'needle':landmark.kind;
+    switch (kind) {
+      case 'bridge':
+        box(0,0,2,.17,.18,.23,'#c2c8cf');
+        for (const x of [-.45,.45]) for (const y of [-.09,.09]) {
+          box(x,y,.035,.035,.03,1,'#929ca7');
+          for (const direction of [-1,1]) for (const length of [.18,.32,.48]) for(let i=0;i<18;i++) {
+            const t=i/18; box(x+direction*length*t,y,.025,.012,.23+(.7*(1-t)),.25+(.7*(1-t)),'#c2c8cf');
+          }
+        }
+        break;
+      case 'mountain':
+        for (const [x,y,size,peak] of [[0,0,1,1.4],[-.45,.1,.7,.9],[.4,.12,.6,1.05]]) {
+          if(nationwideRefinement===true) {
+            // Three consistent light-facing facets instead of horizontal stripes.
+            for(let i=0;i<48;i++) {
+              const t=i/48,r=size*(1-t), corners=[[x-r*.65,y-r*.45],[x+r*.62,y-r*.3],[x+r*.16,y+r*.6]];
+              for(let face=0;face<3;face++) polygon([[x,y],corners[face],corners[(face+1)%3]],t*peak,(t+1/48)*peak,['#f5f6f8','#c2c8cf','#929ca7'][face]);
+            }
+            continue;
+          }
+          for(let i=0;i<24;i++) {
+            const t=i/24, r=size*(1-t);
+            polygon([[x-r*.65,y-r*.45],[x+r*.62,y-r*.3],[x+r*.16,y+r*.6]],t*peak,(t+1/24)*peak,i>18?'#f5f6f8':i%3?'#c2c8cf':'#929ca7');
+          }
+        }
+        break;
       case 'twins':
         for (const x of [-.27,.27]) {
           cylinder(x,0,.19,.03,.55,8);
@@ -96,8 +124,18 @@ export function createLandmarkModels(zoom: number): FeatureCollection<Polygon> {
       case 'palace':
         box(0,0,.8,.48,.03,.46); roof(0,0,1,.46,.78);
         box(0,.12,.32,.24,.7,.84); roof(0,.12,.48,.84,1);
+        if(nationwideRefinement===true) for(const x of [-.32,-.16,0,.16,.32]) {
+          box(x,-.25,.06,.015,.13,.32,'#515a60');box(x,-.27,.025,.04,.03,.46,'#d1d3d4');
+        }
         break;
       case 'assembly':
+        if(nationwideRefinement===true) {
+          cylinder(0,0,.42,.03,.36,9);
+          for(let i=0;i<16;i++) {const t=i/16;cylinder(0,0,.64*(1-t)**2+.05,.36+t*.65,.36+(t+1/16)*.65,9,i<3?'#656b70':'#c9ccce');}
+          cylinder(0,0,.018,1.01,1.22,8,'#626b72');
+          for(let i=0;i<9;i++){const a=i*Math.PI*2/9;box(Math.cos(a)*.39,Math.sin(a)*.39,.035,.035,.03,.36,'#515a60');}
+          break;
+        }
         cylinder(0,0,.42,.03,.42,9); roof(0,0,1,.42,.75); roof(0,0,.65,.75,.96); cylinder(0,0,.02,.96,1.12,6);
         break;
       case 'clock':

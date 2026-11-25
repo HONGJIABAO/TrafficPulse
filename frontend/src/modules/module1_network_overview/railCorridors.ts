@@ -45,6 +45,8 @@ export function isCorridorMatch(corridorName: string, selectedFilter: string): b
   if (selectedFilter === 'All Lines') return true;
   const c = corridorName.toLowerCase();
   const q = selectedFilter.toLowerCase();
+  if (c === q) return true;
+  if (['lrt ampang', 'lrt sri petaling'].includes(q) || (q.startsWith('ktm ') && !['ktm komuter', 'ktm intercity'].includes(q))) return false;
   if (q.includes('kelana jaya') && c.includes('kelana jaya')) return true;
   if (q.includes('ampang') && (c.includes('ampang') || c.includes('sri petaling'))) return true;
   if (q.includes('kajang') && c.includes('kajang')) return true;

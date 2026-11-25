@@ -12,15 +12,17 @@ export const STATE_LABELS: FeatureCollection<Point> = {
     geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] } })),
 };
 
-export type LandmarkKind = 'twins' | 'fort' | 'needle' | 'pagoda' | 'mosque' | 'palace' | 'clock' | 'cylinder' | 'assembly' | 'chimney' | 'spire' | 'skyscraper' | 'church' | 'colonial' | 'leaning';
+export type LandmarkKind = 'twins' | 'fort' | 'needle' | 'pagoda' | 'mosque' | 'palace' | 'clock' | 'cylinder' | 'assembly' | 'chimney' | 'spire' | 'skyscraper' | 'church' | 'colonial' | 'leaning' | 'bridge' | 'mountain';
 export interface NationalLandmark {
   id: string; name: string; state: string; position: [number, number]; kind: LandmarkKind;
-  side: 'left' | 'right'; priority: number;
+  side: 'left' | 'right'; priority: number; anchorSource?: string;
 }
 
 // Architectural illustrations at approximate landmark locations. Deliberately
 // not to scale: national-scale icons should remain recognisable when zoomed out.
 export const NATIONAL_LANDMARKS: NationalLandmark[] = [
+  { id: 'penang-bridge', name: 'Penang Bridge', state: 'Pulau Pinang', position: [100.352554, 5.353863], kind: 'bridge', side: 'left', priority: 1, anchorSource: 'https://en.wikipedia.org/wiki/Penang_Bridge' },
+  { id: 'kinabalu', name: 'Mount Kinabalu', state: 'Sabah', position: [116.5591, 6.0757], kind: 'mountain', side: 'right', priority: 1, anchorSource: 'https://mapcarta.com/15859528' },
   { id: 'al-hussain', name: 'Al Hussain Mosque', state: 'Perlis', position: [100.1297, 6.3994], kind: 'mosque', side: 'left', priority: 8 },
   { id: 'alor-setar', name: 'Alor Setar Tower', state: 'Kedah', position: [100.3676, 6.1248], kind: 'needle', side: 'right', priority: 5 },
   { id: 'kek-lok-si', name: 'Kek Lok Si', state: 'Pulau Pinang', position: [100.2737, 5.3998], kind: 'pagoda', side: 'left', priority: 4 },

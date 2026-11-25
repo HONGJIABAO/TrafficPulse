@@ -6,7 +6,8 @@ import { RidershipTrendChart } from './RidershipTrendChart';
 import { LinePerformanceCard } from './LinePerformanceCard';
 import { KtmbDonutChart } from './KtmbDonutChart';
 import { NetworkMap } from './NetworkMap';
-import { MAP_STATIONS } from './networkMapData';
+import { getNationalRoutes } from './nationalRailNetwork';
+import { MAP_STATIONS, stationMatchesLine } from './networkMapData';
 import { KpiCard } from './KpiCard';
 import { TimelinePlaybar } from './TimelinePlaybar';
 
@@ -31,7 +32,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Unique lines from stations
-  const lines = useMemo(() => ['All Lines', ...new Set(MAP_STATIONS.map(station => station.line))], []);
+  const lines = useMemo(() => ['All Lines', ...new Set([...MAP_STATIONS.map(station => station.line), ...getNationalRoutes('All Lines').features.map(f => String(f.properties?.name))])], []);
 
   // Filtered and deduplicated station list based on pendingLine
   const filteredStations = useMemo(() => {
@@ -39,7 +40,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
     const list =
       pendingLine === 'All Lines'
         ? base.map((s) => s.name)
-        : base.filter((s) => s.line === pendingLine).map((s) => s.name);
+        : base.filter((s) => stationMatchesLine(s, pendingLine)).map((s) => s.name);
     const unique = Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
     return ['All Stations', ...unique];
   }, [pendingLine]);

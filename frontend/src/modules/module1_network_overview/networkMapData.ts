@@ -3,9 +3,15 @@ import stationData from '../../data/stations.json' with { type: 'json' };
 import monthlyData from '../../data/station_monthly_ridership.json' with { type: 'json' };
 import geometry from '../../data/rapid_rail_geometry.json' with { type: 'json' };
 import boundary from '../../data/malaysia_country.json' with { type: 'json' };
+import registry from '../../data/verified_station_registry.json' with { type: 'json' };
+import { getNationalRoutes } from './nationalRailNetwork.ts';
 import { CONTEXT_STATIONS } from './nationalAtlas.ts';
 
-export type RailStation = (typeof stationData.stations)[number];
+export type RailStation = (typeof stationData.stations)[number] & { routeIds?: string[] };
+const registryLinks = registry.links as Record<string, string[]>;
+export const STATION_AUDIT = { added: registry.additions.length, unmatched: registry.unmatchedExisting, unresolved: registry.unresolved };
+export const DEMAND_COLORS = { lower: '#259CAF', moderate: '#E4B72D', high: '#F58232', top: '#E83346', zero: '#ffffff', missing: '#9CA8B7' };
+export type DemandCategory = keyof typeof DEMAND_COLORS;
 export const MALAYSIA_GEOMETRY = boundary.features[0].geometry as MultiPolygon;
 export const MALAYSIA_BOUNDS: [[number, number], [number, number]] = [[99.45, 0.8], [119.55, 7.5]];
 // Constrain the camera center, not the whole viewport: portrait screens need
@@ -46,7 +52,7 @@ export function isInMalaysia(point: number[]) {
 }
 
 // Exclude foreign stops (e.g. Woodlands) and unmapped positions, including on hover.
-export const MAP_STATIONS = [...stationData.stations, ...CONTEXT_STATIONS].filter(s => {
+export const MAP_STATIONS: RailStation[] = [...stationData.stations, ...CONTEXT_STATIONS, ...registry.additions].map(s => ({ ...s, routeIds: ('routeIds' in s ? s.routeIds as string[] : undefined) ?? registryLinks[s.source+':'+s.code] ?? [] })).filter(s => {
   if (/^(unknown|penalty)$/i.test(s.name)) return false;
   const point = stationPosition(s);
   return point.every(Number.isFinite) && isInMalaysia(point);
@@ -58,27 +64,41 @@ export function getStationData(station: RailStation, month: string) {
   return { ridership: ridership[month]?.[key] ?? null, yoy: yearlyChange[month]?.[key] ?? null };
 }
 
+const routeIdsByName = new Map(getNationalRoutes('All Lines').features.map(f => [f.properties?.name, String(f.properties?.id)]));
+export function stationMatchesLine(station: RailStation, selectedLine: string) {
+  if (selectedLine === 'All Lines' || station.line === selectedLine) return true;
+  const routeId = routeIdsByName.get(selectedLine);
+  return !!routeId && !!station.routeIds?.includes(routeId);
+}
+
+export function classifyDemand(value: number | null, thresholds: { p50: number | null; p75: number | null; p90: number | null }): DemandCategory {
+  if (value === null) return 'missing';
+  if (value === 0) return 'zero';
+  if (thresholds.p90 !== null && value >= thresholds.p90) return 'top';
+  if (thresholds.p75 !== null && value >= thresholds.p75) return 'high';
+  if (thresholds.p50 !== null && value >= thresholds.p50) return 'moderate';
+  return 'lower';
+}
+
 export function getStationSnapshot(month: string, selectedLine: string, selectedStation: string) {
-  const visible = MAP_STATIONS.filter(s => selectedLine === 'All Lines' || s.line === selectedLine);
-  // Count each source key once when computing the percentile; missing data is not zero.
+  const visible = MAP_STATIONS.filter(s => stationMatchesLine(s, selectedLine));
+  // Nearest-rank percentiles of positive observations; ties receive the same category.
   const values = [...new Map(visible.map(s => [stationKey(s), getStationData(s, month).ridership])).values()]
     .filter((value): value is number => value !== null && value > 0).sort((a, b) => a - b);
-  const threshold = values.length ? values[Math.max(0, Math.ceil(values.length * 0.9) - 1)] : null;
-  const maximum = values.at(-1) ?? 1;
+  const percentile = (p: number) => values.length ? values[Math.max(0, Math.ceil(values.length*p)-1)] : null;
+  const thresholds = { p50: percentile(.5), p75: percentile(.75), p90: percentile(.9) };
   const features = MAP_STATIONS.map(station => {
     const { ridership: value, yoy } = getStationData(station, month);
-    const inScope = selectedLine === 'All Lines' || station.line === selectedLine;
-    const busy = inScope && value !== null && value > 0 && threshold !== null && value >= threshold;
+    const inScope = stationMatchesLine(station, selectedLine);
+    const category = classifyDemand(value, thresholds);
     return { type: 'Feature' as const, geometry: { type: 'Point' as const, coordinates: stationPosition(station) },
       properties: { id: stationId(station), name: station.name, line: station.line, code: station.code,
-        value, yoy, busy, inScope, selected: station.name === selectedStation && inScope,
-        color: !inScope ? '#cbd5e1' : value === null ? '#a1acbc' : busy ? '#e23845' : value === 0 ? '#ffffff' : '#288ca4',
-        radius: !inScope ? 2 : value === null || value === 0 ? 3 : 3 + Math.sqrt(value / maximum) * 3,
+        value, yoy, category, busy: inScope && category === 'top', inScope, selected: station.name === selectedStation && inScope,
+        color: inScope ? DEMAND_COLORS[category] : '#cbd5e1', radius: 4, regional: false,
       } };
   });
   const ranked = visible.filter(s => getStationData(s, month).ridership !== null)
     .sort((a, b) => (getStationData(b, month).ridership ?? 0) - (getStationData(a, month).ridership ?? 0));
-  return { data: { type: 'FeatureCollection', features } as FeatureCollection<Point>, threshold,
-    measured: visible.filter(s => getStationData(s, month).ridership !== null).length,
-    total: visible.length, ranked };
+  return { data: { type: 'FeatureCollection', features } as FeatureCollection<Point>, threshold: thresholds.p90, thresholds,
+    measured: visible.filter(s => getStationData(s, month).ridership !== null).length, total: visible.length, ranked };
 }

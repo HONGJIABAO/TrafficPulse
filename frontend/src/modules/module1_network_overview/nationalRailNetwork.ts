@@ -17,16 +17,5 @@ export function getNationalRoutes(selectedLine: string): FeatureCollection<LineS
   } })) };
 }
 
-// At national scale, use one shared east-coast corridor instead of joining
-// every shuttle stop. Several published shuttle coordinates produce sharp
-// backtracking; this overview uses the express service's reference corridor.
-// Detailed views retain the unmodified official stop sequences.
-export function getAtlasRoutes(selectedLine: string): FeatureCollection<LineString> {
-  const routes = getNationalRoutes(selectedLine);
-  const eastCoast = routes.features.find(f => f.properties?.id === 'ktmb_ERT');
-  return { ...routes, features: routes.features.map(feature => {
-    if (feature.properties?.id !== 'ktmb_SH' || !eastCoast) return feature;
-    return { ...feature, properties: { ...feature.properties, displayGeometry: 'Shared east-coast reference corridor' },
-      geometry: { type: 'LineString', coordinates: eastCoast.geometry.coordinates.filter(p => p[1] >= 4.18).toReversed() } };
-  }) };
-}
+// The compact atlas changes only geographic placement, never route geometry.
+export const getAtlasRoutes = getNationalRoutes;
