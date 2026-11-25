@@ -51,7 +51,7 @@ export function NetworkMap(props:Props) {
     <div className="rail-map-canvas" ref={container} />
     <div className="rail-map-heading">
       <span className="rail-map-eyebrow">MALAYSIA RAIL ATLAS</span><h2>{view}</h2>
-      <span className="rail-map-subtitle">{tilted ? (zoom >= 13 ? 'Landmark architecture · white city blocks · rail network' : 'Grey landmarks · nationwide rail network') : 'State boundaries · rail routes · passenger demand'}</span>
+      {view !== 'Malaysia' && <span className="rail-map-subtitle">{tilted ? (zoom >= 13 ? 'Landmark architecture · white city blocks · rail network' : 'Grey landmarks · nationwide rail network') : 'State boundaries · rail routes · passenger demand'}</span>}
     </div>
     <div className="rail-map-toolbar" aria-label="Map dimension">
       <button disabled={!ready} aria-pressed={!tilted} onClick={() => setTilted(false)}>2D</button>
@@ -61,10 +61,6 @@ export function NetworkMap(props:Props) {
         <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d={expanded ? 'M7 2v5H2m11-5v5h5M7 18v-5H2m11 5v-5h5' : 'M2 7V2h5m6 0h5v5M2 13v5h5m6 0h5v-5'} /></svg>
       </button>
     </div>
-    {tilted && <div className="rail-map-explore"><select aria-label="Explore landmark" value="" disabled={!ready} onChange={event => controller.current?.exploreLandmark(event.target.value)}>
-        <option value="" disabled>Landmarks</option>
-        {NATIONAL_LANDMARKS.map(l => <option key={l.id} value={l.id}>{l.state} · {l.name}</option>)}
-      </select></div>}
     {filtered && <div className="rail-map-focus"><span>{selectedLine}{selectedStation !== 'All Stations' ? ` · ${selectedStation}` : ''}</span>
       <button onClick={() => { onResetFocus?.(); controller.current?.reset(); }}>Clear filter</button></div>}
     {selected && selectedValues && <aside className="rail-station-card" aria-label="Selected station details" aria-live="polite">

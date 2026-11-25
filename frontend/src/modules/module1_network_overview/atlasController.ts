@@ -27,7 +27,7 @@ export function createAtlasController(container:HTMLDivElement, initial:AtlasSet
   let labelTimer:ReturnType<typeof setTimeout>|undefined;
   const popup=new Popup({closeButton:false,closeOnClick:false,offset:12,maxWidth:'280px',className:'rail-popup'});
   const label=document.createElement('button');label.className='klang-label';label.textContent='Klang Valley';label.setAttribute('aria-label','Explore Klang Valley railway network');
-  const marker=new Marker({element:label,anchor:'left',offset:[12,0]});
+  const marker=new Marker({element:label,anchor:'top-right',offset:[-8,8]});
   const setData=(id:string,data:GeoJSON)=>(map.getSource(id) as GeoJSONSource|undefined)?.setData(data);
   map.addControl(new NavigationControl({visualizePitch:true}),'bottom-right');map.addControl(new ScaleControl({maxWidth:90}),'bottom-left');
   const showPopup=(position:[number,number],title:string,lines:string[])=>{

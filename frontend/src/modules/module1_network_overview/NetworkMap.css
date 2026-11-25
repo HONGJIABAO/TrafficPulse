@@ -1,5 +1,15 @@
 .rail-map { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 12px; background: #eaf0f3; color: #213747; isolation: isolate; }
 .rail-map-canvas { position: absolute; inset: 0; }
+.network-overview-main { display:grid; grid-template-columns:minmax(210px,18fr) minmax(0,59fr) minmax(250px,23fr); flex:1; gap:12px; padding:12px 16px; overflow:hidden; min-height:0; }
+.network-overview-sidebar { display:flex; flex-direction:column; gap:10px; min-width:0; min-height:0; padding-bottom:4px; }
+.network-overview-left-sidebar { overflow-y:auto; }
+.network-overview-right-sidebar { overflow:hidden; }
+.network-overview-card { min-width:0; }
+.network-ridership-card { flex:1 1 auto; }
+.network-line-performance-card { display:flex; flex-direction:column; flex:1 1 55%; min-height:220px; overflow:hidden; }
+.network-line-performance-list { display:flex; flex-direction:column; gap:8px; min-height:0; overflow-y:auto; padding-right:4px; }
+.network-ktmb-card { display:flex; flex-direction:column; flex:1 1 45%; min-height:210px; overflow:hidden; }
+.network-ktmb-content { min-height:0; overflow-y:auto; }
 .network-map-frame:fullscreen { width: 100vw; height: 100vh; padding: 12px; background: #edf3f6; }
 .network-map-frame:fullscreen > div:first-child { height: 100% !important; }
 .network-map-frame.is-expanded { position: fixed !important; inset: 0; width: 100vw; height: 100dvh; padding: 12px; background: #edf3f6; z-index: 1000; }
@@ -13,7 +23,7 @@
 .rail-map-eyebrow { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; color: #506774; }
 .rail-map-heading h2 { font-size: 24px; line-height: 1.2; margin-top: 5px; font-weight: 750; letter-spacing: -.6px; }
 .rail-map-subtitle { display: block; margin-top: 5px; color: #506774; font-size: 12px; }
-.rail-map-toolbar { position: absolute; top: 102px; left: 20px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 105px); padding: 4px; border-radius: 9px; background: #fffffff5; border: 1px solid #d7e2e7; box-shadow: 0 2px 8px #223d5010; }
+.rail-map-toolbar { position: absolute; top: auto; bottom: 58px; left: 20px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 105px); padding: 4px; border-radius: 9px; background: #fffffff5; border: 1px solid #d7e2e7; box-shadow: 0 2px 8px #223d5010; }
 .rail-map-toolbar button { border: 0; background: transparent; color: #3d5565; padding: 8px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
 .rail-map-toolbar button:hover { background: #edf3f7; }
 .rail-map-toolbar button[aria-pressed=true] { background: #e7f0ff; color: #0756be; }
@@ -25,20 +35,20 @@
 .rail-station-card h3 { font-size: 18px; margin: 8px 0 3px; }
 .rail-station-card p { font-size: 11px; color: #577082; line-height: 1.5; }
 .rail-station-value { display: block; margin: 14px 0 2px; font-size: 28px; font-variant-numeric: tabular-nums; letter-spacing: -.5px; }
-.rail-map-legend { position: absolute; top: 18px; right: 18px; border: 1px solid #d7e2e7; border-radius: 9px; background: #fffffff5; box-shadow: 0 2px 8px #223d5010; max-width: 275px; }
+.rail-map-legend { position: absolute; top: 18px; right: 18px; width:125px; border: 1px solid #d7e2e7; border-radius: 9px; background: #fffffff5; box-shadow: 0 2px 8px #223d5010; z-index:3; }
 .rail-legend-toggle { display: flex; align-items: center; gap: 12px; width: 100%; border: none; background: none; padding: 10px 12px; font-size: 12px !important; font-weight: 650 !important; color: #243b4c; }
 .rail-legend-toggle span:last-child { margin-left: auto; }
 .rail-lines-icon { color: #36859b; font-size: 20px; line-height: 14px; }
-.rail-line-list { padding: 0 13px 12px; max-height: 270px; overflow: auto; }
+.rail-line-list { position:absolute; top:140px; right:0; width:260px; padding:12px 13px; max-height:235px; overflow:auto; background:#fffffff5; border:1px solid #d7e2e7; border-radius:9px; box-shadow:0 3px 12px #223d5018; }
 .rail-line-list > div { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 11px; }
 .rail-line-list i { width: 18px; height: 3px; border-radius: 3px; flex-shrink: 0; }
 .rail-line-muted { opacity: .45; }
 .rail-line-list p { font-size: 10px; line-height: 1.5; color: #617782; padding-top: 9px; max-width: 220px; }
-.rail-map-bottom { position: absolute; bottom: 53px; left: 20px; right: 55px; display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; pointer-events: none; }
-.rail-demand-legend, .rail-map-insight { background: #fffffff2; border: 1px solid #dae4e9; border-radius: 10px; padding: 12px 14px; box-shadow: 0 3px 12px #223d5009; pointer-events: auto; }
-.rail-demand-title { display: flex; justify-content: space-between; gap: 20px; font-size: 12px; margin-bottom: 10px; }
+.rail-map-bottom { position: absolute; top: 18px; right: 154px; bottom: auto; left: auto; width: clamp(220px, 32%, 240px); pointer-events: none; }
+.rail-demand-legend, .rail-map-insight { background: #fffffff2; border: 1px solid #dae4e9; border-radius: 10px; padding: 10px 12px; box-shadow: 0 3px 12px #223d5009; pointer-events: auto; }
+.rail-demand-title { display: flex; justify-content: space-between; gap: 16px; font-size: 12px; margin-bottom: 8px; }
 .rail-demand-title > span { color: #657985; font-variant-numeric: tabular-nums; }
-.rail-demand-scale { display: flex; gap: 14px; align-items: center; font-size: 11px; }
+.rail-demand-scale { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px 8px; align-items: center; font-size: 10px; }
 .rail-demand-scale span { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
 .rail-demand-scale i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
 .dot-normal { background: #288ca4; }.dot-busy { background: #e23845; width: 10px !important; height: 10px !important; }.dot-zero { background: #fff; border: 1px solid #64748b; }.dot-missing { background: #a1acbc; }
@@ -75,10 +85,17 @@
   .network-overview-kpis .kpi-card { padding: 12px !important; gap: 8px !important; }
   .network-overview-kpis .kpi-icon-container { display: none !important; }
   .network-overview-kpis .kpi-minichart-container { display: none !important; }
-  .network-overview-main { flex-direction: column !important; flex: none !important; overflow: visible !important; }
-  .network-overview-sidebar { flex-direction: row !important; width: 100% !important; overflow-x: auto !important; overflow-y: hidden !important; }
-  .network-overview-sidebar > div { width: 230px; }
+  .network-overview-main { grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr); flex: none !important; overflow: visible !important; }
+  .network-overview-sidebar { overflow: visible; }
+  .network-overview-right-sidebar { grid-column: 1 / -1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .network-line-performance-card, .network-ktmb-card { min-height:300px; }
   .network-overview-map-area { flex: none !important; height: 740px; }
+}
+@media (max-width: 680px) {
+  .network-overview-main { grid-template-columns:1fr; }
+  .network-overview-map-area { grid-row:2; }
+  .network-overview-right-sidebar { grid-column:auto; grid-template-columns:1fr; }
+  .network-overview-sidebar { width:100%; }
 }
 @media (max-width: 480px) {
   .network-overview-kpis { grid-template-columns: 1fr !important; gap: 7px !important; }
@@ -88,13 +105,8 @@
 }
 @media (max-width: 1100px) { .rail-map-insight { display: none; }.rail-map-heading { max-width: calc(100% - 230px); }.rail-map-heading h2 { font-size: 20px; }.rail-map-subtitle { max-width: 235px; }.rail-station-card { width: 190px; }.rail-station-value { font-size: 23px; } }
 @media (max-height: 800px) and (min-width: 1101px) { .rail-station-card { top: 195px; padding: 12px; }.rail-station-card h3 { font-size: 16px; }.rail-station-value { margin-top: 7px; font-size: 23px; } }
-@media (max-width: 760px) { .rail-map-heading { top: 15px; left: 14px; max-width: calc(100% - 90px); }.rail-map-heading h2 { font-size: 20px; }.rail-map-subtitle { font-size: 11px; }.rail-map-legend { top: 150px; right: 14px; }.rail-map-toolbar { left: 14px; top: 99px; }.rail-map-toolbar button { padding: 7px; font-size: 10px; }.rail-map-focus { top: 193px; left: 14px; font-size: 10px; }.rail-station-card { top: 238px; left: 14px; width: 185px; }.rail-map-bottom { left: 14px; right: 14px; }.rail-demand-legend { padding: 10px; }.rail-demand-scale { gap: 8px; font-size: 10px; }.rail-demand-legend p { max-width: 240px; }.rail-source-bar { left: 14px; font-size: 9px; flex-wrap: wrap; gap: 3px 12px; }.rail-map-status { top: 56px; right: 14px; max-width: 180px; }.rail-map-eyebrow { font-size: 9px; } }
+@media (max-width: 760px) { .rail-map-heading { top: 15px; left: 14px; max-width: calc(100% - 90px); }.rail-map-heading h2 { font-size: 20px; }.rail-map-subtitle { font-size: 11px; }.rail-map-legend { top: 150px; right: 14px; width:115px; }.rail-legend-toggle { gap:8px; padding:10px; }.rail-line-list { top:165px; width:min(260px,calc(100vw - 28px)); }.rail-map-toolbar { left: 14px; top: auto; bottom: 86px; }.rail-map-toolbar button { padding: 7px; font-size: 10px; }.rail-map-focus { top: 193px; left: 14px; font-size: 10px; }.rail-station-card { top: 238px; left: 14px; width: 185px; }.rail-map-bottom { top:150px; right:137px; bottom:auto; left:auto; width:min(220px,calc(100% - 159px)); }.rail-demand-legend { padding: 10px; }.rail-demand-scale { gap: 6px 3px; font-size: 10px; }.rail-demand-legend p { max-width: 240px; }.rail-source-bar { left: 14px; font-size: 9px; flex-wrap: wrap; gap: 3px 12px; }.rail-map-status { top: 56px; right: 14px; max-width: 180px; }.rail-map-eyebrow { font-size: 9px; } }
 
-
-.rail-map-explore { position: absolute; top: 151px; left: 20px; z-index: 2; }
-.rail-map-explore select { width: 130px; border: 1px solid #d7e2e7; background: #fffffff5; color: #3d5565; font: inherit; font-size: 11px; border-radius: 7px; padding: 8px; cursor: pointer; }
-.rail-map:has(.rail-map-focus) .rail-map-explore { display: none; }
-@media(max-width:760px) { .rail-map-explore { top: 145px; left: 14px; }.rail-map-explore select { width: 100px; font-size: 10px; } }
 
 /* The inset is deliberately not a geographic distance map. */
 .rail-map-atlas .maplibregl-ctrl-scale { display: none; }
@@ -108,15 +120,13 @@
 .klang-label.is-leaving { opacity:0; pointer-events:none; }
 .rail-line-list > button { display:flex; align-items:center; gap:8px; width:100%; padding:7px 0; border:0; background:transparent; font-size:11px; text-align:left; color:inherit; }
 .rail-line-list > button:hover { background:#edf3f7; }
-.rail-demand-legend { width:290px; padding:10px 12px; }
-.rail-demand-scale { display:grid; grid-template-columns:repeat(3,1fr); gap:7px 10px; }
+.rail-demand-legend { width:100%; }
 .rail-demand-scale i { width:7px !important; height:7px !important; }
 .rail-demand-legend details { position:relative; margin-top:7px; font-size:10px; color:#526a7b; }
 .rail-demand-legend summary { cursor:pointer; }
-.rail-demand-legend details[open] { position:absolute; bottom:100%; width:290px; left:0; padding:12px; background:#fff; border:1px solid #d7e2e7; border-radius:9px; box-shadow:0 3px 15px #33415518; }
-.rail-map-bottom { right:auto; max-width:calc(100% - 65px); }
+.rail-demand-legend details[open] { position:absolute; top:calc(100% + 8px); right:0; bottom:auto; left:auto; width:240px; max-height:260px; overflow:auto; padding:12px; background:#fff; border:1px solid #d7e2e7; border-radius:9px; box-shadow:0 3px 15px #33415518; }
 .rail-map .rail-station-card { left:auto; right:18px; top:72px; width:220px; max-height:calc(100% - 110px); overflow:auto; }
 .rail-map .rail-station-card h3 { margin:5px 0; }
 .rail-map .rail-station-value { font-size:23px; }
-@media(max-width:760px) { .rail-map .rail-station-card { top:238px; right:14px; width:185px; max-height:190px; }.rail-demand-legend { width:270px; }.rail-demand-legend details[open] { width:270px; } }
+@media(max-width:760px) { .rail-map .rail-station-card { top:238px; right:14px; width:185px; max-height:190px; }.rail-demand-legend details[open] { right:auto; left:0; width:min(240px,calc(100vw - 56px)); } }
 @media(prefers-reduced-motion:reduce) { .klang-label { transition:none; } }

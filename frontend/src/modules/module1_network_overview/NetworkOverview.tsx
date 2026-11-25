@@ -130,30 +130,11 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
       </div>
 
       {/* ── Main Content Row ───────────────────────────────────────────────── */}
-      <div className="network-overview-main"
-        style={{
-          display: 'flex',
-          flex: 1,
-          gap: 12,
-          padding: '12px 16px',
-          overflow: 'hidden',
-          minHeight: 0,
-        }}
-      >
+      <div className="network-overview-main">
         {/* ── Left Sidebar ───────────────────────────────────────────────── */}
-        <div className="network-overview-sidebar"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 10,
-            width: 232,
-            flexShrink: 0,
-            overflowY: 'auto',
-            paddingBottom: 4,
-          }}
-        >
+        <aside className="network-overview-sidebar network-overview-left-sidebar" aria-label="Network controls and ridership trend">
           {/* Network Filters Card */}
-          <div style={cardStyle}>
+          <div className="network-overview-card network-filter-card" style={cardStyle}>
             <SectionTitle icon="⚙️" label="Network Filters" />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <FilterRow label="Rail Line">
@@ -199,7 +180,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           </div>
 
           {/* Ridership Trend Card */}
-          <div style={cardStyle}>
+          <div className="network-overview-card network-ridership-card" style={cardStyle}>
             <SectionTitle icon="📉" label="Ridership Trend" />
             <div style={{ fontWeight: 800, fontSize: 22, color: '#0F1E36' }}>
               {formatMillions(kpis.total_rail_trips)}
@@ -227,21 +208,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
             />
           </div>
 
-          {/* Line Performance */}
-          <div style={cardStyle}>
-            <SectionTitle icon="📊" label="Line Performance" />
-            <LinePerformanceCard
-              line_performance={line_performance}
-              selectedLine={selectedLine}
-            />
-          </div>
-
-          {/* KTMB Services Donut */}
-          <div style={cardStyle}>
-            <SectionTitle icon="🚉" label="KTMB Services" />
-            <KtmbDonutChart ktmb_services={ktmb_services} />
-          </div>
-        </div>
+        </aside>
 
         {/* ── Map Area ───────────────────────────────────────────────────── */}
         <div className="network-overview-map-area" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
@@ -277,6 +244,24 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
             onPlayPause={() => setIsPlaying((p) => !p)}
           />
         </div>
+
+        {/* ── Right Sidebar ──────────────────────────────────────────────── */}
+        <aside className="network-overview-sidebar network-overview-right-sidebar" aria-label="Rail service performance">
+          <div className="network-overview-card network-line-performance-card" style={cardStyle}>
+            <SectionTitle icon="📊" label="Line Performance" />
+            <LinePerformanceCard
+              line_performance={line_performance}
+              selectedLine={selectedLine}
+            />
+          </div>
+
+          <div className="network-overview-card network-ktmb-card" style={cardStyle}>
+            <SectionTitle icon="🚉" label="KTMB Services" />
+            <div className="network-ktmb-content">
+              <KtmbDonutChart ktmb_services={ktmb_services} />
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );

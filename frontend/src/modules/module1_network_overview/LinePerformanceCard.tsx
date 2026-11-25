@@ -14,12 +14,11 @@ interface Props {
 }
 
 export function LinePerformanceCard({ line_performance, selectedLine }: Props) {
-  // Show top 8 lines
-  const items = line_performance.slice(0, 8);
+  const items = line_performance;
   const maxShare = Math.max(...items.map(l => l.share_pct));
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div className="network-line-performance-list">
       {items.map(item => {
         const color = LINE_COLORS[item.line] ?? '#0066FF';
         const isActive = selectedLine === 'All Lines' || selectedLine === item.line;
@@ -28,11 +27,11 @@ export function LinePerformanceCard({ line_performance, selectedLine }: Props) {
         return (
           <div key={item.column} style={{ opacity: isActive ? 1 : 0.4 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-              <span style={{ fontSize: 10, fontWeight: 500, color: '#0F1E36', maxWidth: 110,
+              <span title={item.line} style={{ fontSize: 10, fontWeight: 500, color: '#0F1E36', minWidth: 0,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {item.line}
               </span>
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
                 <span style={{ fontSize: 10, color: '#64748B' }}>{item.share_pct.toFixed(1)}%</span>
                 {yoy !== null && (
                   <span style={{
