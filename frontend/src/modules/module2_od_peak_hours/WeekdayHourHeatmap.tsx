@@ -61,8 +61,21 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
     });
   }, [dataset]);
 
+  // Extract peak surge hours (top rush hours) for the live pulse ripple animation
+  const peakPulsePoints = useMemo(() => {
+    return dataset
+      .filter((d) => d.ridership >= maxVal * 0.65)
+      .map((d) => {
+        const dayIdx = Math.max(0, Math.min(6, d.weekday - 1));
+        return [d.hour, dayIdx, d.ridership];
+      });
+  }, [dataset, maxVal]);
+
   const option = useMemo(() => {
     return {
+      animation: true,
+      animationDuration: 1400,
+      animationEasing: 'cubicOut',
       tooltip: {
         position: 'top',
         backgroundColor: 'rgba(15, 30, 54, 0.95)',
@@ -170,42 +183,91 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
           },
           emphasis: {
             itemStyle: {
-              shadowBlur: 8,
-              shadowColor: 'rgba(0, 102, 255, 0.5)',
+              shadowBlur: 14,
+              shadowColor: 'rgba(255, 90, 0, 0.65)',
               borderColor: '#0066FF',
               borderWidth: 2,
             },
           },
         },
+        // Continuous Pulse Ripple Effect on Peak Rush Hours
+        {
+          name: 'Peak Rush Pulse',
+          type: 'effectScatter',
+          coordinateSystem: 'cartesian2d',
+          data: peakPulsePoints,
+          symbolSize: 6,
+          showEffectOn: 'render',
+          rippleEffect: {
+            brushType: 'stroke',
+            scale: 3.5,
+            period: 2.2,
+            color: '#FF5A00',
+          },
+          itemStyle: {
+            color: '#FF5A00',
+            shadowBlur: 10,
+            shadowColor: 'rgba(255, 90, 0, 0.8)',
+          },
+          silent: true,
+          zlevel: 5,
+        },
       ],
     };
-  }, [chartData, maxVal]);
+  }, [chartData, peakPulsePoints, maxVal]);
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <style>{`
+        @keyframes pulseDot {
+          0%, 100% {
+            transform: scale(0.9);
+            box-shadow: 0 0 0 0 rgba(255, 90, 0, 0.7);
+          }
+          50% {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 5px rgba(255, 90, 0, 0);
+          }
+        }
+        .pulse-indicator-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #FF5A00;
+          display: inline-block;
+          animation: pulseDot 2s infinite ease-in-out;
+        }
+      `}</style>
+
       {/* Legend rendered as crisp HTML above or below without canvas collision */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: 6,
-          fontSize: 10,
-          color: '#64748B',
           marginBottom: 4,
           paddingRight: 4,
         }}
       >
-        <span>Low Demand</span>
-        <div
-          style={{
-            width: 72,
-            height: 6,
-            borderRadius: 3,
-            background: 'linear-gradient(to right, #DBEAFE, #3B82F6, #0066FF, #F59E0B, #FF5A00)',
-          }}
-        />
-        <span>High Surge</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span className="pulse-indicator-dot" />
+          <span style={{ fontSize: 9.5, fontWeight: 700, color: '#FF5A00', letterSpacing: '0.4px' }}>
+            PEAK SURGE PULSE
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#64748B' }}>
+          <span>Low Demand</span>
+          <div
+            style={{
+              width: 72,
+              height: 6,
+              borderRadius: 3,
+              background: 'linear-gradient(to right, #DBEAFE, #3B82F6, #0066FF, #F59E0B, #FF5A00)',
+            }}
+          />
+          <span style={{ color: '#FF5A00', fontWeight: 600 }}>High Surge</span>
+        </div>
       </div>
 
       <div style={{ flex: 1, minHeight: 180 }}>

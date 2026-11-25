@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import rawOdSummaryData from '@/data/od_summary.json';
 import stationsData from '@/data/stations.json';
 import networkData from '@/data/network_overview.json';
@@ -76,7 +76,7 @@ const cardStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  overflow: 'hidden',
+  flexShrink: 0,
 };
 
 const selectStyle: React.CSSProperties = {
@@ -97,21 +97,30 @@ const applyBtnStyle: React.CSSProperties = {
   color: '#FFFFFF',
   border: 'none',
   borderRadius: 7,
-  padding: '7px',
+  padding: '8px 12px',
   fontSize: 12,
   fontWeight: 600,
   cursor: 'pointer',
   boxShadow: '0 2px 8px rgba(0, 102, 255, 0.3)',
+  height: 32,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 
 const resetBtnStyle: React.CSSProperties = {
   width: 32,
+  height: 32,
   background: '#F1F4F9',
   color: '#64748B',
   border: '1px solid rgba(0, 0, 0, 0.1)',
   borderRadius: 7,
   fontSize: 15,
   cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexShrink: 0,
 };
 
 function SectionTitle({ icon, label }: { icon: string; label: string }) {
@@ -311,7 +320,8 @@ export function OdPeakHours() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 'calc(100vh - 58px)',
+        height: '100%',
+        minHeight: 0,
         background: '#F1F4F9',
         overflowY: 'auto',
         overflowX: 'hidden',
@@ -324,6 +334,7 @@ export function OdPeakHours() {
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: 10,
           padding: '12px 16px 0',
+          flexShrink: 0,
         }}
       >
         {/* KPI 1: Peak Rush Window */}
@@ -443,31 +454,26 @@ export function OdPeakHours() {
       <div
         style={{
           display: 'flex',
-          flex: 1,
           gap: 12,
-          padding: '12px 16px',
-          overflow: 'visible',
-          minHeight: 0,
-          flexWrap: 'wrap',
+          padding: '12px 16px 12px',
+          flexShrink: 0,
         }}
       >
-        {/* ── Left Sidebar (Filters + Inspector) ───────────────────────────── */}
+        {/* ── Left Sidebar (Filters + Inspector + Haul Profile) ─────────────── */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             gap: 10,
-            width: 240,
-            minWidth: 220,
+            width: 250,
+            minWidth: 240,
             flexShrink: 0,
-            overflowY: 'visible',
-            paddingBottom: 8,
           }}
         >
           {/* Card: OD Filters */}
           <div style={cardStyle}>
             <SectionTitle icon="🎛️" label="OD Analytics Filters" />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               {/* Rail Mode */}
               <FilterRow label="Rail Network Mode">
                 <select
@@ -511,7 +517,7 @@ export function OdPeakHours() {
               </FilterRow>
             </div>
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <button onClick={handleApply} style={applyBtnStyle}>
                 Apply
               </button>
@@ -528,6 +534,8 @@ export function OdPeakHours() {
                 ...cardStyle,
                 background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F6FF 100%)',
                 borderColor: '#0066FF',
+                padding: '12px 14px',
+                flexShrink: 0,
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -539,14 +547,16 @@ export function OdPeakHours() {
                     border: 'none',
                     color: '#64748B',
                     cursor: 'pointer',
-                    fontSize: 12,
+                    fontSize: 14,
+                    padding: '2px 4px',
                   }}
+                  title="Close Inspector"
                 >
                   ✕
                 </button>
               </div>
 
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', lineHeight: 1.3, marginTop: 2 }}>
                 {activeFlow.originClean}
                 <span style={{ color: '#0066FF', margin: '0 4px' }}>➔</span>
                 {activeFlow.destinationClean}
@@ -600,9 +610,9 @@ export function OdPeakHours() {
               })()}
             </div>
           ) : (
-            <div style={cardStyle}>
+            <div style={{ ...cardStyle, flexShrink: 0 }}>
               <SectionTitle icon="💡" label="Interactive Tip" />
-              <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.4 }}>
+              <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.45 }}>
                 Click on any corridor in the <strong>Top OD Pairs</strong> list or on any curved flow arc on the map to zoom in and inspect bottleneck statistics.
               </div>
             </div>
@@ -612,23 +622,22 @@ export function OdPeakHours() {
           <TripDistanceProfileCard activeHaul={activeHaul} onSelectHaul={setActiveHaul} />
         </div>
 
-        {/* ── Main Visualizations 2x2 Grid + Bottom Insight Strip ─────────── */}
+        {/* ── Main Visualizations 2x2 Grid + Timeline Playbar ─────────────── */}
         <div
           style={{
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
-            gap: 10,
-            overflowY: 'visible',
+            gap: 12,
             minWidth: 0,
-            paddingRight: 2,
+            flexShrink: 0,
           }}
         >
           {/* Top Half: Heatmap (60%) + Top OD Pairs (40%) */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gridTemplateColumns: 'minmax(340px, 3fr) minmax(220px, 2fr)',
               gap: 10,
               minHeight: 280,
             }}
@@ -665,7 +674,7 @@ export function OdPeakHours() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gridTemplateColumns: 'minmax(340px, 3fr) minmax(220px, 2fr)',
               gap: 10,
               minHeight: 270,
             }}
@@ -702,10 +711,12 @@ export function OdPeakHours() {
             onIdxChange={setPlaybackIdx}
             onPlayPause={() => setIsPlaying((p) => !p)}
           />
-
-          {/* Operator Directives Strip (Bottom) */}
-          <OperatorInsightStrip />
         </div>
+      </div>
+
+      {/* ── Public Transport Operator Decision Directives (Full-width Bottom Banner) ── */}
+      <div style={{ padding: '8px 16px 24px', flexShrink: 0 }}>
+        <OperatorInsightStrip />
       </div>
     </div>
   );

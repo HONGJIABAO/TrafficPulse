@@ -69,25 +69,26 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         padding: '12px 14px',
         display: 'flex',
         flexDirection: 'column',
-        gap: 10,
+        gap: 8,
+        flexShrink: 0,
       }}
     >
       {/* Title & Key Metric */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ fontSize: 13 }}>📏</span>
-          <span style={{ fontWeight: 600, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
+          <span style={{ fontWeight: 600, fontSize: 11.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
             Trip Distance &amp; Haul Profile
           </span>
         </div>
         <div
           style={{
-            fontSize: 10,
+            fontSize: 9.5,
             fontWeight: 700,
             color: '#0066FF',
             background: 'rgba(0, 102, 255, 0.08)',
             borderRadius: 4,
-            padding: '2px 6px',
+            padding: '2px 5px',
           }}
         >
           Avg {avgDistance} km
@@ -98,15 +99,15 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
       <div
         style={{
           background: '#F8FAFC',
-          borderRadius: 8,
-          padding: '8px 10px',
+          borderRadius: 6,
+          padding: '6px 8px',
           border: '1px solid rgba(148, 163, 184, 0.2)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 6,
+          gap: 4,
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9.5, color: '#64748B' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#64748B' }}>
           <span style={{ color: '#0066FF', fontWeight: 600 }}>&lt;5km: {shortPct}%</span>
           <span style={{ color: '#00C48C', fontWeight: 600 }}>5–25km: {medPct}%</span>
           <span style={{ color: '#FF8C00', fontWeight: 600 }}>&gt;25km: {longPct}%</span>
@@ -115,10 +116,10 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         {/* Multi-segment Bar */}
         <div
           style={{
-            height: 7,
+            height: 6,
             width: '100%',
             background: '#E2E8F0',
-            borderRadius: 4,
+            borderRadius: 3,
             overflow: 'hidden',
             display: 'flex',
           }}
@@ -152,7 +153,7 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 6,
+          gap: 5,
         }}
       >
         {HAUL_OPTIONS.map((opt) => {
@@ -165,8 +166,8 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
-                padding: '6px 8px',
-                borderRadius: 8,
+                padding: '5px 7px',
+                borderRadius: 7,
                 border: isActive
                   ? '1.5px solid #0066FF'
                   : '1px solid rgba(148, 163, 184, 0.25)',
@@ -183,10 +184,10 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 11 }}>{opt.icon}</span>
+                <span style={{ fontSize: 10 }}>{opt.icon}</span>
                 <span
                   style={{
-                    fontSize: 11,
+                    fontSize: 10.5,
                     fontWeight: isActive ? 700 : 600,
                     color: isActive ? '#0066FF' : '#0F1E36',
                   }}
@@ -194,7 +195,7 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
                   {opt.label}
                 </span>
               </div>
-              <span style={{ fontSize: 9, color: '#64748B', marginTop: 1, paddingLeft: 15 }}>
+              <span style={{ fontSize: 8.5, color: '#64748B', marginTop: 1, paddingLeft: 14 }}>
                 {opt.range}
               </span>
             </button>
@@ -205,12 +206,12 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
       {/* Rolling Stock & Fleet Sizing Advisory */}
       <div
         style={{
-          fontSize: 10.5,
+          fontSize: 9.5,
           color: '#475569',
           lineHeight: 1.35,
           background: 'rgba(0, 102, 255, 0.04)',
           borderRadius: 6,
-          padding: '6px 8px',
+          padding: '5px 8px',
           borderLeft: `3px solid ${dynamicAdvisory.color}`,
         }}
       >

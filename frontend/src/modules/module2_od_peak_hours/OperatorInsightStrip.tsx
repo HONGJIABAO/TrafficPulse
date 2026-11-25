@@ -12,6 +12,7 @@ export const OperatorInsightStrip: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: 8,
+        flexShrink: 0,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
