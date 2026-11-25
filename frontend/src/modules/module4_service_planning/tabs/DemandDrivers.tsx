@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import type { EChartsOption } from 'echarts';
-import { ablationOverview, calendarStatus, dateRange, dateText, evaluationOptions, holidayLabels, num, pct, signed, targetOptions, targetShort, unitLabel } from '../analytics';
+import { ablationOverview, calendarStatus, dateRange, dateText, evaluationOptions, findDateWindow, holidayLabels, num, pct, signed, targetOptions, targetShort, unitLabel } from '../analytics';
 import { Bars, Chart } from '../charts';
 import type { EvaluationHorizon, HistoryPoint, HolidayCalendar, PatternRow } from '../contracts';
 import { useAsset } from '../dataClient';
-import { AnalysisGroup, Details, Empty, EvidenceBadge, Kpi, Note, Panel, Segmented, Select, TabHeading, Table } from '../ui';
+import { Details, Empty, EvidenceBadge, Note, Panel, Segmented, Select, TabHeading, Table } from '../ui';
 import s from '../dashboard.module.css';
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const featureLabels = { A: 'Weekly features and lags', B: 'Plus trend and annual seasonality', C: 'Plus holiday and coverage features' };
 
-function Calendar({ year, rows, label, holidays }: { year: string; rows: HistoryPoint[]; label: string; holidays: HolidayCalendar }) {
+type CalendarProps = { year: string; rows: HistoryPoint[]; label: string; holidays: HolidayCalendar };
+
+function Calendar({ year, rows, label, holidays }: CalendarProps) {
   const observed = rows.flatMap(([date, value]) => value == null ? [] : [[date, value] as [string, number]]);
   const max = Math.max(1, ...observed.map(([, value]) => value));
   const option: EChartsOption = {
@@ -32,6 +34,17 @@ function Calendar({ year, rows, label, holidays }: { year: string; rows: History
   return <div className={s.chartScroll} tabIndex={0} role="region" aria-label="Calendar heatmap scroll area"><div style={{ minWidth: 700 }}>
     <Chart label={label} option={option} height={205} />
   </div></div>;
+}
+
+function DailyCalendarTable({ year, rows, label, holidays }: CalendarProps) {
+  const observations = new Map(rows.map(([date, value]) => [date, value]));
+  const dates = findDateWindow(`${year}-01-01`, `${year}-12-31`);
+  return <Table label={`${label} daily calendar data, ${year}`} columns={['Date', 'Observed trips', 'Holiday status']}
+    rows={dates.map((date) => {
+      const value = observations.get(date);
+      return { key: date, cells: [dateText(date), value == null ? 'No published observation' : num(value),
+        holidayLabels[calendarStatus(holidays, date)]] };
+    })} />;
 }
 
 function PatternTable({ label, rows }: { label: string; rows: PatternRow[] }) {
@@ -64,17 +77,18 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
           <Details title="Day-of-week sample counts"><PatternTable label="Day-of-week observations" rows={week} /></Details>
         </div>
         <div className={s.stack}>
-          <h4>Weekdays and weekends</h4>
-          <Bars label="Average weekday and weekend trips" data={dayType.map((row) => ({ name: row.group, value: row.mean_daily_trips, color: '#007e92' }))} height={155} />
-          <Details title="Weekday and weekend sample counts"><PatternTable label="Weekday and weekend observations" rows={dayType} /></Details>
+          <h4>Weekday and weekend averages</h4>
+          <PatternTable label="Weekday and weekend observations" rows={dayType} />
         </div>
       </div>
     </Panel>
     <div className={s.calendarLayout}>
       <Panel marker="B" title="Monthly demand and observation coverage" badge={<EvidenceBadge kind="Observed" />}
         controls={<Select label="Observation year" value={year} options={years.map((value) => ({ value, label: value }))} onChange={setYear} />}>
-        {latestMonth && <Kpi lead label="Latest monthly average trips per observed day" value={num(latestMonth.mean_daily_trips)}
-          note={`${months[Number(latestMonth.group.slice(5)) - 1]} ${year} · ${num(latestMonth.observed_days)} of ${num(latestMonth.expected_days)} calendar days observed`} />}
+        {latestMonth && <p className={s.muted}>
+          <strong>{months[Number(latestMonth.group.slice(5)) - 1]} {year}</strong> · {num(latestMonth.mean_daily_trips)} trips per observed day
+          {' · '}{num(latestMonth.observed_days)} of {num(latestMonth.expected_days)} calendar days observed
+        </p>}
         {monthly.length ? <>
           <Bars label="Monthly average observed demand" data={monthly.map((row) => ({
             name: `${months[Number(row.group.slice(5)) - 1]}${complete(row) ? '' : ' (partial)'}`,
@@ -88,9 +102,12 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
         </> : <Empty>No monthly observations were published for this year.</Empty>}
       </Panel>
       <Panel marker="C" title="Calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
-        subtitle={`${label} · daily observed trips in ${year}. Point to a dated cell to inspect the calendar evidence.`}>
+        subtitle={`${label} · daily observed trips in ${year}. Point to a cell or open the daily calendar data to inspect a date.`}>
         <Calendar year={year} rows={yearHistory} label={`${label} calendar heatmap, ${year}`} holidays={holidays} />
         <div className={s.legend}><span><i style={{ background: '#d9dee7' }} /> No published observation or outside the target window</span><span><i style={{ background: '#e8f4fc' }} /> Observed zero</span></div>
+        <Details title="Daily calendar data" summary="Trip counts and archived holiday status for the selected target and year.">
+          <DailyCalendarTable year={year} rows={yearHistory} label={label} holidays={holidays} />
+        </Details>
       </Panel>
     </div>
     <Panel marker="D" title="Verified holiday comparison" badge={<EvidenceBadge kind="Observed" />}
@@ -124,27 +141,25 @@ export default function DemandDrivers() {
   const calendar = patterns.holidayCalendar;
 
   return <div className={s.tabBody}>
-    <TabHeading title="Temporal Service Planning" detail={`Observed demand by day and month, verified holidays and model experiments · ${unitLabel(network.targets[target].unit)}`}>
+    <TabHeading title="Temporal Service Planning" detail={`Observed demand by day and month and verified holiday comparisons · ${unitLabel(network.targets[target].unit)}`}>
       <Select label="Demand pattern target" value={target} options={targetOptions(network)} onChange={setTarget} />
     </TabHeading>
     <ObservedPatterns key={target} label={targetShort[target]} period={history.series[target]}
       rows={patterns.patterns.filter((row) => row.series_id === target)} holidays={calendar} holidaySource={patterns.holidaySource} />
-    <AnalysisGroup marker="F" title="Forecast feature ablation">
-      <Panel heading="h4" title="Matched model comparisons" subtitle="Matched rolling-origin Ridge comparisons for each feature configuration.">
-        <div className={s.controls}><Segmented label="Ablation evaluation horizon" value={evaluation} options={evaluationOptions} onChange={setEvaluation} /></div>
-        {overview.targets.length > 0 && <>
-          <Table label="Mature-service ablation overview" columns={['Configuration', `Mean WAPE through ${evaluation} days`]}
-            rows={overview.rows.map((row) => ({ key: row.variant, cells: [featureLabels[row.variant], pct(row.wape)] }))} />
-          <p className={s.muted}>Unweighted mean of {overview.targets.length} complete service evaluations ({overview.targets.map((id) => targetShort[id]).join(', ')}).</p>
-        </>}
-        {tests.length ? <Table label="Feature ablation results" columns={['Configuration', 'Origins / folds', 'Scored pairs', 'WAPE', 'MAE', 'RMSE', 'MAPE', 'WAPE gain vs previous', 'Known holiday status in training']}
-          rows={tests.map((row) => ({ key: row.variant, cells: [featureLabels[row.variant], num(row.folds), num(row.scored_predictions), pct(row.wape_pct),
-            num(row.mae), num(row.rmse), pct(row.mape_pct), row.variant === 'A' ? 'Reference configuration' : signed(row.wape_gain_pp_vs_previous, 2, ' pp'),
-            pct(row.train_rows_with_known_holiday_status_pct)] }))} /> : <Empty>A matched feature experiment is unavailable for this target. Select a service target to inspect the available tests.</Empty>}
-      </Panel>
-      <Note title="Research interpretation">The timing patterns describe published trips. Ablation measures the predictive contribution of feature sets under the saved evaluation design.
+    <Details title="Forecast feature ablation" summary="Matched rolling-origin Ridge comparisons for weekly, seasonal and calendar feature sets.">
+      <div className={s.controls}><Segmented label="Ablation evaluation horizon" value={evaluation} options={evaluationOptions} onChange={setEvaluation} /></div>
+      {overview.targets.length > 0 && <>
+        <Table label="Mature-service ablation overview" columns={['Configuration', `Mean WAPE through ${evaluation} days`]}
+          rows={overview.rows.map((row) => ({ key: row.variant, cells: [featureLabels[row.variant], pct(row.wape)] }))} />
+        <p className={s.muted}>Unweighted mean of {overview.targets.length} complete service evaluations ({overview.targets.map((id) => targetShort[id]).join(', ')}).</p>
+      </>}
+      {tests.length ? <Table label="Feature ablation results" columns={['Configuration', 'Origins / folds', 'Scored pairs', 'WAPE', 'MAE', 'RMSE', 'MAPE', 'WAPE gain vs previous', 'Known holiday status in training']}
+        rows={tests.map((row) => ({ key: row.variant, cells: [featureLabels[row.variant], num(row.folds), num(row.scored_predictions), pct(row.wape_pct),
+          num(row.mae), num(row.rmse), pct(row.mape_pct), row.variant === 'A' ? 'Reference configuration' : signed(row.wape_gain_pp_vs_previous, 2, ' pp'),
+          pct(row.train_rows_with_known_holiday_status_pct)] }))} /> : <Empty>A matched feature experiment is unavailable for this target. Select a service target to inspect the available tests.</Empty>}
+      <Note title="Research interpretation" tone="quiet">The timing patterns describe published trips. Ablation measures the predictive contribution of feature sets under the saved evaluation design.
         Configuration C adds a holiday flag and a coverage indicator together. Tentative-only dates and dates outside the archive have unknown status in this experiment.
         Causal effects of holidays, coverage or external economic conditions were unmeasured.</Note>
-    </AnalysisGroup>
+    </Details>
   </div>;
 }

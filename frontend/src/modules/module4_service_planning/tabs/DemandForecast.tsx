@@ -5,6 +5,7 @@ import type { EvaluationHorizon, Horizon, HistoryData, Metric, NetworkData, Rese
 import { useAsset } from '../dataClient';
 import { DateInput, Details, Empty, EvidenceBadge, Headline, Kpi, Note, Panel, Segmented, Select, TabHeading, Table } from '../ui';
 import s from '../dashboard.module.css';
+import PlanningWatchlist from './FutureOutlook';
 
 const phaseLabels: Record<string, string> = {
   rolling_validation: 'Rolling-origin validation', terminal_holdout: 'Terminal holdout', intervention_matched: 'Intervention-matched validation',
@@ -27,8 +28,9 @@ function ForecastExplorer({ network, history, id }: { network: NetworkData; hist
   const [to, setTo] = useState(target.last_observed);
   const isOd = id === network.odId;
   const points = network.daily[id].slice(0, horizon);
+  const scenarioPoints = isOd ? network.scenarios.slice(0, horizon) : [];
   const forecast = isOd
-    ? new Map(network.scenarios.slice(0, horizon).map(([date, , low, base, high]) => [date, { low, base, high }[scenario]]))
+    ? new Map(scenarioPoints.map(([date, , low, base, high]) => [date, { low, base, high }[scenario]]))
     : new Map(points.map(([date, value]) => [date, value]));
   const observed = new Map(history.series[id].filter(([date]) => date <= to).map(([date, value]) => [date, value]));
   const historicalDates = findDateWindow(from, to);
@@ -36,39 +38,40 @@ function ForecastExplorer({ network, history, id }: { network: NetworkData; hist
   const total = sum([...forecast.values()]);
   const label = isOd ? `${titleCase(scenario)} planning scenario` : 'Published model forecast';
   const forecastEvidence = isOd && scenario !== 'base' ? 'Planning Assumption' : 'Model Forecast';
-  const odFullChange = getWindow(network, network.odId, 90, 'full')?.change_pct ?? null;
 
-  return <>
-    <Panel marker="A" title="Demand planning scenarios"
-      subtitle={isOd ? 'Explore Low, Base and High projections for LRT3 station-origin demand.' : 'Select LRT3 station-origin OD to explore the Low, Base and High planning scenarios.'}
-      controls={isOd && <Segmented label="LRT3 planning scenario" value={scenario} options={scenarios} onChange={setScenario} />}>
-      {isOd && <Note title="LRT3 station-origin interpretation" tone="warn">
-        <p>The published Base 90-day outlook is {signed(odFullChange, 2, '%')} versus the weekday-matched baseline. It reflects a repeated weekly profile. A growth trend has yet to be demonstrated.</p>
-        <p>Low and High are planning assumptions of {signed(network.scenarioAssumptions.low_offset_at_day_90 * 100, 0, '%')} and {signed(network.scenarioAssumptions.high_offset_at_day_90 * 100, 0, '%')} at day 90, phased linearly from the cutoff. Statistical confidence intervals are unavailable.</p>
-      </Note>}
-    </Panel>
-    <Headline>
-      <Kpi lead label="Cumulative forecast trips" value={num(total)} badge={<EvidenceBadge kind={forecastEvidence} />}
-        note={<>{unitLabel(target.unit)} · {dateRange(points[0]?.[0] ?? null, points.at(-1)?.[0] ?? null)}</>} />
-      <Kpi label="Average forecast trips per day" value={num(forecast.size ? total / forecast.size : null)} note={label} />
-      <Kpi label="Historical selection" value={num(historicalDates.filter((date) => observed.get(date) != null).length)} note="Days with observed demand" />
-    </Headline>
-    <Panel primary marker="B" title="Historical observations and forecast" badge={<div className={s.badges}><EvidenceBadge kind="Observed" /><EvidenceBadge kind={forecastEvidence} /></div>}
-      subtitle={`${unitLabel(target.unit)} · selected model ${modelLabel(target.model_id)} · cutoff ${dateText(target.data_cutoff)}`}>
+  return <Panel primary title={isOd ? 'LRT3 station-origin planning scenarios' : 'Historical observations and forecast'}
+    badge={<div className={s.badges}><EvidenceBadge kind="Observed" /><EvidenceBadge kind={forecastEvidence} /></div>}
+    subtitle={`${unitLabel(target.unit)} · selected model ${modelLabel(target.model_id)} · cutoff ${dateText(target.data_cutoff)}`}>
       <div className={s.controls}>
+        {isOd && <Segmented label="LRT3 planning scenario" value={scenario} options={scenarios} onChange={setScenario} />}
+        <Segmented label="Forecast horizon" value={horizon} options={dayOptions} onChange={setHorizon} />
         <DateInput label="History start" value={from} min={target.first_observed} max={to} onChange={setFrom} />
         <DateInput label="History end" value={to} min={from} max={target.last_observed} onChange={setTo} />
-        <Segmented label="Forecast horizon" value={horizon} options={dayOptions} onChange={setHorizon} />
       </div>
-      <Lines label={`${targetShort[id]} historical and forecast trips`} dates={dates}
-        traces={[
-          { name: 'Observed', values: dates.map((date) => observed.get(date) ?? null), color: '#237a64' },
-          { name: 'Elapsed/reference-date forecast', values: dates.map((date) => !isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: '#777f92', dashed: true },
-          { name: label, values: dates.map((date) => isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: targetColor[id], area: true },
-        ]}
-        markers={[{ date: target.data_cutoff, name: 'Data cutoff' }, { date: network.asOf, name: 'Analysis date' }]} height={268} />
-    </Panel>
-  </>;
+      {isOd && <div className={s.stack}>
+        <p><strong>{horizon}-day {titleCase(scenario)} scenario.</strong>{' '}
+          {scenario === 'base'
+            ? `${signed(getWindow(network, id, horizon, 'full')?.change_pct ?? null, 2, '%')} versus the weekday-matched baseline.`
+            : `${signed(total - sum(scenarioPoints.map((row) => row[3])))} station-origin trips versus Base over the same dates.`}
+        </p>
+        <p className={s.muted}>Base repeats a weekly profile. A growth trend has yet to be demonstrated. Low and High are planning offsets of {signed(network.scenarioAssumptions.low_offset_at_day_90 * 100, 0, '%')} and {signed(network.scenarioAssumptions.high_offset_at_day_90 * 100, 0, '%')} at day 90, phased linearly from the cutoff. Statistical confidence intervals are unavailable.</p>
+      </div>}
+      <div className={s.forecastLayout}>
+        <Lines label={`${targetShort[id]} historical and forecast trips`} dates={dates}
+          traces={[
+            { name: 'Observed', values: dates.map((date) => observed.get(date) ?? null), color: '#237a64' },
+            { name: 'Elapsed/reference-date forecast', values: dates.map((date) => !isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: '#777f92', dashed: true },
+            { name: label, values: dates.map((date) => isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: targetColor[id], area: true },
+          ]}
+          markers={[{ date: target.data_cutoff, name: 'Data cutoff' }, { date: network.asOf, name: 'Analysis date' }]} height={268} />
+        <Headline>
+          <Kpi lead label="Cumulative forecast trips" value={num(total)} badge={<EvidenceBadge kind={forecastEvidence} />}
+            note={<>{unitLabel(target.unit)} · {dateRange(points[0]?.[0] ?? null, points.at(-1)?.[0] ?? null)}</>} />
+          <Kpi label="Average forecast trips per day" value={num(forecast.size ? total / forecast.size : null)} note={label} />
+          <Kpi label="Historical selection" value={num(historicalDates.filter((date) => observed.get(date) != null).length)} note="Days with observed demand" />
+        </Headline>
+      </div>
+    </Panel>;
 }
 
 function MetricTable({ rows, selected, label }: { rows: Metric[]; selected?: NetworkData['targets'][TargetId]; label: string }) {
@@ -88,7 +91,8 @@ function ModelComparison({ data, network, id }: { data: ResearchData; network: N
   const terminal = rows.filter((row) => row.phase === 'terminal_holdout');
   const ensemble = terminal.find((row) => row.horizon_days === 14 && row.model_id === 'bottom_up_selected_components');
   const naive = terminal.find((row) => row.horizon_days === 14 && row.model_id === 'bottom_up_seasonal_naive_7');
-  return <Panel marker="C" title="Model reliability and backtesting" subtitle={`Retained model · ${modelLabel(target.model_id)} · ${policyLabels[target.training_policy] ?? titleCase(target.training_policy)}`}>
+  return <Details title="Model reliability and backtesting"
+    summary={`${targetShort[id]} · ${modelLabel(target.model_id)} · ${policyLabels[target.training_policy] ?? titleCase(target.training_policy)}`}>
     <div className={s.controls}><Segmented label="Evaluation horizon" value={horizon} options={evaluationOptions} onChange={setHorizon} /></div>
     <MetricTable rows={rows.filter((row) => row.phase === 'rolling_validation' && row.horizon_days === horizon)} selected={target} label="Rolling-origin model comparison" />
     <p className={s.muted}>WAPE is weighted absolute percentage error. MAE and RMSE are expressed in trips. MAPE excludes zero observations. Direct accuracy evidence extends through the available evaluation horizons.</p>
@@ -104,7 +108,7 @@ function ModelComparison({ data, network, id }: { data: ResearchData; network: N
         <MetricTable rows={additional.filter((row) => row.phase === phase)} label={phaseLabels[phase] ?? phase} />
       </div>)}
     </Details>}
-  </Panel>;
+  </Details>;
 }
 
 function ColdStart({ research, network }: { research: ResearchData; network: NetworkData }) {
@@ -184,11 +188,11 @@ export default function DemandForecast() {
   const network = useAsset('network');
   const history = useAsset('history');
   const research = useAsset('research');
-  const [id, setId] = useState(network.networkId);
+  const [id, setId] = useState(network.odId);
   const shah = research.stability.find((row) => row.series_id === id && row.phase === 'forecast_sensitivity' &&
     row.variant === 'full_eligible_history' && row.model_id === 'holt_winters_additive_damped');
   return <div className={s.tabBody}>
-    <TabHeading title="Demand Scenarios & Reliability" detail="Compare observed demand, planning scenarios and the reliability of the published forecasts.">
+    <TabHeading title="Demand Scenario Planning" detail="Explore LRT3 scenarios, monitor headline services and review forecast reliability.">
       <Select label="Forecast target" value={id} options={targetOptions(network)} onChange={setId} />
     </TabHeading>
     <ForecastExplorer key={id} id={id} history={history} network={network} />
@@ -199,26 +203,27 @@ export default function DemandForecast() {
       Active Ridge forecasts and affected comparisons use the verified-holiday adjustment with the original model families and training windows.
       Tentative and unknown dates keep their evidence status. Historical calendar release vintages are unavailable.
     </Note>}
+    <PlanningWatchlist data={network} />
     <ModelComparison data={research} network={network} id={id} />
-    <Panel marker="D" title="Cold-start and stability experiments">
-      <Note title="Cold-start transfer finding" tone="warn">Transferring established-rail donor profiles did not produce a consistent improvement over Seasonal Naive for these short histories. The published forecasting method was retained.</Note>
-      <Details title="Cold-start donor experiments"><ColdStart research={research} network={network} /></Details>
-      <Details title="Forecast stability and alternatives" summary="Published forecasts and alternative training-window results.">
-        <StabilityExplorer key={id} id={id} network={network} research={research} />
-      </Details>
-    </Panel>
-    <Details marker="E" title="Direct versus bottom-up network comparison">
+    <Details title="Cold-start donor experiments" summary="Donor profiles did not consistently improve on Seasonal Naive.">
+      <p className={s.muted}>Transferring established-rail donor profiles did not produce a consistent improvement for these short histories. The published forecasting method was retained.</p>
+      <ColdStart research={research} network={network} />
+    </Details>
+    {id !== network.networkId && <Details title="Forecast stability and alternatives" summary={`${targetShort[id]} · published forecasts and alternative training windows.`}>
+      <StabilityExplorer key={id} id={id} network={network} research={research} />
+    </Details>}
+    <Details title="Empirical uncertainty audit"
+      summary={`LRT3 residual band covered ${num(research.uncertainty.holdout_inside)} of ${num(research.uncertainty.holdout_points)} terminal observations.`}>
+      <p>The nominal {pct((research.uncertainty.nominal_residual_quantiles[1] - research.uncertainty.nominal_residual_quantiles[0]) * 100, 0)} LRT3 band had {pct(research.uncertainty.holdout_coverage_pct)} empirical coverage.</p>
+      <p className={s.muted}>{research.uncertainty.limitations}</p>
+      <UncertaintyAudit data={research.uncertainty} />
+    </Details>
+    <Details title="Direct versus bottom-up network comparison" summary="Network forecast stability, alternative training windows and shared-origin scores.">
       <p>The experiment shares {research.experimentContext.matchedNetworkOrigins} rolling origins. The direct model uses the
         aligned network history of {research.experimentContext.commonNetworkHistoryDays} days. Established bottom-up components can use longer training histories.
         The published network projection uses the selected component forecasts.</p>
       {research.experimentContext.reusedNetworkHoldout && <p>The strategy comparison reuses the already inspected terminal holdout as retrospective evidence under the active calendar policy.</p>}
       <StabilityExplorer id={network.networkId} network={network} research={research} />
     </Details>
-    <Panel marker="F" title="Empirical uncertainty and limitations">
-      <p>For the LRT3 origin model, the nominal {pct((research.uncertainty.nominal_residual_quantiles[1] - research.uncertainty.nominal_residual_quantiles[0]) * 100, 0)} residual band covered
-        {' '}{num(research.uncertainty.holdout_inside)} of {num(research.uncertainty.holdout_points)} terminal observations ({pct(research.uncertainty.holdout_coverage_pct)}).</p>
-      <p className={s.muted}>{research.uncertainty.limitations}</p>
-      <Details title="Empirical uncertainty audit"><UncertaintyAudit data={research.uncertainty} /></Details>
-    </Panel>
   </div>;
 }

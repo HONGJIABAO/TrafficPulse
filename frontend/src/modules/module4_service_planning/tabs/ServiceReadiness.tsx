@@ -15,6 +15,10 @@ const clock = (value: string | null) => value?.slice(0, 5) ?? 'Unavailable';
 const frequency = (value: number | null | undefined) => num(value, value != null && !Number.isInteger(value) ? 2 : 0);
 const dayLabel = (value: DayType) => dayTypes.find((day) => day.value === value)?.label ?? value;
 
+type ScheduleSelection = { day: DayType; direction: Direction };
+type RouteSelection = ScheduleSelection & { routeId: string };
+const defaultSchedule: ScheduleSelection = { day: 'weekday', direction: 'both' };
+
 function directions(data: ServiceData, route: string, day: DayType) {
   return data.periods.filter((row) => row.route_id === route && row.day_type === day && row.period === 'all_day')
     .sort((a, b) => b.direction_id.localeCompare(a.direction_id)).map((row) => ({
@@ -30,60 +34,67 @@ function ServicePeriods({ rows }: { rows: Period[] }) {
     ] }))} />;
 }
 
-function RouteExplorer({ data }: { data: ServiceData }) {
-  const [routeId, setRoute] = useState(lrt3Route);
-  const [day, setDay] = useState<DayType>('weekday');
-  const [direction, setDirection] = useState<Direction>('both');
+function RouteExplorer({ data, selection, onChange }: {
+  data: ServiceData; selection: RouteSelection; onChange: (selection: RouteSelection) => void;
+}) {
+  const { routeId, day, direction } = selection;
   const route = data.routes.find((row) => row.route_id === routeId);
   const hours = data.hourly.filter((row) => row.route_id === routeId && row.day_type === day && row.direction_id === direction)
     .sort((a, b) => a.service_hour - b.service_hour);
   const periods = data.periods.filter((row) => row.route_id === routeId && row.day_type === day && row.direction_id === direction);
   const allDay = periods.find((row) => row.period === 'all_day');
+  const otherDays = data.periods.filter((row) => row.route_id === routeId && row.direction_id === direction &&
+    row.period === 'all_day' && row.day_type !== day);
 
   return <Panel primary marker="A" title="GTFS scheduled service explorer" badge={<EvidenceBadge kind="Scheduled Reference" />}
-    subtitle={`Reference timetable dated ${dateText(data.referenceDate)} · ${data.routes.filter((row) => row.is_rail).length} rail routes plus Sunway BRT.`}>
+    subtitle={`${route?.route_name ?? 'Route unavailable'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · terminal departures`}>
+    <div className={s.controls}>
+      <Select label="GTFS route" value={routeId} options={data.routes.map((row) => ({ value: row.route_id, label: row.is_rail ? row.route_name : 'Sunway BRT' }))}
+        onChange={(value) => onChange({ ...selection, routeId: value, direction: 'both' })} />
+      <Segmented label="Scheduled day type" value={day} options={dayTypes} onChange={(value) => onChange({ ...selection, day: value })} />
+      <Select label="Scheduled direction" value={direction} options={directions(data, routeId, day)}
+        onChange={(value) => onChange({ ...selection, direction: value })} />
+    </div>
     <Headline>
-      <Kpi lead label="Frequency-implied terminal departures" value={frequency(allDay?.reference_departures)} note={`${route?.route_name} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'}`} />
+      <Kpi lead label="Frequency-implied terminal departures" value={frequency(allDay?.reference_departures)} note="Per reference day" />
       <Kpi label="Terminal service span" value={allDay?.reference_service_start ? `${clock(allDay.reference_service_start)}–${clock(allDay.reference_service_end)}` : 'Unavailable'}
         note={allDay?.terminal_service_span_hours == null ? 'Reference span unavailable' : `${num(allDay.terminal_service_span_hours, 2)} hours`} />
       <Kpi label="Full-day effective headway" value={direction === 'both' || allDay?.effective_headway_minutes == null ? 'Unavailable' : `${num(allDay.effective_headway_minutes, 1)} min`}
         note={direction === 'both' ? 'Select one direction' : '60 minutes ÷ departures per hour'} />
     </Headline>
-    <div className={s.controls}>
-      <Select label="GTFS route" value={routeId} options={data.routes.map((row) => ({ value: row.route_id, label: row.is_rail ? row.route_name : 'Sunway BRT' }))}
-        onChange={(value) => { setRoute(value); setDirection('both'); }} />
-      <Segmented label="Scheduled day type" value={day} options={dayTypes} onChange={setDay} />
-      <Select label="Scheduled direction" value={direction} options={directions(data, routeId, day)} onChange={setDirection} />
-    </div>
+    {otherDays.length > 0 && <p className={s.muted}><strong>Terminal departures on other reference days</strong>{' '}
+      {otherDays.map((row) => `${dayLabel(row.day_type)} ${frequency(row.reference_departures)}`).join(' · ')}
+    </p>}
     {hours.length ? <Lines dates={hours.map((row) => `${String(row.service_hour).padStart(2, '0')}:00`)} label="Hourly frequency-implied terminal departures"
-      traces={[{ name: 'Terminal departures', values: hours.map((row) => row.reference_departures), color: '#285bca', area: true }]} height={218} dateLabels={false} decimals={2} />
+      traces={[{ name: 'Terminal departures', values: hours.map((row) => row.reference_departures), color: '#285bca', area: true }]} height={185} dateLabels={false} decimals={2} />
       : <Empty>No hourly reference departures are available for this selection.</Empty>}
-    <ServicePeriods rows={periods} />
-    <p className={s.muted}>Hourly counts represent frequency-implied departures from route termini. Fractional values come from prorating frequency intervals.</p>
+    <Details title="Scheduled service by operating period" summary="Reference hours, terminal departures and direction-specific headways.">
+      <ServicePeriods rows={periods} />
+      <p className={s.muted}>Hourly counts represent frequency-implied departures from route termini. Fractional values come from prorating frequency intervals.</p>
+    </Details>
     {route && !route.is_rail && <p className={s.muted}>{route.mapping_notes} This schedule is separate from Rapid Rail intensity and equity indicators.</p>}
-    <Note title="GTFS validity and dated supply" tone="warn">
-      The archived GTFS calendar covers {dateRange(data.calendarStart, data.calendarEnd)}. Later supply uses a held-reference timetable assumption.
+    <p className={s.muted}>Reference timetable dated {dateText(data.referenceDate)}. The archived GTFS calendar covers {dateRange(data.calendarStart, data.calendarEnd)}.
+      Later supply uses a held-reference timetable assumption.
       Verified or tentative holidays without a validated timetable and dates with unknown calendar coverage retain unavailable dated supply.
-    </Note>
+    </p>
   </Panel>;
 }
 
-function Supply({ data }: { data: ServiceData }) {
-  const [day, setDay] = useState<DayType>('weekday');
-  const [direction, setDirection] = useState<Direction>('both');
+function Supply({ data, selection, onChange }: {
+  data: ServiceData; selection: ScheduleSelection; onChange: (selection: ScheduleSelection) => void;
+}) {
+  const { day, direction } = selection;
   const rows = data.nominal.filter((row) => row.day_type === day && row.direction_id === direction);
   const allDay = rows.find((row) => row.period === 'all_day');
-  return <Panel marker="C" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
-    subtitle="Documented three-car train capacity applied to frequency-implied reference departures.">
+  return <Panel marker="B" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
+    subtitle={`${data.routes.find((row) => row.route_id === lrt3Route)?.route_name ?? 'Shah Alam Line'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · nominal passenger places`}>
     <div className={s.controls}>
-      <Segmented label="Nominal supply day type" value={day} options={dayTypes} onChange={setDay} />
-      <Select label="Nominal supply direction" value={direction} options={directions(data, lrt3Route, day)} onChange={setDirection} />
+      <Segmented label="Nominal supply day type" value={day} options={dayTypes} onChange={(value) => onChange({ ...selection, day: value })} />
+      <Select label="Nominal supply direction" value={direction} options={directions(data, lrt3Route, day)}
+        onChange={(value) => onChange({ ...selection, direction: value })} />
     </div>
-    <Headline>
-      <Kpi lead label="Nominal places per reference day" value={num(allDay?.nominal_places)} note={allDay?.direction_label} />
-      <Kpi label="Reference departures" value={frequency(allDay?.departures)} note={dayLabel(day)} />
-      <Kpi label="Places per three-car train" value={num(data.capacity.passenger_places)} note={`Design capacity · includes ${num(data.capacity.source_reported_seats)} seats`} />
-    </Headline>
+    <Kpi lead label="Nominal places per reference day" value={num(allDay?.nominal_places)}
+      note={`${frequency(allDay?.departures)} reference terminal departures × ${num(data.capacity.passenger_places)} design places per three-car train (including ${num(data.capacity.source_reported_seats)} seats)`} />
     <Table label="Direction-specific LRT3 nominal supply" columns={['Period', 'Reference terminal departures', 'Nominal places']}
       rows={rows.map((row) => ({ key: row.period, cells: [periodLabel[row.period], frequency(row.departures), num(row.nominal_places)] }))} />
     <p className={s.muted}>{data.capacity.limitations} <a href={data.capacity.source_url} target="_blank" rel="noreferrer">Documented LRV capacity</a>.</p>
@@ -126,14 +137,14 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
     {date !== 'all' && days[0] && <p className={s.muted}>
       {holidayLabels[days[0].calendar_status] ?? 'Holiday calendar unknown'} · {supplyLabel(days[0].supply_status)}
     </p>}
-    <p className={s.muted}>All-date proxy includes {num(days.length)} selected forecast dates. The matched comparison uses the same {num(supplied)} supply-eligible dates,
-      including {num(held)} held beyond GTFS validity.</p>
-    {!supplied && <Note title="Dated supply unavailable" tone="warn">The selected dates have no supported reference timetable. All-date proxy demand remains visible in the table.</Note>}
-    <Note title="Interpreting demand and supply" tone="warn">
-      Demand estimates station-origin trips using a KTM profile. Supply counts nominal passenger places at terminal departures.
-      Demand direction and section loads are unmeasured. Assessing occupancy, spare capacity or overcrowding requires observed service and passenger counts.
-    </Note>
-    {rows.length > 0 && supplied > 0 && <div className={s.grid2}>
+    <p className={s.muted}><strong>{scenarios.find((item) => item.value === scenario)?.label} scenario · {dayLabel(day)}</strong>{' '}
+      · {num(days.length)} all-demand dates · {num(supplied)} matched supply-eligible dates · {num(held)} held-reference dates within the matched set
+    </p>
+    {!supplied && <p className={s.muted}><strong>Dated supply unavailable.</strong>
+      {rows.some((row) => row.allDemand != null) && ' The table shows all-date proxy demand.'}</p>}
+    <p className={s.muted}>Demand estimates station-origin trips using a KTM profile. Supply counts nominal passenger places at terminal departures.
+      Assessing occupancy or crowding requires observed service and passenger counts by direction and segment.</p>
+    {resolution === 'hourly' && rows.length > 0 && supplied > 0 && <div className={s.grid2}>
       <Panel heading="h4" title="Proxy station-origin demand" subtitle="Average trips per matched forecast date" badge={<EvidenceBadge kind="Proxy Estimate" />}>
         <Chart label="Matched-date LRT3 proxy station-origin trips by time window" option={chartOption('matchedDemand', 'Proxy station-origin trips', '#007e92')} height={260} />
       </Panel>
@@ -141,7 +152,7 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
         <Chart label="Matched-date nominal terminal places by time window" option={chartOption('nominal', 'Nominal terminal places', '#687bb2')} height={260} />
       </Panel>
     </div>}
-    <Table label="Peak sensitivity by time window" columns={['Window', 'Hours', 'Proxy profile share', 'All-date proxy trips / day', 'Matched-date proxy trips / day', 'Matched-date nominal places / day']}
+    <Table label="Peak sensitivity by time window" columns={['Window', 'Hours', 'Proxy profile share', 'All-date proxy origin trips / day', 'Matched-date proxy origin trips / day', 'Matched-date nominal terminal places / day']}
       rows={rows.map((row) => ({ key: row.window, cells: [title(row), `${clock(row.start)}–${clock(row.end)}`, pct(row.share * 100), num(row.allDemand), num(row.matchedDemand),
         row.nominal == null ? <EvidenceBadge kind="Unavailable" /> : num(row.nominal)] }))} />
   </Panel>;
@@ -149,10 +160,21 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
 
 export default function ServiceReadiness() {
   const data = useAsset('service');
+  const [schedule, setSchedule] = useState<RouteSelection>({ ...defaultSchedule, routeId: lrt3Route });
+  const [capacity, setCapacity] = useState(defaultSchedule);
+  const sameReference = schedule.routeId === lrt3Route && schedule.day === capacity.day && schedule.direction === capacity.direction;
   return <div className={s.tabBody}>
     <TabHeading title="Service Readiness & Capacity" detail="Compare scheduled terminal frequency, nominal LRT3 capacity and KTM-informed demand sensitivity." />
-    <RouteExplorer data={data} />
-    <Panel marker="B" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
+    <p className={s.selectionContext} role="status">
+      {sameReference
+        ? 'Both panels use the same Shah Alam Line timetable, day type and direction. Each panel has its own filters.'
+        : 'The panels show different selections. Match the Shah Alam Line, day type and direction to compare the timetable with its nominal capacity.'}
+    </p>
+    <div className={s.pairedPanels}>
+      <RouteExplorer data={data} selection={schedule} onChange={setSchedule} />
+      <Supply data={data} selection={capacity} onChange={setCapacity} />
+    </div>
+    <Panel marker="C" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
       subtitle="Published headline trips per reference terminal departure, pairing the same ordinary dates and denominator with the recent baseline.">
       <Table label="Network service intensity" columns={['Headline service', 'GTFS routes', 'Forecast trips / departure', 'Baseline trips / departure', 'Change', 'Comparable dates', 'Held dates', 'Coverage']}
         rows={data.intensity.map((row) => ({ key: row.series_id, cells: [targetShort[row.series_id], row.route_ids.split('|').join(' / '),
@@ -163,7 +185,6 @@ export default function ServiceReadiness() {
       {data.intensity.filter((row) => row.intensity_status === 'unavailable_shared_trunk').map((row) =>
         <Note key={row.series_id} title="Combined Ampang / Sri Petaling intensity unavailable" tone="warn">{row.intensity_reason}</Note>)}
     </Panel>
-    <Supply data={data} />
     <PeakSensitivity data={data} />
     <Details marker="E" title="Service evidence and operator monitoring" summary="Schedule assumptions, source definitions and operator follow-up.">
       <ul className={s.textList}>

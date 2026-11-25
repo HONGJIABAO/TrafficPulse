@@ -6,10 +6,9 @@ import s from './dashboard.module.css';
 
 const tabs = [
   { code: 'SP01', title: 'Service Readiness & Capacity', Component: lazy(() => import('./tabs/ServiceReadiness')) },
-  { code: 'SP02', title: 'Planning Outlook', Component: lazy(() => import('./tabs/FutureOutlook')) },
-  { code: 'SP03', title: 'Demand Scenarios & Reliability', Component: lazy(() => import('./tabs/DemandForecast')) },
-  { code: 'SP04', title: 'Temporal Service Planning', Component: lazy(() => import('./tabs/DemandDrivers')) },
-  { code: 'SP05', title: 'Equity & Accessibility', Component: lazy(() => import('./tabs/EquityAccessibility')) },
+  { code: 'SP02', title: 'Demand Scenario Planning', Component: lazy(() => import('./tabs/DemandForecast')) },
+  { code: 'SP03', title: 'Temporal Service Planning', Component: lazy(() => import('./tabs/DemandDrivers')) },
+  { code: 'SP04', title: 'Equity & Accessibility', Component: lazy(() => import('./tabs/EquityAccessibility')) },
 ] as const;
 const Methodology = lazy(() => import('./Methodology'));
 
