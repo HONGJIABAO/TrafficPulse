@@ -13,6 +13,16 @@ const tabs = [
 ] as const;
 const Methodology = lazy(() => import('./Methodology'));
 
+function TrainFront() {
+  return <svg className={s.trainIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="5.5" y="3" width="13" height="15" rx="3" />
+    <path d="M6 11h12M10 6h4M8.5 18l-2 3m9-3 2 3" />
+    <circle cx="9" cy="14.5" r=".75" fill="currentColor" stroke="none" />
+    <circle cx="15" cy="14.5" r=".75" fill="currentColor" stroke="none" />
+  </svg>;
+}
+
 function ReleaseContext() {
   const { analysisReferenceDate, dataRevision } = useAsset('manifest');
   return <dl className={s.releaseContext}>
@@ -29,28 +39,33 @@ export function ServicePlanning() {
   const drawer = useRef<HTMLDialogElement>(null);
   const ActiveTab = tabs[active].Component;
 
+  function selectTab(index: number, focus = false) {
+    setActive(index);
+    const tab = buttons.current[index];
+    if (focus) tab?.focus({ preventScroll: true });
+    tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+
   return (
     <div className={s.dashboard}>
       <div className={s.workspace}>
-        <div className={s.controlBar}>
-          <div className={s.identity}>
-            <span className={s.brandMark} aria-hidden="true" />
-            <span>TransitPulse Malaysia</span>
-            <span className={s.moduleLabel}>Module 4</span>
+        <header className={s.masthead}>
+          <div className={s.mastheadTitle}>
+            <span className={s.moduleLabel}>Module 04</span>
+            <h1>Service Planning &amp; Accessibility</h1>
           </div>
           <button className={s.methodologyButton} type="button" aria-haspopup="dialog" aria-controls={`${baseId}-methodology`}
             onClick={() => { drawer.current?.showModal(); setMethodologyOpen(true); }}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+              strokeLinejoin="round" aria-hidden="true"><path d="M4 3.5h9l3 3v10H4zM12.5 3.5V7H16M7 9.5h6M7 12.5h6" /></svg>
             Methodology &amp; Data Sources
           </button>
-        </div>
-        <header className={s.hero}>
-          <div>
-            <h1>Service Planning &amp; Accessibility</h1>
-            <p>Rapid Rail service readiness, forecast-informed planning and district rail access.</p>
+          <p className={s.mastheadSubtitle}>Rapid Rail schedules, demand outlook and district rail access.</p>
+          <div className={s.mastheadContext}>
+            <DashboardErrorBoundary>
+              <Suspense fallback={<Loading label="Loading analysis reference…" />}><ReleaseContext /></Suspense>
+            </DashboardErrorBoundary>
           </div>
-          <DashboardErrorBoundary>
-            <Suspense fallback={<Loading label="Loading analysis reference…" />}><ReleaseContext /></Suspense>
-          </DashboardErrorBoundary>
         </header>
         <nav className={s.tabList} role="tablist" aria-label="Service Planning & Accessibility views"
           onKeyDown={(event) => {
@@ -58,13 +73,12 @@ export function ServicePlanning() {
               ArrowRight: (active + 1) % tabs.length, Home: 0, End: tabs.length - 1 }[event.key];
             if (next == null) return;
             event.preventDefault();
-            setActive(next);
-            buttons.current[next]?.focus();
+            selectTab(next, true);
           }}>
           {tabs.map(({ code, title }, index) => <button key={title} ref={(node) => { buttons.current[index] = node; }}
             type="button" role="tab" id={`${baseId}-tab-${index}`} aria-controls={`${baseId}-panel-${index}`}
-            aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)}>
-            <span className={s.stationCode} aria-hidden="true">{code}</span>
+            aria-selected={active === index} tabIndex={active === index ? 0 : -1} onClick={() => selectTab(index)}>
+            <span className={s.stationSign} aria-hidden="true"><TrainFront /><span className={s.stationCode}>{code}</span></span>
             <span className={s.stationName}>{title}</span>
           </button>)}
         </nav>

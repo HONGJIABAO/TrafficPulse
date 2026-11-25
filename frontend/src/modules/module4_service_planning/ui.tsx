@@ -21,12 +21,15 @@ export function EvidenceBadge({ kind }: { kind: Evidence }) {
   return <span className={`${s.badge} ${s.evidence} ${evidenceStyle[kind]}`}>{kind}</span>;
 }
 
-export function Panel({ title, subtitle, badge, controls, children, primary, heading: Heading = 'h3' }: {
-  title: string; subtitle?: ReactNode; badge?: ReactNode; controls?: ReactNode; children: ReactNode; primary?: boolean; heading?: 'h3' | 'h4' | 'h5';
+export function Panel({ title, subtitle, badge, controls, children, primary, marker, heading: Heading = 'h3' }: {
+  title: string; subtitle?: ReactNode; badge?: ReactNode; controls?: ReactNode; children: ReactNode; primary?: boolean; marker?: string; heading?: 'h3' | 'h4' | 'h5';
 }) {
   return <section className={primary ? `${s.card} ${s.primaryCard}` : s.card}>
     <header className={s.cardHeader}>
-      <div className={s.cardTitle}><Heading>{title}</Heading>{subtitle && <p>{subtitle}</p>}</div>
+      <div className={s.cardTitle}>
+        <Heading>{marker && <span className={s.sectionMarker} aria-hidden="true">{marker}</span>}{title}</Heading>
+        {subtitle && <p>{subtitle}</p>}
+      </div>
       {badge}
       {controls && <div className={`${s.controls} ${s.headerControls}`}>{controls}</div>}
     </header>
@@ -34,10 +37,10 @@ export function Panel({ title, subtitle, badge, controls, children, primary, hea
   </section>;
 }
 
-export function AnalysisGroup({ title, children }: { title: string; children: ReactNode }) {
+export function AnalysisGroup({ title, marker, children }: { title: string; marker?: string; children: ReactNode }) {
   const id = useId();
   return <section className={s.analysisGroup} aria-labelledby={id}>
-    <h3 id={id} className={s.groupHeading}>{title}</h3>
+    <h3 id={id} className={s.groupHeading}>{marker && <span className={s.sectionMarker} aria-hidden="true">{marker}</span>}{title}</h3>
     {children}
   </section>;
 }
@@ -50,12 +53,12 @@ export function Headline({ children }: { children: ReactNode }) {
   return <div className={s.headline}>{children}</div>;
 }
 
-export function Kpi({ label, value, note, tone, lead, badge }: {
-  label: string; value: ReactNode; note?: ReactNode; tone?: 'up' | 'down'; lead?: boolean; badge?: ReactNode;
+export function Kpi({ label, value, note, lead, badge }: {
+  label: string; value: ReactNode; note?: ReactNode; lead?: boolean; badge?: ReactNode;
 }) {
   return <article className={lead ? `${s.kpi} ${s.leadKpi}` : s.kpi}>
     <header><p>{label}</p>{badge}</header>
-    <strong className={tone ? s[tone] : ''}>{value}</strong>
+    <strong>{value}</strong>
     {note && <small>{note}</small>}
   </article>;
 }
@@ -106,10 +109,13 @@ export function DataLink({ source }: { source: Source }) {
   return <div className={s.source}><a href={source.url} target="_blank" rel="noreferrer">{source.label}</a>{source.detail && <small>{source.detail}</small>}</div>;
 }
 
-export function Details({ title, summary, children }: { title: string; summary?: string; children: ReactNode }) {
+export function Details({ title, summary, marker, children }: { title: string; summary?: string; marker?: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return <details className={s.details} onToggle={(event) => setOpen(event.currentTarget.open)}>
-    <summary><div><strong>{title}</strong>{summary && <span>{summary}</span>}</div></summary>
+    <summary>
+      {marker && <span className={s.sectionMarker} aria-hidden="true">{marker}</span>}
+      <div><strong>{title}</strong>{summary && <span>{summary}</span>}</div>
+    </summary>
     {open && <div className={s.detailsBody}><Suspense fallback={<Loading />}>{children}</Suspense></div>}
   </details>;
 }

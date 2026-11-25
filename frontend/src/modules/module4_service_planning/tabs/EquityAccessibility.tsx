@@ -35,7 +35,7 @@ function DistrictDetail({ district: d, coverage, screen, selectedMetric }: {
     ['Published LRT3 origins', num(d.observed_lrt3_station_origin_trips_step4)],
     ['LRT3 share of published district origins', pct(d.lrt3_share_of_observed_district_station_origin_trips_pct)],
   ];
-  return <Panel title={d.district} subtitle={d.state} badge={<Badge tone={screen.priority_for_further_investigation ? 'warning' : 'neutral'}>{priorityClass(screen).label}</Badge>}>
+  return <Panel heading="h4" title={d.district} subtitle={d.state} badge={<Badge tone={screen.priority_for_further_investigation ? 'warning' : 'neutral'}>{priorityClass(screen).label}</Badge>}>
     <p><strong>{selectedMetric.label}</strong> · {selectedMetric.value} · {selectedMetric.classification}</p>
     <dl className={s.facts}>{facts.map(([label, value]) => <div key={label} style={{ display: 'contents' }}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     {d.rapid_rail_physical_stations === 0 && <Note title="Structural zero" tone="quiet">This district has zero mapped Rapid Rail physical stations and zero published origins within the study scope. Per-station ratios are unavailable.</Note>}
@@ -78,7 +78,7 @@ function DistrictExplorer({ data, geography }: { data: EquityData; geography: Ge
 
   return <>
     <div className={s.mapLayout}>
-      <Panel primary title="District map and screening controls" badge={<EvidenceBadge kind="Observed" />}
+      <Panel primary marker="B" title="District map and selected district" badge={<EvidenceBadge kind="Observed" />}
         subtitle="Eight administrative comparison units. Choose a district on the map or from the list.">
         <div className={s.controls}>
           <Segmented label="Socioeconomic cohort" value={cohort} options={cohorts} onChange={setCohort} />
@@ -99,7 +99,7 @@ function DistrictExplorer({ data, geography }: { data: EquityData; geography: Ge
       </Panel>
       <DistrictDetail district={active} coverage={data.coverage[active.district_id]} screen={screens[active.district_id]} selectedMetric={values[active.district_id]} />
     </div>
-    <AnalysisGroup title="District equity screening">
+    <AnalysisGroup marker="C" title="Equity priority screening">
       <Panel heading="h4" title="Equity priority matrix" subtitle="Validated Step 4 rules compare relative household vulnerability with station density. Step 4B activity provides descriptive context.">
         {activeScreen && <Note title={activeScenario === data.primaryScenario ? 'Original Step 4 screening thresholds' : 'Selected sensitivity thresholds'}>
           Income at or below {currency(activeScreen.income_cutoff_myr, 2)} {activeScreen.vulnerability_rule === 'either' ? 'or' : 'and'} absolute poverty at or above {pct(activeScreen.poverty_cutoff_pct)}.
@@ -138,7 +138,7 @@ function Activity({ data }: { data: EquityData }) {
   const stationDistrict = (id: string) => data.districts.find((d) => d.district_id === id)?.district ?? id;
 
   return <>
-    <Panel heading="h4" title="Published network district activity" badge={<EvidenceBadge kind="Observed" />}
+    <Panel marker="D" title="Published network district activity" badge={<EvidenceBadge kind="Observed" />}
       subtitle={`${dateRange(data.observation.start, data.observation.end)} · ${num(data.observation.days)} observed days.`}>
       <Bars label="Average daily published station origins by district" horizontal height={270}
         data={districts.map((row) => ({ name: row.district, value: row.average_daily_rapid_rail_station_origin_trips }))} />
@@ -149,13 +149,13 @@ function Activity({ data }: { data: EquityData }) {
           num(row.rapid_rail_station_origin_trips_per_1k_residents_period, 1), num(row.average_daily_rapid_rail_station_origin_trips_per_physical_station, 1),
           pct(row.lrt3_share_of_observed_district_station_origin_trips_pct)] }))} />
     </Panel>
-    <Panel heading="h4" title="Petaling and Klang corridor comparison" badge={<EvidenceBadge kind="Observed" />}>
+    <Panel marker="E" title="Klang and Petaling corridor comparison" badge={<EvidenceBadge kind="Observed" />}>
       <Table label="LRT3 district comparison" columns={['District', 'LRT3 stations', 'LRT3 station origins', 'Share of LRT3 origins', 'LRT3 share of district origins', 'Network station density']}
         rows={corridor.map((row) => ({ key: row.district_id, cells: [row.district, num(data.coverage[row.district_id].lrt3_stations), num(row.observed_lrt3_station_origin_trips_step4),
           pct(row.observed_lrt3_station_origin_trips_step4 == null ? null : row.observed_lrt3_station_origin_trips_step4 / data.lrt3Trips * 100),
           pct(row.lrt3_share_of_observed_district_station_origin_trips_pct), num(row.rapid_rail_stations_per_100k_residents, 2)] }))} />
     </Panel>
-    <Panel heading="h4" title="LRT3 station-origin concentration" badge={<EvidenceBadge kind="Observed" />}
+    <Panel marker="F" title="LRT3 station-origin concentration" badge={<EvidenceBadge kind="Observed" />}
       subtitle={`${num(shown.length)} stations account for ${pct(sum(shown.map((row) => row.station_origin_trips)) / data.lrt3Trips * 100)} of published LRT3 station origins in this selection.`}>
       <div className={s.controls}><Select label="Station concentration district" value={stationFilter} options={[
         { value: 'all', label: 'All LRT3 stations' }, ...corridor.map((row) => ({ value: row.district_id, label: row.district })),
@@ -175,20 +175,22 @@ export default function EquityAccessibility() {
   const geography = useAsset('geography');
   const codes = sum(data.districts.map((d) => d.mapped_published_origin_codes));
   return <div className={s.tabBody}>
-    <TabHeading title="Equity & Accessibility" detail="Explore district rail coverage, observed station-origin activity and socioeconomic screening." />
-    <Headline>
-      <Kpi lead label="Published network station origins" value={num(data.activityTotal)} badge={<EvidenceBadge kind="Observed" />}
-        note={<>{dateRange(data.observation.start, data.observation.end)} · {num(data.observation.days)} observed days · {num(codes)} origin codes</>} />
-      <Kpi label="Mapped physical stations" value={num(data.physicalStations)} note={`${num(data.districts.length)} administrative units · population ${data.populationYear}`} />
-      <Kpi label="Published LRT3 station origins" value={num(data.lrt3Trips)} note={`${num(data.lrt3Stations)} corridor stations`} />
-    </Headline>
+    <TabHeading title="Equity & Accessibility" detail="Compare published rail origins, station coverage and socioeconomic screening by district." />
+    <AnalysisGroup marker="A" title="Published demand and station coverage">
+      <Headline>
+        <Kpi lead label="Published network station origins" value={num(data.activityTotal)} badge={<EvidenceBadge kind="Observed" />}
+          note={<>{dateRange(data.observation.start, data.observation.end)} · {num(data.observation.days)} observed days · {num(codes)} origin codes</>} />
+        <Kpi label="Mapped physical stations" value={num(data.physicalStations)} note={`${num(data.districts.length)} administrative units · population ${data.populationYear}`} />
+        <Kpi label="Published LRT3 station origins" value={num(data.lrt3Trips)} note={`${num(data.lrt3Stations)} corridor stations`} />
+      </Headline>
+    </AnalysisGroup>
     <Note title="Published OD coverage" tone="warn">
       <p>The source reconciles {num(data.activityTotal)} published station-origin trips across {num(codes)} origin codes, {num(data.physicalStations)} physical stations and {num(data.observation.days)} observation days.
         Putrajaya Line coverage includes {num(data.putrajayaOrigins)} published origin codes and {num(data.putrajayaDestinations)} destination codes.</p>
       <p>Source-internal reconciliation leaves underlying journey capture unverified. Resident travel behaviour, congestion, walking accessibility and unmet demand require separate evidence.</p>
     </Note>
     <DistrictExplorer data={data} geography={geography} />
-    <AnalysisGroup title="District and corridor activity"><Activity data={data} /></AnalysisGroup>
+    <Activity data={data} />
     <Note title={data.policy.name}>
       The policy sets a {pct(data.policy.target_percent, 0)} public transport modal share target for {data.policy.geographical_scope} by {data.policy.target_year}.
       District rail-origin counts cannot establish achieved modal share. <a href={data.policy.official_faq} target="_blank" rel="noreferrer">Official RMK13 policy context</a>.

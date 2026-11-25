@@ -55,51 +55,60 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
   const complete = (row: PatternRow) => row.expected_days != null && row.observed_days === row.expected_days;
 
   return <>
-    <Panel primary title="Monthly demand and calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
-      subtitle="Daily trips and reporting coverage for the selected year.">
-      {latestMonth && <Kpi lead label="Latest monthly average trips per observed day" value={num(latestMonth.mean_daily_trips)}
-        note={`${months[Number(latestMonth.group.slice(5)) - 1]} ${year} · ${num(latestMonth.observed_days)} of ${num(latestMonth.expected_days)} calendar days observed`} />}
-      <div className={s.controls}><Select label="Observation year" value={year} options={years.map((value) => ({ value, label: value }))} onChange={setYear} /></div>
-      <Calendar year={year} rows={yearHistory} label={`${label} calendar heatmap, ${year}`} holidays={holidays} />
-      <div className={s.legend}><span><i style={{ background: '#d9dee7' }} /> No published observation or outside the target window</span><span><i style={{ background: '#e8f4fc' }} /> Observed zero</span></div>
-      {monthly.length ? <>
-        <Bars label="Monthly average observed demand" data={monthly.map((row) => ({
-          name: `${months[Number(row.group.slice(5)) - 1]}${complete(row) ? '' : ' (partial)'}`,
-          value: row.mean_daily_trips, color: complete(row) ? '#285bca' : '#a85c00',
-        }))} height={210} />
-        <Table label="Monthly demand and reporting coverage" columns={['Month', 'Observed days', 'Calendar days', 'Coverage', 'Observed trips', 'Average per observed day']}
-          rows={monthly.map((row) => ({ key: row.group, cells: [row.group, num(row.observed_days), num(row.expected_days),
-            complete(row) ? 'Complete' : 'Incomplete', num(row.observed_total_trips), num(row.mean_daily_trips)] }))} />
-      </> : <Empty>No monthly observations were published for this year.</Empty>}
-    </Panel>
-    <AnalysisGroup title="Observed timing comparisons">
-      <div className={s.grid2}>
-        <Panel heading="h4" title="Day-of-week profile" badge={<EvidenceBadge kind="Observed" />} subtitle="Average demand in the validated recent observation window.">
-          <Bars label="Average trips by day of week" data={week.map((row) => ({ name: row.group.slice(0, 3), value: row.mean_daily_trips }))} height={210} />
-          <PatternTable label="Day-of-week observations" rows={week} />
-        </Panel>
-        <Panel heading="h4" title="Weekdays and weekends" badge={<EvidenceBadge kind="Observed" />}>
-          <Bars label="Average weekday and weekend trips" data={dayType.map((row) => ({ name: row.group, value: row.mean_daily_trips, color: '#007e92' }))} height={210} />
-          <PatternTable label="Weekday and weekend observations" rows={dayType} />
-        </Panel>
+    <Panel primary marker="A" title="Weekday and weekend demand" badge={<EvidenceBadge kind="Observed" />}
+      subtitle="Average trips in the validated recent observation window.">
+      <div className={s.weekPatterns}>
+        <div className={s.stack}>
+          <h4>Day-of-week profile</h4>
+          <Bars label="Average trips by day of week" data={week.map((row) => ({ name: row.group.slice(0, 3), value: row.mean_daily_trips }))} height={155} />
+          <Details title="Day-of-week sample counts"><PatternTable label="Day-of-week observations" rows={week} /></Details>
+        </div>
+        <div className={s.stack}>
+          <h4>Weekdays and weekends</h4>
+          <Bars label="Average weekday and weekend trips" data={dayType.map((row) => ({ name: row.group, value: row.mean_daily_trips, color: '#007e92' }))} height={155} />
+          <Details title="Weekday and weekend sample counts"><PatternTable label="Weekday and weekend observations" rows={dayType} /></Details>
+        </div>
       </div>
-      <Panel heading="h4" title="Observed holiday comparison" badge={<EvidenceBadge kind="Observed" />}
-        subtitle="Dates verified in the archived calendar are matched to known non-holidays on the same weekday within 28 days.">
-        <Table label="Observed holiday comparisons" columns={['Comparison dates', 'Matched holiday days', 'Control-date uses', 'Holiday mean', 'Non-holiday mean', 'Difference']}
-          rows={holiday.map((row) => ({ key: row.group, cells: [dateRange(row.period_start, row.period_end), num(row.observed_days), num(row.matched_control_date_uses),
-            num(row.mean_daily_trips), num(row.reference_mean_daily_trips), signed(row.difference_pct, 2, '%')] }))} />
-        <p className={s.muted}>Tentative holidays and dates with unknown calendar status are excluded from both groups.
-          Each holiday is compared with one average of its matched controls. Control dates can be reused across holidays. Small samples and incomplete calendar coverage limit this comparison.</p>
-        <p className={s.muted}>Extracted holiday calendars for {holidays.regions.join(' and ')} cover {holidays.coveredYears.join(' and ')}.
-          {' '}<a href={holidaySource} target="_blank" rel="noreferrer">Archived official calendar source</a></p>
+    </Panel>
+    <div className={s.calendarLayout}>
+      <Panel marker="B" title="Monthly demand and observation coverage" badge={<EvidenceBadge kind="Observed" />}
+        controls={<Select label="Observation year" value={year} options={years.map((value) => ({ value, label: value }))} onChange={setYear} />}>
+        {latestMonth && <Kpi lead label="Latest monthly average trips per observed day" value={num(latestMonth.mean_daily_trips)}
+          note={`${months[Number(latestMonth.group.slice(5)) - 1]} ${year} · ${num(latestMonth.observed_days)} of ${num(latestMonth.expected_days)} calendar days observed`} />}
+        {monthly.length ? <>
+          <Bars label="Monthly average observed demand" data={monthly.map((row) => ({
+            name: `${months[Number(row.group.slice(5)) - 1]}${complete(row) ? '' : ' (partial)'}`,
+            value: row.mean_daily_trips, color: complete(row) ? '#285bca' : '#a85c00',
+          }))} height={176} />
+          <Details title="Monthly reporting figures">
+            <Table label="Monthly demand and reporting coverage" columns={['Month', 'Observed days', 'Calendar days', 'Coverage', 'Observed trips', 'Average per observed day']}
+              rows={monthly.map((row) => ({ key: row.group, cells: [row.group, num(row.observed_days), num(row.expected_days),
+                complete(row) ? 'Complete' : 'Incomplete', num(row.observed_total_trips), num(row.mean_daily_trips)] }))} />
+          </Details>
+        </> : <Empty>No monthly observations were published for this year.</Empty>}
       </Panel>
-      <Details title="Additional observed patterns">
-        <PatternTable label="Month-of-year profiles" rows={seasonal.map((row) => ({ ...row, group: months[Number(row.group) - 1] }))} />
-        <Table label="Recent and previous 28-day demand" columns={['Comparison', 'Recent dates', 'Recent days', 'Previous days', 'Recent mean', 'Previous mean', 'Change']}
-          rows={recent.map((row) => ({ key: row.group, cells: [row.group, dateRange(row.period_start, row.period_end), num(row.observed_days),
-            num(row.reference_observations), num(row.mean_daily_trips), num(row.reference_mean_daily_trips), signed(row.difference_pct, 2, '%')] }))} />
-      </Details>
-    </AnalysisGroup>
+      <Panel marker="C" title="Calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
+        subtitle={`${label} · daily observed trips in ${year}. Point to a dated cell to inspect the calendar evidence.`}>
+        <Calendar year={year} rows={yearHistory} label={`${label} calendar heatmap, ${year}`} holidays={holidays} />
+        <div className={s.legend}><span><i style={{ background: '#d9dee7' }} /> No published observation or outside the target window</span><span><i style={{ background: '#e8f4fc' }} /> Observed zero</span></div>
+      </Panel>
+    </div>
+    <Panel marker="D" title="Verified holiday comparison" badge={<EvidenceBadge kind="Observed" />}
+      subtitle="Dates verified in the archived calendar are matched to known non-holidays on the same weekday within 28 days.">
+      <Table label="Observed holiday comparisons" columns={['Comparison dates', 'Matched holiday days', 'Control-date uses', 'Holiday mean', 'Non-holiday mean', 'Difference']}
+        rows={holiday.map((row) => ({ key: row.group, cells: [dateRange(row.period_start, row.period_end), num(row.observed_days), num(row.matched_control_date_uses),
+          num(row.mean_daily_trips), num(row.reference_mean_daily_trips), signed(row.difference_pct, 2, '%')] }))} />
+      <p className={s.muted}>Tentative holidays and dates with unknown calendar status are excluded from both groups.
+        Each holiday is compared with one average of its matched controls. Control dates can be reused across holidays. Small samples and incomplete calendar coverage limit this comparison.</p>
+      <p className={s.muted}>Extracted holiday calendars for {holidays.regions.join(' and ')} cover {holidays.coveredYears.join(' and ')}.
+        {' '}<a href={holidaySource} target="_blank" rel="noreferrer">Archived official calendar source</a></p>
+    </Panel>
+    <Details marker="E" title="Additional temporal patterns" summary="Month-of-year profiles and recent versus prior 28-day demand.">
+      <PatternTable label="Month-of-year profiles" rows={seasonal.map((row) => ({ ...row, group: months[Number(row.group) - 1] }))} />
+      <Table label="Recent and previous 28-day demand" columns={['Comparison', 'Recent dates', 'Recent days', 'Previous days', 'Recent mean', 'Previous mean', 'Change']}
+        rows={recent.map((row) => ({ key: row.group, cells: [row.group, dateRange(row.period_start, row.period_end), num(row.observed_days),
+          num(row.reference_observations), num(row.mean_daily_trips), num(row.reference_mean_daily_trips), signed(row.difference_pct, 2, '%')] }))} />
+    </Details>
   </>;
 }
 
@@ -115,13 +124,13 @@ export default function DemandDrivers() {
   const calendar = patterns.holidayCalendar;
 
   return <div className={s.tabBody}>
-    <TabHeading title="Temporal Service Planning" detail={`Observed service timing, holiday comparisons and calendar feature experiments · ${unitLabel(network.targets[target].unit)}`}>
+    <TabHeading title="Temporal Service Planning" detail={`Observed demand by day and month, verified holidays and model experiments · ${unitLabel(network.targets[target].unit)}`}>
       <Select label="Demand pattern target" value={target} options={targetOptions(network)} onChange={setTarget} />
     </TabHeading>
     <ObservedPatterns key={target} label={targetShort[target]} period={history.series[target]}
       rows={patterns.patterns.filter((row) => row.series_id === target)} holidays={calendar} holidaySource={patterns.holidaySource} />
-    <AnalysisGroup title="Forecast driver experiments">
-      <Panel heading="h4" title="Forecast feature ablation" subtitle="Matched rolling-origin Ridge comparisons for each feature configuration.">
+    <AnalysisGroup marker="F" title="Forecast feature ablation">
+      <Panel heading="h4" title="Matched model comparisons" subtitle="Matched rolling-origin Ridge comparisons for each feature configuration.">
         <div className={s.controls}><Segmented label="Ablation evaluation horizon" value={evaluation} options={evaluationOptions} onChange={setEvaluation} /></div>
         {overview.targets.length > 0 && <>
           <Table label="Mature-service ablation overview" columns={['Configuration', `Mean WAPE through ${evaluation} days`]}

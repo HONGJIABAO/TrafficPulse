@@ -25,24 +25,7 @@ export default function Methodology() {
       </dl>
       <a href={manifestUrl} download="manifest.json">Download data manifest</a>
     </div>
-    <AnalysisGroup title="Sources and provenance">
-      <Details title="Official sources" summary="Publisher links, licensing and attribution">
-        <div className={s.grid2}>{sources.map((source) => <DataLink key={source.url} source={source} />)}</div>
-      </Details>
-      <Details title="Validated static assets" summary="Files, validation counts and SHA-256 checksums">
-        <p>Data revision {manifest.dataRevision}. The export checked {num(Object.keys(manifest.inputSha256).length)} processed source artifacts,
-          {' '}{num(manifest.validation.peakRowsReconciled)} peak sensitivity rows and {num(manifest.validation.protectedBackendFileCount)} protected checksums.</p>
-        <Table label="Static data export manifest" columns={['Asset', 'Bytes', 'SHA-256']}
-          rows={Object.entries(manifest.assets).map(([key, value]) => ({ key, cells: [key, num(value.bytes), <code>{value.sha256}</code>] }))} />
-      </Details>
-      <Details title="Operator milestones and source notes">
-        <Table label="Documented Shah Alam service milestones" columns={['Milestone', 'Date', 'Evidence']}
-          rows={interventions.map((row) => ({ key: row.event, cells: [
-            titleCase(row.event), dateText(row.date), <DataLink source={{ label: 'Source record', url: row.source, detail: row.verification }} />,
-          ] }))} />
-      </Details>
-    </AnalysisGroup>
-    <AnalysisGroup title="Evidence and limits">
+    <AnalysisGroup title="How to read the evidence">
       <Table label="Evidence classifications" columns={['Classification', 'Meaning']}
         rows={evidence.map(({ kind, detail }) => ({ key: kind, cells: [<EvidenceBadge kind={kind} />, detail] }))} />
       <Note title="Observation windows and A0 reconciliation">
@@ -60,10 +43,27 @@ export default function Methodology() {
           and {pct(row.primaryDonorWape)} for the primary 50% donor transfer experiment.</p>)}
       </Note>
     </AnalysisGroup>
-    <AnalysisGroup title="Analytical methods">
-    {sections.map((section) => <Details key={section.title} title={section.title}>
-      <ul className={s.textList}>{section.text.map((item) => <li key={item}>{item}</li>)}</ul>
-    </Details>)}
+    <AnalysisGroup title="Methods and assumptions">
+      {sections.map((section) => <Details key={section.title} title={section.title}>
+        <ul className={s.textList}>{section.text.map((item) => <li key={item}>{item}</li>)}</ul>
+      </Details>)}
+    </AnalysisGroup>
+    <AnalysisGroup title="Data sources and provenance">
+      <Details title="Official sources" summary="Publisher links, licensing and attribution">
+        <div className={s.grid2}>{sources.map((source) => <DataLink key={source.url} source={source} />)}</div>
+      </Details>
+      <Details title="Validated static assets" summary="Files, validation counts and SHA-256 checksums">
+        <p>Data revision {manifest.dataRevision}. The export checked {num(Object.keys(manifest.inputSha256).length)} processed source artifacts,
+          {' '}{num(manifest.validation.peakRowsReconciled)} peak sensitivity rows and {num(manifest.validation.protectedBackendFileCount)} protected checksums.</p>
+        <Table label="Static data export manifest" columns={['Asset', 'Bytes', 'SHA-256']}
+          rows={Object.entries(manifest.assets).map(([key, value]) => ({ key, cells: [key, num(value.bytes), <code>{value.sha256}</code>] }))} />
+      </Details>
+      <Details title="Operator milestones and source notes">
+        <Table label="Documented Shah Alam service milestones" columns={['Milestone', 'Date', 'Evidence']}
+          rows={interventions.map((row) => ({ key: row.event, cells: [
+            titleCase(row.event), dateText(row.date), <DataLink source={{ label: 'Source record', url: row.source, detail: row.verification }} />,
+          ] }))} />
+      </Details>
     </AnalysisGroup>
   </>;
 }
