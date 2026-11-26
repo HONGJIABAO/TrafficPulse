@@ -336,7 +336,7 @@ export function LandmarkBuildingsLayer({ visible, onSelectLandmark }: Props) {
             gap: 5px;
             transition: all 0.2s ease;
           ">
-            <span style="color: #00E5A3;">📍</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="#00E5A3" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
             <span>${lm.name}</span>
             <span style="color: #94A3B8; font-size: 9px; font-weight: 500;">(${lm.heightM}m)</span>
           </div>

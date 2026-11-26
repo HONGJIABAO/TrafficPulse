@@ -1,5 +1,6 @@
 import React from 'react';
 import type { HaulFilter } from './types';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   activeHaul: HaulFilter;
@@ -10,11 +11,11 @@ interface Props {
   longPct?: number;
 }
 
-const HAUL_OPTIONS: { id: HaulFilter; label: string; icon: string; range: string }[] = [
-  { id: 'all', label: 'All Distances', icon: '🌐', range: 'Avg 13.0 km' },
-  { id: 'short', label: 'Intra-CBD', icon: '🏙️', range: '< 5 km (53%)' },
-  { id: 'medium', label: 'Suburban', icon: '🏡', range: '5–25 km (31%)' },
-  { id: 'long', label: 'Regional', icon: '🚄', range: '> 25 km (16%)' },
+const HAUL_OPTIONS: { id: HaulFilter; label: string; icon: TelemetryIconName; variant: TelemetryVariant; range: string }[] = [
+  { id: 'all', label: 'All Distances', icon: 'globe-network', variant: 'cobalt', range: 'Avg 13.0 km' },
+  { id: 'short', label: 'Intra-CBD', icon: 'urban-cluster', variant: 'cobalt', range: '< 5 km (53%)' },
+  { id: 'medium', label: 'Suburban', icon: 'suburban-station', variant: 'teal', range: '5–25 km (31%)' },
+  { id: 'long', label: 'Regional', icon: 'transit-rail', variant: 'amber', range: '> 25 km (16%)' },
 ];
 
 export const TripDistanceProfileCard: React.FC<Props> = ({
@@ -75,9 +76,9 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
     >
       {/* Title & Key Metric */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: 13 }}>📏</span>
-          <span style={{ fontWeight: 600, fontSize: 11.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <TelemetryIcon name="haul-vector" variant="cobalt" badge />
+          <span style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
             Trip Distance &amp; Haul Profile
           </span>
         </div>
@@ -183,8 +184,8 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
                 if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F8FAFC';
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 10 }}>{opt.icon}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <TelemetryIcon name={opt.icon} variant={isActive ? 'cobalt' : opt.variant} size={13} />
                 <span
                   style={{
                     fontSize: 10.5,

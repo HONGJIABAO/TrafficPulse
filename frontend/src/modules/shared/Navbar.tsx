@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { TabId } from './types';
 import { NAV_TABS } from './types';
+import { TelemetryIcon } from './TelemetryIcon';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -118,8 +119,10 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
           background: 'linear-gradient(135deg, #0066FF 0%, #00C48C 100%)',
           borderRadius: 8,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 18,
-        }}>🚆</div>
+          boxShadow: '0 2px 8px rgba(0, 102, 255, 0.35)',
+        }}>
+          <TelemetryIcon name="transit-rail" size={20} style={{ color: '#FFFFFF' }} />
+        </div>
         <div>
           <div style={{ fontWeight: 700, fontSize: 15, color: '#0F1E36', lineHeight: 1.2 }}>
             TransitPulse Malaysia

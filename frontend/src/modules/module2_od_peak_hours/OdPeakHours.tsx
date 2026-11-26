@@ -20,6 +20,7 @@ import { OdFlowMap } from './OdFlowMap';
 import { OperatorInsightStrip } from './OperatorInsightStrip';
 import { TimelinePlaybar } from '@/modules/module1_network_overview/TimelinePlaybar';
 import { TripDistanceProfileCard } from './TripDistanceProfileCard';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 interface OdSummarySchema {
   generated_at: string;
@@ -123,10 +124,18 @@ const resetBtnStyle: React.CSSProperties = {
   flexShrink: 0,
 };
 
-function SectionTitle({ icon, label }: { icon: string; label: string }) {
+function SectionTitle({
+  icon,
+  label,
+  variant = 'cobalt',
+}: {
+  icon: TelemetryIconName;
+  label: string;
+  variant?: TelemetryVariant;
+}) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-      <span style={{ fontSize: 13 }}>{icon}</span>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <TelemetryIcon name={icon} variant={variant} badge />
       <span style={{ fontWeight: 600, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
         {label}
       </span>
@@ -340,8 +349,8 @@ export function OdPeakHours() {
         {/* KPI 1: Peak Rush Window */}
         <div style={cardStyle}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 16 }}>⏰</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <TelemetryIcon name="clock-radar" variant="amber" badge />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Peak Travel Window</span>
             </div>
             <span
@@ -368,8 +377,8 @@ export function OdPeakHours() {
         {/* KPI 2: Busiest Passenger Corridor */}
         <div style={cardStyle}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 16 }}>🚀</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <TelemetryIcon name="od-route" variant="cobalt" badge />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Top OD Flow Corridor</span>
             </div>
             <span
@@ -396,8 +405,8 @@ export function OdPeakHours() {
         {/* KPI 3: Commuter Asymmetry */}
         <div style={cardStyle}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 16 }}>⚖️</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <TelemetryIcon name="asymmetry-wave" variant="amber" badge />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Morning Asymmetry</span>
             </div>
             <span
@@ -424,8 +433,8 @@ export function OdPeakHours() {
         {/* KPI 4: Off-Peak Opportunity */}
         <div style={cardStyle}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 16 }}>⚡</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <TelemetryIcon name="offpeak-drop" variant="teal" badge />
               <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Midday Off-Peak Drop</span>
             </div>
             <span
@@ -472,7 +481,7 @@ export function OdPeakHours() {
         >
           {/* Card: OD Filters */}
           <div style={cardStyle}>
-            <SectionTitle icon="🎛️" label="OD Analytics Filters" />
+            <SectionTitle icon="telemetry-sliders" variant="cobalt" label="OD Analytics Filters" />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
               {/* Rail Mode */}
               <FilterRow label="Rail Network Mode">
@@ -539,7 +548,7 @@ export function OdPeakHours() {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <SectionTitle icon="📍" label="Corridor Focus" />
+                <SectionTitle icon="corridor-focus" variant="indigo" label="Corridor Focus" />
                 <button
                   onClick={() => setSelectedFlowId(null)}
                   style={{
@@ -602,16 +611,22 @@ export function OdPeakHours() {
                       color: '#0052CC',
                       lineHeight: 1.4,
                       wordBreak: 'break-word',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: 6,
                     }}
                   >
-                    💡 <strong>Planner Tip:</strong> {tip}
+                    <TelemetryIcon name="spark" variant="cobalt" size={13} style={{ marginTop: 2 }} />
+                    <div>
+                      <strong>Planner Tip:</strong> {tip}
+                    </div>
                   </div>
                 );
               })()}
             </div>
           ) : (
             <div style={{ ...cardStyle, flexShrink: 0 }}>
-              <SectionTitle icon="💡" label="Interactive Tip" />
+              <SectionTitle icon="insight-node" variant="amber" label="Interactive Tip" />
               <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.45 }}>
                 Click on any corridor in the <strong>Top OD Pairs</strong> list or on any curved flow arc on the map to zoom in and inspect bottleneck statistics.
               </div>
@@ -645,7 +660,7 @@ export function OdPeakHours() {
             {/* Center-Top: Weekday x Hour Demand Heatmap */}
             <div style={{ ...cardStyle, padding: '12px 14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <SectionTitle icon="🔥" label="Weekday × Hour Passenger Demand Heatmap" />
+                <SectionTitle icon="thermal-matrix" variant="amber" label="Weekday × Hour Passenger Demand Heatmap" />
                 <span style={{ fontSize: 10, color: '#94A3B8' }}>24 Hours × 7 Days</span>
               </div>
               <WeekdayHourHeatmap
@@ -658,7 +673,7 @@ export function OdPeakHours() {
             {/* Right-Top: Top OD Pairs */}
             <div style={{ ...cardStyle, padding: '12px 14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <SectionTitle icon="🏆" label="Top Passenger OD Pairs" />
+                <SectionTitle icon="ranked-corridors" variant="indigo" label="Top Passenger OD Pairs" />
                 <span style={{ fontSize: 10, color: '#64748B' }}>{activeFlows.length} corridors</span>
               </div>
               <TopOdPairsList
@@ -692,7 +707,7 @@ export function OdPeakHours() {
             {/* Right-Bottom: Weekday vs Weekend Hourly Profile */}
             <div style={{ ...cardStyle, padding: '12px 14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <SectionTitle icon="📈" label="Weekday vs Weekend Hourly Profile" />
+                <SectionTitle icon="dual-waveform" variant="cobalt" label="Weekday vs Weekend Hourly Profile" />
                 <span style={{ fontSize: 10, color: '#94A3B8' }}>Dual Commuter Peaks</span>
               </div>
               <WeekdayVsWeekendChart

@@ -1,4 +1,5 @@
 import React from 'react';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 export const OperatorInsightStrip: React.FC = () => {
   return (
@@ -16,10 +17,10 @@ export const OperatorInsightStrip: React.FC = () => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 16 }}>🎯</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <TelemetryIcon name="decision-directives" variant="cobalt" badge />
           <span style={{ fontWeight: 700, fontSize: 13, color: '#0F1E36' }}>
-            Public Transport Operator Decision Directives (APAD, Prasarana & KTMB)
+            Public Transport Operator Decision Directives (APAD, Prasarana &amp; KTMB)
           </span>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>

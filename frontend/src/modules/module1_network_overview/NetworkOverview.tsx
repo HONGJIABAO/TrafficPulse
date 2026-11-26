@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import networkData from '@/data/network_overview.json';
 import type { TabId } from '@/modules/shared/types';
 import { LINE_COLORS, formatMillions, formatServiceLabel } from '@/modules/shared/types';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 import { RidershipTrendChart } from './RidershipTrendChart';
 import { LinePerformanceCard } from './LinePerformanceCard';
 import { KtmbDonutChart } from './KtmbDonutChart';
@@ -135,7 +136,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         <aside className="network-overview-sidebar network-overview-left-sidebar" aria-label="Network controls and ridership trend">
           {/* Network Filters Card */}
           <div className="network-overview-card network-filter-card" style={cardStyle}>
-            <SectionTitle icon="⚙️" label="Network Filters" />
+            <SectionTitle icon="telemetry-sliders" label="Network Filters" variant="cobalt" />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <FilterRow label="Rail Line">
                 <select
@@ -181,7 +182,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
 
           {/* Ridership Trend Card */}
           <div className="network-overview-card network-ridership-card" style={cardStyle}>
-            <SectionTitle icon="📉" label="Ridership Trend" />
+            <SectionTitle icon="trend-down" label="Ridership Trend" variant="teal" />
             <div style={{ fontWeight: 800, fontSize: 22, color: '#0F1E36' }}>
               {formatMillions(kpis.total_rail_trips)}
             </div>
@@ -248,7 +249,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         {/* ── Right Sidebar ──────────────────────────────────────────────── */}
         <aside className="network-overview-sidebar network-overview-right-sidebar" aria-label="Rail service performance">
           <div className="network-overview-card network-line-performance-card" style={cardStyle}>
-            <SectionTitle icon="📊" label="Line Performance" />
+            <SectionTitle icon="chart-bar" label="Line Performance" variant="cobalt" />
             <LinePerformanceCard
               line_performance={line_performance}
               selectedLine={selectedLine}
@@ -256,7 +257,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           </div>
 
           <div className="network-overview-card network-ktmb-card" style={cardStyle}>
-            <SectionTitle icon="🚉" label="KTMB Services" />
+            <SectionTitle icon="transit-rail" label="KTMB Services" variant="indigo" />
             <div className="network-ktmb-content">
               <KtmbDonutChart ktmb_services={ktmb_services} />
             </div>
@@ -267,11 +268,11 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   );
 }
 
-function SectionTitle({ icon, label }: { icon: string; label: string }) {
+function SectionTitle({ icon, label, variant = 'cobalt' }: { icon: TelemetryIconName; label: string; variant?: TelemetryVariant }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-      <span style={{ fontSize: 13 }}>{icon}</span>
-      <span style={{ fontWeight: 600, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+      <TelemetryIcon name={icon} variant={variant} badge />
+      <span style={{ fontWeight: 700, fontSize: 12.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
         {label}
       </span>
     </div>

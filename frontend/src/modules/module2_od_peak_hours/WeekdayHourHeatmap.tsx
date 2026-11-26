@@ -91,18 +91,24 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
             .padStart(2, '0')}:00`;
           const pctOfMax = ((val / maxVal) * 100).toFixed(0);
 
-          let statusBadge = '🟢 Light Off-Peak';
+          let statusColor = '#0D9488';
+          let statusLabel = 'Light Off-Peak';
           let advisory = 'Normal headway intervals sufficient.';
           if (val > maxVal * 0.7) {
-            statusBadge = '🔴 Severe Peak Surge (Overcrowding Risk)';
+            statusColor = '#EF4444';
+            statusLabel = 'Severe Peak Surge (Overcrowding Risk)';
             advisory = 'Mandate 4–6 min maximum headway + 6-car EMU sets.';
           } else if (val > maxVal * 0.4) {
-            statusBadge = '🟠 High Commuter Demand';
+            statusColor = '#EA580C';
+            statusLabel = 'High Commuter Demand';
             advisory = 'Standard peak frequency required.';
           } else if (val > maxVal * 0.2) {
-            statusBadge = '🟡 Moderate Shoulder Flow';
+            statusColor = '#EAB308';
+            statusLabel = 'Moderate Shoulder Flow';
             advisory = 'Maintain steady intermediate service.';
           }
+
+          const statusBadge = `<span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:${statusColor};box-shadow:0 0 6px ${statusColor};"></span><span>${statusLabel}</span></span>`;
 
           return `
             <div style="font-weight: 700; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 3px;">

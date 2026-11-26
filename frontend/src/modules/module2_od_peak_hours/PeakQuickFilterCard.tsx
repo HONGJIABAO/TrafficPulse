@@ -1,16 +1,17 @@
 import React from 'react';
 import type { PeakTimeFilter } from './types';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   activePeak: PeakTimeFilter;
   onSelectPeak: (peak: PeakTimeFilter) => void;
 }
 
-const PEAK_OPTIONS: { id: PeakTimeFilter; label: string; icon: string; sub: string }[] = [
-  { id: 'all', label: 'All Hours', icon: '⏱️', sub: 'Full Day' },
-  { id: 'am_peak', label: 'AM Peak', icon: '🌅', sub: '07:00–09:00' },
-  { id: 'midday', label: 'Midday', icon: '☀️', sub: '11:00–14:00' },
-  { id: 'pm_peak', label: 'PM Peak', icon: '🌆', sub: '17:00–19:30' },
+const PEAK_OPTIONS: { id: PeakTimeFilter; label: string; icon: TelemetryIconName; variant: TelemetryVariant; sub: string }[] = [
+  { id: 'all', label: 'All Hours', icon: 'clock-radar', variant: 'cobalt', sub: 'Full Day' },
+  { id: 'am_peak', label: 'AM Peak', icon: 'sunrise', variant: 'amber', sub: '07:00–09:00' },
+  { id: 'midday', label: 'Midday', icon: 'sun', variant: 'teal', sub: '11:00–14:00' },
+  { id: 'pm_peak', label: 'PM Peak', icon: 'sunset', variant: 'amber', sub: '17:00–19:30' },
 ];
 
 export const PeakQuickFilterCard: React.FC<Props> = ({ activePeak, onSelectPeak }) => {
@@ -76,9 +77,9 @@ export const PeakQuickFilterCard: React.FC<Props> = ({ activePeak, onSelectPeak 
     >
       {/* Title */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: 13 }}>⚡</span>
-          <span style={{ fontWeight: 600, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+          <TelemetryIcon name="lightning" variant="amber" badge />
+          <span style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
             Peak Period &amp; Directional Skew
           </span>
         </div>
@@ -132,8 +133,8 @@ export const PeakQuickFilterCard: React.FC<Props> = ({ activePeak, onSelectPeak 
                 if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F8FAFC';
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 11 }}>{opt.icon}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <TelemetryIcon name={opt.icon} variant={isActive ? 'cobalt' : opt.variant} size={13} />
                 <span
                   style={{
                     fontSize: 11,
