@@ -1,16 +1,546 @@
 {
-  "generated_at": "2026-11-22",
+  "generated_at": "2026-11-27",
   "kpis": {
     "total_rail_trips": 1781070919,
     "data_period": "2025",
     "yoy_growth_pct": 8.24,
     "comparison_year": 2024,
+    "headline_start": "2019-01-01",
+    "headline_end": "2026-08-31",
+    "headline_period": "Jan 2019–Aug 2026",
+    "ytd_yoy_growth_pct": 4.44,
+    "ytd_comparison_label": "Jan–Aug 2026 vs 2025",
     "busiest_line": "LRT Kelana Jaya",
     "busiest_line_total": 527722321,
     "busiest_line_share_pct": 29.63,
-    "peak_hour_window": "07:00–09:00 & 17:00–19:00",
-    "peak_hour_note": "Based on typical KTM Komuter service patterns"
+    "peak_hour_window": "7 – 9 AM",
+    "peak_hour_am_24h": "07:00–09:00",
+    "peak_hour_pm_24h": "18:00–20:00",
+    "peak_hour_sub": "KTM Komuter · PM 18:00–20:00",
+    "peak_hour_note": "KTM Komuter weekday Mon–Fri observed AM peak 07:00–09:00 (24.4%, peak hour 08:00–09:00) & PM peak 18:00–20:00 (23.2%) across 835 weekdays (2023-09-10 to 2026-11-20, MYT). Rapid Rail hourly timestamps are unavailable."
   },
+  "peak_analysis": {
+    "service_scope": "KTM Komuter (hourly OD only; Rapid Rail OD lacks hourly timestamps)",
+    "timezone": "Asia/Kuala_Lumpur (MYT, UTC+8)",
+    "observation_start": "2023-09-10",
+    "observation_end": "2026-11-20",
+    "observed_days": 1168,
+    "calendar_span_days": 1168,
+    "missing_calendar_days": 0,
+    "total_hourly_od_rows": 7044721,
+    "total_hourly_trips": 32867113,
+    "daily_reconciliation": {
+      "matched_dates": 1168,
+      "exact_matches": 1168,
+      "max_abs_delta": 0
+    },
+    "methodology": "Hourly trip totals summed across all OD pairs per cohort and divided strictly by unique observed dates (ISO weekday <= 5 Mon-Fri vs >= 6 Sat-Sun). Peak 2-hour windows maximize consecutive 2-hour mean ridership in AM (05:00-12:00) and PM (15:00-23:00).",
+    "all_days": {
+      "observed_days": 1168,
+      "avg_daily_trips": 28139.4,
+      "single_peak_hour": {
+        "window_24h": "08:00–09:00",
+        "hour": 8,
+        "avg_daily_trips": 3107.2
+      },
+      "am_peak_2h": {
+        "window_24h": "07:00–09:00",
+        "window_display": "7 – 9 AM",
+        "start_hour": 7,
+        "end_hour": 9,
+        "avg_daily_trips": 5971.8,
+        "share_of_daily_pct": 21.2
+      },
+      "pm_peak_2h": {
+        "window_24h": "18:00–20:00",
+        "window_display": "6 – 8 PM",
+        "start_hour": 18,
+        "end_hour": 20,
+        "avg_daily_trips": 5956.4,
+        "share_of_daily_pct": 21.2
+      },
+      "hourly_profile": [
+        {
+          "hour": 0,
+          "avg_trips": 88.2,
+          "total_trips": 103016
+        },
+        {
+          "hour": 1,
+          "avg_trips": 21.8,
+          "total_trips": 25501
+        },
+        {
+          "hour": 2,
+          "avg_trips": 25.5,
+          "total_trips": 29832
+        },
+        {
+          "hour": 3,
+          "avg_trips": 17.4,
+          "total_trips": 20312
+        },
+        {
+          "hour": 4,
+          "avg_trips": 38.0,
+          "total_trips": 44373
+        },
+        {
+          "hour": 5,
+          "avg_trips": 88.9,
+          "total_trips": 103824
+        },
+        {
+          "hour": 6,
+          "avg_trips": 1306.4,
+          "total_trips": 1525903
+        },
+        {
+          "hour": 7,
+          "avg_trips": 2864.6,
+          "total_trips": 3345886
+        },
+        {
+          "hour": 8,
+          "avg_trips": 3107.2,
+          "total_trips": 3629190
+        },
+        {
+          "hour": 9,
+          "avg_trips": 1680.3,
+          "total_trips": 1962592
+        },
+        {
+          "hour": 10,
+          "avg_trips": 1144.6,
+          "total_trips": 1336855
+        },
+        {
+          "hour": 11,
+          "avg_trips": 1269.0,
+          "total_trips": 1482187
+        },
+        {
+          "hour": 12,
+          "avg_trips": 1046.2,
+          "total_trips": 1222004
+        },
+        {
+          "hour": 13,
+          "avg_trips": 1047.2,
+          "total_trips": 1223180
+        },
+        {
+          "hour": 14,
+          "avg_trips": 1028.9,
+          "total_trips": 1201771
+        },
+        {
+          "hour": 15,
+          "avg_trips": 1040.4,
+          "total_trips": 1215213
+        },
+        {
+          "hour": 16,
+          "avg_trips": 1210.6,
+          "total_trips": 1414031
+        },
+        {
+          "hour": 17,
+          "avg_trips": 1689.0,
+          "total_trips": 1972764
+        },
+        {
+          "hour": 18,
+          "avg_trips": 2957.9,
+          "total_trips": 3454853
+        },
+        {
+          "hour": 19,
+          "avg_trips": 2998.5,
+          "total_trips": 3502194
+        },
+        {
+          "hour": 20,
+          "avg_trips": 1603.7,
+          "total_trips": 1873092
+        },
+        {
+          "hour": 21,
+          "avg_trips": 965.4,
+          "total_trips": 1127604
+        },
+        {
+          "hour": 22,
+          "avg_trips": 579.2,
+          "total_trips": 676552
+        },
+        {
+          "hour": 23,
+          "avg_trips": 320.5,
+          "total_trips": 374384
+        }
+      ]
+    },
+    "weekday_mon_fri": {
+      "observed_days": 835,
+      "avg_daily_trips": 30962.0,
+      "single_peak_hour": {
+        "window_24h": "08:00–09:00",
+        "hour": 8,
+        "avg_daily_trips": 3894.4
+      },
+      "am_peak_2h": {
+        "window_24h": "07:00–09:00",
+        "window_display": "7 – 9 AM",
+        "start_hour": 7,
+        "end_hour": 9,
+        "avg_daily_trips": 7560.1,
+        "share_of_daily_pct": 24.4
+      },
+      "pm_peak_2h": {
+        "window_24h": "18:00–20:00",
+        "window_display": "6 – 8 PM",
+        "start_hour": 18,
+        "end_hour": 20,
+        "avg_daily_trips": 7174.2,
+        "share_of_daily_pct": 23.2
+      },
+      "hourly_profile": [
+        {
+          "hour": 0,
+          "avg_trips": 76.5,
+          "total_trips": 63887
+        },
+        {
+          "hour": 1,
+          "avg_trips": 17.3,
+          "total_trips": 14454
+        },
+        {
+          "hour": 2,
+          "avg_trips": 23.6,
+          "total_trips": 19698
+        },
+        {
+          "hour": 3,
+          "avg_trips": 15.7,
+          "total_trips": 13139
+        },
+        {
+          "hour": 4,
+          "avg_trips": 38.9,
+          "total_trips": 32455
+        },
+        {
+          "hour": 5,
+          "avg_trips": 105.5,
+          "total_trips": 88082
+        },
+        {
+          "hour": 6,
+          "avg_trips": 1523.1,
+          "total_trips": 1271752
+        },
+        {
+          "hour": 7,
+          "avg_trips": 3665.7,
+          "total_trips": 3060839
+        },
+        {
+          "hour": 8,
+          "avg_trips": 3894.4,
+          "total_trips": 3251806
+        },
+        {
+          "hour": 9,
+          "avg_trips": 1834.8,
+          "total_trips": 1532038
+        },
+        {
+          "hour": 10,
+          "avg_trips": 1059.4,
+          "total_trips": 884566
+        },
+        {
+          "hour": 11,
+          "avg_trips": 1148.2,
+          "total_trips": 958768
+        },
+        {
+          "hour": 12,
+          "avg_trips": 934.4,
+          "total_trips": 780261
+        },
+        {
+          "hour": 13,
+          "avg_trips": 942.4,
+          "total_trips": 786919
+        },
+        {
+          "hour": 14,
+          "avg_trips": 927.5,
+          "total_trips": 774500
+        },
+        {
+          "hour": 15,
+          "avg_trips": 943.8,
+          "total_trips": 788107
+        },
+        {
+          "hour": 16,
+          "avg_trips": 1147.5,
+          "total_trips": 958158
+        },
+        {
+          "hour": 17,
+          "avg_trips": 1802.7,
+          "total_trips": 1505223
+        },
+        {
+          "hour": 18,
+          "avg_trips": 3504.1,
+          "total_trips": 2925948
+        },
+        {
+          "hour": 19,
+          "avg_trips": 3670.1,
+          "total_trips": 3064559
+        },
+        {
+          "hour": 20,
+          "avg_trips": 1802.6,
+          "total_trips": 1505130
+        },
+        {
+          "hour": 21,
+          "avg_trips": 1006.9,
+          "total_trips": 840783
+        },
+        {
+          "hour": 22,
+          "avg_trips": 574.0,
+          "total_trips": 479305
+        },
+        {
+          "hour": 23,
+          "avg_trips": 302.9,
+          "total_trips": 252908
+        }
+      ]
+    },
+    "weekend_sat_sun": {
+      "observed_days": 333,
+      "avg_daily_trips": 21062.5,
+      "single_peak_hour": {
+        "window_24h": "18:00–19:00",
+        "hour": 18,
+        "avg_daily_trips": 1588.3
+      },
+      "am_peak_2h": {
+        "window_24h": "10:00–12:00",
+        "window_display": "10 – 12 AM",
+        "start_hour": 10,
+        "end_hour": 12,
+        "avg_daily_trips": 2930.0,
+        "share_of_daily_pct": 13.9
+      },
+      "pm_peak_2h": {
+        "window_24h": "17:00–19:00",
+        "window_display": "5 – 7 PM",
+        "start_hour": 17,
+        "end_hour": 19,
+        "avg_daily_trips": 2992.3,
+        "share_of_daily_pct": 14.2
+      },
+      "hourly_profile": [
+        {
+          "hour": 0,
+          "avg_trips": 117.5,
+          "total_trips": 39129
+        },
+        {
+          "hour": 1,
+          "avg_trips": 33.2,
+          "total_trips": 11047
+        },
+        {
+          "hour": 2,
+          "avg_trips": 30.4,
+          "total_trips": 10134
+        },
+        {
+          "hour": 3,
+          "avg_trips": 21.5,
+          "total_trips": 7173
+        },
+        {
+          "hour": 4,
+          "avg_trips": 35.8,
+          "total_trips": 11918
+        },
+        {
+          "hour": 5,
+          "avg_trips": 47.3,
+          "total_trips": 15742
+        },
+        {
+          "hour": 6,
+          "avg_trips": 763.2,
+          "total_trips": 254151
+        },
+        {
+          "hour": 7,
+          "avg_trips": 856.0,
+          "total_trips": 285047
+        },
+        {
+          "hour": 8,
+          "avg_trips": 1133.3,
+          "total_trips": 377384
+        },
+        {
+          "hour": 9,
+          "avg_trips": 1293.0,
+          "total_trips": 430554
+        },
+        {
+          "hour": 10,
+          "avg_trips": 1358.2,
+          "total_trips": 452289
+        },
+        {
+          "hour": 11,
+          "avg_trips": 1571.8,
+          "total_trips": 523419
+        },
+        {
+          "hour": 12,
+          "avg_trips": 1326.6,
+          "total_trips": 441743
+        },
+        {
+          "hour": 13,
+          "avg_trips": 1310.1,
+          "total_trips": 436261
+        },
+        {
+          "hour": 14,
+          "avg_trips": 1283.1,
+          "total_trips": 427271
+        },
+        {
+          "hour": 15,
+          "avg_trips": 1282.6,
+          "total_trips": 427106
+        },
+        {
+          "hour": 16,
+          "avg_trips": 1369.0,
+          "total_trips": 455873
+        },
+        {
+          "hour": 17,
+          "avg_trips": 1404.0,
+          "total_trips": 467541
+        },
+        {
+          "hour": 18,
+          "avg_trips": 1588.3,
+          "total_trips": 528905
+        },
+        {
+          "hour": 19,
+          "avg_trips": 1314.2,
+          "total_trips": 437635
+        },
+        {
+          "hour": 20,
+          "avg_trips": 1105.0,
+          "total_trips": 367962
+        },
+        {
+          "hour": 21,
+          "avg_trips": 861.3,
+          "total_trips": 286821
+        },
+        {
+          "hour": 22,
+          "avg_trips": 592.3,
+          "total_trips": 197247
+        },
+        {
+          "hour": 23,
+          "avg_trips": 364.8,
+          "total_trips": 121476
+        }
+      ]
+    }
+  },
+  "coverage": {
+    "headline_ridership": {
+      "start": "2019-01-01",
+      "end": "2026-08-31",
+      "days": 2800
+    },
+    "ktmb_daily": {
+      "start": "2020-10-15",
+      "end": "2026-11-21",
+      "services": 5
+    },
+    "komuter_hourly": {
+      "start": "2023-09-10",
+      "end": "2026-11-20",
+      "observed_days": 1168
+    }
+  },
+  "sources": [
+    {
+      "dataset": "Daily Headline Public Transport Ridership",
+      "publisher": "Prasarana, KTMB & Ministry of Transport via OpenDOSM / data.gov.my",
+      "url": "https://data.gov.my/data-catalogue/ridership_headline",
+      "period": "2019-01-01 to 2026-08-31",
+      "granularity": "Daily by rail service (11 rail series)",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "KTM Komuter Hourly Origin-Destination Ridership",
+      "publisher": "KTMB & Ministry of Transport via data.gov.my",
+      "url": "https://data.gov.my/data-catalogue/ridership_od_komuter",
+      "period": "2023-09-10 to 2026-11-20",
+      "granularity": "Hourly OD pairs (MYT, UTC+8)",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "KTMB Daily Ridership by Service",
+      "publisher": "KTMB via data.gov.my",
+      "period": "2020-10-15 to 2026-11-21",
+      "granularity": "Daily by KTMB service (5 services)",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "Rapid Rail Station-Origin Daily OD Ridership",
+      "publisher": "Prasarana & Ministry of Transport via data.gov.my",
+      "url": "https://data.gov.my/data-catalogue/ridership_od_rapidrail_daily",
+      "period": "2026-01-01 to 2026-11-20",
+      "granularity": "Daily OD pairs (station boardings on atlas)",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "Rapid Rail KL & KTMB Static GTFS Feeds",
+      "publisher": "Prasarana & KTMB via data.gov.my Developer API",
+      "url": "https://developer.data.gov.my/realtime-api/gtfs-static",
+      "granularity": "Route shapes (Rapid Rail), stop_times/trips (Rapid Rail & KTMB)",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "Malaysia Administrative Country & State Geodata",
+      "publisher": "Department of Statistics Malaysia (DOSM)",
+      "url": "https://github.com/dosm-malaysia/data-open/tree/main/datasets/geodata",
+      "granularity": "National & 16 state/territory polygons",
+      "license": "CC BY 4.0"
+    }
+  ],
   "monthly_trend": [
     {
       "year_month": "2019-01",
@@ -1767,104 +2297,168 @@
       "column": "rail_lrt_kj",
       "total_ridership": 527722321,
       "share_pct": 29.63,
-      "yoy_growth_pct": 5.78
+      "yoy_growth_pct": 5.78,
+      "observation_start": "2019-01-01",
+      "observation_end": "2026-08-31",
+      "observed_days": 2800,
+      "active_period": "Jan 2019–Aug 2026"
     },
     {
       "line": "MRT Kajang",
       "column": "rail_mrt_kajang",
       "total_ridership": 469366127,
       "share_pct": 26.35,
-      "yoy_growth_pct": 9.72
+      "yoy_growth_pct": 9.72,
+      "observation_start": "2019-01-01",
+      "observation_end": "2026-08-31",
+      "observed_days": 2800,
+      "active_period": "Jan 2019–Aug 2026"
     },
     {
       "line": "LRT Ampang–Sri Petaling",
       "column": "rail_lrt_ampang",
       "total_ridership": 400272303,
       "share_pct": 22.47,
-      "yoy_growth_pct": 10.93
+      "yoy_growth_pct": 10.93,
+      "observation_start": "2019-01-01",
+      "observation_end": "2026-08-31",
+      "observed_days": 2800,
+      "active_period": "Jan 2019–Aug 2026"
     },
     {
       "line": "MRT Putrajaya",
       "column": "rail_mrt_pjy",
       "total_ridership": 176551798,
       "share_pct": 9.91,
-      "yoy_growth_pct": 15.68
+      "yoy_growth_pct": 15.68,
+      "observation_start": "2022-06-16",
+      "observation_end": "2026-08-31",
+      "observed_days": 1538,
+      "active_period": "Jun 2022–Aug 2026"
     },
     {
       "line": "KL Monorail",
       "column": "rail_monorail",
       "total_ridership": 107629623,
       "share_pct": 6.04,
-      "yoy_growth_pct": 5.34
+      "yoy_growth_pct": 5.34,
+      "observation_start": "2019-01-01",
+      "observation_end": "2026-08-31",
+      "observed_days": 2800,
+      "active_period": "Jan 2019–Aug 2026"
     },
     {
       "line": "KTM Komuter",
       "column": "rail_komuter",
       "total_ridership": 31278295,
       "share_pct": 1.76,
-      "yoy_growth_pct": -17.55
+      "yoy_growth_pct": -17.55,
+      "observation_start": "2023-09-10",
+      "observation_end": "2026-08-31",
+      "observed_days": 1087,
+      "active_period": "Sep 2023–Aug 2026"
     },
     {
       "line": "KTM Komuter Utara",
       "column": "rail_komuter_utara",
       "total_ridership": 24526532,
       "share_pct": 1.38,
-      "yoy_growth_pct": 9.22
+      "yoy_growth_pct": 9.22,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-08-31",
+      "observed_days": 2147,
+      "active_period": "Oct 2020–Aug 2026"
     },
     {
       "line": "KTM ETS",
       "column": "rail_ets",
       "total_ridership": 20829154,
       "share_pct": 1.17,
-      "yoy_growth_pct": 0.71
+      "yoy_growth_pct": 0.71,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-08-31",
+      "observed_days": 2147,
+      "active_period": "Oct 2020–Aug 2026"
     },
     {
       "line": "KTM Tebrau Shuttle",
       "column": "rail_tebrau",
       "total_ridership": 12867229,
       "share_pct": 0.72,
-      "yoy_growth_pct": -2.66
+      "yoy_growth_pct": -2.66,
+      "observation_start": "2022-06-19",
+      "observation_end": "2026-08-31",
+      "observed_days": 1535,
+      "active_period": "Jun 2022–Aug 2026"
     },
     {
       "line": "KTM Intercity",
       "column": "rail_intercity",
       "total_ridership": 6743626,
       "share_pct": 0.38,
-      "yoy_growth_pct": -0.63
+      "yoy_growth_pct": -0.63,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-08-31",
+      "observed_days": 2147,
+      "active_period": "Oct 2020–Aug 2026"
     },
     {
       "line": "LRT Shah Alam",
       "column": "rail_lrt_shah_alam",
       "total_ridership": 3283911,
       "share_pct": 0.18,
-      "yoy_growth_pct": null
+      "yoy_growth_pct": null,
+      "observation_start": "2026-06-29",
+      "observation_end": "2026-08-31",
+      "observed_days": 64,
+      "active_period": "Jun 2026–Aug 2026"
     }
   ],
   "ktmb_services": [
     {
       "service": "komuter",
       "total_ridership": 32879232,
-      "share_pct": 32.31
+      "share_pct": 32.31,
+      "observation_start": "2023-09-10",
+      "observation_end": "2026-11-21",
+      "observed_days": 1169,
+      "yoy_growth_pct": -17.55
     },
     {
       "service": "komuter_utara",
       "total_ridership": 26017553,
-      "share_pct": 25.57
+      "share_pct": 25.57,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-11-21",
+      "observed_days": 2229,
+      "yoy_growth_pct": 9.22
     },
     {
       "service": "ets",
       "total_ridership": 22288230,
-      "share_pct": 21.91
+      "share_pct": 21.91,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-11-21",
+      "observed_days": 2229,
+      "yoy_growth_pct": 0.71
     },
     {
       "service": "shuttle_tebrau",
       "total_ridership": 13567517,
-      "share_pct": 13.33
+      "share_pct": 13.33,
+      "observation_start": "2022-06-19",
+      "observation_end": "2026-11-21",
+      "observed_days": 1617,
+      "yoy_growth_pct": -2.66
     },
     {
       "service": "intercity",
       "total_ridership": 6995316,
-      "share_pct": 6.88
+      "share_pct": 6.88,
+      "observation_start": "2020-10-15",
+      "observation_end": "2026-11-21",
+      "observed_days": 2229,
+      "yoy_growth_pct": -0.63
     }
   ],
   "ktmb_monthly_trend": [

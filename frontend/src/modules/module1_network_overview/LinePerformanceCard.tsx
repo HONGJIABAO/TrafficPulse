@@ -6,6 +6,10 @@ interface LinePerf {
   total_ridership: number;
   share_pct: number;
   yoy_growth_pct: number | null;
+  observation_start?: string | null;
+  observation_end?: string | null;
+  observed_days?: number;
+  active_period?: string;
 }
 
 interface Props {
@@ -23,9 +27,12 @@ export function LinePerformanceCard({ line_performance, selectedLine }: Props) {
         const color = LINE_COLORS[item.line] ?? '#0066FF';
         const isActive = selectedLine === 'All Lines' || selectedLine === item.line;
         const yoy = item.yoy_growth_pct;
+        const periodInfo = item.active_period ? ` · Active ${item.active_period}` : '';
+        const yoyInfo = yoy !== null ? ` · 2025 vs 2024: ${yoy >= 0 ? '+' : ''}${yoy.toFixed(2)}%` : ' · No full 2024–25 YoY baseline';
+        const rowTooltip = `${item.line}: ${item.total_ridership.toLocaleString()} headline trips (${item.share_pct.toFixed(2)}%)${periodInfo}${yoyInfo}`;
 
         return (
-          <div key={item.column} style={{ opacity: isActive ? 1 : 0.4 }}>
+          <div key={item.column} title={rowTooltip} style={{ opacity: isActive ? 1 : 0.4 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
               <span title={item.line} style={{ fontSize: 10, fontWeight: 500, color: '#0F1E36', minWidth: 0,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

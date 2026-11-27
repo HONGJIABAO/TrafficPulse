@@ -60,9 +60,37 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
 
   const displayKpi = {
     ...kpis,
-    total_rail_trips: selectedLine === 'All Lines' ? kpis.total_rail_trips : filteredTotal,
+    total_rail_trips: selectedLine === 'All Lines' ? filteredTotal : filteredTotal,
   };
   const hasLineData = selectedLine === 'All Lines' || visibleMonths.some(m => Object.hasOwn(m.lines, selectedLine));
+  const selectedLinePerf = useMemo(
+    () => (selectedLine === 'All Lines' ? undefined : line_performance.find((l) => l.line === selectedLine)),
+    [line_performance, selectedLine]
+  );
+  const visibleEndMonth = visibleMonths[visibleMonths.length - 1]?.year_month ?? kpis.headline_end.slice(0, 7);
+  const includesFullComparisonYear = visibleEndMonth >= `${kpis.data_period}-12`;
+  const activeYoy = !hasLineData || !includesFullComparisonYear
+    ? null
+    : selectedLine === 'All Lines'
+      ? kpis.yoy_growth_pct
+      : (selectedLinePerf?.yoy_growth_pct ?? null);
+  const yoyBadge = activeYoy !== null ? `${activeYoy >= 0 ? '▲' : '▼'} ${Math.abs(activeYoy)}% YoY` : undefined;
+  const yoyBadgeColor = activeYoy !== null && activeYoy < 0 ? '#EF4444' : undefined;
+  const periodRangeLabel = selectedLine === 'All Lines'
+    ? (playbackIdx === monthly_trend.length - 1 ? kpis.headline_period : `${kpis.headline_start.slice(0, 7)}–${visibleEndMonth}`)
+    : (selectedLinePerf?.active_period ?? kpis.headline_period);
+  const tripsSub = !hasLineData
+    ? 'No ridership supplied for this line'
+    : activeYoy !== null
+      ? `${kpis.comparison_year}–${kpis.data_period} YoY · ${periodRangeLabel}`
+      : selectedLinePerf && selectedLinePerf.yoy_growth_pct === null && includesFullComparisonYear
+        ? `${periodRangeLabel} · no 2024–25 base`
+        : periodRangeLabel;
+  const tripsTooltip = !hasLineData
+    ? 'Reference/supplementary corridor with no headline ridership series.'
+    : selectedLine === 'All Lines'
+      ? `${displayKpi.total_rail_trips.toLocaleString()} cumulative headline trips (${periodRangeLabel}). Full-year ${kpis.data_period} vs ${kpis.comparison_year}: +${kpis.yoy_growth_pct}%.${kpis.ytd_comparison_label && kpis.ytd_yoy_growth_pct !== null ? ` Equivalent ${kpis.ytd_comparison_label}: +${kpis.ytd_yoy_growth_pct}%.` : ''}`
+      : `${selectedLine}: ${displayKpi.total_rail_trips.toLocaleString()} cumulative trips through ${visibleEndMonth}.${selectedLinePerf ? ` Active headline range: ${selectedLinePerf.active_period}.` : ''}`;
 
   const handleApply = () => {
     setSelectedLine(pendingLine);
@@ -109,22 +137,26 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           delayIndex={0}
           label="Total trips"
           value={hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
-          badge={hasLineData ? `▲ ${kpis.yoy_growth_pct}% YoY` : undefined}
-          sub={hasLineData ? `vs ${kpis.comparison_year}` : 'No ridership supplied for this line'}
+          badge={yoyBadge}
+          badgeColor={yoyBadgeColor}
+          sub={tripsSub}
+          tooltip={tripsTooltip}
         />
         <KpiCard
           type="busiest"
           delayIndex={1}
           label="Busiest line"
           value={kpis.busiest_line}
-          sub={`${kpis.busiest_line_share_pct}% of total ridership`}
+          sub={`${kpis.busiest_line_share_pct}% share · ${kpis.headline_period}`}
+          tooltip={`${kpis.busiest_line}: ${kpis.busiest_line_total.toLocaleString()} cumulative headline trips (${kpis.busiest_line_share_pct}% of ${kpis.total_rail_trips.toLocaleString()} total across 11 rail series, ${kpis.headline_period}). Later-opening lines span fewer years.`}
         />
         <KpiCard
           type="peak"
           delayIndex={2}
           label="Peak hour"
-          value="7 – 9 AM"
-          sub="17:00–19:00 evening peak"
+          value={kpis.peak_hour_window}
+          sub={kpis.peak_hour_sub}
+          tooltip={kpis.peak_hour_note}
           withBarChart
           monthly_trend={monthly_trend}
         />
@@ -181,27 +213,33 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           </div>
 
           {/* Ridership Trend Card */}
-          <div className="network-overview-card network-ridership-card" style={cardStyle}>
+          <div
+            className="network-overview-card network-ridership-card"
+            style={cardStyle}
+            title={`OpenDOSM headline ridership (${periodRangeLabel})${kpis.ytd_comparison_label && kpis.ytd_yoy_growth_pct !== null && selectedLine === 'All Lines' ? ` · Equivalent ${kpis.ytd_comparison_label}: +${kpis.ytd_yoy_growth_pct}%` : ''}`}
+          >
             <SectionTitle icon="trend-down" label="Ridership Trend" variant="teal" />
             <div style={{ fontWeight: 800, fontSize: 22, color: '#0F1E36' }}>
-              {formatMillions(kpis.total_rail_trips)}
+              {hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
             </div>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                background: '#E0FFF6',
-                borderRadius: 4,
-                padding: '2px 8px',
-                fontSize: 11,
-                fontWeight: 600,
-                color: '#00C48C',
-                marginTop: 4,
-              }}
-            >
-              ▲ {kpis.yoy_growth_pct}% YoY
-            </div>
+            {yoyBadge && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  background: activeYoy !== null && activeYoy < 0 ? '#FEE2E2' : '#E0FFF6',
+                  borderRadius: 4,
+                  padding: '2px 8px',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: activeYoy !== null && activeYoy < 0 ? '#EF4444' : '#00C48C',
+                  marginTop: 4,
+                }}
+              >
+                {yoyBadge}
+              </div>
+            )}
             <RidershipTrendChart
               monthly_trend={monthly_trend}
               selectedLine={selectedLine}
@@ -249,7 +287,12 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
         {/* ── Right Sidebar ──────────────────────────────────────────────── */}
         <aside className="network-overview-sidebar network-overview-right-sidebar" aria-label="Rail service performance">
           <div className="network-overview-card network-line-performance-card" style={cardStyle}>
-            <SectionTitle icon="chart-bar" label="Line Performance" variant="cobalt" />
+            <SectionTitle
+              icon="chart-bar"
+              label="Line Performance"
+              variant="cobalt"
+              tooltip={`Cumulative shares (${kpis.headline_period}) and complete-year YoY (${kpis.comparison_year} vs ${kpis.data_period}). Newer lines without full 2024–25 operations omit YoY.`}
+            />
             <LinePerformanceCard
               line_performance={line_performance}
               selectedLine={selectedLine}
@@ -257,7 +300,12 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           </div>
 
           <div className="network-overview-card network-ktmb-card" style={cardStyle}>
-            <SectionTitle icon="transit-rail" label="KTMB Services" variant="indigo" />
+            <SectionTitle
+              icon="transit-rail"
+              label="KTMB Services"
+              variant="indigo"
+              tooltip={`Observed KTMB daily ridership (${networkData.coverage.ktmb_daily.start} to ${networkData.coverage.ktmb_daily.end}; Shuttle Tebrau from Jun 2022, Komuter from Sep 2023).`}
+            />
             <div className="network-ktmb-content">
               <KtmbDonutChart ktmb_services={ktmb_services} />
             </div>
@@ -268,9 +316,9 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   );
 }
 
-function SectionTitle({ icon, label, variant = 'cobalt' }: { icon: TelemetryIconName; label: string; variant?: TelemetryVariant }) {
+function SectionTitle({ icon, label, variant = 'cobalt', tooltip }: { icon: TelemetryIconName; label: string; variant?: TelemetryVariant; tooltip?: string }) {
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+    <div title={tooltip} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
       <TelemetryIcon name={icon} variant={variant} badge />
       <span style={{ fontWeight: 700, fontSize: 12.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
         {label}

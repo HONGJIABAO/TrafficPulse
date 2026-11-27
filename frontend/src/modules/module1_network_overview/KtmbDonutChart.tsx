@@ -6,6 +6,10 @@ interface KtmbService {
   service: string;
   total_ridership: number;
   share_pct: number;
+  observation_start?: string;
+  observation_end?: string;
+  observed_days?: number;
+  yoy_growth_pct?: number | null;
 }
 
 interface Props {
@@ -243,7 +247,7 @@ export function KtmbDonutChart({ ktmb_services }: Props) {
               key={service.service}
               onMouseEnter={() => handleLegendHover(service.displayName)}
               onMouseLeave={() => handleLegendHover(null)}
-              title={`${service.displayName}: ${service.share_pct.toFixed(1)}% (${(service.total_ridership / 1e6).toFixed(1)}M trips)`}
+              title={`${service.displayName}: ${service.share_pct.toFixed(1)}% (${(service.total_ridership / 1e6).toFixed(1)}M trips)${service.observation_start ? ` · ${service.observation_start} to ${service.observation_end}` : ''}${service.yoy_growth_pct != null ? ` · 2025 vs 2024: ${service.yoy_growth_pct >= 0 ? '+' : ''}${service.yoy_growth_pct}%` : ''}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',

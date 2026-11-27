@@ -17,6 +17,7 @@ interface Props {
   badge?: string;
   badgeColor?: string;
   sub?: string;
+  tooltip?: string;
   withBarChart?: boolean;
   monthly_trend?: MonthlyTrend[];
   type?: KpiCardType;
@@ -278,6 +279,7 @@ export function KpiCard({
   badge,
   badgeColor,
   sub,
+  tooltip,
   withBarChart,
   monthly_trend,
   delayIndex,
@@ -311,6 +313,7 @@ export function KpiCard({
   return (
     <div
       ref={cardRef}
+      title={tooltip}
       className={`kpi-card kpi-card-entrance ${isHovered ? 'is-hovered' : ''}`}
       style={{
         '--accent-rgb': theme.accentRgb,
