@@ -22,6 +22,50 @@ import { generateDynamicInsights, selectActiveDataset } from './odAnalyticsUtils
 const StationDemandIntelligence = React.lazy(
   () => import('./station_demand/StationDemandIntelligence')
 );
+const CapacityServiceBottlenecks = React.lazy(
+  () => import('./capacity_screening/CapacityServiceBottlenecks')
+);
+
+class IntelligencePanelErrorBoundary extends React.Component<
+  { panelName: string; children: React.ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { panelName: string; children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return {
+      hasError: true,
+      message: error?.message || 'Unexpected error rendering analytical panel.',
+    };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          role="alert"
+          style={{
+            background: '#FFFFFF',
+            borderRadius: 12,
+            border: '1px solid rgba(100, 116, 139, 0.25)',
+            padding: '16px 18px',
+            color: '#334155',
+            fontSize: 12,
+          }}
+        >
+          <div style={{ fontWeight: 700, color: '#0F1E36', marginBottom: 4 }}>
+            {this.props.panelName} failed to load cleanly
+          </div>
+          <div style={{ color: '#64748B' }}>{this.state.message}</div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const odSummaryData = rawOdSummaryData as unknown as OdSummarySchema;
 
@@ -134,6 +178,9 @@ export function OdPeakHours() {
 
   const [selectedFlowId, setSelectedFlowId] = useState<string | null>(null);
   const [activeHaul, setActiveHaul] = useState<HaulFilter>('all');
+  const [intelligenceView, setIntelligenceView] = useState<
+    'all' | 'station_demand' | 'capacity_screening'
+  >('all');
 
   const hasFullRapidRail = Boolean(odSummaryData.periods?.q1?.rapid_rail);
   const isRapidRailLocked = pendingMode === 'rapid_rail' && !hasFullRapidRail;
@@ -312,6 +359,17 @@ export function OdPeakHours() {
           }
           .od-main-grid {
             grid-template-columns: 1fr;
+          }
+        }
+        .od-intelligence-panels {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 18px;
+        }
+        @media (min-width: 1920px) {
+          .od-intelligence-panels--both {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: start;
           }
         }
       `}</style>
@@ -843,33 +901,156 @@ export function OdPeakHours() {
         </div>
       </div>
 
-      {/* ── 4. Passenger Demand & Capacity Intelligence (Station Demand) ────── */}
+      {/* ── 4. Passenger Demand & Capacity Intelligence (Panel 1 + Panel 2) ── */}
       <section
         aria-label="Passenger Demand & Capacity Intelligence"
         data-testid="passenger-demand-capacity-section"
         style={{ padding: '0 16px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 12 }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <TelemetryIcon name="od-route" variant="indigo" badge size={14} style={{ width: 26, height: 26 }} />
-            <span style={{ fontSize: 13.5, fontWeight: 800, color: '#0F1E36', letterSpacing: '0.2px' }}>
-              Passenger Demand &amp; Capacity Intelligence
+        <div
+          style={{
+            ...cardStyle,
+            padding: '14px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <TelemetryIcon name="od-route" variant="indigo" badge size={15} style={{ width: 28, height: 28 }} />
+              <div>
+                <h2 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: '#0F1E36', letterSpacing: '0.2px' }}>
+                  Passenger Demand &amp; Capacity Intelligence
+                </h2>
+                <p style={{ margin: '2px 0 0', fontSize: 12, color: '#64748B' }}>
+                  Identify passenger demand hotspots and investigate potential railway service bottlenecks.
+                </p>
+              </div>
+            </div>
+
+            <div
+              role="tablist"
+              aria-label="Intelligence Panel View"
+              style={{
+                display: 'inline-flex',
+                background: '#F1F5F9',
+                borderRadius: 8,
+                padding: 3,
+                gap: 2,
+              }}
+            >
+              {(
+                [
+                  { id: 'all', label: 'All Panels (2)' },
+                  { id: 'station_demand', label: 'Panel 1 · Station Demand' },
+                  { id: 'capacity_screening', label: 'Panel 2 · Capacity & Bottlenecks' },
+                ] as const
+              ).map((tab) => {
+                const active = intelligenceView === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setIntelligenceView(tab.id)}
+                    style={{
+                      border: 'none',
+                      borderRadius: 6,
+                      padding: '5px 11px',
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: active ? '#0066FF' : 'transparent',
+                      color: active ? '#FFFFFF' : '#475569',
+                      transition: 'background 0.15s ease, color 0.15s ease',
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: '#F8FAFF',
+              border: '1px solid rgba(0, 102, 255, 0.12)',
+              borderRadius: 8,
+              padding: '8px 12px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '6px 18px',
+              fontSize: 11,
+              color: '#475569',
+              lineHeight: 1.45,
+            }}
+          >
+            <span>
+              <strong style={{ color: '#0F1E36' }}>Independent Controls:</strong> Both panels below use dedicated local filters and do not mutate top OD map filters.
+            </span>
+            <span>
+              <strong style={{ color: '#0066FF' }}>Panel 1 Scope:</strong> Full aligned OD telemetry (2026-01-01 to 2026-11-20, 324 days; Rapid Rail daily-only).
+            </span>
+            <span>
+              <strong style={{ color: '#0F1E36' }}>Panel 2 Scope:</strong> Validated KTMB GTFS timetable overlap (2026-08-18 to 2026-11-26, 101 days; unsupported networks flagged Unavailable).
             </span>
           </div>
-          <span style={{ fontSize: 10.5, color: '#64748B' }}>
-            Station Demand Module (Active) · Parallel Capacity Screening Slot Ready
-          </span>
         </div>
 
-        <React.Suspense
-          fallback={
-            <div style={{ ...cardStyle, fontSize: 12, color: '#64748B' }}>
-              Loading Station-Level Passenger Demand Intelligence…
-            </div>
-          }
+        <div
+          className={`od-intelligence-panels${intelligenceView === 'all' ? ' od-intelligence-panels--both' : ''}`}
         >
-          <StationDemandIntelligence />
-        </React.Suspense>
+          {(intelligenceView === 'all' || intelligenceView === 'station_demand') && (
+            <div data-testid="panel-station-demand" style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: '#0F1E36', letterSpacing: '0.2px' }}>
+                  Panel 1 — Station Demand Intelligence
+                </span>
+                <span style={{ fontSize: 10.5, color: '#64748B' }}>
+                  2026-01-01 to 2026-11-20 · All 6 Rail Services
+                </span>
+              </div>
+              <IntelligencePanelErrorBoundary panelName="Panel 1 — Station Demand Intelligence">
+                <React.Suspense
+                  fallback={
+                    <div style={{ ...cardStyle, fontSize: 12, color: '#64748B' }}>
+                      Loading Station-Level Passenger Demand Intelligence…
+                    </div>
+                  }
+                >
+                  <StationDemandIntelligence />
+                </React.Suspense>
+              </IntelligencePanelErrorBoundary>
+            </div>
+          )}
+
+          {(intelligenceView === 'all' || intelligenceView === 'capacity_screening') && (
+            <div data-testid="panel-capacity-bottlenecks" style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px' }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: '#0F1E36', letterSpacing: '0.2px' }}>
+                  Panel 2 — Capacity &amp; Service Bottlenecks
+                </span>
+                <span style={{ fontSize: 10.5, color: '#64748B' }}>
+                  2026-08-18 to 2026-11-26 GTFS Overlap · Scenario Screening (2023 Nominal Rate Card)
+                </span>
+              </div>
+              <IntelligencePanelErrorBoundary panelName="Panel 2 — Capacity & Service Bottlenecks">
+                <React.Suspense
+                  fallback={
+                    <div style={{ ...cardStyle, fontSize: 12, color: '#64748B' }}>
+                      Loading Directional Capacity &amp; Service Bottlenecks Explorer…
+                    </div>
+                  }
+                >
+                  <CapacityServiceBottlenecks />
+                </React.Suspense>
+              </IntelligencePanelErrorBoundary>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* ── 5. Dynamic Analytical Insights & Service Planning Strip ─────────── */}

@@ -1,0 +1,43 @@
+{
+  "temporal_methods": [
+    {
+      "id": "schedule_traversal_base",
+      "label": "Schedule-Aligned Traversal (+5m Base)",
+      "description": "Maps hourly OD volume onto active GTFS scheduled train departures along the unique physical path. Reconciles empirical KTMB ticketing differences: Klang Valley AFC tap-out timestamps align primarily via latest arrival within 90m before exit tap (+ bounded pre-departure QR/token fallback), while Komuter Utara gate/ticket timestamps align forward to earliest departure >= t_tx + 5m. Downstream crossings shift into the exact clock hour trains traverse each segment (handling >=24:00:00 trips)."
+    },
+    {
+      "id": "schedule_traversal_tight_0m",
+      "label": "Tight Schedule Sensitivity (0m Buffer)",
+      "description": "Zero-minute boarding buffer sensitivity testing sensitivity of boundary-minute trips vs +5m base."
+    },
+    {
+      "id": "transaction_hour_cohort",
+      "label": "Transaction-Hour Baseline (Diagnostic)",
+      "description": "Projects raw OD volume instantaneously along all path segments in the transaction clock hour without travel-time propagation or train departure matching."
+    }
+  ],
+  "capacity_modes": [
+    {
+      "id": "official_2023_nominal",
+      "label": "Official 2023 Rate Card Nominal (1,118 KV / 400 Utara)",
+      "description": "KTMB ETS-REDCARD (2023) total seated + standing nominal capacity per scheduled trainset."
+    },
+    {
+      "id": "planning_sensitivity_80pct",
+      "label": "80% Planning Comfort Sensitivity (894 KV / 320 Utara)",
+      "description": "Derived 80% load comfort sensitivity benchmark; never presented as physical measurement or official regulation."
+    }
+  ],
+  "formulas": {
+    "scheduled_capacity": "S = N * C (scheduled segment train crossings N in clock hour * nominal train capacity C)",
+    "load_ratio_pct": "Load Ratio (%) = (D / S) * 100 when S > 0; null when S == 0 (never zero-divided)",
+    "capacity_deficit": "Deficit = max(0, D - S)",
+    "additional_trains_needed": "Extra Trains = ceil(Deficit / C) == max(0, ceil(D / C) - N) per individual segment-hour (never summed across adjacent segments)",
+    "station_conservation": "D_in - A + B == D_out; Remaining = max(0, S_out - T); Boarding Gap = max(0, B - Remaining); Upstream Full Flag = (T > S_out)"
+  },
+  "stat_aggregations": {
+    "mean": "Average peak-hour load across all calendar dates in the selected Day Profile & Period slice (including lower-demand days).",
+    "p90": "90th percentile daily peak segment load ratio / deficit across observed dates in slice.",
+    "max_date": "Single highest observed date-hour overload within the selected slice (surface-checks event & holiday surges such as Deepavali)."
+  }
+}

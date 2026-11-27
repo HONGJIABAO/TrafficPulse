@@ -1,0 +1,735 @@
+{
+  "feasibility_matrix": [
+    {
+      "service_name": "KTM Komuter Klang Valley (Seremban & Port Klang Lines)",
+      "od_granularity": "Hourly OD (`komuter_2026.csv`, AFC tap-out timestamps; 100% full file)",
+      "timetable_coverage": "Full trip stop_times (`KC05_KB18`, `KA15_KD19`) active `2026-08-18..2026-12-12`; matches Nov 10 & 14 KVDT2 PDFs",
+      "capacity_reference": "6-car SCS: 1,118 pax (Seated & Standing, ETS-REDCARD p.3) + 894 comfort sensitivity",
+      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 101 days)",
+      "station_boarding_screening": "Supported on 55 non-junction stations; fallback_downstream_segment at Putra & KL Sentral Y-junctions",
+      "status_and_reason": "ELIGIBLE FULL \u2014 `Segambut Utara` & `Segambut 2` (absent from GTFS stops.txt), `Penalty`/`Unknown`, and Shuttle Selatan gate sales excluded transparently."
+    },
+    {
+      "service_name": "KTM Komuter Utara (Butterworth - Padang Besar & Ipoh Lines)",
+      "od_granularity": "Hourly OD (`komuter_utara_2026.csv`, origin gate/ticket timestamps; 100% full file)",
+      "timetable_coverage": "Full trip stop_times (`100_47300`, `100_9000`) daily active `2026-08-18..2026-12-12`",
+      "capacity_reference": "3-car EMU: 400 pax (Seated & Standing, ETS-REDCARD p.3) + 320 comfort sensitivity",
+      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 101 days)",
+      "station_boarding_screening": "Supported on 22 non-junction stations; fallback_downstream_segment at Bukit Mertajam junction",
+      "status_and_reason": "ELIGIBLE FULL \u2014 Strong Deepavali/weekend single-train load peaks verified (up to 427.3% vs 400-pax 3-car EMU)."
+    },
+    {
+      "service_name": "KTM ETS (Padang Besar - Gemas / JB Sentral)",
+      "od_granularity": "Hourly OD (`ets_2026.csv`; 5.80M trips full 2026)",
+      "timetable_coverage": "Full GTFS stop_times (`ETS` 93 trips/day variable skip-stop)",
+      "capacity_reference": "6-car ETS: 315 pax (Seated only, ETS-REDCARD p.3; ETS1 vs ETS2 mixed)",
+      "hourly_segment_screening": "Unavailable (Demand only / Capacity withheld)",
+      "station_boarding_screening": "Unavailable",
+      "status_and_reason": "UNAVAILABLE \u2014 ETS Red Card omits standing/coach-variant totals and OD rows lack train_id across skip-stop express patterns."
+    },
+    {
+      "service_name": "KTM Intercity (Shuttle Timur & Ekspres Rakyat Timuran)",
+      "od_granularity": "Hourly OD (`intercity_2026.csv` pools SH + ERT; 0.98M trips)",
+      "timetable_coverage": "GTFS stop_times (`SH` + `ERT`, overnight 24:00+ spans)",
+      "capacity_reference": "4-car DMU: 198 pax Seated-only (applies to SH only; ERT loco-hauled unverified)",
+      "hourly_segment_screening": "Unavailable",
+      "station_boarding_screening": "Unavailable",
+      "status_and_reason": "UNAVAILABLE \u2014 Mixed DMU/loco-hauled rolling stock in unsplit OD dataset plus seated-only DMU metric."
+    },
+    {
+      "service_name": "KTM Shuttle Tebrau (JB Sentral - Woodlands CIQ)",
+      "od_granularity": "Hourly OD (`shuttle_tebrau_2026.csv`; 2.83M trips)",
+      "timetable_coverage": "GTFS stop_times (`ST`, 31 trips/day)",
+      "capacity_reference": "Not documented in ETS-REDCARD.pdf",
+      "hourly_segment_screening": "Unavailable",
+      "station_boarding_screening": "Unavailable",
+      "status_and_reason": "UNAVAILABLE \u2014 Missing official trainset capacity reference; DMU 198 must not be assumed."
+    },
+    {
+      "service_name": "Prasarana Rapid Rail (LRT / MRT / Monorail / BRT)",
+      "od_granularity": "Daily OD ONLY (`rapidrail_2026_daily.csv`, 601.4M total incl. A0 rows)",
+      "timetable_coverage": "Frequency-based GTFS (`frequencies.txt`, no individual trip stop_times; generic weekday expired 2026-03-31)",
+      "capacity_reference": "Mixed 2/4/6-car automated fleets without per-trip assignment",
+      "hourly_segment_screening": "Unavailable (Daily OD only; hourly unavailable)",
+      "station_boarding_screening": "Unavailable",
+      "status_and_reason": "UNAVAILABLE \u2014 Cannot reconstruct hourly demand curves from daily totals without synthetic fabrication; A0 aggregate rows excluded from station sums."
+    }
+  ],
+  "date_window_disclosure": {
+    "active_comparison_window": "2026-08-18 to 2026-11-26 (101 days)",
+    "excluded_pre_gtfs_window": "2026-01-01 to 2026-08-17 (229 days excluded from capacity deficit calculations because active ktmb_gtfs.zip calendar starts 2026-08-18)",
+    "gtfs_calendar_exceptions_honored": [
+      {
+        "date": "2026-08-25",
+        "reason": "KTMB GTFS calendar_dates override -> komuter_weekend schedule"
+      },
+      {
+        "date": "2026-08-31",
+        "reason": "Hari Merdeka override -> komuter_weekend schedule"
+      },
+      {
+        "date": "2026-09-16",
+        "reason": "Malaysia Day override -> komuter_weekend schedule"
+      }
+    ],
+    "additional_forensic_disclosures": [
+      "KVDT2 Closure (FAQ_KVDT_2.pdf): Salak Selatan-Seremban single-line works from 2026-04-18 to 2026-12-31 limit Seremban Line through-trips to 5 weekday peak pairs (2 weekend), matching Nov 10 & Nov 14 official PDFs trip-for-trip.",
+      "GTFS Southbound Stop Omission: ktmb_gtfs.zip omits southbound KA15_KD19 stop_times at Kuala Kubu Bharu (16100) and Rasa (16300) despite 121,059 southbound riders. Topology reconstructs symmetric physical track traversal via proportional interpolation (+13m/+18m of 22m run) and flags those segments transparently.",
+      "Late-2026 Holiday Calendar Note: ktmb_gtfs.zip calendar_dates.txt ends exceptions after 2026-09-16; Deepavali replacement holiday (2026-11-09) has no GTFS override row.",
+      "Segambut Utara Observation: 86,501 Komuter trips reference Segambut Utara (spiking May-Nov 2026), absent from ktmb_gtfs.zip stops.txt; cleanly flagged as unverified GTFS stop rather than silently dropped or guessed."
+    ]
+  },
+  "path_assignment_audit": {
+    "ktm_komuter_kv": {
+      "source_file": "komuter_2026.csv",
+      "full_period": {
+        "date_range": "2026-01-01..2026-11-26",
+        "days": 330,
+        "total_rows": 1579162,
+        "total_pax": 7523115,
+        "assigned_pax": 7402671,
+        "assigned_share_pct": 98.399,
+        "buckets_rows": {
+          "assigned_direct": 1474723,
+          "excluded_same_station": 9564,
+          "assigned_cross_line_unique_physical": 56649,
+          "excluded_admin_non_station": 11517,
+          "excluded_out_of_service_scope": 1100,
+          "excluded_unverified_gtfs_stop": 25609
+        },
+        "buckets_pax": {
+          "assigned_direct": 7302585,
+          "excluded_same_station": 13392,
+          "assigned_cross_line_unique_physical": 100086,
+          "excluded_admin_non_station": 18974,
+          "excluded_out_of_service_scope": 1733,
+          "excluded_unverified_gtfs_stop": 86345
+        }
+      },
+      "gtfs_overlap_window": {
+        "date_range": "2026-08-18..2026-11-26",
+        "days": 101,
+        "total_rows": 407132,
+        "total_pax": 1957311,
+        "assigned_pax": 1902992,
+        "assigned_share_pct": 97.225,
+        "buckets_rows": {
+          "assigned_direct": 378543,
+          "assigned_cross_line_unique_physical": 9672,
+          "excluded_admin_non_station": 2496,
+          "excluded_unverified_gtfs_stop": 13537,
+          "excluded_same_station": 2133,
+          "excluded_out_of_service_scope": 751
+        },
+        "buckets_pax": {
+          "assigned_direct": 1889592,
+          "assigned_cross_line_unique_physical": 13400,
+          "excluded_admin_non_station": 2964,
+          "excluded_unverified_gtfs_stop": 47316,
+          "excluded_same_station": 2919,
+          "excluded_out_of_service_scope": 1120
+        }
+      },
+      "excluded_special_stations_full_period": {
+        "Kampar": 3,
+        "Kempas Baru": 1378,
+        "Kulai": 663,
+        "Layang-Layang": 300,
+        "Pasir Gudang": 737,
+        "Penalty": 4499,
+        "Rengam": 393,
+        "Segambut 2": 78,
+        "Segambut Utara": 86501,
+        "Slim River": 6,
+        "Sungkai": 20,
+        "Tapah Road": 15,
+        "Unknown": 14545
+      },
+      "excluded_special_stations_gtfs_window": {
+        "Kampar": 1,
+        "Kempas Baru": 820,
+        "Kulai": 433,
+        "Layang-Layang": 275,
+        "Pasir Gudang": 358,
+        "Penalty": 1042,
+        "Rengam": 365,
+        "Segambut Utara": 47391,
+        "Slim River": 6,
+        "Sungkai": 4,
+        "Tapah Road": 1,
+        "Unknown": 1954
+      },
+      "max_daily_diff_vs_ridership_ktmb_daily": 0
+    },
+    "ktm_komuter_utara": {
+      "source_file": "komuter_utara_2026.csv",
+      "full_period": {
+        "date_range": "2026-01-01..2026-11-26",
+        "days": 330,
+        "total_rows": 1333004,
+        "total_pax": 5772453,
+        "assigned_pax": 5762224,
+        "assigned_share_pct": 99.823,
+        "buckets_rows": {
+          "assigned_direct": 1044091,
+          "assigned_cross_line_unique_physical": 279918,
+          "excluded_same_station": 3668,
+          "excluded_admin_non_station": 5327
+        },
+        "buckets_pax": {
+          "assigned_direct": 5187776,
+          "assigned_cross_line_unique_physical": 574448,
+          "excluded_same_station": 4285,
+          "excluded_admin_non_station": 5944
+        }
+      },
+      "gtfs_overlap_window": {
+        "date_range": "2026-08-18..2026-11-26",
+        "days": 101,
+        "total_rows": 419081,
+        "total_pax": 1825479,
+        "assigned_pax": 1822239,
+        "assigned_share_pct": 99.823,
+        "buckets_rows": {
+          "assigned_direct": 326335,
+          "assigned_cross_line_unique_physical": 89924,
+          "excluded_admin_non_station": 1610,
+          "excluded_same_station": 1212
+        },
+        "buckets_pax": {
+          "assigned_direct": 1635816,
+          "assigned_cross_line_unique_physical": 186423,
+          "excluded_admin_non_station": 1807,
+          "excluded_same_station": 1433
+        }
+      },
+      "excluded_special_stations_full_period": {
+        "Penalty": 2290,
+        "Unknown": 3654
+      },
+      "excluded_special_stations_gtfs_window": {
+        "Penalty": 731,
+        "Unknown": 1076
+      },
+      "max_daily_diff_vs_ridership_ktmb_daily": 0
+    }
+  },
+  "temporal_demand_audit": {
+    "gtfs_window": "2026-08-18..2026-11-26",
+    "total_assigned_window_pax": {
+      "ktm_komuter_kv": 1902992,
+      "ktm_komuter_utara": 1822239
+    },
+    "matched_arrival_aligned_base_pax": {
+      "ktm_komuter_kv": 1600051.53,
+      "ktm_komuter_utara": 0.0
+    },
+    "matched_forward_aligned_base_pax": {
+      "ktm_komuter_kv": 241596.13,
+      "ktm_komuter_utara": 1786199.77
+    },
+    "unmatched_outside_schedule_base_pax": {
+      "ktm_komuter_kv": 61344.33,
+      "ktm_komuter_utara": 36039.23
+    },
+    "unmatched_outside_schedule_tight_0m_pax": {
+      "ktm_komuter_kv": 53318.95,
+      "ktm_komuter_utara": 32739.8
+    },
+    "unmatched_share_base_pct": {
+      "ktm_komuter_kv": 3.224,
+      "ktm_komuter_utara": 1.978
+    },
+    "out_of_window_midnight_spill_base_pax": {
+      "ktm_komuter_kv": 2.37
+    },
+    "segment_demand_rows": 307087
+  },
+  "scheduled_capacity_audit": {
+    "gtfs_window": "2026-08-18..2026-11-26",
+    "excluded_pre_gtfs_window": "2026-01-01..2026-08-17 (excluded from capacity deficit comparisons because ktmb_gtfs.zip calendar starts 2026-08-18)",
+    "rows_written": 158292,
+    "total_segment_train_crossings": {
+      "ktm_komuter_kv": 137280,
+      "ktm_komuter_utara": 75144
+    },
+    "capacity_assumptions": {
+      "ktm_komuter_kv": {
+        "official_2023_nominal": 1118,
+        "planning_sensitivity_80pct": 894,
+        "label": "KTM Komuter Klang Valley (6-Car SCS)"
+      },
+      "ktm_komuter_utara": {
+        "official_2023_nominal": 400,
+        "planning_sensitivity_80pct": 320,
+        "label": "KTM Komuter Utara (3-Car EMU)"
+      }
+    }
+  },
+  "gap_and_boarding_audit": {
+    "backend_e_segment_gap": {
+      "rows": 307565,
+      "deficit_rows_nominal_base": 3797,
+      "deficit_rows_80pct_base": 6426,
+      "no_service_with_demand_rows": 0,
+      "max_load_ratio_nominal_base": 427.3,
+      "max_extra_trains_nominal_base": 4
+    },
+    "backend_f_station_boarding": {
+      "rows": 158292,
+      "full_boarding_rows": 145535,
+      "fallback_downstream_rows": 12757,
+      "upstream_already_full_rows": 2597,
+      "boarding_deficit_rows_nominal": 3578,
+      "max_conservation_abs_error": 1.0000002248489182e-06
+    }
+  },
+  "other_networks_summary": {
+    "ktm_ets": {
+      "full_pax": 5800948,
+      "gtfs_win_pax": 1806235,
+      "stations": 49
+    },
+    "ktm_intercity": {
+      "full_pax": 982225,
+      "gtfs_win_pax": 312759,
+      "stations": 80
+    },
+    "ktm_shuttle_tebrau": {
+      "full_pax": 2829680,
+      "gtfs_win_pax": 864210,
+      "stations": 2
+    },
+    "rapid_rail": {
+      "full_pax_excl_a0": 200473541,
+      "gtfs_win_pax_excl_a0": 64470291,
+      "a0_aggregate_rows_excluded_pax": 400947082,
+      "stations": 166
+    },
+    "ktmb_komuter_admin_excluded_pax": {
+      "kv_penalty": 4499,
+      "kv_unknown": 14545,
+      "utara_penalty": 2290,
+      "utara_unknown": 3654
+    },
+    "manifest_raw_files": [
+      {
+        "id": "komuter_2026_od",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/komuter_2026.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_komuter",
+        "local_path": "backend/data/module2_capacity_screening/raw/komuter_2026.csv",
+        "download_time_utc": "2026-11-27T19:08:36.144872+00:00",
+        "sha256": "f8ad0d57446daaf9a87d1266fbfa4db9794b1afa5552107a85aba5fb0a5b2e2c",
+        "bytes": 65216079,
+        "publication_or_effective_date": "2026-11-20",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 1579162,
+        "schema": [
+          "date",
+          "time",
+          "origin",
+          "destination",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "komuter_utara_2026_od",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/komuter_utara_2026.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_komuter_utara",
+        "local_path": "backend/data/module2_capacity_screening/raw/komuter_utara_2026.csv",
+        "download_time_utc": "2026-11-27T19:08:43.978248+00:00",
+        "sha256": "1b7c4ea84d099f15d2fde415930b9896560ca6998e4b16353877f1abda6249b8",
+        "bytes": 54677242,
+        "publication_or_effective_date": "2026",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 1333004,
+        "schema": [
+          "date",
+          "time",
+          "origin",
+          "destination",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "intercity_2026_od",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/intercity_2026.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_intercity",
+        "local_path": "backend/data/module2_capacity_screening/raw/intercity_2026.csv",
+        "download_time_utc": "2026-11-27T19:08:48.875584+00:00",
+        "sha256": "22caf34db754ca2e82bb00226d9c60463713a8f966af7de05948a15404ca2c11",
+        "bytes": 6847782,
+        "publication_or_effective_date": "2026-11-20",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 180017,
+        "schema": [
+          "date",
+          "time",
+          "origin",
+          "destination",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ets_2026_od",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/ets_2026.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_ets",
+        "local_path": "backend/data/module2_capacity_screening/raw/ets_2026.csv",
+        "download_time_utc": "2026-11-27T19:08:51.778192+00:00",
+        "sha256": "1c8209d81411f676c56ac36baa7fe0513fd87d6fd0082e8b9a6746cae2b5e289",
+        "bytes": 31381621,
+        "publication_or_effective_date": "2026",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 769250,
+        "schema": [
+          "date",
+          "time",
+          "origin",
+          "destination",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "shuttle_tebrau_2026_od",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/shuttle_tebrau_2026.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_shuttle_tebrau",
+        "local_path": "backend/data/module2_capacity_screening/raw/shuttle_tebrau_2026.csv",
+        "download_time_utc": "2026-11-27T19:08:56.170203+00:00",
+        "sha256": "54d2e2ae6c4422304668a2466479a12d8b042a266c8ae394fa872396311f8fdb",
+        "bytes": 417801,
+        "publication_or_effective_date": "2026",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 9090,
+        "schema": [
+          "date",
+          "time",
+          "origin",
+          "destination",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ridership_ktmb_daily",
+        "source_url": "https://storage.data.gov.my/transportation/ktmb/ridership_ktmb_daily.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_ktmb_daily",
+        "local_path": "backend/data/module2_capacity_screening/raw/ridership_ktmb_daily.csv",
+        "download_time_utc": "2026-11-27T19:08:57.119392+00:00",
+        "sha256": "1248b8ebfe41faf32018d0a80da9593aa7bcebc8b99aa3829278d317e8c8824f",
+        "bytes": 251596,
+        "publication_or_effective_date": "2026-11-21",
+        "observation_period": "2020-10-15 to 2026-11-26",
+        "row_count": 9498,
+        "schema": [
+          "date",
+          "service",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ridership_headline",
+        "source_url": "https://storage.data.gov.my/transportation/ridership_headline.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_headline",
+        "local_path": "backend/data/module2_capacity_screening/raw/ridership_headline.csv",
+        "download_time_utc": "2026-11-27T19:08:58.083882+00:00",
+        "sha256": "53e337711512f26b08dd80053b03a748e3fa3685595c5698e943f880667c570f",
+        "bytes": 211090,
+        "publication_or_effective_date": "2026",
+        "observation_period": "2019-01-01 to 2026-10-31",
+        "row_count": 2861,
+        "schema": [
+          "date",
+          "bus_rkl",
+          "bus_rkn",
+          "bus_rpn",
+          "rail_lrt_ampang",
+          "rail_mrt_kajang",
+          "rail_lrt_kj",
+          "rail_monorail",
+          "rail_mrt_pjy",
+          "rail_lrt_shah_alam",
+          "rail_ets",
+          "rail_intercity",
+          "rail_komuter_utara",
+          "rail_tebrau",
+          "rail_komuter"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / MOT)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "rapidrail_2026_daily",
+        "source_url": "https://storage.data.gov.my/transportation/rail/rapidrail_2026_daily.csv",
+        "documentation_url": "https://data.gov.my/data-catalogue/ridership_od_rapidrail_daily",
+        "local_path": "backend/data/module2_capacity_screening/raw/rapidrail_2026_daily.csv",
+        "download_time_utc": "2026-11-27T19:09:11.382607+00:00",
+        "sha256": "9744746b604093a5670ab6216ae185cac4c36bbf758738715c21654c5ae0c964",
+        "bytes": 339346430,
+        "publication_or_effective_date": "2026",
+        "observation_period": "2026-01-01 to 2026-11-26",
+        "row_count": 5727150,
+        "schema": [
+          "origin",
+          "destination",
+          "date",
+          "ridership"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / Prasarana)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_gtfs",
+        "source_url": "https://api.data.gov.my/gtfs-static/ktmb",
+        "documentation_url": "https://developer.data.gov.my/realtime-api/gtfs-static",
+        "local_path": "backend/data/module2_capacity_screening/raw/ktmb_gtfs.zip",
+        "download_time_utc": "2026-11-27T19:09:28.473242+00:00",
+        "sha256": "4dd9c9338c8ab7155a3e6047bc877853ec1776768b6d7fe038c16ab3ce2f676c",
+        "bytes": 46844,
+        "publication_or_effective_date": "GTFS Static Feed",
+        "observation_period": null,
+        "row_count": 7,
+        "schema": [
+          "calendar_dates.txt",
+          "trips.txt",
+          "agency.txt",
+          "calendar.txt",
+          "routes.txt",
+          "stop_times.txt",
+          "stops.txt"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / KTMB)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "rapid_rail_gtfs",
+        "source_url": "https://api.data.gov.my/gtfs-static/prasarana?category=rapid-rail-kl",
+        "documentation_url": "https://developer.data.gov.my/realtime-api/gtfs-static",
+        "local_path": "backend/data/module2_capacity_screening/raw/rapid_rail_gtfs.zip",
+        "download_time_utc": "2026-11-27T19:09:30.222128+00:00",
+        "sha256": "45c134f991b955eff801d35a45d9bdbeca83ae780bfc29dcac142665146c4533",
+        "bytes": 80673,
+        "publication_or_effective_date": "GTFS Static Feed",
+        "observation_period": null,
+        "row_count": 16,
+        "schema": [
+          "agency.txt",
+          "__MACOSX/._agency.txt",
+          "calendar.txt",
+          "__MACOSX/._calendar.txt",
+          "frequencies.txt",
+          "__MACOSX/._frequencies.txt",
+          "routes.txt",
+          "__MACOSX/._routes.txt",
+          "shapes.txt",
+          "__MACOSX/._shapes.txt",
+          "stop_times.txt",
+          "__MACOSX/._stop_times.txt",
+          "stops.txt",
+          "__MACOSX/._stops.txt",
+          "trips.txt",
+          "__MACOSX/._trips.txt"
+        ],
+        "licence": "CC BY 4.0 (data.gov.my / Prasarana)",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_rate_card_2023",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2023/ETS-REDCARD.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/ETS-REDCARD.pdf",
+        "download_time_utc": "2026-11-27T19:09:31.534008+00:00",
+        "sha256": "b50ea4c03489945835a3c4a66d2d39a27d69d0cf9a7124e2209811aa6ce79b46",
+        "bytes": 1750192,
+        "publication_or_effective_date": "2023",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Public Document",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_bc_ps_weekday_20261110",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2026/BC-PS-BC%20WEEKDAY%20%281%29%2010112026.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/BC-PS-BC_WEEKDAY_10112026.pdf",
+        "download_time_utc": "2026-11-27T19:09:32.563636+00:00",
+        "sha256": "8306b5f1c69795dee5a5818a3b6289e747be873c458c507d971698900c5cd432",
+        "bytes": 202026,
+        "publication_or_effective_date": "2026-11-10",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_bc_ps_weekend_20261114",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2026/BC-PS-BC%20WEEKEND%2014112026.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/BC-PS-BC_WEEKEND_14112026.pdf",
+        "download_time_utc": "2026-11-27T19:09:33.490961+00:00",
+        "sha256": "609a3725d3b36fd64f51e18723771e9de79882ca97d462c3c3e3ac7aa53c4784",
+        "bytes": 167421,
+        "publication_or_effective_date": "2026-11-14",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_kvdt2_faq_2026",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2026/FAQ%20KVDT%202.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/FAQ_KVDT_2.pdf",
+        "download_time_utc": "2026-11-27T19:09:34.821054+00:00",
+        "sha256": "5aeaa609b705be24f0054d836fe4a4eda2089896a52da06e949669e8dc711e81",
+        "bytes": 511194,
+        "publication_or_effective_date": "2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Notice",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_traintime_html",
+        "source_url": "https://www.ktmb.com.my/TrainTime.html",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/TrainTime.html",
+        "download_time_utc": "2026-11-27T19:09:35.347687+00:00",
+        "sha256": "34d10299bedc9d4e4c0e7f4ae149af1f856d34ee3a82611218929bf1d5ed235b",
+        "bytes": 26147,
+        "publication_or_effective_date": "2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "html"
+        ],
+        "licence": "KTMB Official Website",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "ktmb_komuter_html",
+        "source_url": "https://www.ktmb.com.my/Komuter.html",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/Komuter.html",
+        "download_time_utc": "2026-11-27T19:09:36.388636+00:00",
+        "sha256": "e8494d8bd0e10e5c85d3a57021c173a2b59aae64b6e51d5a8c2cecaec5168593",
+        "bytes": 44255,
+        "publication_or_effective_date": "2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "html"
+        ],
+        "licence": "KTMB Official Website",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "discovered_customer_privacy_policy_pdf",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2022/customer_privacy_policy.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/customer_privacy_policy.pdf",
+        "download_time_utc": "2026-11-27T19:09:37.405167+00:00",
+        "sha256": "fbfe0fb77c52b953a1678597a060f8bb2be12c595fb2aab1c921fc642fb713fb",
+        "bytes": 364101,
+        "publication_or_effective_date": "discovered_2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable / Document",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "discovered_t_c_komuter_jun_2025_pdf",
+        "source_url": "https://www.ktmb.com.my/assets/pdf/2025/T&C%20Komuter%20Jun%202025.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/T&C_Komuter_Jun_2025.pdf",
+        "download_time_utc": "2026-11-27T19:09:38.459643+00:00",
+        "sha256": "bc1e68cde33cc5ab87497addaf66490f8b8bc902d6af53529089eda194f80026",
+        "bytes": 554095,
+        "publication_or_effective_date": "discovered_2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable / Document",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "discovered_kvdt_pdf",
+        "source_url": "https://www.ktmb.com.my/pdf/kvdt.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/kvdt.pdf",
+        "download_time_utc": "2026-11-27T19:09:39.509468+00:00",
+        "sha256": "cf8b318c7c01b61dd5ff2b34b07a58a8c99c28e1732010746d95a1313a5edff4",
+        "bytes": 665844,
+        "publication_or_effective_date": "discovered_2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable / Document",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "discovered_komuter_new_ticket_pdf",
+        "source_url": "https://www.ktmb.com.my/pdf/komuter_new_ticket.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/komuter_new_ticket.pdf",
+        "download_time_utc": "2026-11-27T19:09:40.955663+00:00",
+        "sha256": "283a69d4a0a1e64b861186390772c255e5fa0bc393306f56e87021db6b1e3ccb",
+        "bytes": 506464,
+        "publication_or_effective_date": "discovered_2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable / Document",
+        "verification_status": "verified_downloaded"
+      },
+      {
+        "id": "discovered_komuter_exp_18_sep_2018_pdf",
+        "source_url": "http://intranet4.ktmb.com.my/ktmb/uploads/files/Komuter%20Exp_18%20Sep%202018.pdf",
+        "documentation_url": "https://www.ktmb.com.my/TrainTime.html",
+        "local_path": "backend/data/module2_capacity_screening/raw/docs/Komuter_Exp_18_Sep_2018.pdf",
+        "download_time_utc": "2026-11-27T19:09:43.491895+00:00",
+        "sha256": "d27b667f2dfe4aa1d5120d60867275e826f5c8e4f37bd0b88671ab986091d081",
+        "bytes": 19908,
+        "publication_or_effective_date": "discovered_2026",
+        "observation_period": null,
+        "row_count": null,
+        "schema": [
+          "pdf"
+        ],
+        "licence": "KTMB Official Timetable / Document",
+        "verification_status": "verified_downloaded"
+      }
+    ]
+  }
+}

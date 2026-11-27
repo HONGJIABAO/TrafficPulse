@@ -1,0 +1,427 @@
+{
+  "recorded_at_utc": "2026-11-27T19:45:41.387237+00:00",
+  "baseline_git_head": "96c311208e8f20641c0ff79c0b7f735d4c43c6be",
+  "protected_file_count": 105,
+  "files": {
+    "backend/data/raw/.gitkeep": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "backend/data/raw/air_pollution.csv": {
+      "sha256": "c31baf0de2e7f056f50f716d8a71f90f5fe16ccb09aae42f5657343fc0e90f0f",
+      "bytes": 12950
+    },
+    "backend/data/raw/force labour_monthly.csv": {
+      "sha256": "2c254c27a1ed767ed29d7fd63c5eb9c099648c1bbc97d7bb088160789f8deb20",
+      "bytes": 11124
+    },
+    "backend/data/raw/force labour_monthly_SA.csv": {
+      "sha256": "b7ff238f6e569c7de7579199f941ca4afb4ba5b1832acce462511e5a02550790",
+      "bytes": 8692
+    },
+    "backend/data/raw/fuelprice.csv": {
+      "sha256": "47016fd0646bceea7996478cf011c232529aa75cffcb9f7f320ef45e1ef2b81c",
+      "bytes": 57071
+    },
+    "backend/data/raw/hh_income_district.parquet": {
+      "sha256": "f43ee8dcf7ae13343483bb19abcdf63e4517126b2b149ea3456670ac75673104",
+      "bytes": 8093
+    },
+    "backend/data/raw/hh_poverty_district.parquet": {
+      "sha256": "9e9269ad507395eb2bb0be58855641b45ca106fb5ae2dab91fc258a598f42e4e",
+      "bytes": 7217
+    },
+    "backend/data/raw/intercity_2026.csv": {
+      "sha256": "64caea23215208cc65bce50ee6685527651bf4dab8c6154f0810b11f789cd0fe",
+      "bytes": 6916086
+    },
+    "backend/data/raw/komuter_2023.parquet": {
+      "sha256": "4b68344e24cf2b04a84df4b9af88899156ecbb2ac59e709f1aaf073ac0d2a954",
+      "bytes": 1312754
+    },
+    "backend/data/raw/komuter_2024.parquet": {
+      "sha256": "a5dea6f99c82a7850936863e7ddf4cd4cf90ae1fcb2ab76c9b575ded16468444",
+      "bytes": 5255688
+    },
+    "backend/data/raw/komuter_2025.parquet": {
+      "sha256": "ccd80449035a4051f483bde944b12023cefdf47c31790f534df59affd2990abe",
+      "bytes": 2671881
+    },
+    "backend/data/raw/komuter_2026.csv": {
+      "sha256": "457a2418a31dcae0b09e206ac270197ca090dd59db4919636bf215e5e252c107",
+      "bytes": 65778923
+    },
+    "backend/data/raw/population_district.parquet": {
+      "sha256": "456bca234306c740c523753c62630d409c8713c82cd94b596074a7ca3a024742",
+      "bytes": 264746
+    },
+    "backend/data/raw/registrations_type_fuel.csv": {
+      "sha256": "bafecf2401fa1dc715c412e73115680b19a1ca5f282fa318f401b67f9820aabc",
+      "bytes": 339675
+    },
+    "backend/data/raw/ridership_headline.csv": {
+      "sha256": "422b05d8ec42e1242bf80d2c351f592ebf67d06a92164890aaaa2781c92efe72",
+      "bytes": 208131
+    },
+    "backend/data/raw/ridership_ktmb_daily.csv": {
+      "sha256": "2ab71281ee89faa401a75e33178c628a81d2e67de3e49336522e270efd516069",
+      "bytes": 260400
+    },
+    "backend/data/raw/ridership_ktmb_monthly.csv": {
+      "sha256": "791e04950e5998aec761b87fc391b8aa20d176cc8cc740a61379f81fb5ca5be2",
+      "bytes": 8864
+    },
+    "backend/pipelines/module2_od_aggregation.py": {
+      "sha256": "c318160f3cf25669e81df842369d6c062acb668af8e7be80351c6438b9a005cd",
+      "bytes": 23396
+    },
+    "frontend/package.json": {
+      "sha256": "f21e0ba1575420a4f47e51d746abba6929c152880d2517e473881d1adbced475",
+      "bytes": 741
+    },
+    "frontend/src/App.tsx": {
+      "sha256": "f8067eb3f55c48ae5f732013a2cd90f0dd0694cbd7f9ec1ee555b128d17be5d1",
+      "bytes": 1404
+    },
+    "frontend/src/data/forecast_demand.json": {
+      "sha256": "5fc7bf28642323e92c8e8047e7a1b7719fcb00714f77138d1a4d9fcf714abb04",
+      "bytes": 25985
+    },
+    "frontend/src/data/network_overview.json": {
+      "sha256": "b82f64a3d798e0847fc220cab3b0679361cf2c753133c02cd08a09212cc907fa",
+      "bytes": 149519
+    },
+    "frontend/src/data/od_summary.json": {
+      "sha256": "348355f63dbf4b78af2d964291211e6ba4eac00b9f063a142c3c2a3a1d89b5be",
+      "bytes": 2227193
+    },
+    "frontend/src/data/simulator_baseline.json": {
+      "sha256": "a54231ce193666dd8d48e07302c66a6e420968c8de13a49022d9933621b4622e",
+      "bytes": 8759
+    },
+    "frontend/src/data/stations.json": {
+      "sha256": "4763ee01fd4b2d9cef11c901b537488044dc026186b48377f809129458e30953",
+      "bytes": 56314
+    },
+    "frontend/src/data/verified_station_registry.json": {
+      "sha256": "5aed52a197c44cfc3f348587a169372f428815f481c445519aea70980061e956",
+      "bytes": 15673
+    },
+    "frontend/src/index.css": {
+      "sha256": "8d24b4daedbed4bcc2b23a70326d24f35cd377fe727846006dfdfff66191e2a4",
+      "bytes": 1948
+    },
+    "frontend/src/modules/module1_network_overview/KpiCard.css": {
+      "sha256": "7709325a1f74649bc81c03b17897dc53c7fb5b19a73edb40990551ebee3e61e7",
+      "bytes": 12004
+    },
+    "frontend/src/modules/module1_network_overview/KpiCard.tsx": {
+      "sha256": "74353dda88bf8592f77bb68ddebef9331eb6ea5a47a1ba0dffbbf66ff63a07dc",
+      "bytes": 17301
+    },
+    "frontend/src/modules/module1_network_overview/KtmbDonutChart.tsx": {
+      "sha256": "bbc4e4201155b4b766583874aee6a47308a5e7dca2e142ed2b16e18dee24ed54",
+      "bytes": 10206
+    },
+    "frontend/src/modules/module1_network_overview/LandmarkBuildingsLayer.tsx": {
+      "sha256": "cd9bb52e71926b9d56030f4a05d82bf3dea5043a08d5bc1be4688990087dd942",
+      "bytes": 18042
+    },
+    "frontend/src/modules/module1_network_overview/LinePerformanceCard.tsx": {
+      "sha256": "d81177bfcbc3cd5e74473789101356367753a5af39083a264e97662e773e5a54",
+      "bytes": 3619
+    },
+    "frontend/src/modules/module1_network_overview/MODULE1_METHODOLOGY.md": {
+      "sha256": "3c8a27513ca0e240feaf374df54b54a94f73010a6b988e095bae4772346ecba9",
+      "bytes": 21407
+    },
+    "frontend/src/modules/module1_network_overview/NetworkMap.css": {
+      "sha256": "7a36faa1036d4bf24b4c8138331e4510b7d7741971d738ca3b0e75767cc6ee0c",
+      "bytes": 14807
+    },
+    "frontend/src/modules/module1_network_overview/NetworkMap.tsx": {
+      "sha256": "63c5ebf58809dc6fc86ecf7e664a489d1779b309b642b150082fe26c16bffd11",
+      "bytes": 14266
+    },
+    "frontend/src/modules/module1_network_overview/NetworkMapLibre.tsx": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "frontend/src/modules/module1_network_overview/NetworkOverview.tsx": {
+      "sha256": "bd063581410510da999ca9b2d9a285e1d3222193c4418430b366d822b2285768",
+      "bytes": 20259
+    },
+    "frontend/src/modules/module1_network_overview/RidershipTrendChart.tsx": {
+      "sha256": "513a249ad56085b622be0f990c9a68da982113854e8883bca2c2847d114e8135",
+      "bytes": 2645
+    },
+    "frontend/src/modules/module1_network_overview/TimelinePlaybar.tsx": {
+      "sha256": "d52317339677ccce9b05989c2e67e13066c509c8154d19dcf2d6f481ffde737f",
+      "bytes": 5216
+    },
+    "frontend/src/modules/module1_network_overview/atlasController.ts": {
+      "sha256": "fba57f8f0dedb87f8ae7567f2455de6f4bd58c38a240b03f83248ea231c5d5c8",
+      "bytes": 16335
+    },
+    "frontend/src/modules/module1_network_overview/atlasLayout.ts": {
+      "sha256": "33a2caf9f789ca310073ecabedf780160cb605f819e7a92053bfd914a28e6ef4",
+      "bytes": 1335
+    },
+    "frontend/src/modules/module1_network_overview/atlasPresentation.ts": {
+      "sha256": "4f71b53065eb75b3e78ca17d23feffba0a8df74a62c9e323579c454a91b11599",
+      "bytes": 11294
+    },
+    "frontend/src/modules/module1_network_overview/index.ts": {
+      "sha256": "21b69f0a7886a232252fccd8096f1addac27e80cf775f386e924cb5ece7e2b22",
+      "bytes": 100
+    },
+    "frontend/src/modules/module1_network_overview/landmarkModels.ts": {
+      "sha256": "8bec9477452b8d5069361c2817643cb3c4bb76446ee0583acc59749bbc9186f4",
+      "bytes": 9384
+    },
+    "frontend/src/modules/module1_network_overview/lineMapping.ts": {
+      "sha256": "eaa9d840940a30e60def9c7870c5d09d6039a03076838527c25d01ef007ebc42",
+      "bytes": 8972
+    },
+    "frontend/src/modules/module1_network_overview/nationalAtlas.ts": {
+      "sha256": "663509488fe5657dc404a841e05d1256c825a59aa4ce01ca43644c28591b9761",
+      "bytes": 10282
+    },
+    "frontend/src/modules/module1_network_overview/nationalRailNetwork.ts": {
+      "sha256": "78755e566bd748f97db474c5c9203998a27224e23f72c2468685bb897ba183f8",
+      "bytes": 1200
+    },
+    "frontend/src/modules/module1_network_overview/networkMapData.ts": {
+      "sha256": "ef612779bbdff62b5c9484026eda98d903ef59dfcdf6c9146b39ba6c7a313ff8",
+      "bytes": 15022
+    },
+    "frontend/src/modules/module1_network_overview/networkMapStyle.ts": {
+      "sha256": "d4de4bf4c1613d47aff78c9ff6d2e21d5ff261273b407d846f73a66d803f7899",
+      "bytes": 11773
+    },
+    "frontend/src/modules/module1_network_overview/railCorridors.ts": {
+      "sha256": "175fd961c7042018d33b7841468ebd66742ac167b3a6a5acc78a928fb7059bfa",
+      "bytes": 8781
+    },
+    "frontend/src/modules/module1_network_overview/railEffects.ts": {
+      "sha256": "f1059e86357de2156905e197d023d257d5ad37e5e10153625a2a6d2075735de8",
+      "bytes": 5968
+    },
+    "frontend/src/modules/module1_network_overview/railSemantics.ts": {
+      "sha256": "26bb829cedaca22bc7abb72c41508dc43dbfa13b577e776ed3e89e10b4775a8b",
+      "bytes": 3115
+    },
+    "frontend/src/modules/module2_od_peak_hours/OdFlowMap.tsx": {
+      "sha256": "85409d6b0ada7c07c63af39b60e29cf4e72efd094f3a02ee17e4610e5c8dfabb",
+      "bytes": 14635
+    },
+    "frontend/src/modules/module2_od_peak_hours/OdPeakHours.tsx": {
+      "sha256": "28000e5b50eb4b8713919c1dcddcc86a8600ef19e233d0b8ff2da7316adfd9b3",
+      "bytes": 36716
+    },
+    "frontend/src/modules/module2_od_peak_hours/OdTimelineBar.tsx": {
+      "sha256": "2e124797e97f2d3a6c6a0f45cca3b30d7fb3d7395a8b5d87decc208e4e1bc671",
+      "bytes": 6520
+    },
+    "frontend/src/modules/module2_od_peak_hours/OperatorInsightStrip.tsx": {
+      "sha256": "92b8cb39008af3e1291a52fa99c1c9b2dce12d1b7ab8b7a8abe98cf5d6ad2119",
+      "bytes": 5043
+    },
+    "frontend/src/modules/module2_od_peak_hours/PeakQuickFilterCard.tsx": {
+      "sha256": "457ebfd73633aed86ef5f72194c97da2d03a898e886816dc631a6e299de474c9",
+      "bytes": 7627
+    },
+    "frontend/src/modules/module2_od_peak_hours/TopOdPairsList.tsx": {
+      "sha256": "1f073738c7b94adf39bb49f205dcaa705d1750c9b11f4705f2a13e3e19e1400f",
+      "bytes": 9682
+    },
+    "frontend/src/modules/module2_od_peak_hours/TripDistanceProfileCard.tsx": {
+      "sha256": "522f794973de8d744900dd5dc32054dc6ec029391143833ecfc3974a5efd780a",
+      "bytes": 8194
+    },
+    "frontend/src/modules/module2_od_peak_hours/WeekdayHourHeatmap.tsx": {
+      "sha256": "19fa8fb50a77daa9291288124545d320d23e544a2cee4fec026c04458d326bae",
+      "bytes": 9902
+    },
+    "frontend/src/modules/module2_od_peak_hours/WeekdayVsWeekendChart.tsx": {
+      "sha256": "1692360f8b512de9fed82a2a87980da3e92cfbdf71923771648992596ae7e3d8",
+      "bytes": 10896
+    },
+    "frontend/src/modules/module2_od_peak_hours/index.ts": {
+      "sha256": "72a5a6dbd30203856090d1e1f81bb8c8c60ec76ba0e11cb99226bfd29ea23da1",
+      "bytes": 32
+    },
+    "frontend/src/modules/module2_od_peak_hours/odAnalyticsUtils.ts": {
+      "sha256": "3bc8a8a4c8e77635ed23c77c4742ee3563a2bafdee6797c7ad6dc772ce187915",
+      "bytes": 38562
+    },
+    "frontend/src/modules/module2_od_peak_hours/types.ts": {
+      "sha256": "737c46b507ad79a42ab0ecc279aa841fc956edc4968c10de979743d65dff81ba",
+      "bytes": 4523
+    },
+    "frontend/src/modules/module3_drivers_forecast/DriversFilterCard.tsx": {
+      "sha256": "3bf350a56ddae217b1102695d0d6104007b81f9b4f36f8fb94c7f7f22c16a140",
+      "bytes": 14919
+    },
+    "frontend/src/modules/module3_drivers_forecast/DriversForecast.tsx": {
+      "sha256": "19abdfe8bedc050da6f69475258367cf2928a26a3d4321374dbac5d611c12400",
+      "bytes": 9127
+    },
+    "frontend/src/modules/module3_drivers_forecast/ForecastKpiStrip.tsx": {
+      "sha256": "ca745aa73f019a0a5e06329171ed2a4536bc0f4f95419a477532f2d99dbdac8b",
+      "bytes": 7027
+    },
+    "frontend/src/modules/module3_drivers_forecast/KeyInsightsStrip.tsx": {
+      "sha256": "5703f3aa8ed2a7d1cbaecb5284334b204d1bdf20ed5f62af72810f6b180ce805",
+      "bytes": 4787
+    },
+    "frontend/src/modules/module3_drivers_forecast/PassengerForecastChart.tsx": {
+      "sha256": "331c64ca62dd688b59c4f385a041af0f12c386c83fcb868c9184aa7d704babaf",
+      "bytes": 10468
+    },
+    "frontend/src/modules/module3_drivers_forecast/RidershipVsDriversChart.tsx": {
+      "sha256": "07e977ba44e56e7b01ff53a1ef0eda009918af7637aad69883193c6926d370ef",
+      "bytes": 12095
+    },
+    "frontend/src/modules/module3_drivers_forecast/index.ts": {
+      "sha256": "695c76dcbfa9daaefc0c216d42cbbec3884ef4feb388a37f3d1ff2c98f34993b",
+      "bytes": 36
+    },
+    "frontend/src/modules/module3_drivers_forecast/types.ts": {
+      "sha256": "d609955c0c0fdbbd954afcc5e7c940846ac73ff9c7e4dde3e42a1ba9bc9ecef2",
+      "bytes": 1867
+    },
+    "frontend/src/modules/module4_service_planning/DistrictMap.tsx": {
+      "sha256": "9d88f7c53dea7e596775bcfe60ae6283bed7b54c76d6321191fbb7c2d256e493",
+      "bytes": 3002
+    },
+    "frontend/src/modules/module4_service_planning/GEOGRAPHY_LICENSE.md": {
+      "sha256": "9610e2ada6c721a7e436ed6b103d61f647c2447212e94798b89f49ce55fa42a9",
+      "bytes": 4148
+    },
+    "frontend/src/modules/module4_service_planning/Methodology.tsx": {
+      "sha256": "1f8d37d7008118c613dce8de33c0d74fb21a97dbda7796490aa124320ed9088b",
+      "bytes": 5975
+    },
+    "frontend/src/modules/module4_service_planning/ServicePlanning.tsx": {
+      "sha256": "43bd6126a4946549d66fd22022593fd27dd5476cc9a86e00a2b816779b1dd4b5",
+      "bytes": 21714
+    },
+    "frontend/src/modules/module4_service_planning/analytics.ts": {
+      "sha256": "69c828578d1421d738f92a9509ac86a49cb327efa64cde4b3702708d16c5282d",
+      "bytes": 8909
+    },
+    "frontend/src/modules/module4_service_planning/charts.tsx": {
+      "sha256": "c45d8a3120f76b12b57cc15a48096d6baf6b3de7189eafe3a1e5a29b91565883",
+      "bytes": 8381
+    },
+    "frontend/src/modules/module4_service_planning/contracts.ts": {
+      "sha256": "6d699b7254c9da65cd63293459a3783aa34515d2909e7485cc9e09c34b838122",
+      "bytes": 12722
+    },
+    "frontend/src/modules/module4_service_planning/dashboard.module.css": {
+      "sha256": "8613c0e834684404c6cc793d4436b514b92eeac62a9d9f1474d30ff7014785b7",
+      "bytes": 30957
+    },
+    "frontend/src/modules/module4_service_planning/data/district-geography.json": {
+      "sha256": "5a4fabd098054334e57303b31abd825c4cba9b56b82579ef3059bc361aaa31df",
+      "bytes": 192978
+    },
+    "frontend/src/modules/module4_service_planning/data/equity.json": {
+      "sha256": "4aec4bf588f2f217c53cad9236a67b502c5216ea41ea30c292ab07089b7d4829",
+      "bytes": 147533
+    },
+    "frontend/src/modules/module4_service_planning/data/history.json": {
+      "sha256": "c28599718d2dad2ea4ff6b5472dca780beece01ac9c8a7ee329d20468158945d",
+      "bytes": 557342
+    },
+    "frontend/src/modules/module4_service_planning/data/manifest.json": {
+      "sha256": "7e0564c516066199cb3791918748adeaa883cc12afa19950baa95285dc82f764",
+      "bytes": 18179
+    },
+    "frontend/src/modules/module4_service_planning/data/methodology.json": {
+      "sha256": "6a77a080ac78722e8399738569a41dcf2f33ff960081e98db984e06a091cdc69",
+      "bytes": 12350
+    },
+    "frontend/src/modules/module4_service_planning/data/network.json": {
+      "sha256": "ba5a23d9c33f331da53725ef0b47b3566979a129f9dd687733a3e149f9e452ce",
+      "bytes": 58758
+    },
+    "frontend/src/modules/module4_service_planning/data/patterns.json": {
+      "sha256": "3453aa0adacc44953d97539bc647ca2c070d7f5609b7fd03ffefd925ee13a082",
+      "bytes": 265837
+    },
+    "frontend/src/modules/module4_service_planning/data/research.json": {
+      "sha256": "9bf848a4d07633ac23f0273717e4c5841ab1de7169af610ddd4027f6df54130c",
+      "bytes": 676816
+    },
+    "frontend/src/modules/module4_service_planning/data/service.json": {
+      "sha256": "28a094139e9d42c14c205a6a4e5e07f80e7c95207c3f44b552653ee5d7248bdf",
+      "bytes": 642553
+    },
+    "frontend/src/modules/module4_service_planning/dataClient.ts": {
+      "sha256": "ba800a7e94a1ccfcdb2b33f99e42aa196b38c4dcf78336c42205c3b91825ff3c",
+      "bytes": 4155
+    },
+    "frontend/src/modules/module4_service_planning/equityMetrics.ts": {
+      "sha256": "6f0668a29336dcf64f42af41cb7b5a676a8314d90ee71097af63cac57b9fbe93",
+      "bytes": 4297
+    },
+    "frontend/src/modules/module4_service_planning/index.ts": {
+      "sha256": "d3f55fab40e923d8d3412536f6fe21576648e9015bf7c7207aadc7bb53c24240",
+      "bytes": 63
+    },
+    "frontend/src/modules/module4_service_planning/tabs/DemandDrivers.tsx": {
+      "sha256": "de615ec15d8b034495b9fc4a2bf53120126d09b7861cff17c9f9d8ae61f89c51",
+      "bytes": 13556
+    },
+    "frontend/src/modules/module4_service_planning/tabs/DemandForecast.tsx": {
+      "sha256": "f978a2b960f9e53769dd50210c5cf8776afdb00fdb5cae92de34bb1dbbc94212",
+      "bytes": 19641
+    },
+    "frontend/src/modules/module4_service_planning/tabs/EquityAccessibility.tsx": {
+      "sha256": "d19538d8330f3c53dbfc29457e292d289f7f7bae09ada8d82aa096a695947449",
+      "bytes": 18949
+    },
+    "frontend/src/modules/module4_service_planning/tabs/FutureOutlook.tsx": {
+      "sha256": "7f728b77adadce7d350656828efc3396db0b584ad61fece8e57f89638671d354",
+      "bytes": 9572
+    },
+    "frontend/src/modules/module4_service_planning/tabs/ServiceReadiness.tsx": {
+      "sha256": "5650a4e354680ee96686d0603b76a28fe52fb1088d65e24cb8c38bf2197776c1",
+      "bytes": 17880
+    },
+    "frontend/src/modules/module4_service_planning/ui.tsx": {
+      "sha256": "dc78b30da480e9f5f039b0749530b3d1719f4ae67ded9c679219d25432a8f774",
+      "bytes": 19420
+    },
+    "frontend/src/modules/shared/Navbar.css": {
+      "sha256": "778666af3835042ce31620fc5a145f898df37f1c254443a1575b0bbdf6a6d482",
+      "bytes": 6176
+    },
+    "frontend/src/modules/shared/Navbar.tsx": {
+      "sha256": "9ce13160feee10d73b877d93e2ca98812a62202ba82ee0f02be5f30cca5a18a1",
+      "bytes": 6089
+    },
+    "frontend/src/modules/shared/TelemetryIcon.tsx": {
+      "sha256": "538950656315d54117a604a2018fd5fda13f99f84e61427e1337d62af337ed20",
+      "bytes": 14721
+    },
+    "frontend/src/modules/shared/index.ts": {
+      "sha256": "99fd186adda7834edb5f3c174aff8e59b1388440efff18b4e2d9c83248767627",
+      "bytes": 147
+    },
+    "frontend/src/modules/shared/stationLookup.ts": {
+      "sha256": "3f065c371f9141e08c2920ab73661a2f214174d0e03919a7995ca4868088de5b",
+      "bytes": 315
+    },
+    "frontend/src/modules/shared/theme.ts": {
+      "sha256": "3140da93ba571963376d1f4a1f62956657a8516f1e285be02991b017ad176c4d",
+      "bytes": 358
+    },
+    "frontend/src/modules/shared/types.ts": {
+      "sha256": "ddb766cf949fa6757700e8d75f99960841068fd91b07ed14a0874af30c2726da",
+      "bytes": 2390
+    }
+  }
+}
