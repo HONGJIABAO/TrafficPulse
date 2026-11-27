@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { TabId } from './types';
 import { NAV_TABS } from './types';
-import { TelemetryIcon } from './TelemetryIcon';
 import './Navbar.css';
 
 interface NavbarProps {
@@ -109,14 +108,28 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
     }}>
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-        <div style={{
-          width: 36, height: 36,
-          background: 'linear-gradient(135deg, #0066FF 0%, #00C48C 100%)',
-          borderRadius: 8,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 8px rgba(0, 102, 255, 0.35)',
-        }}>
-          <TelemetryIcon name="transit-rail" size={20} style={{ color: '#FFFFFF' }} />
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src="/logo.png"
+            alt="TransitPulse Malaysia"
+            style={{
+              width: 54,
+              height: 54,
+              maxWidth: 'none',
+              objectFit: 'contain',
+              display: 'block',
+              filter: 'drop-shadow(0 2px 6px rgba(0, 102, 255, 0.16))',
+            }}
+          />
         </div>
         <div>
           <div style={{ fontWeight: 700, fontSize: 15, color: '#0F1E36', lineHeight: 1.2 }}>

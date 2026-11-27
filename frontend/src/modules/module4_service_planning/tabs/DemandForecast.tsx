@@ -59,8 +59,8 @@ function ForecastExplorer({ network, history, id }: { network: NetworkData; hist
       <div className={s.forecastLayout}>
         <Lines label={`${targetShort[id]} historical and forecast trips`} dates={dates}
           traces={[
-            { name: 'Observed', values: dates.map((date) => observed.get(date) ?? null), color: '#237a64' },
-            { name: 'Elapsed/reference-date forecast', values: dates.map((date) => !isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: '#777f92', dashed: true },
+            { name: 'Observed', values: dates.map((date) => observed.get(date) ?? null), color: '#00C48C' },
+            { name: 'Elapsed/reference-date forecast', values: dates.map((date) => !isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: '#94A3B8', dashed: true },
             { name: label, values: dates.map((date) => isFutureDate(date, network.asOf) ? forecast.get(date) ?? null : null), color: targetColor[id], area: true },
           ]}
           markers={[{ date: target.data_cutoff, name: 'Data cutoff' }, { date: network.asOf, name: 'Analysis date' }]} height={268} />
@@ -161,7 +161,7 @@ function StabilityExplorer({ research, network, id }: { research: ResearchData; 
       <Select label="Alternative forecast" value={alternative} options={alternatives.map(([value]) => ({ value, label: altLabel(value) }))} onChange={setAlternative} />
       <Lines label="Published and alternative daily forecasts" dates={window} traces={[
         { name: 'Published forecast', values: window.map((date) => actual.get(date) ?? null), color: targetColor[id] },
-        { name: 'Alternative forecast', values: window.map((date) => selected.get(date) ?? null), color: '#b45325', dashed: true },
+        { name: 'Alternative forecast', values: window.map((date) => selected.get(date) ?? null), color: '#FF5A00', dashed: true },
       ]} height={245} />
     </>}
     {phases.length > 0 ? <>

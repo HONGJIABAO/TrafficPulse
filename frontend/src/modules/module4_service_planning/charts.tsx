@@ -11,9 +11,9 @@ import s from './dashboard.module.css';
 register([BarChart, LineChart, ScatterChart, HeatmapChart, AriaComponent, CalendarComponent, GridComponent, LegendComponent,
   MarkLineComponent, TooltipComponent, VisualMapComponent, CanvasRenderer]);
 
-export const chartColors = ['#285bca', '#007e92', '#b45325', '#6958b9', '#238164', '#9b477d'];
-export const axisColor = '#50627e';
-export const axisLine = '#e5eaf3';
+export const chartColors = ['#0066FF', '#00C48C', '#FF5A00', '#7B61FF', '#087FBA', '#E53935'];
+export const axisColor = '#64748B';
+export const axisLine = '#E2E8F0';
 
 export function Chart({ option, label, height = 290, onSelect }: {
   option: EChartsOption; label: string; height?: number; onSelect?: (name: string) => void;
@@ -54,7 +54,7 @@ export function Bars({ data, label, horizontal = false, height, decimals = 0, su
     xAxis: horizontal ? values : category,
     yAxis: horizontal ? { ...category, inverse: true } : values,
     series: [{ name: label, type: 'bar', barMaxWidth: horizontal ? 20 : 42,
-      label: { show: horizontal, position: 'right', color: '#354a69', fontSize: 11, formatter: ({ value }) => typeof value === 'number' ? `${compact(value)}${suffix}` : '' },
+      label: { show: horizontal, position: 'right', color: '#0F1E36', fontSize: 11, formatter: ({ value }) => typeof value === 'number' ? `${compact(value)}${suffix}` : '' },
       data: data.map((r) => ({ value: r.value, itemStyle: { color: r.color ?? chartColors[0], borderRadius: horizontal ? [0, 4, 4, 0] : [5, 5, 0, 0] } })) }],
   };
   return <Chart option={option} label={label} height={height} />;
@@ -78,7 +78,7 @@ export function Lines({ dates, traces, label, markers = [], height = 320, dateLa
       itemStyle: { color: trace.color ?? chartColors[index % chartColors.length] }, lineStyle: { width: 2.6, type: trace.dashed ? 'dashed' : 'solid' },
       areaStyle: trace.area ? { opacity: .09 } : undefined,
       markLine: index === 0 && activeMarkers.length ? { silent: true, symbol: ['none', 'none'], label: { show: true, position: 'insideEndTop', fontSize: 10 },
-        data: activeMarkers.map((marker) => ({ xAxis: marker.date, label: { formatter: marker.name }, lineStyle: { color: marker.color ?? '#687da3' } })) } : undefined,
+        data: activeMarkers.map((marker) => ({ xAxis: marker.date, label: { formatter: marker.name }, lineStyle: { color: marker.color ?? '#64748B' } })) } : undefined,
     })),
   };
   return <Chart option={option} label={label} height={height} />;

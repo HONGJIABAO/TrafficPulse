@@ -45,8 +45,8 @@ export default function DistrictMap({ geography, values, selected, onSelect }: {
     if (!overlay) return;
     overlay.setStyle((feature) => {
       const id: string = feature?.properties.district_id;
-      return { fillColor: values[id]?.color ?? '#aeb8c9', fillOpacity: id === selected ? 0.91 : 0.72,
-        weight: id === selected ? 3 : 1.25, color: id === selected ? '#132744' : '#526581', opacity: .95 };
+      return { fillColor: values[id]?.color ?? '#CBD5E1', fillOpacity: id === selected ? 0.91 : 0.72,
+        weight: id === selected ? 3 : 1.25, color: id === selected ? '#0F1E36' : '#64748B', opacity: .95 };
     });
     overlay.eachLayer((layer) => {
       if (!('feature' in layer)) return;

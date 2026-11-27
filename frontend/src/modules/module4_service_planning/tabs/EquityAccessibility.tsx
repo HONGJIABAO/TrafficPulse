@@ -180,7 +180,7 @@ function Activity({ data }: { data: EquityData }) {
         { value: 'all', label: 'All LRT3 stations' }, ...corridor.map((row) => ({ value: row.district_id, label: row.district })),
       ]} onChange={setStationFilter} /></div>
       <Bars label="Published station-origin trips by LRT3 station" horizontal height={Math.max(230, shown.length * 22 + 60)}
-        data={shown.map((row) => ({ name: row.station_name, value: row.station_origin_trips, color: '#007e92' }))} />
+        data={shown.map((row) => ({ name: row.station_name, value: row.station_origin_trips, color: '#0066FF' }))} />
       <Details title="All stations in this selection">
         <Table label="LRT3 station-origin counts" columns={['Station', 'Code', 'District', 'Published station origins', 'Share of LRT3 origins']}
           rows={shown.map((row) => ({ key: row.station_code, cells: [row.station_name, row.station_code, stationDistrict(row.district_id), num(row.station_origin_trips), pct(row.line_share_pct)] }))} />

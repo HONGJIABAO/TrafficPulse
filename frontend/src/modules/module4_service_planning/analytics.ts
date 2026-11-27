@@ -16,8 +16,8 @@ export const sum = (values: number[]) => values.reduce((total, value) => total +
 export const mean = (values: number[]) => values.length ? sum(values) / values.length : null;
 
 export const targetColor: Record<TargetId, string> = {
-  rail_lrt_ampang: '#b64132', rail_lrt_kj: '#2165d7', rail_mrt_kajang: '#158261', rail_mrt_pjy: '#6854bb',
-  rail_monorail: '#a85c00', rail_lrt_shah_alam: '#007e92', rapid_rail_published_sum: '#2959c7', lrt3_station_origin_od: '#007e92',
+  rail_lrt_ampang: '#E53935', rail_lrt_kj: '#0066FF', rail_mrt_kajang: '#00C48C', rail_mrt_pjy: '#7B61FF',
+  rail_monorail: '#FF8C00', rail_lrt_shah_alam: '#00BCD4', rapid_rail_published_sum: '#0066FF', lrt3_station_origin_od: '#087FBA',
 };
 export const targetShort: Record<TargetId, string> = {
   rail_lrt_ampang: 'Ampang / Sri Petaling', rail_lrt_kj: 'Kelana Jaya', rail_mrt_kajang: 'MRT Kajang', rail_mrt_pjy: 'MRT Putrajaya',
