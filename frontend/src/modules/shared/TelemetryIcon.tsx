@@ -32,9 +32,12 @@ export type TelemetryIconName =
   | 'gear'
   | 'pin-marker'
   | 'map-grid'
-  | 'forecast-mesh';
+  | 'forecast-mesh'
+  | 'sliders-horizontal'
+  | 'clock'
+  | 'accessibility';
 
-export type TelemetryVariant = 'cobalt' | 'amber' | 'teal' | 'indigo';
+export type TelemetryVariant = 'cobalt' | 'amber' | 'teal' | 'indigo' | 'purple';
 
 interface TelemetryTheme {
   stroke: string;
@@ -62,6 +65,11 @@ const THEMES: Record<TelemetryVariant, TelemetryTheme> = {
     stroke: '#4F46E5',
     bg: 'rgba(79, 70, 229, 0.08)',
     border: 'rgba(79, 70, 229, 0.2)',
+  },
+  purple: {
+    stroke: '#7C3AED',
+    bg: '#F0EBFF',
+    border: 'rgba(124, 58, 237, 0.24)',
   },
 };
 
@@ -360,6 +368,40 @@ function renderSvgPath(name: TelemetryIconName): React.ReactNode {
           <circle cx="12" cy="12" r="8" />
           <path d="M12 4v16M4 12h16" />
           <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.25" />
+        </>
+      );
+
+    case 'sliders-horizontal':
+      return (
+        <>
+          <line x1="21" y1="4" x2="14" y2="4" />
+          <line x1="10" y1="4" x2="3" y2="4" />
+          <line x1="21" y1="12" x2="12" y2="12" />
+          <line x1="8" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="20" x2="16" y2="20" />
+          <line x1="12" y1="20" x2="3" y2="20" />
+          <line x1="14" y1="2" x2="14" y2="6" />
+          <line x1="8" y1="10" x2="8" y2="14" />
+          <line x1="16" y1="18" x2="16" y2="22" />
+        </>
+      );
+
+    case 'clock':
+      return (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <polyline points="12 7 12 12 15.5 14" />
+        </>
+      );
+
+    case 'accessibility':
+      return (
+        <>
+          <circle cx="16" cy="4" r="1.2" />
+          <path d="m18 19 1-7-6 1" />
+          <path d="m5 8 3-3 5.5 3-2.36 3.5" />
+          <path d="M4.24 14.5a5 5 0 0 0 6.88 6" />
+          <path d="M13.76 17.5a5 5 0 0 0-6.88-6" />
         </>
       );
 
