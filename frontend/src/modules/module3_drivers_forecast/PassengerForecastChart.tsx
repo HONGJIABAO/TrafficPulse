@@ -126,7 +126,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
         itemWidth: 9,
         itemHeight: 9,
         itemGap: 12,
-        textStyle: { color: '#64748B', fontSize: 11, fontWeight: 500 },
+        textStyle: { color: '#475569', fontSize: 11.5, fontWeight: 600 },
         data: ['Actual Ridership', 'Ensemble Forecast', 'Confidence Interval'],
       },
       grid: {
@@ -213,11 +213,11 @@ export const PassengerForecastChart: React.FC<Props> = ({
             silent: true,
             lineStyle: { color: '#EF4444', type: 'dashed', width: 1.5 },
             label: {
-              formatter: 'Forecast Horizon',
+              formatter: 'Forecast Horizon Starts',
               position: 'insideStartTop',
-              fontSize: 9,
+              fontSize: 10.5,
               color: '#EF4444',
-              fontWeight: 600,
+              fontWeight: 700,
             },
             data: [{ xAxis: chartData.splitDate }],
           },
@@ -262,11 +262,11 @@ export const PassengerForecastChart: React.FC<Props> = ({
               onClick={() => onSelectHorizon(h)}
               style={{
                 background: isActive ? '#0066FF' : 'transparent',
-                color: isActive ? '#FFFFFF' : '#64748B',
+                color: isActive ? '#FFFFFF' : '#475569',
                 border: 'none',
                 borderRadius: 5,
-                padding: '2px 8px',
-                fontSize: 10,
+                padding: '3px 9px',
+                fontSize: 11,
                 fontWeight: 700,
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
