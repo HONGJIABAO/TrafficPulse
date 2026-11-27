@@ -406,11 +406,60 @@
   z-index: 3;
 }
 
+.kpi-minichart-container.is-hourly {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 2px;
+  height: 56px;
+  width: clamp(118px, 43%, 192px);
+}
+
+.kpi-minichart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 44px;
+  width: 100%;
+}
+
 .kpi-minichart-bar {
   flex: 1;
-  border-radius: 2px;
+  min-width: 2px;
+  border-radius: 2px 2px 1px 1px;
   background: #EE7938;
-  transition: height 400ms ease, opacity 300ms ease;
+  transition: height 400ms ease, opacity 200ms ease, background-color 200ms ease;
+}
+
+.kpi-minichart-bar.is-offpeak {
+  background: #FFB58C;
+}
+
+.kpi-minichart-bar.is-peak {
+  background: #EA580C;
+  box-shadow: 0 1px 3px rgba(234, 88, 12, 0.28);
+}
+
+.kpi-minichart-bar:hover {
+  filter: brightness(0.92);
+}
+
+.kpi-minichart-axis {
+  position: relative;
+  height: 10px;
+  width: 100%;
+  font-size: 8.5px;
+  line-height: 10px;
+  font-weight: 500;
+  color: #7C8DA3;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1px;
+}
+
+.kpi-minichart-axis span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
 }
 
 /* ── Cinematic Entrance ──────────────────────────────────────────────────── */

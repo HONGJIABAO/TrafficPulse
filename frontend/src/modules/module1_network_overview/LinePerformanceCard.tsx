@@ -1,4 +1,5 @@
 import { LINE_COLORS } from '@/modules/shared/types';
+import { resolveHeadlineSeries } from './lineMapping';
 
 interface LinePerf {
   line: string;
@@ -15,24 +16,42 @@ interface LinePerf {
 interface Props {
   line_performance: LinePerf[];
   selectedLine: string;
+  onSelectLine?: (line: string) => void;
 }
 
-export function LinePerformanceCard({ line_performance, selectedLine }: Props) {
+export function LinePerformanceCard({ line_performance, selectedLine, onSelectLine }: Props) {
   const items = line_performance;
   const maxShare = Math.max(...items.map(l => l.share_pct));
+  const resolvedSelected = resolveHeadlineSeries(selectedLine).headlineLine;
 
   return (
     <div className="network-line-performance-list">
       {items.map(item => {
         const color = LINE_COLORS[item.line] ?? '#0066FF';
-        const isActive = selectedLine === 'All Lines' || selectedLine === item.line;
+        const isActive =
+          selectedLine === 'All Lines' ||
+          selectedLine === item.line ||
+          resolvedSelected === item.line;
         const yoy = item.yoy_growth_pct;
         const periodInfo = item.active_period ? ` · Active ${item.active_period}` : '';
         const yoyInfo = yoy !== null ? ` · 2025 vs 2024: ${yoy >= 0 ? '+' : ''}${yoy.toFixed(2)}%` : ' · No full 2024–25 YoY baseline';
         const rowTooltip = `${item.line}: ${item.total_ridership.toLocaleString()} headline trips (${item.share_pct.toFixed(2)}%)${periodInfo}${yoyInfo}`;
 
         return (
-          <div key={item.column} title={rowTooltip} style={{ opacity: isActive ? 1 : 0.4 }}>
+          <div
+            key={item.column}
+            role={onSelectLine ? 'button' : undefined}
+            tabIndex={onSelectLine ? 0 : undefined}
+            onClick={() => onSelectLine?.(selectedLine === item.line ? 'All Lines' : item.line)}
+            onKeyDown={(e) => {
+              if (onSelectLine && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                onSelectLine(selectedLine === item.line ? 'All Lines' : item.line);
+              }
+            }}
+            title={rowTooltip}
+            style={{ opacity: isActive ? 1 : 0.4, cursor: onSelectLine ? 'pointer' : undefined }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
               <span title={item.line} style={{ fontSize: 10, fontWeight: 500, color: '#0F1E36', minWidth: 0,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

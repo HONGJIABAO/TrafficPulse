@@ -290,13 +290,20 @@ def main():
         ),
     }
 
-    # ── Monthly Trend ────────────────────────────────────────────────────────
+    # ── Monthly Trend (with positive observed days per line for zero-bias YTD) ──
     print("[Module 1] Computing monthly trend ...")
     monthly = (
         rh.group_by(["year_month", "year", "month"])
         .agg(
-            [pl.col("rail_total").sum().alias("total")]
+            [
+                pl.col("rail_total").sum().alias("total"),
+                pl.len().alias("n_days"),
+            ]
             + [pl.col(c).sum().alias(c) for c in RAIL_COLS]
+            + [
+                (pl.col(c).is_not_null() & (pl.col(c) > 0)).sum().alias(f"{c}_days")
+                for c in RAIL_COLS
+            ]
         )
         .sort(["year", "month"])
     )
@@ -307,12 +314,76 @@ def main():
             "year_month": row["year_month"],
             "year": int(row["year"]),
             "month": int(row["month"]),
+            "days": int(row["n_days"]),
             "total": int(round(row["total"] or 0)),
             "lines": {
                 RAIL_LABELS[c]: int(round(row[c] or 0))
                 for c in RAIL_COLS
             },
+            "line_days": {
+                RAIL_LABELS[c]: int(row[f"{c}_days"] or 0)
+                for c in RAIL_COLS
+            },
         })
+
+    # ── Pre-COVID 2019 Continuous 4-Line Rapid Rail Baseline (RO1 / SDG 9) ──
+    print("[Module 1] Computing Pre-COVID 2019 4-line continuous legacy comparison ...")
+    legacy_cols = ["rail_lrt_ampang", "rail_mrt_kajang", "rail_lrt_kj", "rail_monorail"]
+    rh_leg = rh.with_columns(
+        pl.sum_horizontal([pl.col(c) for c in legacy_cols]).alias("legacy_total")
+    )
+    leg_full_19 = rh_leg.filter(pl.col("year") == 2019)
+    leg_ytd_19 = rh_leg.filter(
+        (pl.col("date") >= pl.date(2019, 1, 1)) & (pl.col("date") <= hl_end.replace(year=2019))
+    )
+    leg_ytd_latest = rh_leg.filter(
+        (pl.col("date") >= pl.date(latest_year, 1, 1)) & (pl.col("date") <= hl_end)
+    )
+
+    full19_tot = float(leg_full_19["legacy_total"].sum())
+    full19_days = int(leg_full_19.height)
+    full19_daily = full19_tot / full19_days if full19_days else 0.0
+
+    ytd19_tot = float(leg_ytd_19["legacy_total"].sum())
+    ytd19_days = int(leg_ytd_19.height)
+    ytd19_daily = ytd19_tot / ytd19_days if ytd19_days else 0.0
+
+    ytd_lat_tot = float(leg_ytd_latest["legacy_total"].sum())
+    ytd_lat_days = int(leg_ytd_latest.height)
+    ytd_lat_daily = ytd_lat_tot / ytd_lat_days if ytd_lat_days else 0.0
+
+    legacy_per_line = []
+    for c in legacy_cols:
+        c_f19_d = float(leg_full_19[c].sum()) / full19_days if full19_days else 0.0
+        c_y19_d = float(leg_ytd_19[c].sum()) / ytd19_days if ytd19_days else 0.0
+        c_ylat_d = float(leg_ytd_latest[c].sum()) / ytd_lat_days if ytd_lat_days else 0.0
+        legacy_per_line.append({
+            "line": RAIL_LABELS[c],
+            "column": c,
+            "full_2019_daily_avg": round(c_f19_d, 1),
+            "ytd_2019_daily_avg": round(c_y19_d, 1),
+            "ytd_latest_daily_avg": round(c_ylat_d, 1),
+            "vs_full_2019_pct": round((c_ylat_d - c_f19_d) / c_f19_d * 100, 2) if c_f19_d else None,
+            "vs_same_period_2019_pct": round((c_ylat_d - c_y19_d) / c_y19_d * 100, 2) if c_y19_d else None,
+        })
+
+    legacy_comparison = {
+        "lines_included": [RAIL_LABELS[c] for c in legacy_cols],
+        "full_2019_total": int(round(full19_tot)),
+        "full_2019_days": full19_days,
+        "full_2019_daily_avg": round(full19_daily, 1),
+        "ytd_2019_label": f"Jan–{hl_end.strftime('%b')} 2019",
+        "ytd_2019_total": int(round(ytd19_tot)),
+        "ytd_2019_days": ytd19_days,
+        "ytd_2019_daily_avg": round(ytd19_daily, 1),
+        "ytd_latest_label": f"Jan–{hl_end.strftime('%b')} {latest_year}",
+        "ytd_latest_total": int(round(ytd_lat_tot)),
+        "ytd_latest_days": ytd_lat_days,
+        "ytd_latest_daily_avg": round(ytd_lat_daily, 1),
+        "vs_full_2019_daily_pct": round((ytd_lat_daily - full19_daily) / full19_daily * 100, 2) if full19_daily else None,
+        "vs_same_period_2019_daily_pct": round((ytd_lat_daily - ytd19_daily) / ytd19_daily * 100, 2) if ytd19_daily else None,
+        "per_line": legacy_per_line,
+    }
 
     # ── Line Performance ─────────────────────────────────────────────────────
     print("[Module 1] Computing line performance ...")
@@ -466,6 +537,7 @@ def main():
             },
         ],
         "monthly_trend": monthly_trend,
+        "legacy_comparison": legacy_comparison,
         "line_performance": line_performance,
         "ktmb_services": ktmb_services,
         "ktmb_monthly_trend": ktmb_monthly_list,

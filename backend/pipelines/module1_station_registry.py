@@ -23,7 +23,7 @@ def normal(name):
     return re.sub(r'[^a-z0-9]', '', text)
 links, additions, unresolved = {}, [], []
 rapid_names = {'AG': 'LRT Ampang–Sri Petaling', 'PH': 'LRT Ampang–Sri Petaling', 'KJ': 'LRT Kelana Jaya',
-               'MRT': 'MRT Kajang', 'PYL': 'MRT Putrajaya', 'MR': 'KL Monorail', 'SA': 'LRT Shah Alam'}
+               'KGL': 'MRT Kajang', 'PYL': 'MRT Putrajaya', 'MR': 'KL Monorail', 'SA': 'LRT Shah Alam'}
 route_names = {f['properties']['id']: f['properties']['name'] for f in json.loads((DEST/'ktmb_rail_geometry.json').read_text())['features']}
 for operator, filename in [('rapidrail', 'rapid-rail-gtfs.zip'), ('ktmb', 'ktmb-gtfs.zip')]:
     with zipfile.ZipFile(ROOT / 'backend/data/raw' / filename) as archive:

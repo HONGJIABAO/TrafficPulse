@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27",
+  "generated_at": "2026-11-28",
   "kpis": {
     "total_rail_trips": 1781070919,
     "data_period": "2025",
@@ -546,6 +546,7 @@
       "year_month": "2019-01",
       "year": 2019,
       "month": 1,
+      "days": 31,
       "total": 19447972,
       "lines": {
         "LRT Ampang–Sri Petaling": 5363000,
@@ -559,12 +560,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-02",
       "year": 2019,
       "month": 2,
+      "days": 28,
       "total": 16154104,
       "lines": {
         "LRT Ampang–Sri Petaling": 4454115,
@@ -578,12 +593,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-03",
       "year": 2019,
       "month": 3,
+      "days": 31,
       "total": 20157497,
       "lines": {
         "LRT Ampang–Sri Petaling": 5617697,
@@ -597,12 +626,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-04",
       "year": 2019,
       "month": 4,
+      "days": 30,
       "total": 20055305,
       "lines": {
         "LRT Ampang–Sri Petaling": 5571821,
@@ -616,12 +659,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-05",
       "year": 2019,
       "month": 5,
+      "days": 31,
       "total": 19295470,
       "lines": {
         "LRT Ampang–Sri Petaling": 5458497,
@@ -635,12 +692,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-06",
       "year": 2019,
       "month": 6,
+      "days": 30,
       "total": 17619475,
       "lines": {
         "LRT Ampang–Sri Petaling": 4906864,
@@ -654,12 +725,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-07",
       "year": 2019,
       "month": 7,
+      "days": 31,
       "total": 21036499,
       "lines": {
         "LRT Ampang–Sri Petaling": 5757222,
@@ -673,12 +758,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-08",
       "year": 2019,
       "month": 8,
+      "days": 31,
       "total": 20420797,
       "lines": {
         "LRT Ampang–Sri Petaling": 5577557,
@@ -692,12 +791,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-09",
       "year": 2019,
       "month": 9,
+      "days": 30,
       "total": 18631618,
       "lines": {
         "LRT Ampang–Sri Petaling": 5182224,
@@ -711,12 +824,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-10",
       "year": 2019,
       "month": 10,
+      "days": 31,
       "total": 21429132,
       "lines": {
         "LRT Ampang–Sri Petaling": 5816211,
@@ -730,12 +857,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-11",
       "year": 2019,
       "month": 11,
+      "days": 30,
       "total": 20938307,
       "lines": {
         "LRT Ampang–Sri Petaling": 5735068,
@@ -749,12 +890,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2019-12",
       "year": 2019,
       "month": 12,
+      "days": 31,
       "total": 21107563,
       "lines": {
         "LRT Ampang–Sri Petaling": 5706946,
@@ -768,12 +923,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-01",
       "year": 2020,
       "month": 1,
+      "days": 31,
       "total": 20077950,
       "lines": {
         "LRT Ampang–Sri Petaling": 5389518,
@@ -787,12 +956,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-02",
       "year": 2020,
       "month": 2,
+      "days": 29,
       "total": 19194226,
       "lines": {
         "LRT Ampang–Sri Petaling": 5161307,
@@ -806,12 +989,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 29,
+        "MRT Kajang": 29,
+        "LRT Kelana Jaya": 29,
+        "KL Monorail": 29,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-03",
       "year": 2020,
       "month": 3,
+      "days": 31,
       "total": 11314882,
       "lines": {
         "LRT Ampang–Sri Petaling": 3144777,
@@ -825,12 +1022,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-04",
       "year": 2020,
       "month": 4,
+      "days": 30,
       "total": 1253891,
       "lines": {
         "LRT Ampang–Sri Petaling": 394171,
@@ -844,12 +1055,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-05",
       "year": 2020,
       "month": 5,
+      "days": 31,
       "total": 3800296,
       "lines": {
         "LRT Ampang–Sri Petaling": 1205494,
@@ -863,12 +1088,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-06",
       "year": 2020,
       "month": 6,
+      "days": 30,
       "total": 7597898,
       "lines": {
         "LRT Ampang–Sri Petaling": 2297520,
@@ -882,12 +1121,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-07",
       "year": 2020,
       "month": 7,
+      "days": 31,
       "total": 10919988,
       "lines": {
         "LRT Ampang–Sri Petaling": 3195946,
@@ -901,12 +1154,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-08",
       "year": 2020,
       "month": 8,
+      "days": 31,
       "total": 11031750,
       "lines": {
         "LRT Ampang–Sri Petaling": 3227890,
@@ -920,12 +1187,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-09",
       "year": 2020,
       "month": 9,
+      "days": 30,
       "total": 12309875,
       "lines": {
         "LRT Ampang–Sri Petaling": 3549250,
@@ -939,12 +1220,26 @@
         "KTM Komuter Utara": 0,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 0,
+        "KTM Intercity": 0,
+        "KTM Komuter Utara": 0,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-10",
       "year": 2020,
       "month": 10,
+      "days": 31,
       "total": 8426279,
       "lines": {
         "LRT Ampang–Sri Petaling": 2592837,
@@ -958,12 +1253,26 @@
         "KTM Komuter Utara": 66397,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 17,
+        "KTM Intercity": 17,
+        "KTM Komuter Utara": 17,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-11",
       "year": 2020,
       "month": 11,
+      "days": 30,
       "total": 6862420,
       "lines": {
         "LRT Ampang–Sri Petaling": 2126946,
@@ -977,12 +1286,26 @@
         "KTM Komuter Utara": 84204,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2020-12",
       "year": 2020,
       "month": 12,
+      "days": 31,
       "total": 8082092,
       "lines": {
         "LRT Ampang–Sri Petaling": 2429909,
@@ -996,12 +1319,26 @@
         "KTM Komuter Utara": 144788,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-01",
       "year": 2021,
       "month": 1,
+      "days": 31,
       "total": 5840917,
       "lines": {
         "LRT Ampang–Sri Petaling": 1824666,
@@ -1015,12 +1352,26 @@
         "KTM Komuter Utara": 91497,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-02",
       "year": 2021,
       "month": 2,
+      "days": 28,
       "total": 5353886,
       "lines": {
         "LRT Ampang–Sri Petaling": 1698744,
@@ -1034,12 +1385,26 @@
         "KTM Komuter Utara": 57794,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28,
+        "KTM Intercity": 28,
+        "KTM Komuter Utara": 28,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-03",
       "year": 2021,
       "month": 3,
+      "days": 31,
       "total": 8765590,
       "lines": {
         "LRT Ampang–Sri Petaling": 2601245,
@@ -1053,12 +1418,26 @@
         "KTM Komuter Utara": 105887,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-04",
       "year": 2021,
       "month": 4,
+      "days": 30,
       "total": 9308866,
       "lines": {
         "LRT Ampang–Sri Petaling": 2705960,
@@ -1072,12 +1451,26 @@
         "KTM Komuter Utara": 112575,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-05",
       "year": 2021,
       "month": 5,
+      "days": 31,
       "total": 5657887,
       "lines": {
         "LRT Ampang–Sri Petaling": 1799251,
@@ -1091,12 +1484,26 @@
         "KTM Komuter Utara": 59589,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-06",
       "year": 2021,
       "month": 6,
+      "days": 30,
       "total": 2304574,
       "lines": {
         "LRT Ampang–Sri Petaling": 731375,
@@ -1110,12 +1517,26 @@
         "KTM Komuter Utara": 27542,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-07",
       "year": 2021,
       "month": 7,
+      "days": 31,
       "total": 2521856,
       "lines": {
         "LRT Ampang–Sri Petaling": 824844,
@@ -1129,12 +1550,26 @@
         "KTM Komuter Utara": 40213,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-08",
       "year": 2021,
       "month": 8,
+      "days": 31,
       "total": 3142352,
       "lines": {
         "LRT Ampang–Sri Petaling": 1061950,
@@ -1148,12 +1583,26 @@
         "KTM Komuter Utara": 40126,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-09",
       "year": 2021,
       "month": 9,
+      "days": 30,
       "total": 4831984,
       "lines": {
         "LRT Ampang–Sri Petaling": 1557367,
@@ -1167,12 +1616,26 @@
         "KTM Komuter Utara": 50535,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-10",
       "year": 2021,
       "month": 10,
+      "days": 31,
       "total": 6882170,
       "lines": {
         "LRT Ampang–Sri Petaling": 2034527,
@@ -1186,12 +1649,26 @@
         "KTM Komuter Utara": 96424,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-11",
       "year": 2021,
       "month": 11,
+      "days": 30,
       "total": 8481569,
       "lines": {
         "LRT Ampang–Sri Petaling": 2392406,
@@ -1205,12 +1682,26 @@
         "KTM Komuter Utara": 158440,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2021-12",
       "year": 2021,
       "month": 12,
+      "days": 31,
       "total": 9755655,
       "lines": {
         "LRT Ampang–Sri Petaling": 2706638,
@@ -1224,12 +1715,26 @@
         "KTM Komuter Utara": 205972,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-01",
       "year": 2022,
       "month": 1,
+      "days": 31,
       "total": 10014385,
       "lines": {
         "LRT Ampang–Sri Petaling": 2828567,
@@ -1243,12 +1748,26 @@
         "KTM Komuter Utara": 182522,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-02",
       "year": 2022,
       "month": 2,
+      "days": 28,
       "total": 7654617,
       "lines": {
         "LRT Ampang–Sri Petaling": 2171266,
@@ -1262,12 +1781,26 @@
         "KTM Komuter Utara": 145435,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28,
+        "KTM Intercity": 28,
+        "KTM Komuter Utara": 28,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-03",
       "year": 2022,
       "month": 3,
+      "days": 31,
       "total": 9511375,
       "lines": {
         "LRT Ampang–Sri Petaling": 2693615,
@@ -1281,12 +1814,26 @@
         "KTM Komuter Utara": 164665,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-04",
       "year": 2022,
       "month": 4,
+      "days": 30,
       "total": 11000360,
       "lines": {
         "LRT Ampang–Sri Petaling": 3228674,
@@ -1300,12 +1847,26 @@
         "KTM Komuter Utara": 186134,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-05",
       "year": 2022,
       "month": 5,
+      "days": 31,
       "total": 12479562,
       "lines": {
         "LRT Ampang–Sri Petaling": 3339042,
@@ -1319,12 +1880,26 @@
         "KTM Komuter Utara": 251938,
         "KTM Tebrau Shuttle": 0,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 0,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 0,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-06",
       "year": 2022,
       "month": 6,
+      "days": 30,
       "total": 16328341,
       "lines": {
         "LRT Ampang–Sri Petaling": 4344595,
@@ -1338,12 +1913,26 @@
         "KTM Komuter Utara": 266991,
         "KTM Tebrau Shuttle": 64778,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 15,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 12,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-07",
       "year": 2022,
       "month": 7,
+      "days": 31,
       "total": 16939915,
       "lines": {
         "LRT Ampang–Sri Petaling": 4266733,
@@ -1357,12 +1946,26 @@
         "KTM Komuter Utara": 274593,
         "KTM Tebrau Shuttle": 186746,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-08",
       "year": 2022,
       "month": 8,
+      "days": 31,
       "total": 16793997,
       "lines": {
         "LRT Ampang–Sri Petaling": 4293066,
@@ -1376,12 +1979,26 @@
         "KTM Komuter Utara": 266267,
         "KTM Tebrau Shuttle": 218416,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-09",
       "year": 2022,
       "month": 9,
+      "days": 30,
       "total": 16913781,
       "lines": {
         "LRT Ampang–Sri Petaling": 4286962,
@@ -1395,12 +2012,26 @@
         "KTM Komuter Utara": 314011,
         "KTM Tebrau Shuttle": 240418,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-10",
       "year": 2022,
       "month": 10,
+      "days": 31,
       "total": 17072868,
       "lines": {
         "LRT Ampang–Sri Petaling": 4259135,
@@ -1414,12 +2045,26 @@
         "KTM Komuter Utara": 334629,
         "KTM Tebrau Shuttle": 250339,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-11",
       "year": 2022,
       "month": 11,
+      "days": 30,
       "total": 15366822,
       "lines": {
         "LRT Ampang–Sri Petaling": 3963991,
@@ -1433,12 +2078,26 @@
         "KTM Komuter Utara": 309087,
         "KTM Tebrau Shuttle": 243680,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2022-12",
       "year": 2022,
       "month": 12,
+      "days": 31,
       "total": 18328783,
       "lines": {
         "LRT Ampang–Sri Petaling": 4475686,
@@ -1452,12 +2111,26 @@
         "KTM Komuter Utara": 361211,
         "KTM Tebrau Shuttle": 285765,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-01",
       "year": 2023,
       "month": 1,
+      "days": 31,
       "total": 17206118,
       "lines": {
         "LRT Ampang–Sri Petaling": 4319239,
@@ -1471,12 +2144,26 @@
         "KTM Komuter Utara": 316838,
         "KTM Tebrau Shuttle": 249745,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-02",
       "year": 2023,
       "month": 2,
+      "days": 28,
       "total": 16159839,
       "lines": {
         "LRT Ampang–Sri Petaling": 3616881,
@@ -1490,12 +2177,26 @@
         "KTM Komuter Utara": 297460,
         "KTM Tebrau Shuttle": 219424,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 28,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28,
+        "KTM Intercity": 28,
+        "KTM Komuter Utara": 28,
+        "KTM Tebrau Shuttle": 28,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-03",
       "year": 2023,
       "month": 3,
+      "days": 31,
       "total": 21032166,
       "lines": {
         "LRT Ampang–Sri Petaling": 4308679,
@@ -1509,12 +2210,26 @@
         "KTM Komuter Utara": 343741,
         "KTM Tebrau Shuttle": 268579,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-04",
       "year": 2023,
       "month": 4,
+      "days": 30,
       "total": 18192786,
       "lines": {
         "LRT Ampang–Sri Petaling": 3338686,
@@ -1528,12 +2243,26 @@
         "KTM Komuter Utara": 321869,
         "KTM Tebrau Shuttle": 260097,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-05",
       "year": 2023,
       "month": 5,
+      "days": 31,
       "total": 20651957,
       "lines": {
         "LRT Ampang–Sri Petaling": 4094851,
@@ -1547,12 +2276,26 @@
         "KTM Komuter Utara": 340075,
         "KTM Tebrau Shuttle": 264269,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-06",
       "year": 2023,
       "month": 6,
+      "days": 30,
       "total": 20572190,
       "lines": {
         "LRT Ampang–Sri Petaling": 4143689,
@@ -1566,12 +2309,26 @@
         "KTM Komuter Utara": 345313,
         "KTM Tebrau Shuttle": 273162,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-07",
       "year": 2023,
       "month": 7,
+      "days": 31,
       "total": 21462982,
       "lines": {
         "LRT Ampang–Sri Petaling": 4237733,
@@ -1585,12 +2342,26 @@
         "KTM Komuter Utara": 342690,
         "KTM Tebrau Shuttle": 268501,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-08",
       "year": 2023,
       "month": 8,
+      "days": 31,
       "total": 22785178,
       "lines": {
         "LRT Ampang–Sri Petaling": 4482065,
@@ -1604,12 +2375,26 @@
         "KTM Komuter Utara": 362258,
         "KTM Tebrau Shuttle": 269875,
         "KTM Komuter": 0
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 0
       }
     },
     {
       "year_month": "2023-09",
       "year": 2023,
       "month": 9,
+      "days": 30,
       "total": 22004078,
       "lines": {
         "LRT Ampang–Sri Petaling": 4282036,
@@ -1623,12 +2408,26 @@
         "KTM Komuter Utara": 367046,
         "KTM Tebrau Shuttle": 263373,
         "KTM Komuter": 107884
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 21
       }
     },
     {
       "year_month": "2023-10",
       "year": 2023,
       "month": 10,
+      "days": 31,
       "total": 24663447,
       "lines": {
         "LRT Ampang–Sri Petaling": 4633424,
@@ -1642,12 +2441,26 @@
         "KTM Komuter Utara": 415717,
         "KTM Tebrau Shuttle": 257896,
         "KTM Komuter": 1018674
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2023-11",
       "year": 2023,
       "month": 11,
+      "days": 30,
       "total": 24572716,
       "lines": {
         "LRT Ampang–Sri Petaling": 4572190,
@@ -1661,12 +2474,26 @@
         "KTM Komuter Utara": 430372,
         "KTM Tebrau Shuttle": 259504,
         "KTM Komuter": 1071709
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2023-12",
       "year": 2023,
       "month": 12,
+      "days": 31,
       "total": 25540627,
       "lines": {
         "LRT Ampang–Sri Petaling": 4561106,
@@ -1680,12 +2507,26 @@
         "KTM Komuter Utara": 475584,
         "KTM Tebrau Shuttle": 290351,
         "KTM Komuter": 1035047
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-01",
       "year": 2024,
       "month": 1,
+      "days": 31,
       "total": 25161545,
       "lines": {
         "LRT Ampang–Sri Petaling": 4505943,
@@ -1699,12 +2540,26 @@
         "KTM Komuter Utara": 402829,
         "KTM Tebrau Shuttle": 269985,
         "KTM Komuter": 1124984
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-02",
       "year": 2024,
       "month": 2,
+      "days": 29,
       "total": 24023348,
       "lines": {
         "LRT Ampang–Sri Petaling": 4430513,
@@ -1718,12 +2573,26 @@
         "KTM Komuter Utara": 446509,
         "KTM Tebrau Shuttle": 248788,
         "KTM Komuter": 1007187
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 29,
+        "MRT Kajang": 29,
+        "LRT Kelana Jaya": 29,
+        "KL Monorail": 29,
+        "MRT Putrajaya": 29,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 29,
+        "KTM Intercity": 29,
+        "KTM Komuter Utara": 29,
+        "KTM Tebrau Shuttle": 29,
+        "KTM Komuter": 29
       }
     },
     {
       "year_month": "2024-03",
       "year": 2024,
       "month": 3,
+      "days": 31,
       "total": 26264470,
       "lines": {
         "LRT Ampang–Sri Petaling": 5196908,
@@ -1737,12 +2606,26 @@
         "KTM Komuter Utara": 422021,
         "KTM Tebrau Shuttle": 274319,
         "KTM Komuter": 986652
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-04",
       "year": 2024,
       "month": 4,
+      "days": 30,
       "total": 24873693,
       "lines": {
         "LRT Ampang–Sri Petaling": 4894934,
@@ -1756,12 +2639,26 @@
         "KTM Komuter Utara": 436305,
         "KTM Tebrau Shuttle": 257278,
         "KTM Komuter": 985852
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2024-05",
       "year": 2024,
       "month": 5,
+      "days": 31,
       "total": 27868543,
       "lines": {
         "LRT Ampang–Sri Petaling": 5607473,
@@ -1775,12 +2672,26 @@
         "KTM Komuter Utara": 483189,
         "KTM Tebrau Shuttle": 265032,
         "KTM Komuter": 1060555
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-06",
       "year": 2024,
       "month": 6,
+      "days": 30,
       "total": 26027396,
       "lines": {
         "LRT Ampang–Sri Petaling": 5196642,
@@ -1794,12 +2705,26 @@
         "KTM Komuter Utara": 466485,
         "KTM Tebrau Shuttle": 265919,
         "KTM Komuter": 992365
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2024-07",
       "year": 2024,
       "month": 7,
+      "days": 31,
       "total": 28834706,
       "lines": {
         "LRT Ampang–Sri Petaling": 5626609,
@@ -1813,12 +2738,26 @@
         "KTM Komuter Utara": 451598,
         "KTM Tebrau Shuttle": 261564,
         "KTM Komuter": 1034338
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-08",
       "year": 2024,
       "month": 8,
+      "days": 31,
       "total": 29231479,
       "lines": {
         "LRT Ampang–Sri Petaling": 5781159,
@@ -1832,12 +2771,26 @@
         "KTM Komuter Utara": 457774,
         "KTM Tebrau Shuttle": 257851,
         "KTM Komuter": 1012568
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-09",
       "year": 2024,
       "month": 9,
+      "days": 30,
       "total": 27083671,
       "lines": {
         "LRT Ampang–Sri Petaling": 5365130,
@@ -1851,12 +2804,26 @@
         "KTM Komuter Utara": 465274,
         "KTM Tebrau Shuttle": 249984,
         "KTM Komuter": 956516
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2024-10",
       "year": 2024,
       "month": 10,
+      "days": 31,
       "total": 29811656,
       "lines": {
         "LRT Ampang–Sri Petaling": 5918334,
@@ -1870,12 +2837,26 @@
         "KTM Komuter Utara": 496935,
         "KTM Tebrau Shuttle": 248413,
         "KTM Komuter": 1037755
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2024-11",
       "year": 2024,
       "month": 11,
+      "days": 30,
       "total": 28908097,
       "lines": {
         "LRT Ampang–Sri Petaling": 5718327,
@@ -1889,12 +2870,26 @@
         "KTM Komuter Utara": 489318,
         "KTM Tebrau Shuttle": 242252,
         "KTM Komuter": 988542
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2024-12",
       "year": 2024,
       "month": 12,
+      "days": 31,
       "total": 29811986,
       "lines": {
         "LRT Ampang–Sri Petaling": 5780943,
@@ -1908,12 +2903,26 @@
         "KTM Komuter Utara": 510873,
         "KTM Tebrau Shuttle": 272814,
         "KTM Komuter": 995365
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-01",
       "year": 2025,
       "month": 1,
+      "days": 31,
       "total": 28575493,
       "lines": {
         "LRT Ampang–Sri Petaling": 5583947,
@@ -1927,12 +2936,26 @@
         "KTM Komuter Utara": 500608,
         "KTM Tebrau Shuttle": 254481,
         "KTM Komuter": 938254
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-02",
       "year": 2025,
       "month": 2,
+      "days": 28,
       "total": 27289936,
       "lines": {
         "LRT Ampang–Sri Petaling": 5412652,
@@ -1946,12 +2969,26 @@
         "KTM Komuter Utara": 477093,
         "KTM Tebrau Shuttle": 220409,
         "KTM Komuter": 946379
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 28,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28,
+        "KTM Intercity": 28,
+        "KTM Komuter Utara": 28,
+        "KTM Tebrau Shuttle": 28,
+        "KTM Komuter": 28
       }
     },
     {
       "year_month": "2025-03",
       "year": 2025,
       "month": 3,
+      "days": 31,
       "total": 27836525,
       "lines": {
         "LRT Ampang–Sri Petaling": 5755933,
@@ -1965,12 +3002,26 @@
         "KTM Komuter Utara": 428116,
         "KTM Tebrau Shuttle": 245619,
         "KTM Komuter": 747372
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-04",
       "year": 2025,
       "month": 4,
+      "days": 30,
       "total": 28491810,
       "lines": {
         "LRT Ampang–Sri Petaling": 5661642,
@@ -1984,12 +3035,26 @@
         "KTM Komuter Utara": 507736,
         "KTM Tebrau Shuttle": 234132,
         "KTM Komuter": 817300
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2025-05",
       "year": 2025,
       "month": 5,
+      "days": 31,
       "total": 30145183,
       "lines": {
         "LRT Ampang–Sri Petaling": 6216005,
@@ -2003,12 +3068,26 @@
         "KTM Komuter Utara": 522560,
         "KTM Tebrau Shuttle": 249334,
         "KTM Komuter": 849973
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-06",
       "year": 2025,
       "month": 6,
+      "days": 30,
       "total": 28498125,
       "lines": {
         "LRT Ampang–Sri Petaling": 5710467,
@@ -2022,12 +3101,26 @@
         "KTM Komuter Utara": 500609,
         "KTM Tebrau Shuttle": 260245,
         "KTM Komuter": 788031
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2025-07",
       "year": 2025,
       "month": 7,
+      "days": 31,
       "total": 31957431,
       "lines": {
         "LRT Ampang–Sri Petaling": 6350274,
@@ -2041,12 +3134,26 @@
         "KTM Komuter Utara": 492985,
         "KTM Tebrau Shuttle": 256739,
         "KTM Komuter": 869611
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-08",
       "year": 2025,
       "month": 8,
+      "days": 31,
       "total": 31772421,
       "lines": {
         "LRT Ampang–Sri Petaling": 6343844,
@@ -2060,12 +3167,26 @@
         "KTM Komuter Utara": 518134,
         "KTM Tebrau Shuttle": 260846,
         "KTM Komuter": 834444
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-09",
       "year": 2025,
       "month": 9,
+      "days": 30,
       "total": 28586281,
       "lines": {
         "LRT Ampang–Sri Petaling": 5664639,
@@ -2079,12 +3200,26 @@
         "KTM Komuter Utara": 520094,
         "KTM Tebrau Shuttle": 256284,
         "KTM Komuter": 767865
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2025-10",
       "year": 2025,
       "month": 10,
+      "days": 31,
       "total": 30717764,
       "lines": {
         "LRT Ampang–Sri Petaling": 6205243,
@@ -2098,12 +3233,26 @@
         "KTM Komuter Utara": 545795,
         "KTM Tebrau Shuttle": 260238,
         "KTM Komuter": 857238
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2025-11",
       "year": 2025,
       "month": 11,
+      "days": 30,
       "total": 29630394,
       "lines": {
         "LRT Ampang–Sri Petaling": 5909107,
@@ -2117,12 +3266,26 @@
         "KTM Komuter Utara": 501232,
         "KTM Tebrau Shuttle": 249801,
         "KTM Komuter": 800397
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2025-12",
       "year": 2025,
       "month": 12,
+      "days": 31,
       "total": 31434024,
       "lines": {
         "LRT Ampang–Sri Petaling": 6205647,
@@ -2136,12 +3299,26 @@
         "KTM Komuter Utara": 524058,
         "KTM Tebrau Shuttle": 283314,
         "KTM Komuter": 828343
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2026-01",
       "year": 2026,
       "month": 1,
+      "days": 31,
       "total": 31287211,
       "lines": {
         "LRT Ampang–Sri Petaling": 6356549,
@@ -2155,12 +3332,26 @@
         "KTM Komuter Utara": 526947,
         "KTM Tebrau Shuttle": 258988,
         "KTM Komuter": 906895
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2026-02",
       "year": 2026,
       "month": 2,
+      "days": 28,
       "total": 26489579,
       "lines": {
         "LRT Ampang–Sri Petaling": 5384630,
@@ -2174,12 +3365,26 @@
         "KTM Komuter Utara": 464928,
         "KTM Tebrau Shuttle": 236708,
         "KTM Komuter": 820600
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 28,
+        "MRT Kajang": 28,
+        "LRT Kelana Jaya": 28,
+        "KL Monorail": 28,
+        "MRT Putrajaya": 28,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 28,
+        "KTM Intercity": 28,
+        "KTM Komuter Utara": 28,
+        "KTM Tebrau Shuttle": 28,
+        "KTM Komuter": 28
       }
     },
     {
       "year_month": "2026-03",
       "year": 2026,
       "month": 3,
+      "days": 31,
       "total": 29604128,
       "lines": {
         "LRT Ampang–Sri Petaling": 6072461,
@@ -2193,12 +3398,26 @@
         "KTM Komuter Utara": 482573,
         "KTM Tebrau Shuttle": 269584,
         "KTM Komuter": 767450
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2026-04",
       "year": 2026,
       "month": 4,
+      "days": 30,
       "total": 31238681,
       "lines": {
         "LRT Ampang–Sri Petaling": 6326276,
@@ -2212,12 +3431,26 @@
         "KTM Komuter Utara": 526576,
         "KTM Tebrau Shuttle": 251813,
         "KTM Komuter": 780510
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2026-05",
       "year": 2026,
       "month": 5,
+      "days": 31,
       "total": 30117736,
       "lines": {
         "LRT Ampang–Sri Petaling": 6086516,
@@ -2231,12 +3464,26 @@
         "KTM Komuter Utara": 561315,
         "KTM Tebrau Shuttle": 265784,
         "KTM Komuter": 678027
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 0,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2026-06",
       "year": 2026,
       "month": 6,
+      "days": 30,
       "total": 29195347,
       "lines": {
         "LRT Ampang–Sri Petaling": 5862313,
@@ -2250,12 +3497,26 @@
         "KTM Komuter Utara": 515768,
         "KTM Tebrau Shuttle": 270625,
         "KTM Komuter": 638529
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 30,
+        "MRT Kajang": 30,
+        "LRT Kelana Jaya": 30,
+        "KL Monorail": 30,
+        "MRT Putrajaya": 30,
+        "LRT Shah Alam": 2,
+        "KTM ETS": 30,
+        "KTM Intercity": 30,
+        "KTM Komuter Utara": 30,
+        "KTM Tebrau Shuttle": 30,
+        "KTM Komuter": 30
       }
     },
     {
       "year_month": "2026-07",
       "year": 2026,
       "month": 7,
+      "days": 31,
       "total": 34471693,
       "lines": {
         "LRT Ampang–Sri Petaling": 6391809,
@@ -2269,12 +3530,26 @@
         "KTM Komuter Utara": 566584,
         "KTM Tebrau Shuttle": 266988,
         "KTM Komuter": 636227
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 31,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     },
     {
       "year_month": "2026-08",
       "year": 2026,
       "month": 8,
+      "days": 31,
       "total": 32569085,
       "lines": {
         "LRT Ampang–Sri Petaling": 6205763,
@@ -2288,9 +3563,81 @@
         "KTM Komuter Utara": 555282,
         "KTM Tebrau Shuttle": 266180,
         "KTM Komuter": 588857
+      },
+      "line_days": {
+        "LRT Ampang–Sri Petaling": 31,
+        "MRT Kajang": 31,
+        "LRT Kelana Jaya": 31,
+        "KL Monorail": 31,
+        "MRT Putrajaya": 31,
+        "LRT Shah Alam": 31,
+        "KTM ETS": 31,
+        "KTM Intercity": 31,
+        "KTM Komuter Utara": 31,
+        "KTM Tebrau Shuttle": 31,
+        "KTM Komuter": 31
       }
     }
   ],
+  "legacy_comparison": {
+    "lines_included": [
+      "LRT Ampang–Sri Petaling",
+      "MRT Kajang",
+      "LRT Kelana Jaya",
+      "KL Monorail"
+    ],
+    "full_2019_total": 236293739,
+    "full_2019_days": 365,
+    "full_2019_daily_avg": 647380.1,
+    "ytd_2019_label": "Jan–Aug 2019",
+    "ytd_2019_total": 154187119,
+    "ytd_2019_days": 243,
+    "ytd_2019_daily_avg": 634514.9,
+    "ytd_latest_label": "Jan–Aug 2026",
+    "ytd_latest_total": 185553224,
+    "ytd_latest_days": 243,
+    "ytd_latest_daily_avg": 763593.5,
+    "vs_full_2019_daily_pct": 17.95,
+    "vs_same_period_2019_daily_pct": 20.34,
+    "per_line": [
+      {
+        "line": "LRT Ampang–Sri Petaling",
+        "column": "rail_lrt_ampang",
+        "full_2019_daily_avg": 178485.5,
+        "ytd_2019_daily_avg": 175748.0,
+        "ytd_latest_daily_avg": 200355.2,
+        "vs_full_2019_pct": 12.25,
+        "vs_same_period_2019_pct": 14.0
+      },
+      {
+        "line": "MRT Kajang",
+        "column": "rail_mrt_kajang",
+        "full_2019_daily_avg": 175213.2,
+        "ytd_2019_daily_avg": 170565.2,
+        "ytd_latest_daily_avg": 261579.2,
+        "vs_full_2019_pct": 49.29,
+        "vs_same_period_2019_pct": 53.36
+      },
+      {
+        "line": "LRT Kelana Jaya",
+        "column": "rail_lrt_kj",
+        "full_2019_daily_avg": 259336.9,
+        "ytd_2019_daily_avg": 256134.1,
+        "ytd_latest_daily_avg": 244808.2,
+        "vs_full_2019_pct": -5.6,
+        "vs_same_period_2019_pct": -4.42
+      },
+      {
+        "line": "KL Monorail",
+        "column": "rail_monorail",
+        "full_2019_daily_avg": 34344.5,
+        "ytd_2019_daily_avg": 32067.6,
+        "ytd_latest_daily_avg": 56850.9,
+        "vs_full_2019_pct": 65.53,
+        "vs_same_period_2019_pct": 77.28
+      }
+    ]
+  },
   "line_performance": [
     {
       "line": "LRT Kelana Jaya",

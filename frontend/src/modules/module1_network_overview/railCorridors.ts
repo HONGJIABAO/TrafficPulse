@@ -40,22 +40,48 @@ function getSequentialPoints(lineName: string, codePrefix: string): [number, num
   return matched.map((s) => [s.lat, s.lng] as [number, number]);
 }
 
-// Check if a corridor corresponds to a selected rail line filter
+// Check if a corridor corresponds to a selected rail line filter (exact route names match 1 feature;
+// combined official headline names match all member geographical routes).
 export function isCorridorMatch(corridorName: string, selectedFilter: string): boolean {
   if (selectedFilter === 'All Lines') return true;
   const c = corridorName.toLowerCase();
   const q = selectedFilter.toLowerCase();
   if (c === q) return true;
-  if (['lrt ampang', 'lrt sri petaling'].includes(q) || (q.startsWith('ktm ') && !['ktm komuter', 'ktm intercity'].includes(q))) return false;
-  if (q.includes('kelana jaya') && c.includes('kelana jaya')) return true;
-  if (q.includes('ampang') && (c.includes('ampang') || c.includes('sri petaling'))) return true;
-  if (q.includes('kajang') && c.includes('kajang')) return true;
-  if (q.includes('putrajaya') && c.includes('putrajaya')) return true;
-  if (q.includes('monorail') && c.includes('monorail')) return true;
-  if (q.includes('shah alam') && c.includes('shah alam')) return true;
-  if (q.includes('komuter') && c.includes('komuter')) return true;
-  if (q.includes('intercity') && ['east coast', 'trunk', 'ets', 'timuran', 'tebrau', 'intercity'].some(name => c.includes(name))) return true;
-  return c.includes(q) || q.includes(c);
+
+  // Individual branch selections must highlight only their exact branch route
+  if ([
+    'lrt ampang',
+    'lrt sri petaling',
+    'ktm shuttle tebrau',
+    'ktm komuter utara (ipoh)',
+    'ktm komuter utara (padang besar)',
+    'ktm komuter (seremban line)',
+    'ktm komuter (port klang line)',
+    'ktm komuter shuttle selatan',
+    'ktm ekspres rakyat timuran',
+    'ktm intercity shuttle',
+    'ktm ets',
+  ].includes(q)) {
+    return false;
+  }
+
+  // Canonical headline combined & aliased service mappings
+  if (q === 'lrt ampang–sri petaling' || q === 'lrt ampang-sri petaling') {
+    return c === 'lrt ampang' || c === 'lrt sri petaling';
+  }
+  if (q === 'ktm tebrau shuttle') {
+    return c === 'ktm shuttle tebrau';
+  }
+  if (q === 'ktm komuter utara') {
+    return c.startsWith('ktm komuter utara');
+  }
+  if (q === 'ktm komuter') {
+    return c === 'ktm komuter (seremban line)' || c === 'ktm komuter (port klang line)' || c === 'ktm komuter (batu caves line)';
+  }
+  if (q === 'ktm intercity') {
+    return ['ktm intercity shuttle', 'ktm ekspres rakyat timuran', 'ktm komuter shuttle selatan'].includes(c);
+  }
+  return false;
 }
 
 // ── All 12 Peninsular Malaysia & Klang Valley Rail Corridors ─────────────────

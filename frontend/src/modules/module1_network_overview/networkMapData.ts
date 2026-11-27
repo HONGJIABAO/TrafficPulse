@@ -22,6 +22,8 @@ export const GEOMETRY_DATE = geometry.retrieved_at.slice(0, 10);
 const officialCoordinates = geometry.station_coordinates as Record<string, number[]>;
 const ridership = monthlyData.ridership_by_month as Record<string, Record<string, number>>;
 const yearlyChange = monthlyData.yoy_by_month as Record<string, Record<string, number>>;
+const within2026Change = (monthlyData.within_2026_by_month ?? {}) as Record<string, Record<string, number>>;
+const observedDaysBySource = (monthlyData.observed_days_by_month ?? {}) as Record<string, Record<string, number>>;
 
 export function stationKey(station: RailStation) {
   return station.source === 'rapidrail' ? `code_${station.code}`
@@ -58,6 +60,12 @@ export const MAP_STATIONS: RailStation[] = [...stationData.stations, ...CONTEXT_
   return point.every(Number.isFinite) && isInMalaysia(point);
 });
 
+export function getStationObservedDays(station: RailStation, month: string): number | null {
+  if (station.source === 'reference') return null;
+  const days = observedDaysBySource[station.source]?.[month];
+  return typeof days === 'number' && days > 0 ? days : null;
+}
+
 export function getStationData(station: RailStation, month: string) {
   if (station.source === 'reference') return { ridership: null, yoy: null };
   const key = stationKey(station);
@@ -65,8 +73,54 @@ export function getStationData(station: RailStation, month: string) {
 }
 
 const routeIdsByName = new Map(getNationalRoutes('All Lines').features.map(f => [f.properties?.name, String(f.properties?.id)]));
-export function stationMatchesLine(station: RailStation, selectedLine: string) {
-  if (selectedLine === 'All Lines' || station.line === selectedLine) return true;
+const RAPID_SINGLE_LINES = new Set([
+  'LRT Kelana Jaya',
+  'MRT Kajang',
+  'MRT Putrajaya',
+  'KL Monorail',
+  'LRT Shah Alam',
+  'LRT Ampang–Sri Petaling',
+]);
+
+export function stationMatchesLine(station: RailStation, selectedLine: string): boolean {
+  if (selectedLine === 'All Lines') return true;
+  if (RAPID_SINGLE_LINES.has(selectedLine)) {
+    return station.source === 'rapidrail' && station.line === selectedLine;
+  }
+  if (selectedLine === 'LRT Ampang') {
+    return station.source === 'rapidrail' && station.line === 'LRT Ampang–Sri Petaling' && !!station.routeIds?.includes('shp_AG_0');
+  }
+  if (selectedLine === 'LRT Sri Petaling') {
+    return station.source === 'rapidrail' && station.line === 'LRT Ampang–Sri Petaling' && !!station.routeIds?.includes('shp_PH_0');
+  }
+  if (selectedLine === 'KTM Tebrau Shuttle' || selectedLine === 'KTM Shuttle Tebrau') {
+    return station.source !== 'rapidrail' && station.source !== 'komuter' && !!station.routeIds?.includes('ktmb_ST');
+  }
+  if (selectedLine === 'KTM Komuter') {
+    return station.source === 'komuter' || (station.source === 'reference' && ['ktmb_KC05_KB18', 'ktmb_KA15_KD19'].some(id => !!station.routeIds?.includes(id)));
+  }
+  if (selectedLine === 'KTM Komuter (Seremban Line)' || selectedLine === 'KTM Komuter (Port Klang Line)') {
+    const rid = routeIdsByName.get(selectedLine);
+    return (station.source === 'komuter' || station.source === 'reference') && (station.line === selectedLine || (!!rid && !!station.routeIds?.includes(rid)));
+  }
+  if (selectedLine === 'KTM Komuter Utara') {
+    return station.source !== 'rapidrail' && station.source !== 'komuter' && ['ktmb_100_9000', 'ktmb_100_47300'].some(id => !!station.routeIds?.includes(id));
+  }
+  if (selectedLine === 'KTM Komuter Utara (Ipoh)' || selectedLine === 'KTM Komuter Utara (Padang Besar)') {
+    const rid = routeIdsByName.get(selectedLine);
+    return station.source !== 'rapidrail' && station.source !== 'komuter' && (station.line === selectedLine || (!!rid && !!station.routeIds?.includes(rid)));
+  }
+  if (selectedLine === 'KTM ETS') {
+    return station.source !== 'rapidrail' && station.source !== 'komuter' && (station.line === 'KTM ETS' || !!station.routeIds?.includes('ktmb_ETS'));
+  }
+  if (selectedLine === 'KTM Intercity') {
+    return station.source !== 'rapidrail' && (station.line === 'KTM Intercity' || ['ktmb_SH', 'ktmb_ERT', 'ktmb_SS'].some(id => !!station.routeIds?.includes(id)));
+  }
+  if (['KTM Intercity Shuttle', 'KTM Ekspres Rakyat Timuran', 'KTM Komuter Shuttle Selatan'].includes(selectedLine)) {
+    const rid = routeIdsByName.get(selectedLine);
+    return station.source !== 'rapidrail' && (station.line === selectedLine || (!!rid && !!station.routeIds?.includes(rid)));
+  }
+  if (station.line === selectedLine) return true;
   const routeId = routeIdsByName.get(selectedLine);
   return !!routeId && !!station.routeIds?.includes(routeId);
 }
@@ -80,25 +134,189 @@ export function classifyDemand(value: number | null, thresholds: { p50: number |
   return 'lower';
 }
 
+function getUniqueEligibleStations(visible: RailStation[], selectedLine: string): RailStation[] {
+  if (selectedLine === 'All Lines') {
+    const seen = new Set<string>();
+    return visible.filter(s => {
+      const k = s.source === 'reference' ? stationId(s) : stationKey(s);
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+  // Prevent duplicate counting of shared physical stations across branches/inter-source KTMB stops
+  const byKey = new Map<string, RailStation>();
+  const sourceRank = (src: string) => (src === 'intercity' ? 3 : src === 'komuter' ? 2 : src === 'rapidrail' ? 4 : 1);
+  for (const s of visible) {
+    const dedupId = s.source === 'rapidrail'
+      ? s.code
+      : `name:${s.name.toLowerCase().trim()}`;
+    const existing = byKey.get(dedupId);
+    if (!existing || sourceRank(s.source) > sourceRank(existing.source)) {
+      byKey.set(dedupId, s);
+    }
+  }
+  return [...byKey.values()];
+}
+
+export interface CoverageSummary {
+  measured: number;
+  zeroCount: number;
+  total: number;
+  primaryText: string;
+  secondaryText: string;
+}
+
 export function getStationSnapshot(month: string, selectedLine: string, selectedStation: string) {
-  const visible = MAP_STATIONS.filter(s => stationMatchesLine(s, selectedLine));
-  // Nearest-rank percentiles of positive observations; ties receive the same category.
+  const rawVisible = MAP_STATIONS.filter(s => stationMatchesLine(s, selectedLine));
+  const visible = getUniqueEligibleStations(rawVisible, selectedLine);
+  const eligibleIds = new Set(visible.map(s => stationId(s)));
+
+  // Nearest-rank percentiles over positive observations across unique eligible stations
   const values = [...new Map(visible.map(s => [stationKey(s), getStationData(s, month).ridership])).values()]
     .filter((value): value is number => value !== null && value > 0).sort((a, b) => a - b);
-  const percentile = (p: number) => values.length ? values[Math.max(0, Math.ceil(values.length*p)-1)] : null;
-  const thresholds = { p50: percentile(.5), p75: percentile(.75), p90: percentile(.9) };
+  const percentile = (p: number) => values.length ? values[Math.max(0, Math.ceil(values.length * p) - 1)] : null;
+  const thresholds = { p50: percentile(0.5), p75: percentile(0.75), p90: percentile(0.9) };
+
   const features = MAP_STATIONS.map(station => {
     const { ridership: value, yoy } = getStationData(station, month);
-    const inScope = stationMatchesLine(station, selectedLine);
+    const inScope = eligibleIds.has(stationId(station));
     const category = classifyDemand(value, thresholds);
-    return { type: 'Feature' as const, geometry: { type: 'Point' as const, coordinates: stationPosition(station) },
-      properties: { id: stationId(station), name: station.name, line: station.line, code: station.code,
-        value, yoy, category, busy: inScope && category === 'top', inScope, selected: station.name === selectedStation && inScope,
-        color: inScope ? DEMAND_COLORS[category] : '#cbd5e1', radius: 4, regional: false,
-      } };
+    return {
+      type: 'Feature' as const,
+      geometry: { type: 'Point' as const, coordinates: stationPosition(station) },
+      properties: {
+        id: stationId(station),
+        name: station.name,
+        line: station.line,
+        code: station.code,
+        value,
+        yoy,
+        category,
+        busy: inScope && category === 'top',
+        inScope,
+        selected: station.name === selectedStation && inScope,
+        color: inScope ? DEMAND_COLORS[category] : '#cbd5e1',
+        radius: 4,
+        regional: false,
+      },
+    };
   });
-  const ranked = visible.filter(s => getStationData(s, month).ridership !== null)
-    .sort((a, b) => (getStationData(b, month).ridership ?? 0) - (getStationData(a, month).ridership ?? 0));
-  return { data: { type: 'FeatureCollection', features } as FeatureCollection<Point>, threshold: thresholds.p90, thresholds,
-    measured: visible.filter(s => getStationData(s, month).ridership !== null).length, total: visible.length, ranked };
+
+  const measuredStations = visible.filter(s => getStationData(s, month).ridership !== null);
+  const zeroCount = measuredStations.filter(s => getStationData(s, month).ridership === 0).length;
+  const ranked = [...measuredStations].sort(
+    (a, b) => (getStationData(b, month).ridership ?? 0) - (getStationData(a, month).ridership ?? 0),
+  );
+
+  // Dynamic coverage description derived from active scope & measured sources
+  const measuredSources = new Set(measuredStations.map(s => s.source));
+  const primaryText = `Data coverage · ${measuredStations.length}/${visible.length} stations`;
+  let secondaryText: string;
+  if (month < '2023-09') {
+    secondaryText = 'Station-level ridership unavailable (begins Sep 2023)';
+  } else if (month < '2026-01') {
+    secondaryText = measuredStations.length > 0
+      ? 'KTM Komuter OD only · Rapid Rail begins Jan 2026'
+      : 'Rapid Rail station data begins Jan 2026';
+  } else if (measuredStations.length === 0) {
+    secondaryText = 'No station-level ridership supplied for this corridor';
+  } else {
+    const srcLabels: string[] = [];
+    if (measuredSources.has('rapidrail')) srcLabels.push('Rapid Rail');
+    if (measuredSources.has('komuter')) srcLabels.push('KTM Komuter');
+    if (measuredSources.has('intercity')) srcLabels.push('Intercity');
+    const srcText = srcLabels.length === 3
+      ? 'Rapid Rail, KTM Komuter & Intercity'
+      : srcLabels.join(' & ');
+    secondaryText = zeroCount > 0 ? `${srcText} · ${zeroCount} observed zero` : srcText;
+  }
+
+  const coverage: CoverageSummary = {
+    measured: measuredStations.length,
+    zeroCount,
+    total: visible.length,
+    primaryText,
+    secondaryText,
+  };
+
+  return {
+    data: { type: 'FeatureCollection', features } as FeatureCollection<Point>,
+    threshold: thresholds.p90,
+    thresholds,
+    measured: measuredStations.length,
+    total: visible.length,
+    ranked,
+    coverage,
+  };
+}
+
+export interface SelectedStationSummary {
+  ridership: number | null;
+  observedDays: number | null;
+  dailyAvg: number | null;
+  rank: number | null;
+  rankedTotal: number;
+  growthPct: number | null;
+  growthLabel: string;
+  comparisonNote: string;
+}
+
+export function getSelectedStationSummary(
+  station: RailStation,
+  month: string,
+  ranked: RailStation[],
+): SelectedStationSummary {
+  const data = getStationData(station, month);
+  if (data.ridership === null) {
+    return {
+      ridership: null,
+      observedDays: null,
+      dailyAvg: null,
+      rank: null,
+      rankedTotal: ranked.length,
+      growthPct: null,
+      growthLabel: 'Unavailable',
+      comparisonNote: 'No boarding observation in this month',
+    };
+  }
+
+  const key = stationKey(station);
+  const observedDays = getStationObservedDays(station, month);
+  const dailyAvg = observedDays ? data.ridership / observedDays : null;
+  const within2026 = station.source === 'reference' ? null : (within2026Change[month]?.[key] ?? null);
+
+  // Competition rank (1, 2, 2, 4) across unique measured stations in scope
+  const targetVal = data.ridership;
+  const rank = 1 + ranked.filter(s => (getStationData(s, month).ridership ?? -1) > targetVal).length;
+
+  let growthPct: number | null = null;
+  let growthLabel = 'Baseline N/A';
+  let comparisonNote = 'No valid non-zero baseline';
+
+  if (data.yoy !== null) {
+    growthPct = data.yoy;
+    const prevY = Number(month.slice(0, 4)) - 1;
+    const prevYm = `${prevY}-${month.slice(5, 7)}`;
+    growthLabel = `${growthPct >= 0 ? '+' : ''}${growthPct.toFixed(1)}% YoY`;
+    comparisonNote = `Daily avg vs ${prevYm}`;
+  } else if (within2026 !== null && month > '2026-01') {
+    growthPct = within2026;
+    growthLabel = `${growthPct >= 0 ? '+' : ''}${growthPct.toFixed(1)}% vs Jan 2026`;
+    comparisonNote = 'Within-2026 daily avg (non-YoY)';
+  } else if (month === '2026-01' && station.source !== 'komuter') {
+    growthLabel = 'First OD month';
+    comparisonNote = 'Rapid Rail / Intercity OD starts Jan 2026';
+  }
+
+  return {
+    ridership: data.ridership,
+    observedDays,
+    dailyAvg,
+    rank,
+    rankedTotal: ranked.length,
+    growthPct,
+    growthLabel,
+    comparisonNote,
+  };
 }

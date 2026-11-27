@@ -83,9 +83,36 @@ declare module '@/data/network_overview.json' {
       year_month: string;
       year: number;
       month: number;
+      days?: number;
       total: number;
       lines: Record<string, number>;
+      line_days?: Record<string, number>;
     }>;
+    legacy_comparison?: {
+      lines_included: string[];
+      full_2019_total: number;
+      full_2019_days: number;
+      full_2019_daily_avg: number;
+      ytd_2019_label: string;
+      ytd_2019_total: number;
+      ytd_2019_days: number;
+      ytd_2019_daily_avg: number;
+      ytd_latest_label: string;
+      ytd_latest_total: number;
+      ytd_latest_days: number;
+      ytd_latest_daily_avg: number;
+      vs_full_2019_daily_pct: number | null;
+      vs_same_period_2019_daily_pct: number | null;
+      per_line: Array<{
+        line: string;
+        column: string;
+        full_2019_daily_avg: number;
+        ytd_2019_daily_avg: number;
+        ytd_latest_daily_avg: number;
+        vs_full_2019_pct: number | null;
+        vs_same_period_2019_pct: number | null;
+      }>;
+    };
     line_performance: Array<{
       line: string;
       column: string;
@@ -141,8 +168,10 @@ declare module '@/data/simulator_baseline.json' { const value: Record<string, un
 declare module '@/data/station_monthly_ridership.json' {
   const value: {
     global_max_ridership: number;
+    observed_days_by_month?: Record<string, Record<string, number>>;
     ridership_by_month: Record<string, Record<string, number>>;
     yoy_by_month: Record<string, Record<string, number>>;
+    within_2026_by_month?: Record<string, Record<string, number>>;
   };
   export default value;
 }

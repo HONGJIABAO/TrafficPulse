@@ -7,6 +7,19 @@ interface MonthlyTrend {
   lines: Record<string, number>;
 }
 
+interface HourlyProfileBucket {
+  hour: number;
+  avg_trips: number;
+  total_trips?: number;
+}
+
+interface PeakWindowBounds {
+  amStart: number;
+  amEnd: number;
+  pmStart: number;
+  pmEnd: number;
+}
+
 export type KpiCardType = 'trips' | 'busiest' | 'peak';
 
 interface Props {
@@ -20,6 +33,8 @@ interface Props {
   tooltip?: string;
   withBarChart?: boolean;
   monthly_trend?: MonthlyTrend[];
+  hourly_profile?: HourlyProfileBucket[];
+  peakWindows?: PeakWindowBounds;
   type?: KpiCardType;
   cardType?: KpiCardType;
   delayIndex?: number;
@@ -282,6 +297,8 @@ export function KpiCard({
   tooltip,
   withBarChart,
   monthly_trend,
+  hourly_profile,
+  peakWindows,
   delayIndex,
 }: Props) {
   const resolvedType = getCardType(cardType || type, label);
@@ -367,8 +384,12 @@ export function KpiCard({
       </div>
 
       {/* Peak hour mini bar chart */}
-      {withBarChart && monthly_trend && (
-        <MiniBarChart monthly_trend={monthly_trend} />
+      {withBarChart && (hourly_profile?.length || monthly_trend?.length) && (
+        <MiniBarChart
+          hourly_profile={hourly_profile}
+          peakWindows={peakWindows}
+          monthly_trend={monthly_trend}
+        />
       )}
 
       {/* Enhanced Signature Rail Track Light Flow Animation */}
@@ -377,9 +398,63 @@ export function KpiCard({
   );
 }
 
-function MiniBarChart({ monthly_trend }: { monthly_trend: MonthlyTrend[] }) {
-  const recent = monthly_trend.slice(-12);
-  const max = Math.max(...recent.map(m => m.total));
+function MiniBarChart({
+  hourly_profile,
+  peakWindows,
+  monthly_trend,
+}: {
+  hourly_profile?: HourlyProfileBucket[];
+  peakWindows?: PeakWindowBounds;
+  monthly_trend?: MonthlyTrend[];
+}) {
+  if (hourly_profile && hourly_profile.length > 0) {
+    const max = Math.max(...hourly_profile.map(h => h.avg_trips), 1);
+    const inAmPeak = (h: number) =>
+      peakWindows ? h >= peakWindows.amStart && h < peakWindows.amEnd : false;
+    const inPmPeak = (h: number) =>
+      peakWindows ? h >= peakWindows.pmStart && h < peakWindows.pmEnd : false;
+    return (
+      <div
+        className="kpi-minichart-container is-hourly"
+        aria-label="KTM Komuter average weekday hourly demand (00:00–23:00 MYT)"
+        title="KTM Komuter weekday hourly demand (00:00–23:00 MYT)"
+      >
+        <div className="kpi-minichart-bars">
+          {hourly_profile.map((bucket) => {
+            const ratio = bucket.avg_trips / max;
+            const am = inAmPeak(bucket.hour);
+            const pm = inPmPeak(bucket.hour);
+            const isPeak = am || pm;
+            const nextH = (bucket.hour + 1) % 24;
+            const hh = String(bucket.hour).padStart(2, '0');
+            const nh = String(nextH).padStart(2, '0');
+            const peakTag = am ? ' (AM Peak)' : pm ? ' (PM Peak)' : '';
+            return (
+              <div
+                key={bucket.hour}
+                className={`kpi-minichart-bar ${isPeak ? 'is-peak' : 'is-offpeak'}`}
+                title={`KTM Komuter ${hh}:00–${nh}:00${peakTag} · ${bucket.avg_trips.toLocaleString()} avg weekday trips`}
+                style={{
+                  height: `${Math.max(10, ratio * 100)}%`,
+                  opacity: isPeak ? 1 : 0.72 + ratio * 0.23,
+                }}
+              />
+            );
+          })}
+        </div>
+        <div className="kpi-minichart-axis" aria-hidden="true">
+          <span style={{ left: '0%' }}>00</span>
+          <span style={{ left: '27%', transform: 'translateX(-50%)' }}>06</span>
+          <span style={{ left: '52%', transform: 'translateX(-50%)' }}>12</span>
+          <span style={{ left: '77%', transform: 'translateX(-50%)' }}>18</span>
+          <span style={{ right: '0%' }}>23</span>
+        </div>
+      </div>
+    );
+  }
+
+  const recent = (monthly_trend ?? []).slice(-12);
+  const max = Math.max(...recent.map(m => m.total), 1);
 
   return (
     <div className="kpi-minichart-container">

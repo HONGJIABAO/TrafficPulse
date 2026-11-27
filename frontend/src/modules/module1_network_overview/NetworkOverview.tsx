@@ -9,6 +9,7 @@ import { KtmbDonutChart } from './KtmbDonutChart';
 import { NetworkMap } from './NetworkMap';
 import { getNationalRoutes } from './nationalRailNetwork';
 import { MAP_STATIONS, stationMatchesLine } from './networkMapData';
+import { HEADLINE_SERVICE_NAMES, computeYtdSummary, normalizeSelectedLine, resolveHeadlineSeries } from './lineMapping';
 import { KpiCard } from './KpiCard';
 import { TimelinePlaybar } from './TimelinePlaybar';
 
@@ -19,21 +20,31 @@ interface NetworkOverviewProps {
 }
 
 export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
-  const { kpis, monthly_trend, line_performance, ktmb_services } = networkData;
+  const { kpis, monthly_trend, line_performance, ktmb_services, peak_analysis } = networkData;
 
   // ── Filters ──────────────────────────────────────────────────────────────
   const [selectedLine, setSelectedLine] = useState<string>('All Lines');
   const [selectedStation, setSelectedStation] = useState<string>('All Stations');
   const [pendingLine, setPendingLine] = useState<string>('All Lines');
   const [pendingStation, setPendingStation] = useState<string>('All Stations');
-  const [activeOverlay, setActiveOverlay] = useState<MapOverlay>('map');
+  const activeOverlay: MapOverlay = 'map';
 
   // Timeline playback
   const [playbackIdx, setPlaybackIdx] = useState<number>(monthly_trend.length - 1);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Unique lines from stations
-  const lines = useMemo(() => ['All Lines', ...new Set([...MAP_STATIONS.map(station => station.line), ...getNationalRoutes('All Lines').features.map(f => String(f.properties?.name))])], []);
+  // Unified list: canonical 11 headline lines + geographical branches + reference corridors
+  const lines = useMemo(
+    () => [
+      'All Lines',
+      ...new Set([
+        ...HEADLINE_SERVICE_NAMES,
+        ...MAP_STATIONS.map(station => normalizeSelectedLine(station.line)),
+        ...getNationalRoutes('All Lines').features.map(f => normalizeSelectedLine(String(f.properties?.name))),
+      ]),
+    ],
+    [],
+  );
 
   // Filtered and deduplicated station list based on pendingLine
   const filteredStations = useMemo(() => {
@@ -46,26 +57,31 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
     return ['All Stations', ...unique];
   }, [pendingLine]);
 
-  // ── Filtered KPI derived from monthly_trend up to playback month ─────────
+  // ── Filtered KPI & YTD derived from monthly_trend up to playback month ───
   const visibleMonths = useMemo(
     () => monthly_trend.slice(0, playbackIdx + 1),
     [playbackIdx, monthly_trend]
   );
+  const resolvedHeadline = useMemo(() => resolveHeadlineSeries(selectedLine), [selectedLine]);
+  const headlineKey = resolvedHeadline.headlineLine;
+
   const filteredTotal = useMemo(() => {
     if (selectedLine === 'All Lines') {
       return visibleMonths.reduce((s, m) => s + (m.total || 0), 0);
     }
-    return visibleMonths.reduce((s, m) => s + (m.lines[selectedLine] || 0), 0);
-  }, [visibleMonths, selectedLine]);
+    if (!headlineKey) return 0;
+    return visibleMonths.reduce((s, m) => s + (m.lines[headlineKey] || 0), 0);
+  }, [visibleMonths, selectedLine, headlineKey]);
 
-  const displayKpi = {
-    ...kpis,
-    total_rail_trips: selectedLine === 'All Lines' ? filteredTotal : filteredTotal,
-  };
-  const hasLineData = selectedLine === 'All Lines' || visibleMonths.some(m => Object.hasOwn(m.lines, selectedLine));
+  const hasLineData =
+    selectedLine === 'All Lines' ||
+    (!!headlineKey &&
+      visibleMonths.some(m =>
+        m.line_days ? (m.line_days[headlineKey] ?? 0) > 0 : Object.hasOwn(m.lines, headlineKey),
+      ));
   const selectedLinePerf = useMemo(
-    () => (selectedLine === 'All Lines' ? undefined : line_performance.find((l) => l.line === selectedLine)),
-    [line_performance, selectedLine]
+    () => (!headlineKey ? undefined : line_performance.find((l) => l.line === headlineKey)),
+    [line_performance, headlineKey]
   );
   const visibleEndMonth = visibleMonths[visibleMonths.length - 1]?.year_month ?? kpis.headline_end.slice(0, 7);
   const includesFullComparisonYear = visibleEndMonth >= `${kpis.data_period}-12`;
@@ -79,18 +95,34 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
   const periodRangeLabel = selectedLine === 'All Lines'
     ? (playbackIdx === monthly_trend.length - 1 ? kpis.headline_period : `${kpis.headline_start.slice(0, 7)}–${visibleEndMonth}`)
     : (selectedLinePerf?.active_period ?? kpis.headline_period);
-  const tripsSub = !hasLineData
+
+  const tripsSubBase = !hasLineData
     ? 'No ridership supplied for this line'
     : activeYoy !== null
       ? `${kpis.comparison_year}–${kpis.data_period} YoY · ${periodRangeLabel}`
       : selectedLinePerf && selectedLinePerf.yoy_growth_pct === null && includesFullComparisonYear
         ? `${periodRangeLabel} · no 2024–25 base`
         : periodRangeLabel;
+  const tripsSub =
+    hasLineData && resolvedHeadline.isCombinedBranch && resolvedHeadline.combinedLabel
+      ? `${resolvedHeadline.combinedLabel} · ${activeYoy !== null ? `${kpis.comparison_year}–${kpis.data_period} YoY` : periodRangeLabel}`
+      : tripsSubBase;
+
   const tripsTooltip = !hasLineData
     ? 'Reference/supplementary corridor with no headline ridership series.'
     : selectedLine === 'All Lines'
-      ? `${displayKpi.total_rail_trips.toLocaleString()} cumulative headline trips (${periodRangeLabel}). Full-year ${kpis.data_period} vs ${kpis.comparison_year}: +${kpis.yoy_growth_pct}%.${kpis.ytd_comparison_label && kpis.ytd_yoy_growth_pct !== null ? ` Equivalent ${kpis.ytd_comparison_label}: +${kpis.ytd_yoy_growth_pct}%.` : ''}`
-      : `${selectedLine}: ${displayKpi.total_rail_trips.toLocaleString()} cumulative trips through ${visibleEndMonth}.${selectedLinePerf ? ` Active headline range: ${selectedLinePerf.active_period}.` : ''}`;
+      ? `${filteredTotal.toLocaleString()} cumulative headline trips (${periodRangeLabel}). Full-year ${kpis.data_period} vs ${kpis.comparison_year}: +${kpis.yoy_growth_pct}%.${kpis.ytd_comparison_label && kpis.ytd_yoy_growth_pct !== null ? ` Equivalent ${kpis.ytd_comparison_label}: +${kpis.ytd_yoy_growth_pct}%.` : ''}`
+      : resolvedHeadline.isCombinedBranch
+        ? `${selectedLine} branch filter: separate branch headline totals are unavailable in official headline series. Displaying official ${resolvedHeadline.combinedLabel} total (${filteredTotal.toLocaleString()} cumulative trips through ${visibleEndMonth}; ${selectedLinePerf?.active_period ?? periodRangeLabel}).`
+        : `${selectedLine}: ${filteredTotal.toLocaleString()} cumulative trips through ${visibleEndMonth}.${selectedLinePerf ? ` Active headline range: ${selectedLinePerf.active_period}.` : ''}`;
+
+  const ytdSummary = useMemo(
+    () => computeYtdSummary(monthly_trend, selectedLine, playbackIdx),
+    [monthly_trend, selectedLine, playbackIdx],
+  );
+  const ytdBadgeText = ytdSummary.ytdGrowthPct !== null
+    ? `${ytdSummary.ytdGrowthPct >= 0 ? '▲' : '▼'} ${Math.abs(ytdSummary.ytdGrowthPct)}% YTD`
+    : 'YTD N/A';
 
   const handleApply = () => {
     setSelectedLine(pendingLine);
@@ -104,10 +136,19 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
     setSelectedStation('All Stations');
   };
 
+  const handleSelectLine = (line: string) => {
+    const normalized = normalizeSelectedLine(line);
+    setPendingLine(normalized);
+    setSelectedLine(normalized);
+    setPendingStation('All Stations');
+    setSelectedStation('All Stations');
+  };
+
   const handleStationClick = (stationName: string, lineName?: string) => {
     if (lineName) {
-      setPendingLine(lineName);
-      setSelectedLine(lineName);
+      const normalized = normalizeSelectedLine(lineName);
+      setPendingLine(normalized);
+      setSelectedLine(normalized);
     }
     setPendingStation(stationName);
     setSelectedStation(stationName);
@@ -136,7 +177,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           type="trips"
           delayIndex={0}
           label="Total trips"
-          value={hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
+          value={hasLineData ? formatMillions(filteredTotal) : 'No data'}
           badge={yoyBadge}
           badgeColor={yoyBadgeColor}
           sub={tripsSub}
@@ -158,7 +199,13 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
           sub={kpis.peak_hour_sub}
           tooltip={kpis.peak_hour_note}
           withBarChart
-          monthly_trend={monthly_trend}
+          hourly_profile={peak_analysis.weekday_mon_fri.hourly_profile}
+          peakWindows={{
+            amStart: peak_analysis.weekday_mon_fri.am_peak_2h.start_hour,
+            amEnd: peak_analysis.weekday_mon_fri.am_peak_2h.end_hour,
+            pmStart: peak_analysis.weekday_mon_fri.pm_peak_2h.start_hour,
+            pmEnd: peak_analysis.weekday_mon_fri.pm_peak_2h.end_hour,
+          }}
         />
       </div>
 
@@ -212,32 +259,52 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
             </div>
           </div>
 
-          {/* Ridership Trend Card */}
+          {/* Ridership Trend Card — Year-to-Date summary (replaces cumulative duplication) */}
           <div
             className="network-overview-card network-ridership-card"
             style={cardStyle}
-            title={`OpenDOSM headline ridership (${periodRangeLabel})${kpis.ytd_comparison_label && kpis.ytd_yoy_growth_pct !== null && selectedLine === 'All Lines' ? ` · Equivalent ${kpis.ytd_comparison_label}: +${kpis.ytd_yoy_growth_pct}%` : ''}`}
+            title={
+              !ytdSummary.hasHeadlineData
+                ? 'Reference/supplementary corridor with no headline ridership series.'
+                : `${ytdSummary.isCombinedBranch && ytdSummary.combinedLabel ? `${ytdSummary.combinedLabel} · ` : ''}Year-to-Date (${ytdSummary.periodLabel}): ${(ytdSummary.ytdTrips ?? 0).toLocaleString()} trips.${ytdSummary.prevYtdTrips !== null && ytdSummary.ytdGrowthPct !== null ? ` Equivalent prior year: ${ytdSummary.prevYtdTrips.toLocaleString()} (${ytdSummary.ytdGrowthPct >= 0 ? '+' : ''}${ytdSummary.ytdGrowthPct}%).` : ' Prior-year equivalent YTD baseline unavailable.'}`
+            }
           >
             <SectionTitle icon="trend-down" label="Ridership Trend" variant="teal" />
             <div style={{ fontWeight: 800, fontSize: 22, color: '#0F1E36' }}>
-              {hasLineData ? formatMillions(displayKpi.total_rail_trips) : 'No data'}
+              {ytdSummary.hasHeadlineData && ytdSummary.ytdTrips !== null ? formatMillions(ytdSummary.ytdTrips) : 'No data'}
             </div>
-            {yoyBadge && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  background: activeYoy !== null && activeYoy < 0 ? '#FEE2E2' : '#E0FFF6',
-                  borderRadius: 4,
-                  padding: '2px 8px',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: activeYoy !== null && activeYoy < 0 ? '#EF4444' : '#00C48C',
-                  marginTop: 4,
-                }}
-              >
-                {yoyBadge}
+            {ytdSummary.hasHeadlineData && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    background:
+                      ytdSummary.ytdGrowthPct === null
+                        ? '#F1F5F9'
+                        : ytdSummary.ytdGrowthPct < 0
+                          ? '#FEE2E2'
+                          : '#E0FFF6',
+                    borderRadius: 4,
+                    padding: '2px 8px',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color:
+                      ytdSummary.ytdGrowthPct === null
+                        ? '#64748B'
+                        : ytdSummary.ytdGrowthPct < 0
+                          ? '#EF4444'
+                          : '#00C48C',
+                  }}
+                >
+                  {ytdBadgeText}
+                </div>
+                <span style={{ fontSize: 10.5, color: '#64748B', fontWeight: 500 }}>
+                  {ytdSummary.isCombinedBranch && ytdSummary.combinedLabel
+                    ? `${ytdSummary.combinedLabel} · ${ytdSummary.comparisonPeriodLabel}`
+                    : ytdSummary.comparisonPeriodLabel}
+                </span>
               </div>
             )}
             <RidershipTrendChart
@@ -270,6 +337,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
                 monthly_trend={monthly_trend}
                 onResetFocus={handleReset}
                 onSelectStation={handleStationClick}
+                onNavigateTab={onNavigateTab}
               />
             </div>
           </div>
@@ -296,6 +364,7 @@ export function NetworkOverview({ onNavigateTab }: NetworkOverviewProps) {
             <LinePerformanceCard
               line_performance={line_performance}
               selectedLine={selectedLine}
+              onSelectLine={handleSelectLine}
             />
           </div>
 

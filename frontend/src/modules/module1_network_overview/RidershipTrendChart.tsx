@@ -1,5 +1,6 @@
 import ReactECharts from 'echarts-for-react';
 import { LINE_COLORS } from '@/modules/shared/types';
+import { resolveHeadlineSeries } from './lineMapping';
 
 interface MonthlyTrend {
   year_month: string;
@@ -18,13 +19,15 @@ interface Props {
 export function RidershipTrendChart({ monthly_trend, selectedLine, playbackIdx }: Props) {
   const visible = monthly_trend.slice(0, playbackIdx + 1);
   const labels = visible.map(m => m.year_month);
+  const resolved = resolveHeadlineSeries(selectedLine);
+  const seriesKey = resolved.headlineLine;
   const values = visible.map(m =>
-    selectedLine === 'All Lines' ? m.total : (m.lines[selectedLine] ?? 0)
+    selectedLine === 'All Lines' ? m.total : (seriesKey ? (m.lines[seriesKey] ?? 0) : 0)
   );
 
   const color = selectedLine === 'All Lines'
     ? '#0066FF'
-    : (LINE_COLORS[selectedLine] ?? '#0066FF');
+    : (LINE_COLORS[seriesKey ?? selectedLine] ?? '#0066FF');
 
   const option = {
     grid: { top: 8, right: 4, bottom: 24, left: 36 },
@@ -34,7 +37,7 @@ export function RidershipTrendChart({ monthly_trend, selectedLine, playbackIdx }
       axisLabel: {
         fontSize: 9, color: '#94A3B8',
         formatter: (v: string) => {
-          const [y, m] = v.split('-');
+          const [, m] = v.split('-');
           const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
           return months[(+m) - 1];
         },

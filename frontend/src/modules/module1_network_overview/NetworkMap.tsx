@@ -5,20 +5,22 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { createAtlasController } from './atlasController';
 import { getNationalRoutes } from './nationalRailNetwork';
 import { NATIONAL_LANDMARKS } from './nationalAtlas';
-import { DEMAND_COLORS, STATION_AUDIT, GEOMETRY_DATE, getStationData, getStationSnapshot, MAP_STATIONS, stationId, stationMatchesLine } from './networkMapData';
+import { DEMAND_COLORS, STATION_AUDIT, GEOMETRY_DATE, getSelectedStationSummary, getStationData, getStationSnapshot, MAP_STATIONS, stationId, stationMatchesLine } from './networkMapData';
 import type { RailStation } from './networkMapData';
 import type { MapOverlay } from './NetworkOverview';
+import type { TabId } from '@/modules/shared/types';
+import { normalizeSelectedLine } from './lineMapping';
 import './NetworkMap.css';
 setWorkerUrl(workerUrl);
 interface MonthlyTrend { year_month:string; total:number; lines:Record<string,number> }
 interface Props {
   selectedLine:string; selectedStation:string; activeOverlay:MapOverlay; playbackMonth:string;
-  monthly_trend:MonthlyTrend[]; onResetFocus?:()=>void; onSelectStation?:(name:string,line?:string)=>void;
+  monthly_trend:MonthlyTrend[]; onResetFocus?:()=>void; onSelectStation?:(name:string,line?:string)=>void; onNavigateTab?:(tab:TabId)=>void;
 }
 const number=new Intl.NumberFormat('en-MY');
 const lineName=(name:string)=>name.replace('KTM Komuter (','').replace(' Line)','');
 export function NetworkMap(props:Props) {
-  const {selectedLine,selectedStation,activeOverlay,playbackMonth,onResetFocus,onSelectStation}=props;
+  const {selectedLine,selectedStation,activeOverlay,playbackMonth,onResetFocus,onSelectStation,onNavigateTab}=props;
   const container=useRef<HTMLDivElement>(null), controller=useRef<ReturnType<typeof createAtlasController>|null>(null), latest=useRef(props);
   latest.current=props;
   const [ready,setReady]=useState(false),[rendererError,setRendererError]=useState(false),[tileError,setTileError]=useState(false),[tilesReady,setTilesReady]=useState(false);
@@ -27,7 +29,7 @@ export function NetworkMap(props:Props) {
   const snapshot=useMemo(()=>getStationSnapshot(playbackMonth,selectedLine,selectedStation),[playbackMonth,selectedLine,selectedStation]);
   const routes=useMemo(()=>getNationalRoutes(selectedLine),[selectedLine]);
   const selected=MAP_STATIONS.find(s=>s.name===selectedStation&&stationMatchesLine(s,selectedLine));
-  const selectedValues=selected?getStationData(selected,playbackMonth):null;
+  const selectedSummary=selected?getSelectedStationSummary(selected,playbackMonth,snapshot.ranked):null;
   const filtered=selectedLine!=='All Lines'||selectedStation!=='All Stations';
   const selectStation=(station:RailStation)=>onSelectStation?.(station.name,station.line);
   useEffect(()=>{
@@ -63,19 +65,23 @@ export function NetworkMap(props:Props) {
     </div>
     {filtered && <div className="rail-map-focus"><span>{selectedLine}{selectedStation !== 'All Stations' ? ` · ${selectedStation}` : ''}</span>
       <button onClick={() => { onResetFocus?.(); controller.current?.reset(); }}>Clear filter</button></div>}
-    {selected && selectedValues && <aside className="rail-station-card" aria-label="Selected station details" aria-live="polite">
+    {selected && selectedSummary && <aside className="rail-station-card" aria-label="Selected station details" aria-live="polite">
       <span className="rail-map-eyebrow">SELECTED STATION · {selected.code}</span>
       <h3>{selected.name}</h3><p>{selected.line}</p>
-      <strong className="rail-station-value">{selectedValues.ridership === null ? 'No data available' : number.format(selectedValues.ridership)}</strong>
+      <strong className="rail-station-value">{selectedSummary.ridership === null ? 'No data available' : number.format(selectedSummary.ridership)}</strong>
       <p>Monthly boardings · {playbackMonth}</p>
-      {selectedValues.yoy !== null && <p>{selectedValues.yoy > 0 ? '+' : ''}{selectedValues.yoy}% year on year</p>}
+      {selectedSummary.dailyAvg !== null && selectedSummary.observedDays !== null && (
+        <p>Avg {number.format(Math.round(selectedSummary.dailyAvg))}/day ({selectedSummary.observedDays}d observed)</p>
+      )}
+      <p>{selectedSummary.rank !== null ? `Demand rank: ${selectedSummary.rank} of ${selectedSummary.rankedTotal} measured` : 'Demand rank: Unavailable (no observation)'}</p>
+      <p>{selectedSummary.growthLabel}{selectedSummary.comparisonNote ? ` · ${selectedSummary.comparisonNote}` : ''}</p>
     </aside>}
     <div className="rail-map-legend">
       <button className="rail-legend-toggle" onClick={() => setLegendOpen(open => !open)} aria-expanded={legendOpen} aria-controls="rail-line-legend">
         <span className="rail-lines-icon" aria-hidden="true">≋</span> Rail lines <span aria-hidden="true">{legendOpen ? '−' : '+'}</span>
       </button>
       {legendOpen && <div id="rail-line-legend" className="rail-line-list">
-        {routes.features.map(feature => <button type="button" onClick={() => onSelectStation?.('All Stations',String(feature.properties?.name))} key={feature.properties?.id} className={feature.properties?.inScope ? '' : 'rail-line-muted'}>
+        {routes.features.map(feature => <button type="button" onClick={() => onSelectStation?.('All Stations', normalizeSelectedLine(String(feature.properties?.name)))} key={feature.properties?.id} className={feature.properties?.inScope ? '' : 'rail-line-muted'}>
           <i style={{ background: feature.properties?.color }} /><span>{lineName(feature.properties?.name)}</span>
           {feature.properties?.geometrySource !== 'Official GTFS' && <span title="Approximate reference corridor">*</span>}
         </button>)}<p>* Reference corridor from supplied data. Rapid Rail uses official route shapes. Light trails are decorative, not live trains.</p>
@@ -91,19 +97,22 @@ export function NetworkMap(props:Props) {
           <p>Klang Valley marker represents the highest observed station demand within the region.</p>
           <p>Route colours identify railway lines; marker colours indicate demand.</p>
         </details>
-        <p>Demand only — does not indicate crowding.</p>
+        <p style={{ marginTop: 6 }}>{snapshot.coverage.primaryText}</p>
+        <p>{snapshot.coverage.secondaryText}</p>
+        <p style={{ marginTop: 4 }}>Demand only — does not indicate crowding.</p>
       </div>
 
     </div>
     <div className="rail-source-bar">{compactLayout && <span>Compact atlas · East Malaysia repositioned, 70% scale</span>}<span>{routes.features.length} rail routes · {tilted ? `${NATIONAL_LANDMARKS.length} landmark models` : 'Malaysia 2D'}</span>
-      <button onClick={() => setSourcesOpen(open => !open)} aria-expanded={sourcesOpen}>Data & map sources</button></div>
+      <button type="button" onClick={() => setSourcesOpen(open => !open)} aria-expanded={sourcesOpen}>Data & map sources</button>
+      {onNavigateTab && <button type="button" onClick={() => onNavigateTab('service_planning')} title="Open Module 4: Service Planning & Accessibility (switches tab only; active filters do not carry over)">Service Planning (M4) →</button>}</div>
     {sourcesOpen && <aside className="rail-source-panel" aria-label="Map data sources">
       <button className="rail-source-close" onClick={() => setSourcesOpen(false)} aria-label="Close data sources">×</button>
       <h3>About this map &amp; official sources</h3>
       <p><strong>Official Malaysian Data (OpenDOSM / data.gov.my, CC BY 4.0):</strong> Headline rail ridership covers <strong>Jan 2019–Aug 2026</strong> (2,800 days across 11 services via <code>ridership_headline</code>). KTMB daily services span <strong>Oct 2020–Nov 2026</strong> (Komuter from Sep 2023; Shuttle Tebrau from Jun 2022). KTM Komuter peak-hour windows are derived strictly from <strong>Sep 2023–Nov 2026</strong> hourly OD records (MYT; Rapid Rail OD lacks hourly timestamps). Country/state borders use <a href="https://github.com/dosm-malaysia/data-open/tree/main/datasets/geodata" target="_blank" rel="noreferrer">DOSM geodata</a>.</p>
       <p><strong>Rapid Rail &amp; Station Registry:</strong> Rapid Rail routes and station positions use <a href="https://developer.data.gov.my/realtime-api/gtfs-static" target="_blank" rel="noreferrer">data.gov.my Prasarana &amp; KTMB GTFS</a> (CC BY 4.0; geometry snapshot: {GEOMETRY_DATE}). KTMB routes follow the longest published stop sequence (schematic; feed has no track shapes). Monthly station boardings integrate KTM Komuter OD (Sep 2023–Nov 2026), Rapid Rail daily OD (Jan–Nov 2026; <code>ridership_od_rapidrail_daily</code>), and KTMB Intercity OD (Jan–Nov 2026).</p>
       <p><strong>Supplementary Map Assets (Non-Official):</strong> Base buildings and streets use <a href="https://openfreemap.org/" target="_blank" rel="noreferrer">OpenFreeMap</a> / OpenStreetMap tiles (ODbL). Airport rail, Sabah State Railway and Penang Hill Railway are approximate schematic corridors with no supplied ridership. Landmark models and route light trails are decorative visual aids. East Malaysia is repositioned at 70% scale in the national atlas (restored when zooming in).</p>
-      <p><strong>Demand &amp; Coverage Rules (RO1 Scope):</strong> Nearest-rank P50/P75/P90 thresholds over positive station boardings in the selected line and month (ties included). Grey means missing/outside period; white hollow circles denote observed zero. Station audit: {STATION_AUDIT.added} added official GTFS stops; {STATION_AUDIT.unmatched.length} unmatched legacy records kept without invented demand. Timeline scrubs Jan 2019–Aug 2026 headline range with current route geometry. Historical demand alone does not establish crowding, fleet shortages, or capacity saturation (see Service Planning Module 4 for supply &amp; equity analysis).</p>
+      <p><strong>Demand &amp; Coverage Rules (RO1 Scope):</strong> Nearest-rank P50/P75/P90 thresholds over positive station boardings in the selected line and month (ties included). Grey means missing/outside period; white hollow circles denote observed zero. Station audit: {STATION_AUDIT.added} added official GTFS stops; {STATION_AUDIT.unmatched.length} unmatched legacy records kept without invented demand. Timeline scrubs Jan 2019–Aug 2026 headline range with current route geometry. Historical demand alone does not establish crowding, fleet shortages, or capacity saturation ({onNavigateTab ? <button type="button" onClick={() => onNavigateTab('service_planning')} style={{ background: 'none', border: 0, padding: 0, color: '#0865cd', textDecoration: 'underline', cursor: 'pointer', font: 'inherit' }}>open Service Planning Module 4 for supply &amp; equity analysis</button> : 'see Service Planning Module 4 for supply & equity analysis'}).</p>
     </aside>}
     {!rendererError && (!ready || (!compactLayout && (!tilesReady || tileError))) && <div className="rail-map-status" role="status">
       {tileError ? <>Building tiles unavailable; local rail and ridership remain available. <button onClick={() => setRetry(n => n + 1)}>Retry map</button></>
