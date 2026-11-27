@@ -1,47 +1,42 @@
 import React, { useState, useMemo } from 'react';
-import type { ResolvedOdFlow, OdModeFilter } from './types';
+import type { ResolvedOdFlow } from './types';
 import { formatMillions } from '@/modules/shared/types';
 
 interface Props {
   flows: ResolvedOdFlow[];
   selectedFlowId?: string | null;
   onSelectFlow: (flow: ResolvedOdFlow) => void;
-  selectedMode: OdModeFilter;
+  emptyReason?: string | null;
 }
 
 export const TopOdPairsList: React.FC<Props> = ({
   flows,
   selectedFlowId,
   onSelectFlow,
-  selectedMode,
+  emptyReason,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAll, setShowAll] = useState(false);
 
-  // Filter flows based on search query and active mode
   const filteredFlows = useMemo(() => {
-    let list = flows;
-    if (selectedMode !== 'all') {
-      list = list.filter((f) => f.mode === selectedMode);
-    }
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (f) =>
-          f.origin.toLowerCase().includes(q) ||
-          f.destination.toLowerCase().includes(q)
-      );
-    }
-    return list;
-  }, [flows, selectedMode, searchQuery]);
+    if (!searchQuery.trim()) return flows;
+    const q = searchQuery.toLowerCase().trim();
+    return flows.filter(
+      (f) =>
+        f.originClean.toLowerCase().includes(q) ||
+        f.destinationClean.toLowerCase().includes(q) ||
+        f.origin.toLowerCase().includes(q) ||
+        f.destination.toLowerCase().includes(q)
+    );
+  }, [flows, searchQuery]);
 
   const displayList = useMemo(() => {
     return showAll ? filteredFlows : filteredFlows.slice(0, 5);
   }, [filteredFlows, showAll]);
 
-  // Max volume in current set for progress indicator
-  const maxVol = useMemo(() => {
-    return Math.max(...filteredFlows.map((f) => f.volume), 1);
+  // Normalize bar width against highest comparable daily average in current view
+  const maxDaily = useMemo(() => {
+    return Math.max(...filteredFlows.map((f) => f.avgDaily), 1);
   }, [filteredFlows]);
 
   return (
@@ -54,12 +49,12 @@ export const TopOdPairsList: React.FC<Props> = ({
         gap: 8,
       }}
     >
-      {/* Search Bar & Header Stats */}
+      {/* Search Bar & View Toggle (pinned at top) */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
         <div style={{ position: 'relative', flex: 1 }}>
           <input
             type="text"
-            placeholder="Search stations (e.g., KL Sentral, Batu Caves)..."
+            placeholder="Search stations (e.g., KL Sentral, KLCC)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
@@ -87,6 +82,7 @@ export const TopOdPairsList: React.FC<Props> = ({
                 color: '#94A3B8',
                 fontSize: 12,
               }}
+              aria-label="Clear search"
             >
               ✕
             </button>
@@ -112,7 +108,25 @@ export const TopOdPairsList: React.FC<Props> = ({
         )}
       </div>
 
-      {/* List Container: scrollable and clean soft styling */}
+      {/* Ranking basis caption */}
+      {filteredFlows.length > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: 9.5,
+            color: '#64748B',
+            paddingBottom: 2,
+            borderBottom: '1px solid rgba(0, 102, 255, 0.06)',
+            flexShrink: 0,
+          }}
+        >
+          <span>Ranked by avg daily directional trips</span>
+          <span>Total · Daily avg</span>
+        </div>
+      )}
+
+      {/* List Container: internal vertical scroll */}
       <div
         style={{
           flex: 1,
@@ -125,25 +139,20 @@ export const TopOdPairsList: React.FC<Props> = ({
         }}
       >
         {displayList.length === 0 ? (
-          <div style={{ padding: '24px', textAlign: 'center', color: '#94A3B8', fontSize: 12 }}>
-            No OD corridor matched search.
+          <div style={{ padding: '24px 12px', textAlign: 'center', color: '#64748B', fontSize: 11.5, lineHeight: 1.45 }}>
+            {emptyReason || 'No OD corridor matched the active filter criteria.'}
           </div>
         ) : (
           displayList.map((flow, index) => {
             const isSelected = selectedFlowId === flow.id;
-            const pct = Math.min(100, Math.max(12, Math.round((flow.volume / maxVol) * 100)));
+            const pct = Math.min(100, Math.max(10, Math.round((flow.avgDaily / maxDaily) * 100)));
 
-            // Color scheme based on network mode
             const modeColor =
               flow.mode === 'rapid_rail'
                 ? '#0066FF'
                 : flow.mode === 'komuter'
                   ? '#EA580C'
-                  : '#795548';
-
-            // Calculate genuine mode share percentage across current filtered list
-            const totalFilteredVolume = filteredFlows.reduce((sum, f) => sum + f.volume, 0);
-            const modeShare = totalFilteredVolume > 0 ? ((flow.volume / totalFilteredVolume) * 100).toFixed(1) : '0.0';
+                  : '#0D9488';
 
             return (
               <div
@@ -177,7 +186,7 @@ export const TopOdPairsList: React.FC<Props> = ({
                   if (!isSelected) e.currentTarget.style.background = '#FFFFFF';
                 }}
               >
-                {/* Left: Rank badge */}
+                {/* Rank */}
                 <div
                   style={{
                     width: 22,
@@ -200,10 +209,10 @@ export const TopOdPairsList: React.FC<Props> = ({
                     flexShrink: 0,
                   }}
                 >
-                  {index + 1}
+                  {flow.rank}
                 </div>
 
-                {/* Middle: Origin -> Destination & Mini Progress */}
+                {/* Origin -> Destination & Bar */}
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 }}>
                   <div
                     style={{
@@ -214,20 +223,14 @@ export const TopOdPairsList: React.FC<Props> = ({
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                     }}
+                    title={`${flow.originClean} ➔ ${flow.destinationClean}`}
                   >
                     <span>{flow.originClean}</span>
                     <span style={{ color: '#0066FF', margin: '0 5px' }}>➔</span>
                     <span>{flow.destinationClean}</span>
                   </div>
 
-                  {/* Clean thin progress bar */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 6,
-                    }}
-                  >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <div
                       style={{
                         flex: 1,
@@ -255,11 +258,12 @@ export const TopOdPairsList: React.FC<Props> = ({
                       }}
                     >
                       {flow.modeLabel.replace(/\s*\(.*\)/, '')}
+                      {!flow.isVerifiedCoords ? ' · Unmapped' : ''}
                     </span>
                   </div>
                 </div>
 
-                {/* Right: Total Trips & Verified Mode Share */}
+                {/* Right: Period Total + Normalised Daily Average */}
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <div style={{ fontWeight: 800, fontSize: 13, color: '#0F1E36', lineHeight: 1.1 }}>
                     {formatMillions(flow.volume)}
@@ -272,7 +276,7 @@ export const TopOdPairsList: React.FC<Props> = ({
                       marginTop: 2,
                     }}
                   >
-                    {modeShare}% share
+                    {Math.round(flow.avgDaily).toLocaleString()}/d · {flow.sharePct}%
                   </div>
                 </div>
               </div>

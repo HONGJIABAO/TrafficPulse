@@ -1,16 +1,29 @@
 import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
-import type { HeatmapPoint, OdModeFilter } from './types';
+import type { DayTypeFilter, HeatmapPoint, OdModeFilter } from './types';
 import { formatMillions } from '@/modules/shared/types';
 import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
+import { classifyIsoWeekday, formatSingleHourWindow } from './odAnalyticsUtils';
 
 interface Props {
-  komuterData: HeatmapPoint[];
-  intercityData: HeatmapPoint[];
+  heatmapPoints: HeatmapPoint[];
   selectedMode: OdModeFilter;
+  selectedDayType: DayTypeFilter;
+  hourlySupported: boolean;
+  coverageNote: string;
+  emptyReason?: string | null;
 }
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const ALL_DAYS = [
+  { iso: 1, label: 'Mon' },
+  { iso: 2, label: 'Tue' },
+  { iso: 3, label: 'Wed' },
+  { iso: 4, label: 'Thu' },
+  { iso: 5, label: 'Fri' },
+  { iso: 6, label: 'Sat' },
+  { iso: 7, label: 'Sun' },
+];
+
 const HOURS = [
   '12AM', '1AM', '2AM', '3AM', '4AM', '5AM',
   '6AM', '7AM', '8AM', '9AM', '10AM', '11AM',
@@ -19,147 +32,92 @@ const HOURS = [
 ];
 
 export const WeekdayHourHeatmap: React.FC<Props> = ({
-  komuterData,
-  intercityData,
+  heatmapPoints,
   selectedMode,
+  selectedDayType,
+  hourlySupported,
+  coverageNote,
+  emptyReason,
 }) => {
-  // Clear unavailable state when Rapid Rail is selected (audit integrity compliance)
-  if (selectedMode === 'rapid_rail') {
-    return (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          minHeight: 210,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#F8FAFC',
-          borderRadius: 8,
-          border: '1px dashed rgba(0, 102, 255, 0.2)',
-          padding: '24px 20px',
-          textAlign: 'center',
-          gap: 8,
-        }}
-      >
-        <TelemetryIcon name="clock-radar" variant="cobalt" badge size={16} />
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
-          Hourly Demand Matrix Unavailable for Rapid Rail
-        </div>
-        <div style={{ fontSize: 11, color: '#64748B', maxWidth: 400, lineHeight: 1.45 }}>
-          Prasarana / Rapid Rail open data provides daily Origin-Destination aggregate matrices only. High-resolution 24-hour telemetry records are captured for KTM Komuter &amp; KTM Intercity.
-        </div>
-        <div style={{ fontSize: 10, color: '#0066FF', fontWeight: 600, background: 'rgba(0, 102, 255, 0.08)', padding: '3px 9px', borderRadius: 5 }}>
-          Select "All Rail Modes" or "KTM Komuter" to inspect 24-hour demand heatmaps.
-        </div>
-      </div>
-    );
-  }
-
-  // Combine or select data depending on filter
-  const dataset = useMemo(() => {
-    if (selectedMode === 'intercity') {
-      return intercityData;
+  // Visible Y-axis days depend strictly on Day Profile filter (Mon-Fri Weekday vs Sat-Sun Weekend)
+  const visibleDays = useMemo(() => {
+    if (selectedDayType === 'weekday') {
+      return ALL_DAYS.filter((d) => classifyIsoWeekday(d.iso) === 'Weekday');
     }
-    if (selectedMode === 'komuter') {
-      return komuterData;
+    if (selectedDayType === 'weekend') {
+      return ALL_DAYS.filter((d) => classifyIsoWeekday(d.iso) === 'Weekend');
     }
-    // 'all' network mode (combines Komuter + Intercity hourly datasets):
-    const map = new Map<string, number>();
-    komuterData.forEach((p) => {
-      const k = `${p.weekday}-${p.hour}`;
-      map.set(k, (map.get(k) || 0) + p.ridership);
-    });
-    intercityData.forEach((p) => {
-      const k = `${p.weekday}-${p.hour}`;
-      map.set(k, (map.get(k) || 0) + p.ridership);
-    });
-
-    const res: HeatmapPoint[] = [];
-    map.forEach((val, key) => {
-      const [w, h] = key.split('-').map(Number);
-      res.push({ weekday: w, hour: h, ridership: val });
-    });
-    return res;
-  }, [komuterData, intercityData, selectedMode]);
+    return ALL_DAYS;
+  }, [selectedDayType]);
 
   const maxVal = useMemo(() => {
-    return Math.max(...dataset.map((d) => d.ridership), 1);
-  }, [dataset]);
+    return Math.max(...heatmapPoints.map((d) => d.ridership), 1);
+  }, [heatmapPoints]);
 
-  // Convert to ECharts heatmap format: [hourIdx, dayIdx, value]
   const chartData = useMemo(() => {
-    return dataset.map((d) => {
-      const dayIdx = Math.max(0, Math.min(6, d.weekday - 1));
-      return [d.hour, dayIdx, d.ridership];
-    });
-  }, [dataset]);
+    const dayIndexByIso = new Map<number, number>();
+    visibleDays.forEach((d, idx) => dayIndexByIso.set(d.iso, idx));
 
-  // Extract peak surge hours (top rush hours) for the live pulse ripple animation
+    return heatmapPoints
+      .filter((d) => dayIndexByIso.has(d.weekday))
+      .map((d) => [d.hour, dayIndexByIso.get(d.weekday)!, d.ridership]);
+  }, [heatmapPoints, visibleDays]);
+
   const peakPulsePoints = useMemo(() => {
-    return dataset
-      .filter((d) => d.ridership >= maxVal * 0.65)
-      .map((d) => {
-        const dayIdx = Math.max(0, Math.min(6, d.weekday - 1));
-        return [d.hour, dayIdx, d.ridership];
-      });
-  }, [dataset, maxVal]);
+    const dayIndexByIso = new Map<number, number>();
+    visibleDays.forEach((d, idx) => dayIndexByIso.set(d.iso, idx));
+
+    return heatmapPoints
+      .filter((d) => dayIndexByIso.has(d.weekday) && d.ridership >= maxVal * 0.65)
+      .map((d) => [d.hour, dayIndexByIso.get(d.weekday)!, d.ridership]);
+  }, [heatmapPoints, visibleDays, maxVal]);
 
   const option = useMemo(() => {
     return {
-      animation: true,
-      animationDuration: 1400,
-      animationEasing: 'cubicOut',
       tooltip: {
         position: 'top',
-        backgroundColor: 'rgba(15, 30, 54, 0.95)',
+        backgroundColor: 'rgba(15, 30, 54, 0.96)',
         borderColor: '#0066FF',
         borderWidth: 1,
         padding: [8, 12],
         textStyle: { color: '#FFFFFF', fontSize: 12 },
         formatter: (params: any) => {
           const [hourIdx, dayIdx, val] = params.value;
-          const dayName = DAYS[dayIdx];
-          const hourLabel = `${hourIdx.toString().padStart(2, '0')}:00 – ${(hourIdx + 1)
-            .toString()
-            .padStart(2, '0')}:00`;
-          const pctOfMax = ((val / maxVal) * 100).toFixed(0);
+          const dayObj = visibleDays[dayIdx] || ALL_DAYS[0];
+          const classification = classifyIsoWeekday(dayObj.iso);
+          const hourLabel = formatSingleHourWindow(hourIdx);
+          const pctOfMax = maxVal > 0 ? ((val / maxVal) * 100).toFixed(0) : '0';
 
           let statusColor = '#0D9488';
           let statusLabel = 'Light Off-Peak';
-          let advisory = 'Normal headway intervals sufficient.';
           if (val > maxVal * 0.7) {
             statusColor = '#EF4444';
-            statusLabel = 'Severe Peak Surge (Overcrowding Risk)';
-            advisory = 'Mandate 4–6 min maximum headway + 6-car EMU sets.';
+            statusLabel = 'Peak Concentration (>=70% of max cell)';
           } else if (val > maxVal * 0.4) {
             statusColor = '#EA580C';
-            statusLabel = 'High Commuter Demand';
-            advisory = 'Standard peak frequency required.';
+            statusLabel = 'High Commuter / Operational Demand';
           } else if (val > maxVal * 0.2) {
             statusColor = '#EAB308';
-            statusLabel = 'Moderate Shoulder Flow';
-            advisory = 'Maintain steady intermediate service.';
+            statusLabel = 'Moderate Shoulder Demand';
           }
-
-          const statusBadge = `<span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:${statusColor};box-shadow:0 0 6px ${statusColor};"></span><span>${statusLabel}</span></span>`;
 
           return `
             <div style="font-weight: 700; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 3px;">
-              ${dayName} • ${hourLabel}
+              ${dayObj.label} (${classification}) • ${hourLabel}
             </div>
             <div style="display: flex; justify-content: space-between; gap: 16px; margin: 3px 0;">
-              <span style="color: #94A3B8;">Estimated Trips:</span>
-              <strong style="color: #00E5A3;">${val.toLocaleString()} (${formatMillions(val)})</strong>
+              <span style="color: #94A3B8;">Observed Period Trips:</span>
+              <strong style="color: #00E5A3;">${Number(val).toLocaleString()} (${formatMillions(val)})</strong>
             </div>
             <div style="display: flex; justify-content: space-between; gap: 16px; margin: 3px 0;">
-              <span style="color: #94A3B8;">Peak Intensity:</span>
-              <span style="color: #FFC400; font-weight: 600;">${pctOfMax}% of weekly peak</span>
+              <span style="color: #94A3B8;">Relative Intensity:</span>
+              <span style="color: #FFC400; font-weight: 600;">${pctOfMax}% of matrix peak</span>
             </div>
             <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.15); font-size: 11px;">
-              <div>${statusBadge}</div>
-              <div style="color: #CBD5E1; font-style: italic; margin-top: 2px;">${advisory}</div>
+              <span style="display:inline-flex;align-items:center;gap:6px;">
+                <span style="width:7px;height:7px;border-radius:50%;background:${statusColor};"></span>
+                <span>${statusLabel}</span>
+              </span>
             </div>
           `;
         },
@@ -168,119 +126,141 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
         top: 10,
         right: 12,
         bottom: 24,
-        left: 36,
+        left: 38,
       },
       xAxis: {
         type: 'category',
         data: HOURS,
-        splitArea: { show: true, areaStyle: { color: ['rgba(255,255,255,0.5)', 'rgba(241,244,249,0.3)'] } },
+        splitArea: { show: false },
         axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.3)' } },
         axisTick: { show: false },
         axisLabel: {
           color: '#64748B',
-          fontSize: 9.5,
+          fontSize: 10,
           interval: 2,
         },
       },
       yAxis: {
         type: 'category',
-        data: DAYS,
-        splitArea: { show: true },
+        data: visibleDays.map((d) => d.label),
+        inverse: true,
+        splitArea: { show: false },
         axisLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.3)' } },
         axisTick: { show: false },
         axisLabel: {
           color: '#0F1E36',
+          fontSize: 11,
           fontWeight: 600,
-          fontSize: 10.5,
         },
       },
-      // Keep visualMap active for color mapping, but hide in-canvas component to prevent overlap with X-axis labels
       visualMap: {
         show: false,
         min: 0,
         max: maxVal,
         inRange: {
-          color: [
-            '#F1F4F9',
-            '#DBEAFE',
-            '#93C5FD',
-            '#3B82F6',
-            '#0066FF',
-            '#F59E0B',
-            '#FF5A00',
-          ],
+          color: ['#F1F5F9', '#DBEAFE', '#93C5FD', '#3B82F6', '#0066FF', '#F59E0B', '#FF5A00'],
         },
       },
       series: [
         {
-          name: 'Hourly Passenger Trips',
+          name: 'Hourly Demand',
           type: 'heatmap',
           data: chartData,
-          label: { show: false },
+          animation: true,
+          animationDuration: 450,
           itemStyle: {
             borderColor: '#FFFFFF',
-            borderWidth: 1.5,
-            borderRadius: 3,
+            borderWidth: 2,
+            borderRadius: 4,
           },
           emphasis: {
             itemStyle: {
-              shadowBlur: 14,
-              shadowColor: 'rgba(255, 90, 0, 0.65)',
               borderColor: '#0066FF',
               borderWidth: 2,
             },
           },
         },
-        // Continuous Pulse Ripple Effect on Peak Rush Hours
         {
-          name: 'Peak Rush Pulse',
-          type: 'effectScatter',
-          coordinateSystem: 'cartesian2d',
+          name: 'Peak Core Highlight',
+          type: 'scatter',
           data: peakPulsePoints,
-          symbolSize: 6,
-          showEffectOn: 'render',
-          rippleEffect: {
-            brushType: 'stroke',
-            scale: 3.5,
-            period: 2.2,
-            color: '#FF5A00',
+          symbol: 'circle',
+          symbolSize: (val: any) => {
+            const r = val?.[2] || 0;
+            return r > maxVal * 0.85 ? 8 : 5;
           },
           itemStyle: {
-            color: '#FF5A00',
-            shadowBlur: 10,
-            shadowColor: 'rgba(255, 90, 0, 0.8)',
+            color: '#FFFFFF',
+            borderColor: '#EA580C',
+            borderWidth: 1.5,
           },
           silent: true,
-          zlevel: 5,
+          z: 5,
         },
       ],
     };
-  }, [chartData, peakPulsePoints, maxVal]);
+  }, [chartData, peakPulsePoints, maxVal, visibleDays]);
+
+  if (!hourlySupported || selectedMode === 'rapid_rail') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: 205,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F8FAFC',
+          borderRadius: 8,
+          border: '1px dashed rgba(0, 102, 255, 0.2)',
+          padding: '20px',
+          textAlign: 'center',
+          gap: 8,
+        }}
+      >
+        <TelemetryIcon name="clock-radar" variant="cobalt" badge size={16} />
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
+          Hourly Demand Matrix Unavailable for Rapid Rail
+        </div>
+        <div style={{ fontSize: 11, color: '#64748B', maxWidth: 420, lineHeight: 1.45 }}>
+          {emptyReason ||
+            'Prasarana / Rapid Rail publishes daily Origin-Destination aggregate records only. Hourly demand telemetry is captured for KTM Komuter and KTM Intercity.'}
+        </div>
+      </div>
+    );
+  }
+
+  if (heatmapPoints.length === 0) {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: 205,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F8FAFC',
+          borderRadius: 8,
+          border: '1px dashed rgba(148, 163, 184, 0.4)',
+          padding: '20px',
+          textAlign: 'center',
+          gap: 6,
+        }}
+      >
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: '#0F1E36' }}>No Hourly Observations in Filter</div>
+        <div style={{ fontSize: 11, color: '#64748B', maxWidth: 380 }}>
+          {emptyReason || 'No hourly records exist for this Time Horizon and Day Profile selection.'}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <style>{`
-        @keyframes pulseDot {
-          0%, 100% {
-            transform: scale(0.9);
-            box-shadow: 0 0 0 0 rgba(255, 90, 0, 0.7);
-          }
-          50% {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 5px rgba(255, 90, 0, 0);
-          }
-        }
-        .pulse-indicator-dot {
-          width: 7px;
-          height: 7px;
-          border-radius: 50%;
-          background: #FF5A00;
-          display: inline-block;
-          animation: pulseDot 2s infinite ease-in-out;
-        }
-      `}</style>
-
-      {/* Legend rendered as crisp HTML above or below without canvas collision */}
       <div
         style={{
           display: 'flex',
@@ -288,32 +268,29 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
           alignItems: 'center',
           marginBottom: 4,
           paddingRight: 4,
+          gap: 8,
+          flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span className="pulse-indicator-dot" />
-          <span style={{ fontSize: 9.5, fontWeight: 700, color: '#FF5A00', letterSpacing: '0.4px' }}>
-            PEAK SURGE PULSE
-          </span>
-        </div>
-
+        <span style={{ fontSize: 10, color: '#64748B' }}>{coverageNote}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: '#64748B' }}>
-          <span>Low Demand</span>
+          <span>Low</span>
           <div
             style={{
-              width: 72,
+              width: 68,
               height: 6,
               borderRadius: 3,
               background: 'linear-gradient(to right, #DBEAFE, #3B82F6, #0066FF, #F59E0B, #FF5A00)',
             }}
           />
-          <span style={{ color: '#FF5A00', fontWeight: 600 }}>High Surge</span>
+          <span style={{ color: '#FF5A00', fontWeight: 600 }}>Peak Surge</span>
         </div>
       </div>
 
-      <div style={{ flex: 1, minHeight: 180 }}>
+      <div style={{ flex: 1, minHeight: 185 }}>
         <ReactECharts
           option={option}
+          notMerge={true}
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'canvas' }}
         />

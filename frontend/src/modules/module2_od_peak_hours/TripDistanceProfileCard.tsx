@@ -1,30 +1,27 @@
 import React from 'react';
 import type { HaulFilter } from './types';
-import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   activeHaul: HaulFilter;
   onSelectHaul: (haul: HaulFilter) => void;
-  avgDistance?: number;
-  shortPct?: number;
-  medPct?: number;
-  longPct?: number;
+  avgDistance: number | null;
+  shortPct: number;
+  medPct: number;
+  longPct: number;
+  verifiedCount: number;
+  totalCount: number;
 }
-
-const HAUL_OPTIONS: { id: HaulFilter; label: string; icon: TelemetryIconName; variant: TelemetryVariant; range: string }[] = [
-  { id: 'all', label: 'All Distances', icon: 'globe-network', variant: 'cobalt', range: 'Avg 13.0 km' },
-  { id: 'short', label: 'Intra-CBD', icon: 'urban-cluster', variant: 'cobalt', range: '< 5 km (53%)' },
-  { id: 'medium', label: 'Suburban', icon: 'suburban-station', variant: 'teal', range: '5–25 km (31%)' },
-  { id: 'long', label: 'Regional', icon: 'transit-rail', variant: 'amber', range: '> 25 km (16%)' },
-];
 
 export const TripDistanceProfileCard: React.FC<Props> = ({
   activeHaul,
   onSelectHaul,
-  avgDistance = 13.0,
-  shortPct = 53.3,
-  medPct = 30.5,
-  longPct = 16.2,
+  avgDistance,
+  shortPct,
+  medPct,
+  longPct,
+  verifiedCount,
+  totalCount,
 }) => {
   const dynamicAdvisory = React.useMemo(() => {
     switch (activeHaul) {
@@ -33,21 +30,21 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           title: 'Intra-CBD Metro Haul (< 5 km)',
           color: '#0066FF',
           advisory:
-            'Rapid passenger exchange (e.g. KLCC ↔ Ampang Park, TRX ↔ Bukit Bintang). Mandate longitudinal seating configuration to optimize peak circulation.',
+            'High-frequency urban interchange corridors (e.g. KLCC ↔ Ampang Park, TRX ↔ Bukit Bintang) favour standing circulation.',
         };
       case 'medium':
         return {
           title: 'Suburban Commuter Haul (5–25 km)',
           color: '#00C48C',
           advisory:
-            'Suburban radial trunk corridors (e.g. Batu Caves ↔ KL Sentral). Maintain 6-car EMU sets balancing seated and standing capacity.',
+            'Suburban trunk corridors (e.g. Batu Caves ↔ KL Sentral) balance seated and standing passenger capacity.',
         };
       case 'long':
         return {
           title: 'Regional Long-Distance (> 25 km)',
           color: '#FF8C00',
           advisory:
-            'Extended passenger dwell times (e.g. Seremban ↔ KL Sentral: 61 km). Recommend transverse seating with luggage accommodation.',
+            'Extended interstate and regional corridors require transverse seating and luggage storage.',
         };
       case 'all':
       default:
@@ -55,10 +52,12 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           title: 'Network Distance Distribution',
           color: '#64748B',
           advisory:
-            'Passenger-trip-weighted average straight-line distance across all verified station pairs.',
+            'Passenger-trip-weighted average straight-line distance across verified station pairs.',
         };
     }
   }, [activeHaul]);
+
+  const hasDistances = avgDistance !== null && verifiedCount > 0;
 
   return (
     <div
@@ -85,10 +84,10 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
       {/* Hero Metric: Average Trip Distance */}
       <div>
         <div style={{ fontSize: 22, fontWeight: 800, color: '#0F1E36', lineHeight: 1.1 }}>
-          {avgDistance} km
+          {hasDistances ? `${avgDistance} km` : '—'}
         </div>
         <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
-          Average trip distance
+          {hasDistances ? 'Weighted avg straight-line distance' : 'No distance data in active filter'}
         </div>
       </div>
 
@@ -104,35 +103,17 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           margin: '2px 0',
         }}
       >
-        <div
-          title={`Intra-CBD (<5 km): ${shortPct}%`}
-          style={{
-            width: `${shortPct}%`,
-            background: '#0066FF',
-            transition: 'width 0.3s ease',
-          }}
-        />
-        <div
-          title={`Suburban (5–25 km): ${medPct}%`}
-          style={{
-            width: `${medPct}%`,
-            background: '#00C48C',
-            transition: 'width 0.3s ease',
-          }}
-        />
-        <div
-          title={`Regional (>25 km): ${longPct}%`}
-          style={{
-            width: `${longPct}%`,
-            background: '#FF8C00',
-            transition: 'width 0.3s ease',
-          }}
-        />
+        {hasDistances && (
+          <>
+            <div title={`Intra-CBD (<5 km): ${shortPct}%`} style={{ width: `${shortPct}%`, background: '#0066FF', transition: 'width 0.3s ease' }} />
+            <div title={`Suburban (5–25 km): ${medPct}%`} style={{ width: `${medPct}%`, background: '#00C48C', transition: 'width 0.3s ease' }} />
+            <div title={`Regional (>25 km): ${longPct}%`} style={{ width: `${longPct}%`, background: '#FF8C00', transition: 'width 0.3s ease' }} />
+          </>
+        )}
       </div>
 
-      {/* 3 Interactive Legend Items matching picture */}
+      {/* 3 Interactive Legend Items */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 2 }}>
-        {/* Short trips */}
         <div
           onClick={() => onSelectHaul(activeHaul === 'short' ? 'all' : 'short')}
           style={{
@@ -156,7 +137,6 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           <span style={{ color: '#0066FF', fontWeight: 700 }}>{shortPct}%</span>
         </div>
 
-        {/* Medium trips */}
         <div
           onClick={() => onSelectHaul(activeHaul === 'medium' ? 'all' : 'medium')}
           style={{
@@ -180,7 +160,6 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           <span style={{ color: '#00C48C', fontWeight: 700 }}>{medPct}%</span>
         </div>
 
-        {/* Long trips */}
         <div
           onClick={() => onSelectHaul(activeHaul === 'long' ? 'all' : 'long')}
           style={{
@@ -205,7 +184,7 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Advisory & Methodology Disclosure */}
+      {/* Methodology & Coverage Disclosure */}
       <div
         style={{
           background: 'rgba(0, 102, 255, 0.04)',
@@ -221,7 +200,7 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         <span style={{ fontWeight: 700, color: '#0F1E36' }}>{dynamicAdvisory.title}: </span>
         {dynamicAdvisory.advisory}
         <div style={{ fontSize: 8.5, color: '#94A3B8', marginTop: 3 }}>
-          * Straight-line (Haversine) distance. 100% station pairs verified.
+          * Straight-line (Haversine) approx., not track length. {verifiedCount}/{totalCount} displayed OD pairs verified.
         </div>
       </div>
     </div>

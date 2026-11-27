@@ -138,7 +138,7 @@ def compute_wd_vs_we_hourly(df: pd.DataFrame) -> dict:
     }
 
 
-def aggregate_mode_period(df: pd.DataFrame) -> dict:
+def aggregate_mode_period(df: pd.DataFrame, top_limit: int = 30) -> dict:
     """Aggregate all metrics for a single mode within a specific time period."""
     wd_df = df[df["day_type"] == "Weekday"]
     we_df = df[df["day_type"] == "Weekend"]
@@ -155,9 +155,9 @@ def aggregate_mode_period(df: pd.DataFrame) -> dict:
         "unique_od_weekday": int(wd_df.groupby(["origin", "destination"]).ngroups) if not wd_df.empty else 0,
         "unique_od_weekend": int(we_df.groupby(["origin", "destination"]).ngroups) if not we_df.empty else 0,
         "top_od": {
-            "all": compute_top_od_records(df, n_all, limit=30),
-            "weekday": compute_top_od_records(wd_df, n_wd, limit=30),
-            "weekend": compute_top_od_records(we_df, n_we, limit=30),
+            "all": compute_top_od_records(df, n_all, limit=top_limit),
+            "weekday": compute_top_od_records(wd_df, n_wd, limit=top_limit),
+            "weekend": compute_top_od_records(we_df, n_we, limit=top_limit),
         },
         "heatmap": {
             "all": compute_heatmap_records(df),
@@ -230,17 +230,35 @@ def main():
             "intercity": aggregate_mode_period(i_sub),
         }
 
-    # Monthly totals for timeline verification
+    # Monthly periods & totals for timeline scrubbing (actual 2026 monthly observations)
     monthly_totals = []
+    monthly_periods = {}
     for ym in sorted(kom_df["year_month"].unique()):
         k_m = kom_df[kom_df["year_month"] == ym]
         i_m = ic_df[ic_df["year_month"] == ym]
+        wd_days = int(k_m[k_m["day_type"] == "Weekday"]["date_dt"].nunique())
+        we_days = int(k_m[k_m["day_type"] == "Weekend"]["date_dt"].nunique())
+        min_d = k_m["date_dt"].min().strftime("%Y-%m-%d")
+        max_d = k_m["date_dt"].max().strftime("%Y-%m-%d")
+
         monthly_totals.append({
             "year_month": ym,
             "days": int(k_m["date_dt"].nunique()),
+            "weekday_days": wd_days,
+            "weekend_days": we_days,
+            "date_range": f"{min_d} to {max_d}",
             "komuter_trips": int(k_m["ridership"].sum()),
             "intercity_trips": int(i_m["ridership"].sum()),
         })
+        monthly_periods[ym] = {
+            "label": f"{ym} ({min_d} to {max_d})",
+            "date_range": f"{min_d} to {max_d}",
+            "total_days": int(k_m["date_dt"].nunique()),
+            "weekday_days": wd_days,
+            "weekend_days": we_days,
+            "komuter": aggregate_mode_period(k_m, top_limit=20),
+            "intercity": aggregate_mode_period(i_m, top_limit=20),
+        }
 
     full_period = periods["12m"]
     output = {
@@ -263,6 +281,7 @@ def main():
         },
         "periods": periods,
         "monthly_totals": monthly_totals,
+        "monthly_periods": monthly_periods,
         # Backward-compatible top-level keys (now using corrected 2026 + fixed Friday classification)
         "weekday_hour_heatmap": {
             "komuter": full_period["komuter"]["heatmap"]["all"],
