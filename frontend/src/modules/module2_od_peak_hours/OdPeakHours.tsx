@@ -136,7 +136,7 @@ function SectionTitle({
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
       <TelemetryIcon name={icon} variant={variant} badge />
-      <span style={{ fontWeight: 600, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
+      <span style={{ fontWeight: 700, fontSize: 12.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
         {label}
       </span>
     </div>
@@ -340,7 +340,7 @@ export function OdPeakHours() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gridTemplateColumns: 'repeat(4, 1fr)',
           gap: 10,
           padding: '12px 16px 0',
           flexShrink: 0,
@@ -542,7 +542,8 @@ export function OdPeakHours() {
               style={{
                 ...cardStyle,
                 background: 'linear-gradient(135deg, #FFFFFF 0%, #F0F6FF 100%)',
-                borderColor: '#0066FF',
+                border: '1px solid rgba(0, 102, 255, 0.25)',
+                boxShadow: '0 2px 12px rgba(0, 102, 255, 0.1)',
                 padding: '12px 14px',
                 flexShrink: 0,
               }}

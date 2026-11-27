@@ -1,4 +1,5 @@
 import React from 'react';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   projectedGrowthPct?: number;
@@ -37,8 +38,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
       {/* KPI 1: Passenger Forecast Growth */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 16 }}>📈</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <TelemetryIcon name="trend-up" variant="cobalt" badge />
             <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Passenger Forecast</span>
           </div>
           <span
@@ -65,8 +66,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
       {/* KPI 2: Fuel Price Index */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 16 }}>⛽</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <TelemetryIcon name="fuel" variant="amber" badge />
             <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Fuel Price Index</span>
           </div>
           <span
@@ -93,8 +94,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
       {/* KPI 3: Vehicle Registrations */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 16 }}>🚗</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <TelemetryIcon name="car" variant="teal" badge />
             <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Vehicle Registrations</span>
           </div>
           <span
@@ -121,8 +122,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
       {/* KPI 4: Macro & Labour Driver */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 16 }}>💼</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <TelemetryIcon name="briefcase" variant="indigo" badge />
             <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Labour &amp; Economy</span>
           </div>
           <span

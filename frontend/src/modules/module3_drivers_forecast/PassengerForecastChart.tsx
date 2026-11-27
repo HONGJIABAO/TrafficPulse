@@ -250,7 +250,9 @@ export const PassengerForecastChart: React.FC<Props> = ({
           gap: 4,
           background: '#F1F4F9',
           padding: '2px',
-          borderRadius: 6,
+          borderRadius: 7,
+          border: '1px solid rgba(0, 102, 255, 0.1)',
+          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.04)',
         }}
       >
         {(['3_months', '6_months', '12_months'] as ForecastHorizonKey[]).map((h) => {
@@ -261,7 +263,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
               key={h}
               onClick={() => onSelectHorizon(h)}
               style={{
-                background: isActive ? '#0066FF' : 'transparent',
+                background: isActive ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
                 color: isActive ? '#FFFFFF' : '#475569',
                 border: 'none',
                 borderRadius: 5,
@@ -269,6 +271,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
                 fontSize: 11,
                 fontWeight: 700,
                 cursor: 'pointer',
+                boxShadow: isActive ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
                 transition: 'all 0.15s ease',
               }}
             >

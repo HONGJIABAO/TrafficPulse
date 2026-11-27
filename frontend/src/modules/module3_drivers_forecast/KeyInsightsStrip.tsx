@@ -1,10 +1,11 @@
 import React from 'react';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 const cardStyle: React.CSSProperties = {
   background: '#FFFFFF',
   borderRadius: 12,
-  border: '1px solid rgba(0, 102, 255, 0.12)',
-  boxShadow: '0 2px 10px rgba(0, 102, 255, 0.06)',
+  border: '1px solid rgba(0, 102, 255, 0.1)',
+  boxShadow: '0 2px 12px rgba(0, 102, 255, 0.07)',
   padding: '12px 14px',
   display: 'flex',
   alignItems: 'center',
@@ -25,20 +26,14 @@ export const KeyInsightsStrip: React.FC = () => {
     >
       {/* Insight 1: Ridership Trajectory */}
       <div style={cardStyle}>
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
-            background: 'rgba(0, 102, 255, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 22,
-            flexShrink: 0,
-          }}
-        >
-          📈
+        <div style={{ flexShrink: 0 }}>
+          <TelemetryIcon
+            name="trend-up"
+            variant="cobalt"
+            badge
+            size={22}
+            style={{ width: 44, height: 44, borderRadius: 10 }}
+          />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>
@@ -58,20 +53,14 @@ export const KeyInsightsStrip: React.FC = () => {
 
       {/* Insight 2: Fuel Price Elasticity */}
       <div style={cardStyle}>
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
-            background: 'rgba(255, 140, 0, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 22,
-            flexShrink: 0,
-          }}
-        >
-          ⛽
+        <div style={{ flexShrink: 0 }}>
+          <TelemetryIcon
+            name="fuel"
+            variant="amber"
+            badge
+            size={22}
+            style={{ width: 44, height: 44, borderRadius: 10 }}
+          />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>
@@ -91,20 +80,14 @@ export const KeyInsightsStrip: React.FC = () => {
 
       {/* Insight 3: Road Congestion Capture */}
       <div style={cardStyle}>
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
-            background: 'rgba(0, 196, 140, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 22,
-            flexShrink: 0,
-          }}
-        >
-          🚗
+        <div style={{ flexShrink: 0 }}>
+          <TelemetryIcon
+            name="car"
+            variant="teal"
+            badge
+            size={22}
+            style={{ width: 44, height: 44, borderRadius: 10 }}
+          />
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>

@@ -6,6 +6,7 @@ import type {
   FeatureImportance,
   DriverCorrelation,
 } from './types';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   pendingTimeRange: TimeRangeFilter;
@@ -23,8 +24,8 @@ interface Props {
 const cardStyle: React.CSSProperties = {
   background: '#FFFFFF',
   borderRadius: 12,
-  border: '1px solid rgba(0, 102, 255, 0.12)',
-  boxShadow: '0 2px 10px rgba(0, 102, 255, 0.06)',
+  border: '1px solid rgba(0, 102, 255, 0.1)',
+  boxShadow: '0 2px 12px rgba(0, 102, 255, 0.07)',
   padding: '12px 14px',
   display: 'flex',
   flexDirection: 'column',
@@ -32,9 +33,9 @@ const cardStyle: React.CSSProperties = {
 
 const selectStyle: React.CSSProperties = {
   width: '100%',
-  border: '1px solid rgba(0, 102, 255, 0.22)',
-  borderRadius: 8,
-  padding: '7px 9px',
+  border: '1px solid rgba(0, 102, 255, 0.2)',
+  borderRadius: 7,
+  padding: '6px 8px',
   fontSize: 12,
   color: '#0F1E36',
   background: '#F8FAFF',
@@ -48,32 +49,46 @@ const applyBtnStyle: React.CSSProperties = {
   background: 'linear-gradient(135deg, #0066FF, #0052CC)',
   color: '#FFFFFF',
   border: 'none',
-  borderRadius: 8,
-  padding: '8px',
+  borderRadius: 7,
+  padding: '7px 10px',
   fontSize: 12,
-  fontWeight: 700,
+  fontWeight: 600,
   cursor: 'pointer',
-  boxShadow: '0 2px 8px rgba(0, 102, 255, 0.28)',
-};
-
-const resetBtnStyle: React.CSSProperties = {
-  width: 32,
-  background: '#F1F4F9',
-  color: '#64748B',
-  border: '1px solid rgba(0, 0, 0, 0.12)',
-  borderRadius: 8,
-  fontSize: 15,
-  cursor: 'pointer',
+  boxShadow: '0 2px 8px rgba(0, 102, 255, 0.3)',
+  height: 32,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 };
 
-function SectionTitle({ icon, label }: { icon: string; label: string }) {
+const resetBtnStyle: React.CSSProperties = {
+  width: 32,
+  height: 32,
+  background: '#F1F4F9',
+  color: '#64748B',
+  border: '1px solid rgba(0, 0, 0, 0.1)',
+  borderRadius: 7,
+  fontSize: 15,
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexShrink: 0,
+};
+
+function SectionTitle({
+  icon,
+  label,
+  variant = 'cobalt',
+}: {
+  icon: TelemetryIconName;
+  label: string;
+  variant?: TelemetryVariant;
+}) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 8 }}>
-      <span style={{ fontSize: 15 }}>{icon}</span>
-      <span style={{ fontWeight: 700, fontSize: 12.5, color: '#0F1E36', letterSpacing: '0.3px' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <TelemetryIcon name={icon} variant={variant} badge />
+      <span style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
         {label}
       </span>
     </div>
@@ -86,9 +101,9 @@ function FilterRow({ label, children }: { label: string; children: React.ReactNo
       <div
         style={{
           fontSize: 10,
-          color: '#475569',
-          fontWeight: 700,
-          marginBottom: 4,
+          color: '#64748B',
+          fontWeight: 600,
+          marginBottom: 3,
           textTransform: 'uppercase',
           letterSpacing: '0.5px',
         }}
@@ -138,8 +153,8 @@ export const DriversFilterCard: React.FC<Props> = ({
     >
       {/* ── 1. Filter Controls ────────────────────────────────────────────────── */}
       <div style={cardStyle}>
-        <SectionTitle icon="🎛️" label="Analysis Filters" />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <SectionTitle icon="telemetry-sliders" variant="cobalt" label="Analysis Filters" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           <FilterRow label="Historical Horizon">
             <select
               value={pendingTimeRange}
@@ -177,9 +192,9 @@ export const DriversFilterCard: React.FC<Props> = ({
           </FilterRow>
         </div>
 
-        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
           <button onClick={onApply} style={applyBtnStyle}>
-            Apply Filters
+            Apply
           </button>
           <button onClick={onReset} style={resetBtnStyle} title="Reset filters">
             ↺
@@ -190,7 +205,7 @@ export const DriversFilterCard: React.FC<Props> = ({
       {/* ── 2. Driver Correlation & Weight ────────────────────────────────────── */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <SectionTitle icon="📊" label="Driver Sensitivity (ML)" />
+          <SectionTitle icon="chart-bar" variant="teal" label="Driver Sensitivity (ML)" />
           <span style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>LGBM Weights</span>
         </div>
 
@@ -240,7 +255,7 @@ export const DriversFilterCard: React.FC<Props> = ({
 
       {/* ── 3. Model Performance & Diagnostics ─────────────────────────────────── */}
       <div style={cardStyle}>
-        <SectionTitle icon="🤖" label="Model Diagnostics" />
+        <SectionTitle icon="ai-chip" variant="indigo" label="Model Diagnostics" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, fontSize: 11.5, color: '#334155' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>Architecture:</span>
@@ -263,7 +278,7 @@ export const DriversFilterCard: React.FC<Props> = ({
 
       {/* ── 4. Macro Economic Context ─────────────────────────────────────────── */}
       <div style={{ ...cardStyle, flex: 1, minHeight: 105 }}>
-        <SectionTitle icon="🌐" label="Macro Environment" />
+        <SectionTitle icon="globe-network" variant="amber" label="Macro Environment" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 11, color: '#334155' }}>
           <div>
             <div style={{ fontWeight: 700, color: '#0F1E36', display: 'flex', justifyContent: 'space-between' }}>

@@ -11,6 +11,7 @@ import { DriversFilterCard } from './DriversFilterCard';
 import { RidershipVsDriversChart } from './RidershipVsDriversChart';
 import { PassengerForecastChart } from './PassengerForecastChart';
 import { KeyInsightsStrip } from './KeyInsightsStrip';
+import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 const forecastData = rawForecastData as unknown as ForecastDemandSchema;
 
@@ -26,11 +27,19 @@ const cardStyle: React.CSSProperties = {
   overflow: 'hidden',
 };
 
-function SectionTitle({ icon, label }: { icon: string; label: string }) {
+function SectionTitle({
+  icon,
+  label,
+  variant = 'cobalt',
+}: {
+  icon: TelemetryIconName;
+  label: string;
+  variant?: TelemetryVariant;
+}) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-      <span style={{ fontSize: 16 }}>{icon}</span>
-      <span style={{ fontWeight: 700, fontSize: 13.5, color: '#0F1E36', letterSpacing: '0.2px' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+      <TelemetryIcon name={icon} variant={variant} badge />
+      <span style={{ fontWeight: 700, fontSize: 13, color: '#0F1E36', letterSpacing: '0.2px' }}>
         {label}
       </span>
     </div>
@@ -138,7 +147,7 @@ export function DriversForecast() {
             {/* Chart 1: Ridership vs Key Drivers */}
             <div style={{ ...cardStyle, height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <SectionTitle icon="📉" label="Ridership vs Key Drivers" />
+                <SectionTitle icon="chart-bar" variant="cobalt" label="Ridership vs Key Drivers" />
                 <span
                   style={{
                     fontSize: 10.5,
@@ -158,17 +167,17 @@ export function DriversForecast() {
                   timeRange={selectedTimeRange}
                   driverFocus={selectedDriverFocus}
                   onSelectDriverFocus={(focus) => {
-                    setSelectedDriverFocus(focus);
                     setPendingDriverFocus(focus);
+                    setSelectedDriverFocus(focus);
                   }}
                 />
               </div>
             </div>
 
-            {/* Chart 2: Passenger Demand Forecast & Confidence Band */}
+            {/* Chart 2: Passenger Demand Forecast (Fan Chart with 95% CI) */}
             <div style={{ ...cardStyle, height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <SectionTitle icon="🔮" label="Passenger Demand Forecast" />
+                <SectionTitle icon="forecast-mesh" variant="indigo" label="Passenger Demand Forecast (Ensemble)" />
                 <span
                   style={{
                     fontSize: 10.5,
@@ -179,7 +188,7 @@ export function DriversForecast() {
                     borderRadius: 5,
                   }}
                 >
-                  LightGBM + HW (95% CI)
+                  95% Confidence Band
                 </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
@@ -187,13 +196,16 @@ export function DriversForecast() {
                   historicalData={forecastData.monthly_driver_trend}
                   forecasts={forecastData.forecasts}
                   activeHorizon={selectedHorizon}
-                  onSelectHorizon={setSelectedHorizon}
+                  onSelectHorizon={(horizon) => {
+                    setPendingHorizon(horizon);
+                    setSelectedHorizon(horizon);
+                  }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Bottom of Graph Space: 3 Key Insights Strip */}
+          {/* Bottom: 3 Key Insights Nested inside Graph Space */}
           <KeyInsightsStrip />
         </div>
       </div>

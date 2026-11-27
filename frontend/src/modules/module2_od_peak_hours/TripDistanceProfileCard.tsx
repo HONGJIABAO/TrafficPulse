@@ -99,10 +99,10 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
       {/* 3-Part Color Distribution Bar */}
       <div
         style={{
-          background: '#F8FAFC',
-          borderRadius: 6,
+          background: '#F8FAFF',
+          borderRadius: 7,
           padding: '6px 8px',
-          border: '1px solid rgba(148, 163, 184, 0.2)',
+          border: '1px solid rgba(0, 102, 255, 0.1)',
           display: 'flex',
           flexDirection: 'column',
           gap: 4,
@@ -167,21 +167,22 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-start',
-                padding: '5px 7px',
+                padding: '6px 8px',
                 borderRadius: 7,
                 border: isActive
                   ? '1.5px solid #0066FF'
-                  : '1px solid rgba(148, 163, 184, 0.25)',
-                background: isActive ? '#E8F0FF' : '#F8FAFC',
+                  : '1px solid rgba(0, 102, 255, 0.1)',
+                background: isActive ? 'linear-gradient(135deg, #F0F6FF 0%, #E8F0FF 100%)' : '#FFFFFF',
+                boxShadow: isActive ? '0 2px 6px rgba(0, 102, 255, 0.12)' : '0 1px 2px rgba(0, 0, 0, 0.02)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 textAlign: 'left',
               }}
               onMouseEnter={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F1F4F9';
+                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F8FAFF';
               }}
               onMouseLeave={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F8FAFC';
+                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -204,20 +205,21 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         })}
       </div>
 
-      {/* Rolling Stock & Fleet Sizing Advisory */}
+      {/* Dynamic Rolling Stock Advisory */}
       <div
         style={{
-          fontSize: 9.5,
-          color: '#475569',
-          lineHeight: 1.35,
           background: 'rgba(0, 102, 255, 0.04)',
-          borderRadius: 6,
-          padding: '5px 8px',
-          borderLeft: `3px solid ${dynamicAdvisory.color}`,
+          borderRadius: 7,
+          padding: '7px 9px',
+          border: '1px solid rgba(0, 102, 255, 0.1)',
         }}
       >
-        <span style={{ fontWeight: 700, color: '#0F1E36' }}>Rolling Stock Directive: </span>
-        {dynamicAdvisory.advisory}
+        <div style={{ fontSize: 10, fontWeight: 700, color: dynamicAdvisory.color, marginBottom: 2 }}>
+          {dynamicAdvisory.title}
+        </div>
+        <div style={{ fontSize: 9.5, color: '#475569', lineHeight: 1.35 }}>
+          {dynamicAdvisory.advisory}
+        </div>
       </div>
     </div>
   );

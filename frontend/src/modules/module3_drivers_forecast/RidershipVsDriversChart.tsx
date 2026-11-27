@@ -306,13 +306,15 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
           gap: 3,
           background: '#F1F4F9',
           padding: '2px',
-          borderRadius: 6,
+          borderRadius: 7,
+          border: '1px solid rgba(0, 102, 255, 0.1)',
+          boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.04)',
         }}
       >
         <button
           onClick={() => handlePillClick('fuel')}
           style={{
-            background: activeFocus === 'fuel' ? '#0066FF' : 'transparent',
+            background: activeFocus === 'fuel' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
             color: activeFocus === 'fuel' ? '#FFFFFF' : '#475569',
             border: 'none',
             borderRadius: 5,
@@ -320,6 +322,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
             fontSize: 11,
             fontWeight: 700,
             cursor: 'pointer',
+            boxShadow: activeFocus === 'fuel' ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
             transition: 'all 0.15s ease',
           }}
           title="Compare Ridership vs Fuel Price (RON95 & Diesel)"
@@ -329,7 +332,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         <button
           onClick={() => handlePillClick('registrations')}
           style={{
-            background: activeFocus === 'registrations' ? '#0066FF' : 'transparent',
+            background: activeFocus === 'registrations' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
             color: activeFocus === 'registrations' ? '#FFFFFF' : '#475569',
             border: 'none',
             borderRadius: 5,
@@ -337,6 +340,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
             fontSize: 11,
             fontWeight: 700,
             cursor: 'pointer',
+            boxShadow: activeFocus === 'registrations' ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
             transition: 'all 0.15s ease',
           }}
           title="Compare Ridership vs Vehicle Registrations"
@@ -346,7 +350,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         <button
           onClick={() => handlePillClick('labour')}
           style={{
-            background: activeFocus === 'labour' ? '#0066FF' : 'transparent',
+            background: activeFocus === 'labour' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
             color: activeFocus === 'labour' ? '#FFFFFF' : '#475569',
             border: 'none',
             borderRadius: 5,
@@ -354,6 +358,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
             fontSize: 11,
             fontWeight: 700,
             cursor: 'pointer',
+            boxShadow: activeFocus === 'labour' ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
             transition: 'all 0.15s ease',
           }}
           title="Compare Ridership vs Jobless Rate"
