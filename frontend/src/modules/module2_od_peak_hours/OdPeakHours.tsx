@@ -19,6 +19,10 @@ import { TripDistanceProfileCard } from './TripDistanceProfileCard';
 import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 import { generateDynamicInsights, selectActiveDataset } from './odAnalyticsUtils';
 
+const StationDemandIntelligence = React.lazy(
+  () => import('./station_demand/StationDemandIntelligence')
+);
+
 const odSummaryData = rawOdSummaryData as unknown as OdSummarySchema;
 
 const cardStyle: React.CSSProperties = {
@@ -131,12 +135,12 @@ export function OdPeakHours() {
   const [selectedFlowId, setSelectedFlowId] = useState<string | null>(null);
   const [activeHaul, setActiveHaul] = useState<HaulFilter>('all');
 
-  const isRapidRailPending = pendingMode === 'rapid_rail';
+  const hasFullRapidRail = Boolean(odSummaryData.periods?.q1?.rapid_rail);
+  const isRapidRailLocked = pendingMode === 'rapid_rail' && !hasFullRapidRail;
 
   const handlePendingModeChange = (nextMode: OdModeFilter) => {
     setPendingMode(nextMode);
-    if (nextMode === 'rapid_rail') {
-      // Rapid Rail daily aggregate dataset only supports Full 2026 & All Days
+    if (nextMode === 'rapid_rail' && !hasFullRapidRail) {
       setPendingTimeRange('12m');
       setPendingDayType('all');
     }
@@ -144,9 +148,10 @@ export function OdPeakHours() {
 
   const handleApply = () => {
     setSelectedMode(pendingMode);
-    setSelectedTimeRange(pendingMode === 'rapid_rail' ? '12m' : pendingTimeRange);
-    setSelectedDayType(pendingMode === 'rapid_rail' ? 'all' : pendingDayType);
-    if (pendingMode === 'rapid_rail') {
+    const lockSubFilters = pendingMode === 'rapid_rail' && !hasFullRapidRail;
+    setSelectedTimeRange(lockSubFilters ? '12m' : pendingTimeRange);
+    setSelectedDayType(lockSubFilters ? 'all' : pendingDayType);
+    if (lockSubFilters) {
       setTimelineMonthKey(null);
     }
     setSelectedFlowId(null);
@@ -186,9 +191,22 @@ export function OdPeakHours() {
     return haulFilteredFlows.find((f) => f.id === selectedFlowId) || null;
   }, [haulFilteredFlows, selectedFlowId]);
 
-  // Distance & Haul Profile metrics derived strictly from verified coordinates in current dataset
+  // Distance & Haul Profile metrics: prefer full-population OD summary metrics over top-30 sample when un-filtered
   const distanceProfileMetrics = useMemo(() => {
-    const flowsWithDist = dataset.resolvedFlows.filter((f) => f.distanceKm !== null && f.volume > 0);
+    if (activeHaul === 'all' && dataset.fullDistanceStats) {
+      return {
+        avgDist: dataset.fullDistanceStats.avgDist,
+        shortPct: dataset.fullDistanceStats.shortPct,
+        medPct: dataset.fullDistanceStats.medPct,
+        longPct: dataset.fullDistanceStats.longPct,
+        verifiedCount: dataset.fullDistanceStats.mappedPairs,
+        totalCount: dataset.fullDistanceStats.totalPairs,
+        mappedCoveragePct: dataset.fullDistanceStats.mappedCoveragePct,
+        isPopulationLevel: dataset.fullDistanceStats.isPopulationLevel,
+      };
+    }
+
+    const flowsWithDist = haulFilteredFlows.filter((f) => f.distanceKm !== null && f.volume > 0);
     const totalVol = flowsWithDist.reduce((sum, f) => sum + f.volume, 0);
     if (totalVol <= 0 || flowsWithDist.length === 0) {
       return {
@@ -197,7 +215,9 @@ export function OdPeakHours() {
         medPct: 0,
         longPct: 0,
         verifiedCount: 0,
-        totalCount: dataset.resolvedFlows.length,
+        totalCount: haulFilteredFlows.length,
+        mappedCoveragePct: null,
+        isPopulationLevel: false,
       };
     }
 
@@ -213,9 +233,11 @@ export function OdPeakHours() {
       medPct: Math.round((medVol / totalVol) * 1000) / 10,
       longPct: Math.round((longVol / totalVol) * 1000) / 10,
       verifiedCount: flowsWithDist.length,
-      totalCount: dataset.resolvedFlows.length,
+      totalCount: haulFilteredFlows.length,
+      mappedCoveragePct: null,
+      isPopulationLevel: false,
     };
-  }, [dataset.resolvedFlows]);
+  }, [activeHaul, dataset.fullDistanceStats, haulFilteredFlows]);
 
   // Dynamic Analytical Insights & Evidence-Based SDG Alignment
   const dynamicInsights = useMemo(() => {
@@ -315,7 +337,7 @@ export function OdPeakHours() {
               }}
             >
               {dataset.hourlySupported && peak.busiestHour
-                ? `+${peak.busiestHour.pctAboveDailyMean}% vs hr avg`
+                ? `${selectedMode === 'all' ? 'KTMB · ' : ''}+${peak.busiestHour.pctAboveDailyMean}% vs hr avg`
                 : 'Daily OD Only'}
             </span>
           </div>
@@ -326,7 +348,9 @@ export function OdPeakHours() {
           </div>
           <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, lineHeight: 1.35 }}>
             {dataset.hourlySupported && peak.busiestHour
-              ? `${Math.round(peak.busiestHour.avgTrips).toLocaleString()} trips/hr · Eve: ${
+              ? `${selectedMode === 'all' ? 'KTMB only · ' : ''}${Math.round(
+                  peak.busiestHour.avgTrips
+                ).toLocaleString()} trips/hr · Eve: ${
                   peak.eveningPeak ? peak.eveningPeak.windowLabel : '—'
                 }`
               : 'Rapid Rail open data contains daily totals without hourly timestamps'}
@@ -446,16 +470,18 @@ export function OdPeakHours() {
           </div>
           <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
             {dataset.hourlySupported && peak.middayLull
-              ? `${selectedMode === 'all' && !dataset.rapidRailCoverageNote ? 'KTMB only · ' : ''}12 PM: ${Math.round(peak.middayLull.noonTrips).toLocaleString()}/hr (-${
-                  peak.middayLull.dropVsBusiestPct
-                }% vs peak)`
+              ? `${selectedMode === 'all' ? 'KTMB hourly · ' : ''}12 PM: ${Math.round(
+                  peak.middayLull.noonTrips
+                ).toLocaleString()}/hr (-${peak.middayLull.dropVsBusiestPct}% vs peak)`
+              : dataset.weekdayAvgDailyTrips !== null && dataset.weekendAvgDailyTrips !== null
+              ? `Mon–Fri (${dataset.weekdayDays}d) vs Sat–Sun (${dataset.weekendDays}d) · Midday hr N/A`
               : `Mon–Fri (${dataset.weekdayDays}d) vs Sat–Sun (${dataset.weekendDays}d) unavailable`}
           </div>
         </div>
       </div>
 
-      {/* Transparent Coverage Disclosure Banner (whenever sub-period/day limitations apply) */}
-      {(dataset.rapidRailCoverageNote || !dataset.hasData) && (
+      {/* Transparent Coverage Disclosure Banner (whenever sub-period/day limitations or Shah Alam note apply) */}
+      {(dataset.rapidRailCoverageNote || !dataset.hasData || (selectedMode === 'rapid_rail' && dataset.shahAlamNote)) && (
         <div style={{ padding: '0 16px', flexShrink: 0 }}>
           <div
             style={{
@@ -474,7 +500,9 @@ export function OdPeakHours() {
           >
             <span>
               <strong>Data Coverage Notice:</strong>{' '}
-              {!dataset.hasData ? dataset.emptyReason : dataset.rapidRailCoverageNote}
+              {!dataset.hasData
+                ? dataset.emptyReason
+                : dataset.rapidRailCoverageNote || dataset.shahAlamNote}
             </span>
             {!dataset.hasData && (
               <button
@@ -532,7 +560,7 @@ export function OdPeakHours() {
                   style={selectStyle}
                 >
                   <option value="all">All Rail Modes (2026 Common Window)</option>
-                  <option value="rapid_rail">Rapid Rail (LRT &amp; MRT — Daily Only)</option>
+                  <option value="rapid_rail">Rapid Rail (LRT &amp; MRT — Full Daily OD)</option>
                   <option value="komuter">KTM Komuter (Hourly &amp; Daily)</option>
                   <option value="intercity">KTM Intercity &amp; ETS (Hourly &amp; Daily)</option>
                 </select>
@@ -543,12 +571,12 @@ export function OdPeakHours() {
                 <select
                   aria-label="Time Horizon"
                   value={pendingTimeRange}
-                  disabled={isRapidRailPending}
+                  disabled={isRapidRailLocked}
                   onChange={(e) => setPendingTimeRange(e.target.value as TimeRangeFilter)}
                   style={{
                     ...selectStyle,
-                    opacity: isRapidRailPending ? 0.55 : 1,
-                    cursor: isRapidRailPending ? 'not-allowed' : 'pointer',
+                    opacity: isRapidRailLocked ? 0.55 : 1,
+                    cursor: isRapidRailLocked ? 'not-allowed' : 'pointer',
                   }}
                 >
                   <option value="12m">Full 2026 Observed (Jan 1 – Nov 20 · 324d)</option>
@@ -564,12 +592,12 @@ export function OdPeakHours() {
                 <select
                   aria-label="Day Profile Type"
                   value={pendingDayType}
-                  disabled={isRapidRailPending}
+                  disabled={isRapidRailLocked}
                   onChange={(e) => setPendingDayType(e.target.value as DayTypeFilter)}
                   style={{
                     ...selectStyle,
-                    opacity: isRapidRailPending ? 0.55 : 1,
-                    cursor: isRapidRailPending ? 'not-allowed' : 'pointer',
+                    opacity: isRapidRailLocked ? 0.55 : 1,
+                    cursor: isRapidRailLocked ? 'not-allowed' : 'pointer',
                   }}
                 >
                   <option value="all">All Days (Mon – Sun)</option>
@@ -579,9 +607,18 @@ export function OdPeakHours() {
               </FilterRow>
             </div>
 
-            {isRapidRailPending && (
-              <div style={{ fontSize: 9.5, color: '#EA580C', marginTop: 6, lineHeight: 1.35 }}>
-                Rapid Rail local files provide Full 2026 All-Days Top-20 OD pairs only. Sub-period and weekday filters disabled.
+            {pendingMode === 'rapid_rail' && (
+              <div
+                style={{
+                  fontSize: 9.5,
+                  color: isRapidRailLocked ? '#EA580C' : '#0052CC',
+                  marginTop: 6,
+                  lineHeight: 1.35,
+                }}
+              >
+                {isRapidRailLocked
+                  ? 'Rapid Rail fixture provides Full 2026 All-Days OD pairs only. Sub-period and weekday filters disabled.'
+                  : 'Rapid Rail supports Full 2026, Q1–Q4, Monthly & Weekday/Weekend daily OD slicing across 17,048 pairs (hourly unavailable).'}
               </div>
             )}
 
@@ -605,6 +642,9 @@ export function OdPeakHours() {
             longPct={distanceProfileMetrics.longPct}
             verifiedCount={distanceProfileMetrics.verifiedCount}
             totalCount={distanceProfileMetrics.totalCount}
+            mappedCoveragePct={distanceProfileMetrics.mappedCoveragePct}
+            totalPairsCount={distanceProfileMetrics.totalCount}
+            isPopulationLevel={distanceProfileMetrics.isPopulationLevel}
           />
 
           {/* Card: Active Corridor Focus Inspector */}
@@ -725,7 +765,7 @@ export function OdPeakHours() {
             months={odSummaryData.monthly_totals || []}
             selectedMonthKey={timelineMonthKey}
             onSelectMonthKey={setTimelineMonthKey}
-            disabled={selectedMode === 'rapid_rail'}
+            disabled={selectedMode === 'rapid_rail' && !hasFullRapidRail}
             style={{
               borderRadius: '0 0 12px 12px',
               border: 'none',
@@ -803,7 +843,36 @@ export function OdPeakHours() {
         </div>
       </div>
 
-      {/* ── 4. Dynamic Analytical Insights & Service Planning Strip ─────────── */}
+      {/* ── 4. Passenger Demand & Capacity Intelligence (Station Demand) ────── */}
+      <section
+        aria-label="Passenger Demand & Capacity Intelligence"
+        data-testid="passenger-demand-capacity-section"
+        style={{ padding: '0 16px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 12 }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <TelemetryIcon name="od-route" variant="indigo" badge size={14} style={{ width: 26, height: 26 }} />
+            <span style={{ fontSize: 13.5, fontWeight: 800, color: '#0F1E36', letterSpacing: '0.2px' }}>
+              Passenger Demand &amp; Capacity Intelligence
+            </span>
+          </div>
+          <span style={{ fontSize: 10.5, color: '#64748B' }}>
+            Station Demand Module (Active) · Parallel Capacity Screening Slot Ready
+          </span>
+        </div>
+
+        <React.Suspense
+          fallback={
+            <div style={{ ...cardStyle, fontSize: 12, color: '#64748B' }}>
+              Loading Station-Level Passenger Demand Intelligence…
+            </div>
+          }
+        >
+          <StationDemandIntelligence />
+        </React.Suspense>
+      </section>
+
+      {/* ── 5. Dynamic Analytical Insights & Service Planning Strip ─────────── */}
       <div style={{ padding: '0 16px', flexShrink: 0 }}>
         <OperatorInsightStrip insights={dynamicInsights} />
       </div>

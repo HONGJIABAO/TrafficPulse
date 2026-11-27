@@ -47,6 +47,22 @@ export interface WeekdayVsWeekendData {
   weekend: HourlyPoint[];
 }
 
+export interface DistanceStats {
+  total_trips: number;
+  mapped_trips: number;
+  mapped_coverage_pct: number;
+  total_pairs: number;
+  mapped_pairs: number;
+  weighted_distance_sum: number;
+  weighted_avg_km: number | null;
+  short_trips: number;
+  medium_trips: number;
+  long_trips: number;
+  short_pct: number;
+  medium_pct: number;
+  long_pct: number;
+}
+
 export interface ModePeriodSummary {
   total_trips: number;
   weekday_trips: number;
@@ -59,12 +75,17 @@ export interface ModePeriodSummary {
     weekday: OdRawPair[];
     weekend: OdRawPair[];
   };
-  heatmap: {
+  distance_stats?: {
+    all: DistanceStats;
+    weekday: DistanceStats;
+    weekend: DistanceStats;
+  };
+  heatmap?: {
     all: HeatmapPoint[];
     weekday: HeatmapPoint[];
     weekend: HeatmapPoint[];
   };
-  weekday_vs_weekend: WeekdayVsWeekendData;
+  weekday_vs_weekend?: WeekdayVsWeekendData;
 }
 
 export interface PeriodDataset {
@@ -75,6 +96,7 @@ export interface PeriodDataset {
   weekend_days: number;
   komuter: ModePeriodSummary;
   intercity: ModePeriodSummary;
+  rapid_rail?: ModePeriodSummary;
 }
 
 export interface MonthlyTotalRecord {
@@ -85,6 +107,7 @@ export interface MonthlyTotalRecord {
   date_range: string;
   komuter_trips: number;
   intercity_trips: number;
+  rapid_rail_trips?: number;
 }
 
 export interface DatasetQualityReport {
@@ -110,12 +133,20 @@ export interface OdSummarySchema {
     weekend_days: number;
     day_classification_rule: string;
     corridor_definition: string;
+    distance_methodology?: string;
     data_quality: {
       komuter_2026: DatasetQualityReport;
       intercity_2026: DatasetQualityReport;
       rapid_rail_2026: {
-        note: string;
-        top_pairs_count: number;
+        note?: string;
+        top_pairs_count?: number;
+        top_pairs_visual_limit?: number;
+        non_a0_total_trips?: number;
+        shah_alam_discrepancy?: {
+          note: string;
+          jan_jul_od_trips: number;
+          aug_nov_od_trips: number;
+        };
       };
     };
   };

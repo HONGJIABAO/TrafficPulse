@@ -1,0 +1,180 @@
+{
+  "generated_at": "2026-11-28T03:03:45.228116+08:00",
+  "aligned_common_window": "2026-01-01 to 2026-11-20 (324 days: 232 Mon-Fri, 92 Sat-Sun)",
+  "services": {
+    "komuter": {
+      "service": "komuter",
+      "service_label": "KTM Komuter",
+      "raw_total_rows": 1555187,
+      "full_file_date_range": "2026-01-01 to 2026-11-20",
+      "full_file_days": 324,
+      "aligned_window_rows": 1555187,
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "missing_calendar_days": 0,
+      "null_counts": {
+        "date": 0,
+        "time": 0,
+        "origin": 0,
+        "destination": 0,
+        "ridership": 0
+      },
+      "non_positive_rows": 0,
+      "exact_duplicate_rows": 0,
+      "total_origin_trips_aligned": 7405913,
+      "reconciliation_vs_ktmb_daily": {
+        "matched_dates": 324,
+        "exact_zero_delta_dates": 324,
+        "max_abs_delta": 0,
+        "official_daily_total": 7405913
+      }
+    },
+    "intercity": {
+      "service": "intercity",
+      "service_label": "KTM Intercity",
+      "raw_total_rows": 177155,
+      "full_file_date_range": "2026-01-01 to 2026-11-20",
+      "full_file_days": 324,
+      "aligned_window_rows": 177155,
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "missing_calendar_days": 0,
+      "null_counts": {
+        "date": 0,
+        "time": 0,
+        "origin": 0,
+        "destination": 0,
+        "ridership": 0
+      },
+      "non_positive_rows": 0,
+      "exact_duplicate_rows": 0,
+      "total_origin_trips_aligned": 968886,
+      "reconciliation_vs_ktmb_daily": {
+        "matched_dates": 324,
+        "exact_zero_delta_dates": 324,
+        "max_abs_delta": 0,
+        "official_daily_total": 968886
+      }
+    },
+    "komuter_utara": {
+      "service": "komuter_utara",
+      "service_label": "KTM Komuter Utara",
+      "raw_total_rows": 1333004,
+      "full_file_date_range": "2026-01-01 to 2026-11-26",
+      "full_file_days": 330,
+      "aligned_window_rows": 1308818,
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "missing_calendar_days": 0,
+      "null_counts": {
+        "date": 0,
+        "time": 0,
+        "origin": 0,
+        "destination": 0,
+        "ridership": 0
+      },
+      "non_positive_rows": 0,
+      "exact_duplicate_rows": 0,
+      "total_origin_trips_aligned": 5672392,
+      "reconciliation_vs_ktmb_daily": {
+        "matched_dates": 324,
+        "exact_zero_delta_dates": 324,
+        "max_abs_delta": 0,
+        "official_daily_total": 5672392
+      }
+    },
+    "ets": {
+      "service": "ets",
+      "service_label": "KTM ETS",
+      "raw_total_rows": 769250,
+      "full_file_date_range": "2026-01-01 to 2026-11-26",
+      "full_file_days": 330,
+      "aligned_window_rows": 755631,
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "missing_calendar_days": 0,
+      "null_counts": {
+        "date": 0,
+        "time": 0,
+        "origin": 0,
+        "destination": 0,
+        "ridership": 0
+      },
+      "non_positive_rows": 0,
+      "exact_duplicate_rows": 0,
+      "total_origin_trips_aligned": 5699796,
+      "reconciliation_vs_ktmb_daily": {
+        "matched_dates": 324,
+        "exact_zero_delta_dates": 324,
+        "max_abs_delta": 0,
+        "official_daily_total": 5699796
+      }
+    },
+    "shuttle_tebrau": {
+      "service": "shuttle_tebrau",
+      "service_label": "Shuttle Tebrau",
+      "raw_total_rows": 9090,
+      "full_file_date_range": "2026-01-01 to 2026-11-26",
+      "full_file_days": 330,
+      "aligned_window_rows": 8926,
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "missing_calendar_days": 0,
+      "null_counts": {
+        "date": 0,
+        "time": 0,
+        "origin": 0,
+        "destination": 0,
+        "ridership": 0
+      },
+      "non_positive_rows": 0,
+      "exact_duplicate_rows": 0,
+      "total_origin_trips_aligned": 2778383,
+      "reconciliation_vs_ktmb_daily": {
+        "matched_dates": 324,
+        "exact_zero_delta_dates": 324,
+        "max_abs_delta": 0,
+        "official_daily_total": 2778383
+      }
+    },
+    "rapid_rail": {
+      "service": "rapid_rail",
+      "service_label": "Rapid Rail (LRT / MRT / Monorail)",
+      "aligned_window_date_range": "2026-01-01 to 2026-11-20",
+      "aligned_days": 324,
+      "row_categories": {
+        "station_to_station": {
+          "rows": 5525820,
+          "trips": 196631192
+        },
+        "station_to_a0": {
+          "rows": 53784,
+          "trips": 196631192
+        },
+        "a0_to_station": {
+          "rows": 43416,
+          "trips": 196631192
+        }
+      },
+      "a0_origin_reconciliation": {
+        "station_date_pairs_checked": 53784,
+        "exact_zero_delta_matches": 53784,
+        "max_abs_delta": 0
+      },
+      "total_origin_trips_aligned": 196631192,
+      "shah_alam_audit": {
+        "stations_in_od": 20,
+        "jan1_to_jul31_trips": 0,
+        "aug1_to_nov20_trips": 3265221,
+        "positive_od_days": 112,
+        "active_window": "2026-08-01 to 2026-11-20 (112 active days; 0 recorded Jan-Jul 2026)"
+      }
+    }
+  },
+  "inventory_summary": {
+    "total_records": 399,
+    "physical_with_od": 388,
+    "non_physical_administrative_codes": 2,
+    "gtfs_unmeasured_stops": 9
+  }
+}
