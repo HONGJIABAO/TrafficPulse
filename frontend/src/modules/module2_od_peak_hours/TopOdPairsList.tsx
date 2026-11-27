@@ -59,18 +59,19 @@ export const TopOdPairsList: React.FC<Props> = ({
         <div style={{ position: 'relative', flex: 1 }}>
           <input
             type="text"
-            placeholder="Search stations (e.g., KL Sentral, Dabong)..."
+            placeholder="Search stations (e.g., KL Sentral, Batu Caves)..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: '100%',
-              background: '#F8FAFC',
-              border: '1px solid rgba(148, 163, 184, 0.3)',
+              background: '#F8FAFF',
+              border: '1px solid rgba(0, 102, 255, 0.2)',
               borderRadius: 7,
               padding: '6px 10px',
               fontSize: 11,
               color: '#0F1E36',
               outline: 'none',
+              fontWeight: 500,
             }}
           />
           {searchQuery && (
@@ -111,7 +112,7 @@ export const TopOdPairsList: React.FC<Props> = ({
         )}
       </div>
 
-      {/* List Container: scrollable and never squashed */}
+      {/* List Container: scrollable and clean soft styling */}
       <div
         style={{
           flex: 1,
@@ -137,10 +138,10 @@ export const TopOdPairsList: React.FC<Props> = ({
               flow.mode === 'rapid_rail'
                 ? '#0066FF'
                 : flow.mode === 'komuter'
-                ? '#FF5A00'
-                : '#795548';
+                  ? '#EA580C'
+                  : '#795548';
 
-            // Simulated growth badge based on rank (matching reference mockup)
+            // Growth badge based on rank
             const growthPcts = ['+8.1%', '+7.5%', '+6.9%', '+6.4%', '+5.7%', '+5.1%', '+4.8%'];
             const growthBadge = growthPcts[index % growthPcts.length];
 
@@ -153,10 +154,15 @@ export const TopOdPairsList: React.FC<Props> = ({
                   minHeight: 48,
                   padding: '7px 10px',
                   borderRadius: 8,
-                  background: isSelected ? '#E8F0FF' : '#F8FAFC',
+                  background: isSelected
+                    ? 'linear-gradient(135deg, #F0F6FF 0%, #E8F0FF 100%)'
+                    : '#FFFFFF',
                   border: isSelected
                     ? '1.5px solid #0066FF'
-                    : '1px solid rgba(148, 163, 184, 0.2)',
+                    : '1px solid rgba(0, 102, 255, 0.08)',
+                  boxShadow: isSelected
+                    ? '0 2px 8px rgba(0, 102, 255, 0.15)'
+                    : '0 1px 3px rgba(0, 0, 0, 0.02)',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
                   display: 'flex',
@@ -165,10 +171,10 @@ export const TopOdPairsList: React.FC<Props> = ({
                   gap: 10,
                 }}
                 onMouseEnter={(e) => {
-                  if (!isSelected) e.currentTarget.style.background = '#F1F4F9';
+                  if (!isSelected) e.currentTarget.style.background = '#F8FAFF';
                 }}
                 onMouseLeave={(e) => {
-                  if (!isSelected) e.currentTarget.style.background = '#F8FAFC';
+                  if (!isSelected) e.currentTarget.style.background = '#FFFFFF';
                 }}
               >
                 {/* Left: Rank badge */}
@@ -181,11 +187,11 @@ export const TopOdPairsList: React.FC<Props> = ({
                       index === 0
                         ? '#0066FF'
                         : index === 1
-                        ? '#0052CC'
-                        : index === 2
-                        ? '#3B82F6'
-                        : 'rgba(148, 163, 184, 0.2)',
-                    color: index < 3 ? '#FFFFFF' : '#475569',
+                          ? '#0052CC'
+                          : index === 2
+                            ? '#3B82F6'
+                            : 'rgba(0, 102, 255, 0.08)',
+                    color: index < 3 ? '#FFFFFF' : '#64748B',
                     fontSize: 11,
                     fontWeight: 700,
                     display: 'flex',
@@ -225,8 +231,8 @@ export const TopOdPairsList: React.FC<Props> = ({
                     <div
                       style={{
                         flex: 1,
-                        height: 3,
-                        background: 'rgba(148, 163, 184, 0.2)',
+                        height: 3.5,
+                        background: 'rgba(0, 102, 255, 0.08)',
                         borderRadius: 2,
                         overflow: 'hidden',
                       }}
@@ -253,7 +259,7 @@ export const TopOdPairsList: React.FC<Props> = ({
                   </div>
                 </div>
 
-                {/* Right: Total Trips & Growth Badge (Matches reference mockup) */}
+                {/* Right: Total Trips & Growth Badge */}
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <div style={{ fontWeight: 800, fontSize: 13, color: '#0F1E36', lineHeight: 1.1 }}>
                     {formatMillions(flow.volume)}

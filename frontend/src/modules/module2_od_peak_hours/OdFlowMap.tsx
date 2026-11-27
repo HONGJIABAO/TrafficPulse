@@ -171,13 +171,13 @@ export const OdFlowMap: React.FC<Props> = ({
           left: 10,
           zIndex: 1000,
           background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(4px)',
+          backdropFilter: 'blur(6px)',
           borderRadius: 8,
-          border: '1px solid rgba(0, 102, 255, 0.15)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-          padding: '4px 8px',
+          border: '1px solid rgba(0, 102, 255, 0.12)',
+          boxShadow: '0 2px 10px rgba(0, 102, 255, 0.08)',
+          padding: '4px 6px',
           display: 'flex',
-          gap: 6,
+          gap: 4,
           alignItems: 'center',
         }}
       >
@@ -186,14 +186,16 @@ export const OdFlowMap: React.FC<Props> = ({
             setViewPreset('kv');
           }}
           style={{
-            background: viewPreset === 'kv' ? '#0066FF' : '#F1F4F9',
-            color: viewPreset === 'kv' ? '#fff' : '#0F1E36',
+            background: viewPreset === 'kv' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
+            color: viewPreset === 'kv' ? '#FFFFFF' : '#475569',
             border: 'none',
             borderRadius: 6,
-            padding: '4px 8px',
-            fontSize: 10,
-            fontWeight: 600,
+            padding: '4px 9px',
+            fontSize: 10.5,
+            fontWeight: 700,
             cursor: 'pointer',
+            boxShadow: viewPreset === 'kv' ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
+            transition: 'all 0.15s ease',
           }}
         >
           Klang Valley CBD
@@ -203,14 +205,16 @@ export const OdFlowMap: React.FC<Props> = ({
             setViewPreset('peninsular');
           }}
           style={{
-            background: viewPreset === 'peninsular' ? '#0066FF' : '#F1F4F9',
-            color: viewPreset === 'peninsular' ? '#fff' : '#0F1E36',
+            background: viewPreset === 'peninsular' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
+            color: viewPreset === 'peninsular' ? '#FFFFFF' : '#475569',
             border: 'none',
             borderRadius: 6,
-            padding: '4px 8px',
-            fontSize: 10,
-            fontWeight: 600,
+            padding: '4px 9px',
+            fontSize: 10.5,
+            fontWeight: 700,
             cursor: 'pointer',
+            boxShadow: viewPreset === 'peninsular' ? '0 2px 6px rgba(0, 102, 255, 0.25)' : 'none',
+            transition: 'all 0.15s ease',
           }}
         >
           Peninsular Malaysia
@@ -224,11 +228,11 @@ export const OdFlowMap: React.FC<Props> = ({
           bottom: 12,
           right: 12,
           zIndex: 1000,
-          background: 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(4px)',
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(6px)',
           borderRadius: 8,
-          border: '1px solid rgba(0, 102, 255, 0.15)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          border: '1px solid rgba(0, 102, 255, 0.12)',
+          boxShadow: '0 2px 10px rgba(0, 102, 255, 0.08)',
           padding: '6px 10px',
           fontSize: 10,
           color: '#0F1E36',
