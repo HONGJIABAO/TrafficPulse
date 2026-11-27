@@ -1,0 +1,20 @@
+{
+  "title": "Module 2 — Station Demand Intelligence Methodology & Field Reference",
+  "generated_at": "2026-11-28T03:03:45.228124+08:00",
+  "definitions": {
+    "total_trips": "Sum of all eligible origin trips recorded at station s during window w (trips, integer).",
+    "avg_daily_trips": "total_trips / eligible_calendar_days_in_window (trips/day). Strictly includes zero-demand days inside the window; never divides only by positive days.",
+    "hourly_avg": "Total eligible origin trips in recorded MYT transaction hour h (0..23) divided by eligible calendar days in window (trips/hour). Strictly null for Rapid Rail (daily-only source).",
+    "peak_hour": "Earliest hour h in 0..23 attaining max(hourly_avg). Null when total_trips == 0 or hourly data unavailable.",
+    "am_peak_avg": "Mean daily origin trips during morning window 06:00-09:59 MYT (sum of hours 6..9 divided by eligible days).",
+    "pm_peak_avg": "Mean daily origin trips during evening window 17:00-20:59 MYT (sum of hours 17..20 divided by eligible days).",
+    "weekday_weekend_rule": "Malaysian operating week: ISO weekdays 1-5 (Mon-Fri) vs 6-7 (Sat-Sun).",
+    "rank": "Standard competition ranking (1, 2, 2, 4) sorted by descending period total/daily average across eligible physical stations. Non-physical codes ('Penalty', 'Unknown') and GTFS stops with zero OD coverage carry rank = null.",
+    "transaction_hour_caveat": "KTMB hourly timestamps reflect recorded ticket/AFC transaction hour in MYT rather than physical train departure or arrival timestamps."
+  },
+  "a0_handling_and_discrepancy": {
+    "rapid_rail_a0_rule": "In rapidrail_2026_daily.csv, 'A0: All Stations' appears both as origin->A0 marginal totals and A0->destination totals (each summing to 196,631,192). Summing the raw file (589.89M) triple-counts traffic. Excluding both sides recovers the exact 196,631,192 non-A0 trips, reconciling 53,784/53,784 origin-dates to 0 delta.",
+    "shah_alam_discrepancy": "SA01..SA26 exist for all 324 days in rapidrail_2026_daily.csv: Jan 1-Jul 31 record 0 paid AFC gate OD trips (overlapping June 29 launch / free rides captured in ridership_headline.csv), whereas Aug 1-Nov 20 record 3,265,221 paid origin trips (matching Module 4's verified figure). Previous Module 2 missed SA solely because Top-20 pair filtering truncated lower-volume corridors.",
+    "ktmb_multi_service_isolation": "All 5 KTMB OD datasets reconcile 324/324 dates with max_abs_delta = 0 against ridership_ktmb_daily.parquet service breakdowns, confirming zero double-counting between Komuter, Komuter Utara, ETS, Intercity, and Shuttle Tebrau when keyed per canonical (service, station) ID."
+  }
+}

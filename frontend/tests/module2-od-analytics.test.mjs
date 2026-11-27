@@ -117,16 +117,31 @@ test('Test C — Time Horizon filter updates exact quarterly totals, days, and h
   assert.equal(emptyDs.hasData, false);
   assert.ok(emptyDs.emptyReason && emptyDs.emptyReason.includes('No verified railway observations'));
 
-  // Rapid Rail sub-period returns unsupported notice without fabricating values
-  const rrSub = selectActiveDataset(odSummary, stationsData.stations, {
+  // Rapid Rail Q1 2026 now slices the complete full-matrix Rapid Rail dataset (daily OD only, no hourly)
+  const rrQ1 = selectActiveDataset(odSummary, stationsData.stations, {
     mode: 'rapid_rail',
     timeRange: 'q1',
     dayType: 'all',
     timelineMonthKey: null,
   });
-  assert.equal(rrSub.hasData, false);
-  assert.equal(rrSub.isRapidRailSubfilterUnsupported, true);
-  assert.equal(rrSub.hourlySupported, false);
+  assert.equal(rrQ1.hasData, true);
+  assert.equal(rrQ1.networkTotalIsExact, true);
+  assert.equal(rrQ1.activeDaysDenominator, 90);
+  assert.equal(rrQ1.hourlySupported, false);
+  assert.ok(rrQ1.networkTotalTrips && rrQ1.networkTotalTrips > 45_000_000);
+
+  // If a fixture omits sub-period rapid_rail data, it must still report unsupported cleanly without fabricating
+  const clonedNoSubRr = structuredClone(odSummary);
+  delete clonedNoSubRr.periods.q1.rapid_rail;
+  const rrSubUnsupported = selectActiveDataset(clonedNoSubRr, stationsData.stations, {
+    mode: 'rapid_rail',
+    timeRange: 'q1',
+    dayType: 'all',
+    timelineMonthKey: null,
+  });
+  assert.equal(rrSubUnsupported.hasData, false);
+  assert.equal(rrSubUnsupported.isRapidRailSubfilterUnsupported, true);
+  assert.equal(rrSubUnsupported.hourlySupported, false);
 });
 
 test('Test D & E — Dynamic KPIs & Peak Hour Identification match KTM Komuter 2026 telemetry (Eve 6–8 PM)', () => {
@@ -224,4 +239,33 @@ test('Test G — Rapid Rail Hourly Integrity Check', () => {
   assert.equal(rr.hourlySupported, false);
   assert.equal(rr.peakAnalysis.hasData, false);
   assert.equal(rr.heatmapPoints.length, 0);
+});
+
+test('Test H — Full-Matrix Rapid Rail Totals, Distance Profile & Shah Alam Disclosure', () => {
+  const rr = selectActiveDataset(odSummary, stationsData.stations, {
+    mode: 'rapid_rail',
+    timeRange: '12m',
+    dayType: 'all',
+    timelineMonthKey: null,
+  });
+  assert.equal(rr.networkTotalIsExact, true);
+  assert.equal(rr.networkTotalTrips, 196631192);
+  assert.equal(rr.uniqueOdCorridorsCount, 17048);
+  assert.equal(rr.weekdayTotalTrips, 154688726);
+  assert.equal(rr.weekendTotalTrips, 41942466);
+  assert.ok(rr.fullDistanceStats);
+  assert.equal(rr.fullDistanceStats.isPopulationLevel, true);
+  assert.equal(rr.fullDistanceStats.totalPairs, 17048);
+  assert.equal(rr.fullDistanceStats.avgDist, 7.3);
+  assert.ok(rr.shahAlamNote && rr.shahAlamNote.includes('3,265,221'));
+
+  const kom = selectActiveDataset(odSummary, stationsData.stations, {
+    mode: 'komuter',
+    timeRange: '12m',
+    dayType: 'all',
+    timelineMonthKey: null,
+  });
+  assert.ok(kom.fullDistanceStats);
+  assert.equal(kom.fullDistanceStats.avgDist, 24.3);
+  assert.ok(kom.fullDistanceStats.mappedCoveragePct && kom.fullDistanceStats.mappedCoveragePct > 99.5);
 });

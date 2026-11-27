@@ -11,6 +11,9 @@ interface Props {
   longPct: number;
   verifiedCount: number;
   totalCount: number;
+  mappedCoveragePct?: number | null;
+  totalPairsCount?: number;
+  isPopulationLevel?: boolean;
 }
 
 export const TripDistanceProfileCard: React.FC<Props> = ({
@@ -22,6 +25,9 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
   longPct,
   verifiedCount,
   totalCount,
+  mappedCoveragePct,
+  totalPairsCount,
+  isPopulationLevel = false,
 }) => {
   const dynamicAdvisory = React.useMemo(() => {
     switch (activeHaul) {
@@ -200,7 +206,10 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         <span style={{ fontWeight: 700, color: '#0F1E36' }}>{dynamicAdvisory.title}: </span>
         {dynamicAdvisory.advisory}
         <div style={{ fontSize: 8.5, color: '#94A3B8', marginTop: 3 }}>
-          * Straight-line (Haversine) approx., not track length. {verifiedCount}/{totalCount} displayed OD pairs verified.
+          * Straight-line (Haversine) approx., not physical track length.{' '}
+          {isPopulationLevel && totalPairsCount != null
+            ? `Computed over all ${totalPairsCount.toLocaleString()} eligible OD pairs (${mappedCoveragePct ?? 100}% mapped trip volume); map/list show top ${totalCount} corridors.`
+            : `${verifiedCount}/${totalCount} displayed OD pairs verified.`}
         </div>
       </div>
     </div>

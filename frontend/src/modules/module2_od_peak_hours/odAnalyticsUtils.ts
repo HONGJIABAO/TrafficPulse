@@ -4,6 +4,7 @@
 
 import type {
   DayTypeFilter,
+  DistanceStats,
   HeatmapPoint,
   HourlyPoint,
   OdModeFilter,
@@ -14,6 +15,26 @@ import type {
   TimeRangeFilter,
   WeekdayVsWeekendData,
 } from './types';
+
+export interface AggregatedDistanceSummary {
+  avgDist: number | null;
+  shortPct: number;
+  medPct: number;
+  longPct: number;
+  mappedCoveragePct: number | null;
+  mappedTrips: number;
+  totalTrips: number;
+  mappedPairs: number;
+  totalPairs: number;
+  isPopulationLevel: boolean;
+}
+
+const EXCLUDED_NON_PHYSICAL = new Set(['penalty', 'unknown', 'a0', 'all stations']);
+const EXPLICIT_STATION_ALIASES: Record<string, string> = {
+  'bandar tasek selatan': 'bandar tasik selatan',
+  'pelabuhan klang selatan': 'pelabuhan klang',
+  midvalley: 'mid valley',
+};
 
 export interface StationCoordEntry {
   name: string;
@@ -311,7 +332,10 @@ export interface ActiveDatasetResult {
   // Resolved & ranked directional corridors
   resolvedFlows: ResolvedOdFlow[];
   unresolvedStations: string[];
-  // Hourly & Heatmap data matching selected period/dayType/mode
+  // Distance statistics calculated over ALL eligible OD pairs (not top-20/30 display limit)
+  fullDistanceStats: AggregatedDistanceSummary | null;
+  shahAlamNote: string | null;
+  // Heatmap & Hourly charts matching active period/dayType/mode (KTMB hourly only)
   heatmapPoints: HeatmapPoint[];
   weekdayVsWeekend: WeekdayVsWeekendData;
   // Combined hourly series representing the currently selected dayType & mode
@@ -333,6 +357,32 @@ export function combineHourlyProfiles(a: HourlyPoint[], b: HourlyPoint[]): Hourl
   });
 }
 
+function combineDistanceStats(statsList: DistanceStats[]): AggregatedDistanceSummary | null {
+  const valid = statsList.filter((s) => s && s.total_trips > 0);
+  if (valid.length === 0) return null;
+  const totalTrips = valid.reduce((s, d) => s + d.total_trips, 0);
+  const mappedTrips = valid.reduce((s, d) => s + d.mapped_trips, 0);
+  const totalPairs = valid.reduce((s, d) => s + d.total_pairs, 0);
+  const mappedPairs = valid.reduce((s, d) => s + d.mapped_pairs, 0);
+  const weightedSum = valid.reduce((s, d) => s + d.weighted_distance_sum, 0);
+  const shortTrips = valid.reduce((s, d) => s + d.short_trips, 0);
+  const medTrips = valid.reduce((s, d) => s + d.medium_trips, 0);
+  const longTrips = valid.reduce((s, d) => s + d.long_trips, 0);
+
+  return {
+    avgDist: mappedTrips > 0 ? Math.round((weightedSum / mappedTrips) * 10) / 10 : null,
+    shortPct: mappedTrips > 0 ? Math.round((shortTrips / mappedTrips) * 1000) / 10 : 0,
+    medPct: mappedTrips > 0 ? Math.round((medTrips / mappedTrips) * 1000) / 10 : 0,
+    longPct: mappedTrips > 0 ? Math.round((longTrips / mappedTrips) * 1000) / 10 : 0,
+    mappedCoveragePct: totalTrips > 0 ? Math.round((mappedTrips / totalTrips) * 10000) / 100 : null,
+    mappedTrips,
+    totalTrips,
+    mappedPairs,
+    totalPairs,
+    isPopulationLevel: true,
+  };
+}
+
 /**
  * Selects and validates the exact analytical dataset slice from od_summary.json
  * without fabricating values or silently mutating unsupported dimensions.
@@ -344,13 +394,18 @@ export function selectActiveDataset(
 ): ActiveDatasetResult {
   const { mode, timeRange, dayType, timelineMonthKey } = selection;
 
-  // Resolve station map safely
+  // Resolve station map safely — exclude non-physical administrative codes ('Penalty', 'Unknown', 'A0')
   const stationMap = new Map<string, { lat: number; lng: number; name: string }>();
   stations.forEach((st) => {
+    const lowName = st.name.toLowerCase().trim();
+    const lowCode = (st.code || '').toLowerCase().trim();
+    if (EXCLUDED_NON_PHYSICAL.has(lowName) || EXCLUDED_NON_PHYSICAL.has(lowCode)) {
+      return;
+    }
     if (typeof st.lat === 'number' && typeof st.lng === 'number' && Number.isFinite(st.lat) && Number.isFinite(st.lng)) {
-      stationMap.set(st.name.toLowerCase().trim(), { lat: st.lat, lng: st.lng, name: st.name });
-      if (st.code) {
-        stationMap.set(st.code.toLowerCase().trim(), { lat: st.lat, lng: st.lng, name: st.name });
+      stationMap.set(lowName, { lat: st.lat, lng: st.lng, name: st.name });
+      if (lowCode) {
+        stationMap.set(lowCode, { lat: st.lat, lng: st.lng, name: st.name });
       }
     }
   });
@@ -358,17 +413,17 @@ export function selectActiveDataset(
   const unresolvedSet = new Set<string>();
   const resolveStation = (raw: string): { coords: [number, number] | null; cleanName: string; verified: boolean } => {
     const clean = cleanStationName(raw);
-    if (!clean) {
-      return { coords: null, cleanName: 'Unknown Station', verified: false };
+    const low = clean.toLowerCase();
+    if (!clean || EXCLUDED_NON_PHYSICAL.has(low) || EXCLUDED_NON_PHYSICAL.has(raw.toLowerCase().trim())) {
+      return { coords: null, cleanName: clean || 'Unknown Station', verified: false };
     }
-    const exact = stationMap.get(clean.toLowerCase()) || stationMap.get(raw.toLowerCase());
+    const aliasKey = EXPLICIT_STATION_ALIASES[low];
+    const exact =
+      stationMap.get(low) ||
+      stationMap.get(raw.toLowerCase().trim()) ||
+      (aliasKey ? stationMap.get(aliasKey) : undefined);
     if (exact) {
       return { coords: [exact.lat, exact.lng], cleanName: exact.name, verified: true };
-    }
-    for (const [key, val] of stationMap.entries()) {
-      if (key.includes(clean.toLowerCase()) || clean.toLowerCase().includes(key)) {
-        return { coords: [val.lat, val.lng], cleanName: val.name, verified: true };
-      }
     }
     unresolvedSet.add(clean);
     return { coords: null, cleanName: clean, verified: false };
@@ -404,6 +459,8 @@ export function selectActiveDataset(
       weekendAvgDailyTrips: 0,
       resolvedFlows: [],
       unresolvedStations: [],
+      fullDistanceStats: null,
+      shahAlamNote: null,
       heatmapPoints: [],
       weekdayVsWeekend: { weekday: [], weekend: [] },
       activeHourlySeries: [],
@@ -443,6 +500,8 @@ export function selectActiveDataset(
       weekendAvgDailyTrips: 0,
       resolvedFlows: [],
       unresolvedStations: [],
+      fullDistanceStats: null,
+      shahAlamNote: null,
       heatmapPoints: [],
       weekdayVsWeekend: { weekday: [], weekend: [] },
       activeHourlySeries: [],
@@ -451,13 +510,14 @@ export function selectActiveDataset(
   }
 
   const isSubPeriodOrDayFiltered = Boolean(timelineMonthKey) || timeRange !== '12m' || dayType !== 'all';
+  const hasPeriodRapidRail = Boolean(periodSource.rapid_rail);
 
-  // Rapid Rail sub-period / day-profile limitation check
-  if (mode === 'rapid_rail' && isSubPeriodOrDayFiltered) {
+  // Rapid Rail sub-period / day-profile fallback (only when local fixture omits periodSource.rapid_rail)
+  if (mode === 'rapid_rail' && !hasPeriodRapidRail && isSubPeriodOrDayFiltered) {
     return {
       hasData: false,
       emptyReason:
-        'Rapid Rail sub-period (Q1–Q4 / Monthly) and Weekday vs Weekend slicing are unavailable because the full daily Rapid Rail OD dataset (>333 MB) is not stored locally. Switch Time Horizon to Full 2026 & Day Profile to All Days to view the verified Top-20 Rapid Rail corridors.',
+        'Rapid Rail sub-period (Q1–Q4 / Monthly) and Weekday vs Weekend slicing are unavailable in this data fixture. Switch Time Horizon to Full 2026 & Day Profile to All Days to view Rapid Rail corridors.',
       periodLabel: 'Full 2026 Observed Only (Jan 1 – Nov 20, 2026)',
       dateRange: odData.metadata?.observation_window || '2026-01-01 to 2026-11-20',
       totalObservationDays: odData.metadata?.total_days || 324,
@@ -466,7 +526,7 @@ export function selectActiveDataset(
       activeDaysDenominator: 0,
       isMonthlySlice: Boolean(timelineMonthKey),
       isRapidRailSubfilterUnsupported: true,
-      rapidRailCoverageNote: 'Rapid Rail local asset supports Full 2026 All-Days Top-20 OD pairs only.',
+      rapidRailCoverageNote: 'Rapid Rail fixture supports Full 2026 All-Days OD pairs only.',
       hourlyCoverageNote: 'Hourly analysis unavailable for Rapid Rail (daily OD totals only).',
       hourlySupported: false,
       networkTotalTrips: null,
@@ -479,6 +539,8 @@ export function selectActiveDataset(
       weekendAvgDailyTrips: null,
       resolvedFlows: [],
       unresolvedStations: [],
+      fullDistanceStats: null,
+      shahAlamNote: null,
       heatmapPoints: [],
       weekdayVsWeekend: { weekday: [], weekend: [] },
       activeHourlySeries: [],
@@ -487,11 +549,12 @@ export function selectActiveDataset(
   }
 
   const rapidRailCoverageNote =
-    mode === 'all' && isSubPeriodOrDayFiltered
-      ? 'Note: Quarterly, monthly, and Weekday/Weekend filters apply to KTM Komuter & Intercity (exact 2026 raw logs). Rapid Rail sub-period OD records are unavailable locally and excluded from sub-period views.'
+    mode === 'all' && !hasPeriodRapidRail && isSubPeriodOrDayFiltered
+      ? 'Note: Quarterly, monthly, and Weekday/Weekend filters apply to KTM Komuter & Intercity (exact 2026 raw logs). Rapid Rail sub-period OD records are excluded in this fixture.'
       : null;
 
-  const includeRapidRail = mode === 'rapid_rail' || (mode === 'all' && !isSubPeriodOrDayFiltered);
+  const includeRapidRail =
+    (mode === 'rapid_rail' || mode === 'all') && (hasPeriodRapidRail || !isSubPeriodOrDayFiltered);
   const includeKomuter = mode === 'all' || mode === 'komuter';
   const includeIntercity = mode === 'all' || mode === 'intercity';
 
@@ -550,10 +613,13 @@ export function selectActiveDataset(
 
   const flows: ResolvedOdFlow[] = [];
   if (includeRapidRail) {
-    const rrDays = odData.metadata?.total_days || 324;
+    const rrPairs =
+      periodSource.rapid_rail?.top_od?.[dayType] ||
+      (!isSubPeriodOrDayFiltered ? odData.top_od_pairs.rapid_rail || [] : []);
+    const rrDays = hasPeriodRapidRail ? activeDaysDenominator : odData.metadata?.total_days || 324;
     flows.push(
       ...buildFlowsForMode(
-        odData.top_od_pairs.rapid_rail || [],
+        rrPairs,
         'rapid_rail',
         'Rapid Rail (LRT/MRT)',
         'CBD Core Transit',
@@ -605,14 +671,39 @@ export function selectActiveDataset(
     weekdayTotalTrips = periodSource.intercity.weekday_trips;
     weekendTotalTrips = periodSource.intercity.weekend_trips;
   } else if (mode === 'rapid_rail') {
-    networkTotalIsExact = false; // Only Top 20 pairs available locally
-    networkTotalTrips = flows.reduce((s, f) => s + f.volume, 0);
-    uniqueOdCorridorsCount = flows.length;
-    weekdayTotalTrips = null;
-    weekendTotalTrips = null;
+    if (periodSource.rapid_rail) {
+      networkTotalIsExact = true;
+      networkTotalTrips = getModeTripsForDayType(periodSource.rapid_rail);
+      uniqueOdCorridorsCount = getModeUniqueOdCount(periodSource.rapid_rail);
+      weekdayTotalTrips = periodSource.rapid_rail.weekday_trips;
+      weekendTotalTrips = periodSource.rapid_rail.weekend_trips;
+    } else {
+      networkTotalIsExact = false;
+      networkTotalTrips = flows.reduce((s, f) => s + f.volume, 0);
+      uniqueOdCorridorsCount = flows.length;
+      weekdayTotalTrips = null;
+      weekendTotalTrips = null;
+    }
   } else {
-    // 'all': If filtered by sub-period or dayType, Rapid Rail isn't included in slice -> exact KTMB (Komuter + Intercity) total
-    if (isSubPeriodOrDayFiltered) {
+    if (periodSource.rapid_rail) {
+      networkTotalIsExact = true;
+      networkTotalTrips =
+        getModeTripsForDayType(periodSource.komuter) +
+        getModeTripsForDayType(periodSource.intercity) +
+        getModeTripsForDayType(periodSource.rapid_rail);
+      uniqueOdCorridorsCount =
+        getModeUniqueOdCount(periodSource.komuter) +
+        getModeUniqueOdCount(periodSource.intercity) +
+        getModeUniqueOdCount(periodSource.rapid_rail);
+      weekdayTotalTrips =
+        periodSource.komuter.weekday_trips +
+        periodSource.intercity.weekday_trips +
+        periodSource.rapid_rail.weekday_trips;
+      weekendTotalTrips =
+        periodSource.komuter.weekend_trips +
+        periodSource.intercity.weekend_trips +
+        periodSource.rapid_rail.weekend_trips;
+    } else if (isSubPeriodOrDayFiltered) {
       networkTotalTrips =
         getModeTripsForDayType(periodSource.komuter) + getModeTripsForDayType(periodSource.intercity);
       uniqueOdCorridorsCount =
@@ -620,7 +711,6 @@ export function selectActiveDataset(
       weekdayTotalTrips = periodSource.komuter.weekday_trips + periodSource.intercity.weekday_trips;
       weekendTotalTrips = periodSource.komuter.weekend_trips + periodSource.intercity.weekend_trips;
     } else {
-      // Combined across full 2026: Komuter exact + Intercity exact + Rapid Rail top-20 sample
       networkTotalIsExact = false;
       const rrTopSum = (odData.top_od_pairs.rapid_rail || []).reduce((s, p) => s + p.total_ridership, 0);
       networkTotalTrips = periodSource.komuter.total_trips + periodSource.intercity.total_trips + rrTopSum;
@@ -632,6 +722,22 @@ export function selectActiveDataset(
       weekendTotalTrips = periodSource.komuter.weekend_trips + periodSource.intercity.weekend_trips;
     }
   }
+
+  const activeDistanceStats: DistanceStats[] = [];
+  if (includeRapidRail && periodSource.rapid_rail?.distance_stats?.[dayType]) {
+    activeDistanceStats.push(periodSource.rapid_rail.distance_stats[dayType]);
+  }
+  if (includeKomuter && periodSource.komuter.distance_stats?.[dayType]) {
+    activeDistanceStats.push(periodSource.komuter.distance_stats[dayType]);
+  }
+  if (includeIntercity && periodSource.intercity.distance_stats?.[dayType]) {
+    activeDistanceStats.push(periodSource.intercity.distance_stats[dayType]);
+  }
+  const fullDistanceStats = combineDistanceStats(activeDistanceStats);
+  const shahAlamNote =
+    includeRapidRail && odData.metadata?.data_quality?.rapid_rail_2026?.shah_alam_discrepancy?.note
+      ? odData.metadata.data_quality.rapid_rail_2026.shah_alam_discrepancy.note
+      : null;
 
   // Assign rank & percentage share relative to active scope
   const shareDenominator =
@@ -656,20 +762,20 @@ export function selectActiveDataset(
   let hourlyCoverageNote = '';
 
   if (mode === 'komuter') {
-    heatmapPoints = periodSource.komuter.heatmap[dayType] || [];
-    wdVsWe = periodSource.komuter.weekday_vs_weekend;
+    heatmapPoints = periodSource.komuter.heatmap?.[dayType] || [];
+    wdVsWe = periodSource.komuter.weekday_vs_weekend || wdVsWe;
     hourlyCoverageNote = `KTM Komuter (${periodSource.date_range})`;
   } else if (mode === 'intercity') {
-    heatmapPoints = periodSource.intercity.heatmap[dayType] || [];
-    wdVsWe = periodSource.intercity.weekday_vs_weekend;
+    heatmapPoints = periodSource.intercity.heatmap?.[dayType] || [];
+    wdVsWe = periodSource.intercity.weekday_vs_weekend || wdVsWe;
     hourlyCoverageNote = `KTM Intercity & ETS (${periodSource.date_range})`;
   } else if (mode === 'all') {
     const map = new Map<string, number>();
-    (periodSource.komuter.heatmap[dayType] || []).forEach((p) => {
+    (periodSource.komuter.heatmap?.[dayType] || []).forEach((p) => {
       const k = `${p.weekday}-${p.hour}`;
       map.set(k, (map.get(k) || 0) + p.ridership);
     });
-    (periodSource.intercity.heatmap[dayType] || []).forEach((p) => {
+    (periodSource.intercity.heatmap?.[dayType] || []).forEach((p) => {
       const k = `${p.weekday}-${p.hour}`;
       map.set(k, (map.get(k) || 0) + p.ridership);
     });
@@ -682,12 +788,12 @@ export function selectActiveDataset(
       weekday_days: periodSource.weekday_days,
       weekend_days: periodSource.weekend_days,
       weekday: combineHourlyProfiles(
-        periodSource.komuter.weekday_vs_weekend.weekday,
-        periodSource.intercity.weekday_vs_weekend.weekday
+        periodSource.komuter.weekday_vs_weekend?.weekday || [],
+        periodSource.intercity.weekday_vs_weekend?.weekday || []
       ),
       weekend: combineHourlyProfiles(
-        periodSource.komuter.weekday_vs_weekend.weekend,
-        periodSource.intercity.weekday_vs_weekend.weekend
+        periodSource.komuter.weekday_vs_weekend?.weekend || [],
+        periodSource.intercity.weekday_vs_weekend?.weekend || []
       ),
     };
     hourlyCoverageNote =
@@ -757,6 +863,8 @@ export function selectActiveDataset(
     weekendAvgDailyTrips,
     resolvedFlows: flows,
     unresolvedStations: Array.from(unresolvedSet),
+    fullDistanceStats,
+    shahAlamNote,
     heatmapPoints,
     weekdayVsWeekend: wdVsWe,
     activeHourlySeries,
@@ -789,13 +897,13 @@ export function generateDynamicInsights(
   let rushObs = 'No directional OD corridor records in active filter.';
   let rushAction = 'Adjust active filters to inspect corridor passenger demand.';
   if (topFlow && peak.hasData && peak.busiestHour && peak.eveningPeak) {
-    rushObs = `Top directional corridor ${topFlow.originClean} ➔ ${topFlow.destinationClean} averages ${topFlow.avgDaily.toLocaleString()} trips/day (${topFlow.volume.toLocaleString()} over ${topFlow.observationDays} days). Highest hourly demand in hourly telemetry occurs at ${peak.busiestHour.windowLabel} (${peak.busiestHour.avgTrips.toLocaleString()} trips/hr), with evening peak spanning ${peak.eveningPeak.windowLabel}.`;
+    rushObs = `Top directional corridor ${topFlow.originClean} ➔ ${topFlow.destinationClean} averages ${topFlow.avgDaily.toLocaleString()} trips/day (${topFlow.volume.toLocaleString()} over ${topFlow.observationDays} days). Highest hourly demand in KTMB hourly telemetry occurs at ${peak.busiestHour.windowLabel} (${peak.busiestHour.avgTrips.toLocaleString()} trips/hr), with evening peak spanning ${peak.eveningPeak.windowLabel}.`;
     rushAction =
       'Evaluate targeted peak-period capacity allocation and terminal turnaround readiness along highest-volume directional corridors.';
   } else if (topFlow) {
     rushObs = `Top observed directional corridor is ${topFlow.originClean} ➔ ${topFlow.destinationClean} (${topFlow.volume.toLocaleString()} total trips; ${topFlow.avgDaily.toLocaleString()} trips/day over ${topFlow.observationDays} days). Rapid Rail hourly breakdown is unavailable.`;
     rushAction =
-      'Use Top-20 CBD corridor concentrations to prioritise station concourse flow and feeder planning pending sub-hourly AFC logs.';
+      'Use Top-30 directional corridor concentrations and station entry-exit profiles to prioritise concourse circulation and feeder planning pending sub-hourly AFC logs.';
   }
 
   // Insight 2: Midday Off-Peak vs Peak Contrast (SDG 11)
@@ -808,8 +916,8 @@ export function generateDynamicInsights(
   }
 
   // Insight 3: Weekday (Mon-Fri) vs Weekend (Sat-Sun) Pattern (SDG 8)
-  let wdWeObs = 'Weekday vs Weekend comparison unavailable for daily-only aggregate Rapid Rail sample.';
-  let wdWeAction = 'Compare KTMB weekday commuting and weekend travel using verified Mon–Fri vs Sat–Sun logs.';
+  let wdWeObs = 'Weekday vs Weekend comparison unavailable for the active selection.';
+  let wdWeAction = 'Compare weekday commuting and weekend travel using verified Mon–Fri vs Sat–Sun logs.';
   if (dataset.weekdayAvgDailyTrips !== null && dataset.weekendAvgDailyTrips !== null) {
     const ratio =
       dataset.weekendAvgDailyTrips > 0
@@ -822,10 +930,21 @@ export function generateDynamicInsights(
 
     const peakCompare =
       peak.hasData && peak.morningPeak && peak.eveningPeak
-        ? ` Observed hourly demand shows a weekday commute bimodal shape around ${peak.morningPeak.windowLabel} and ${peak.eveningPeak.windowLabel}.`
+        ? ` Observed KTMB hourly demand shows a weekday commute bimodal shape around ${peak.morningPeak.windowLabel} and ${peak.eveningPeak.windowLabel}.`
         : '';
 
-    wdWeObs = `${mode === 'intercity' ? 'Intercity & ETS' : 'Observed KTMB'} telemetry across ${dataset.weekdayDays} weekdays vs ${dataset.weekendDays} weekends shows ${comparisonPhrase} (${Math.round(dataset.weekdayAvgDailyTrips).toLocaleString()} vs ${Math.round(dataset.weekendAvgDailyTrips).toLocaleString()} trips/day).${peakCompare}`;
+    const modeScopeLabel =
+      mode === 'intercity'
+        ? 'Intercity & ETS'
+        : mode === 'komuter'
+        ? 'KTM Komuter'
+        : mode === 'rapid_rail'
+        ? 'Rapid Rail daily OD'
+        : dataset.rapidRailCoverageNote
+        ? 'Observed KTMB'
+        : 'Combined Rail (Rapid Rail + KTMB)';
+
+    wdWeObs = `${modeScopeLabel} telemetry across ${dataset.weekdayDays} weekdays vs ${dataset.weekendDays} weekends shows ${comparisonPhrase} (${Math.round(dataset.weekdayAvgDailyTrips).toLocaleString()} vs ${Math.round(dataset.weekendAvgDailyTrips).toLocaleString()} trips/day).${peakCompare}`;
     wdWeAction =
       dayType === 'weekend'
         ? 'Synchronise feeder bus transfers and station retail concourse staffing with observed midday-afternoon weekend demand.'
