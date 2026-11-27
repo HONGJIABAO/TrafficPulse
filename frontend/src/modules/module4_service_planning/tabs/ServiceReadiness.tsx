@@ -66,7 +66,7 @@ function RouteExplorer({ data, selection, onChange }: {
       {otherDays.map((row) => `${dayLabel(row.day_type)} ${frequency(row.reference_departures)}`).join(' · ')}
     </p>}
     {hours.length ? <Lines dates={hours.map((row) => `${String(row.service_hour).padStart(2, '0')}:00`)} label="Hourly frequency-implied terminal departures"
-      traces={[{ name: 'Terminal departures', values: hours.map((row) => row.reference_departures), color: '#285bca', area: true }]} height={185} dateLabels={false} decimals={2} />
+      traces={[{ name: 'Terminal departures', values: hours.map((row) => row.reference_departures), color: '#0066FF', area: true }]} height={185} dateLabels={false} decimals={2} />
       : <Empty>No hourly reference departures are available for this selection.</Empty>}
     <Details title="Scheduled service by operating period" summary="Reference hours, terminal departures and direction-specific headways.">
       <ServicePeriods rows={periods} />
@@ -146,10 +146,10 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
       Assessing occupancy or crowding requires observed service and passenger counts by direction and segment.</p>
     {resolution === 'hourly' && rows.length > 0 && supplied > 0 && <div className={s.grid2}>
       <Panel heading="h4" title="Proxy station-origin demand" subtitle="Average trips per matched forecast date" badge={<EvidenceBadge kind="Proxy Estimate" />}>
-        <Chart label="Matched-date LRT3 proxy station-origin trips by time window" option={chartOption('matchedDemand', 'Proxy station-origin trips', '#007e92')} height={260} />
+        <Chart label="Matched-date LRT3 proxy station-origin trips by time window" option={chartOption('matchedDemand', 'Proxy station-origin trips', '#087FBA')} height={260} />
       </Panel>
       <Panel heading="h4" title="Nominal terminal supply" subtitle="Passenger places per matched reference date" badge={<EvidenceBadge kind="Scheduled Reference" />}>
-        <Chart label="Matched-date nominal terminal places by time window" option={chartOption('nominal', 'Nominal terminal places', '#687bb2')} height={260} />
+        <Chart label="Matched-date nominal terminal places by time window" option={chartOption('nominal', 'Nominal terminal places', '#0066FF')} height={260} />
       </Panel>
     </div>}
     <Table label="Peak sensitivity by time window" columns={['Window', 'Hours', 'Proxy profile share', 'All-date proxy origin trips / day', 'Matched-date proxy origin trips / day', 'Matched-date nominal terminal places / day']}

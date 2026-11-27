@@ -23,12 +23,12 @@ function Calendar({ year, rows, label, holidays }: CalendarProps) {
       return `${dateText(date)} · ${num(value)} observed trips<br/>${holidayLabels[calendarStatus(holidays, date)]}`;
     } },
     visualMap: { min: 0, max, dimension: 1, orient: 'horizontal', left: 'center', bottom: 5,
-      calculable: false, inRange: { color: ['#e8f4fc', '#78b9d8', '#2454aa'] }, text: ['More trips', 'Zero observed'] },
+      calculable: false, inRange: { color: ['#E8F0FF', '#60A5FA', '#0066FF'] }, text: ['More trips', 'Zero observed'] },
     calendar: { range: year, left: 32, right: 14, top: 32, bottom: 48, cellSize: ['auto', 16],
       dayLabel: { firstDay: 1, nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] },
       monthLabel: { nameMap: months }, yearLabel: { show: false },
-      itemStyle: { color: '#d9dee7', borderWidth: 1, borderColor: '#fff' },
-      splitLine: { show: true, lineStyle: { color: '#8b9db7', width: 1 } } },
+      itemStyle: { color: '#F1F4F9', borderWidth: 1, borderColor: '#fff' },
+      splitLine: { show: true, lineStyle: { color: '#CBD5E1', width: 1 } } },
     series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: observed }],
   };
   return <div className={s.chartScroll} tabIndex={0} role="region" aria-label="Calendar heatmap scroll area"><div style={{ minWidth: 700 }}>
@@ -92,7 +92,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
         {monthly.length ? <>
           <Bars label="Monthly average observed demand" data={monthly.map((row) => ({
             name: `${months[Number(row.group.slice(5)) - 1]}${complete(row) ? '' : ' (partial)'}`,
-            value: row.mean_daily_trips, color: complete(row) ? '#285bca' : '#a85c00',
+            value: row.mean_daily_trips, color: complete(row) ? '#0066FF' : '#FF5A00',
           }))} height={176} />
           <Details title="Monthly reporting figures">
             <Table label="Monthly demand and reporting coverage" columns={['Month', 'Observed days', 'Calendar days', 'Coverage', 'Observed trips', 'Average per observed day']}
@@ -104,7 +104,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
       <Panel marker="C" title="Calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
         subtitle={`${label} · daily observed trips in ${year}. Point to a cell or open the daily calendar data to inspect a date.`}>
         <Calendar year={year} rows={yearHistory} label={`${label} calendar heatmap, ${year}`} holidays={holidays} />
-        <div className={s.legend}><span><i style={{ background: '#d9dee7' }} /> No published observation or outside the target window</span><span><i style={{ background: '#e8f4fc' }} /> Observed zero</span></div>
+        <div className={s.legend}><span><i style={{ background: '#F1F4F9' }} /> No published observation or outside the target window</span><span><i style={{ background: '#E8F0FF' }} /> Observed zero</span></div>
         <Details title="Daily calendar data" summary="Trip counts and archived holiday status for the selected target and year.">
           <DailyCalendarTable year={year} rows={yearHistory} label={label} holidays={holidays} />
         </Details>

@@ -86,7 +86,7 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
           <Panel heading="h4" title="Published service-sum outlook" subtitle={`Daily forecast trips across the six headline services · reference date ${dateText(data.asOf)}.`}>
             <Lines dates={chartPoints.map(([date]) => date)} label="Daily forecast for the published Rapid Rail service sum"
               traces={scope === 'full' ? [
-                { name: 'Elapsed/reference-date projections', values: chartPoints.map(([date, value]) => !isFutureDate(date, data.asOf) ? value : null), dashed: true, color: '#777f92' },
+                { name: 'Elapsed/reference-date projections', values: chartPoints.map(([date, value]) => !isFutureDate(date, data.asOf) ? value : null), dashed: true, color: '#94A3B8' },
                 { name: 'Future projections', values: chartPoints.map(([date, value]) => isFutureDate(date, data.asOf) ? value : null), color: targetColor[data.networkId], area: true },
               ] : [{ name: 'Future projections', values: chartPoints.map(([, value]) => value), color: targetColor[data.networkId], area: true }]}
               markers={[{ date: data.asOf, name: 'Analysis date' }]} height={250} />

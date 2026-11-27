@@ -21,11 +21,11 @@ export const equityMetrics = (observationDays: number): NumericMetric[] => [
 ];
 
 export const priorityClasses = {
-  priority: { label: 'Priority for follow-up', color: '#a74230' },
-  coverage: { label: 'Low station density only', color: '#e9a44f' },
-  vulnerability: { label: 'Socioeconomic flag only', color: '#8f82d0' },
-  neither: { label: 'Outside screening thresholds', color: '#b9d9d1' },
-  unavailable: { label: 'Unavailable', color: '#aeb8c9' },
+  priority: { label: 'Priority for follow-up', color: '#EF4444' },
+  coverage: { label: 'Low station density only', color: '#FF8C00' },
+  vulnerability: { label: 'Socioeconomic flag only', color: '#7B61FF' },
+  neither: { label: 'Outside screening thresholds', color: '#A7F3D0' },
+  unavailable: { label: 'Unavailable', color: '#CBD5E1' },
 };
 
 export function priorityClass(screen: Screen) {
@@ -40,12 +40,12 @@ export function metricScale(metric: NumericMetric, values: (number | null)[]) {
   const max = Math.max(0, ...values.map((value) => value ?? 0));
   const low = metric.discrete ? Math.floor(max / 3) : max / 3;
   const high = metric.discrete ? Math.floor(2 * max / 3) : 2 * max / 3;
-  const zero = { label: `Zero (${metric.format(0)})`, color: '#d9edf3' };
+  const zero = { label: `Zero (${metric.format(0)})`, color: '#E8F0FF' };
   const unavailable = priorityClasses.unavailable;
   const bins = [
-    { label: metric.discrete ? `1–${metric.format(low)}` : `Above zero to ${metric.format(low)}`, color: '#a2c8ed' },
-    { label: metric.discrete ? `${metric.format(low + 1)}–${metric.format(high)}` : `Above ${metric.format(low)} to ${metric.format(high)}`, color: '#538fce' },
-    { label: metric.discrete ? `${metric.format(high + 1)} and above` : `Above ${metric.format(high)}`, color: '#214b98' },
+    { label: metric.discrete ? `1–${metric.format(low)}` : `Above zero to ${metric.format(low)}`, color: '#93C5FD' },
+    { label: metric.discrete ? `${metric.format(low + 1)}–${metric.format(high)}` : `Above ${metric.format(low)} to ${metric.format(high)}`, color: '#3B82F6' },
+    { label: metric.discrete ? `${metric.format(high + 1)} and above` : `Above ${metric.format(high)}`, color: '#0066FF' },
   ];
   return {
     legend: [zero, ...bins.filter((_, index) => [low > 0, high > low, max > high][index]), unavailable],
