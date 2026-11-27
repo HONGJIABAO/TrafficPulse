@@ -12,7 +12,8 @@ TrafficPulse/
 │   │   │   ├── module1_network_overview/   # Member 1: Network Overview & Spatial Map
 │   │   │   ├── module2_od_peak_hours/      # Member 2: OD Flow & Peak-Hour Analytics
 │   │   │   ├── module3_drivers_forecast/   # Member 3: Demand Drivers & Forecasting
-│   │   │   ├── module4_whatif_simulator/   # Member 4: What-If Service Simulator
+│   │   │   ├── module4_service_planning/   # Member 4: Service Planning & Accessibility
+│   │   │   ├── module4_whatif_simulator/   # Legacy simulator placeholder (outside navigation)
 │   │   │   └── shared/                     # Shared types, Navbar shell, theme, Master Station lookup
 │   │   ├── App.tsx
 │   │   └── main.tsx

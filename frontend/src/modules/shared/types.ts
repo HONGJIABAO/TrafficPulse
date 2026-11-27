@@ -9,7 +9,7 @@ export interface Station {
   longitude?: number;
 }
 
-export type TabId = 'network_overview' | 'od_peak_hours' | 'drivers_forecast' | 'whatif_simulator';
+export type TabId = 'network_overview' | 'od_peak_hours' | 'drivers_forecast' | 'service_planning';
 
 export interface NavTab {
   id: TabId;
@@ -21,7 +21,7 @@ export const NAV_TABS: NavTab[] = [
   { id: 'network_overview',  label: 'Network Overview',              icon: '🗺️' },
   { id: 'od_peak_hours',     label: 'OD Flow & Peak Hours',          icon: '📊' },
   { id: 'drivers_forecast',  label: 'Demand Drivers & Forecasting',  icon: '📈' },
-  { id: 'whatif_simulator',  label: 'What-If Simulator',             icon: '⚙️' },
+  { id: 'service_planning',  label: 'Service Planning & Accessibility', icon: '⚙️' },
 ];
 
 // Design tokens

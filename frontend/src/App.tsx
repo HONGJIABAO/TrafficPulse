@@ -4,7 +4,7 @@ import { Navbar } from './modules/shared/Navbar';
 import { NetworkOverview } from './modules/module1_network_overview/NetworkOverview';
 import { OdPeakHours } from './modules/module2_od_peak_hours/OdPeakHours';
 import { DriversForecast } from './modules/module3_drivers_forecast/DriversForecast';
-import { WhatifSimulator } from './modules/module4_whatif_simulator/WhatifSimulator';
+import { ServicePlanning } from './modules/module4_service_planning';
 import type { TabId } from './modules/shared/types';
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
         return <OdPeakHours />;
       case 'drivers_forecast':
         return <DriversForecast />;
-      case 'whatif_simulator':
-        return <WhatifSimulator />;
+      case 'service_planning':
+        return <ServicePlanning />;
       default:
         return <NetworkOverview onNavigateTab={setActiveTab} />;
     }
