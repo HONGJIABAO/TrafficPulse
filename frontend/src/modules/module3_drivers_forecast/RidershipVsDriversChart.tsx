@@ -48,11 +48,11 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
   }, [filteredData]);
 
   const ron95Values = useMemo(() => {
-    return filteredData.map((d) => Number(d.ron95_avg.toFixed(2)));
+    return filteredData.map((d) => d.ron95_avg != null ? Number(d.ron95_avg.toFixed(2)) : null);
   }, [filteredData]);
 
   const dieselValues = useMemo(() => {
-    return filteredData.map((d) => Number(d.diesel_avg.toFixed(2)));
+    return filteredData.map((d) => d.diesel_avg != null ? Number(d.diesel_avg.toFixed(2)) : null);
   }, [filteredData]);
 
   const regValues = useMemo(() => {

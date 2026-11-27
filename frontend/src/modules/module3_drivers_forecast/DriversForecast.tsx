@@ -56,11 +56,30 @@ export function DriversForecast() {
   const [pendingDriverFocus, setPendingDriverFocus] = useState<DriverFocusFilter>('fuel');
   const [pendingHorizon, setPendingHorizon] = useState<ForecastHorizonKey>('6_months');
 
-  // Compute latest metrics for KPI cards
+  // ── Computed stats from JSON (Fix 5: no hardcoded values) ──────────────────
+  const kpi = forecastData.kpi_summary ?? null;
+
+  // Fallback: derive from monthly_driver_trend if kpi_summary absent (old JSON)
   const latestHistorical = useMemo(() => {
     const list = forecastData.monthly_driver_trend;
     return list[list.length - 1] || null;
   }, []);
+
+  // CV diagnostics from first forecast horizon (all share same CV metrics)
+  const cvMetrics = useMemo(() => {
+    const fc = forecastData.forecasts?.[0];
+    return {
+      cvMape: fc?.mape_pct ?? null,
+      cvRmse: fc?.rmse ?? null,
+      nCvFolds: fc?.n_cv_folds ?? 0,
+    };
+  }, []);
+
+  // Correlation lookups for KeyInsightsStrip
+  const corrMap = useMemo(
+    () => new Map(forecastData.driver_correlations.map((c) => [c.feature, c.correlation])),
+    []
+  );
 
   const handleApply = () => {
     setSelectedTimeRange(pendingTimeRange);
@@ -91,12 +110,12 @@ export function DriversForecast() {
         boxSizing: 'border-box',
       }}
     >
-      {/* ── 1. Top Metric KPI Strip (Module 1 Sizing & Style) ─────────────── */}
+      {/* ── 1. Top Metric KPI Strip — all values from JSON (Fix 5) ───────────── */}
       <ForecastKpiStrip
-        projectedGrowthPct={8.7}
-        latestFuelPrice={latestHistorical?.ron95_avg ? Number(latestHistorical.ron95_avg.toFixed(2)) : 3.75}
-        latestRegistrations={latestHistorical?.registrations || 151050}
-        latestUnemploymentRate={latestHistorical?.u_rate || 2.9}
+        kpi={kpi}
+        latestFuelPrice={latestHistorical?.ron95_avg ?? null}
+        latestRegistrations={latestHistorical?.registrations ?? null}
+        latestUnemploymentRate={latestHistorical?.u_rate ?? null}
       />
 
       {/* ── 2. Main Content Row: Left Full Sidebar + Right Graph Space ─────── */}
@@ -121,6 +140,9 @@ export function DriversForecast() {
           onReset={handleReset}
           featureImportance={forecastData.feature_importance || []}
           driverCorrelations={forecastData.driver_correlations || []}
+          cvMape={cvMetrics.cvMape}
+          cvRmse={cvMetrics.cvRmse}
+          nCvFolds={cvMetrics.nCvFolds}
         />
 
         {/* Right Graph Space (Charts + Nested 3 Key Insights) */}
@@ -188,7 +210,7 @@ export function DriversForecast() {
                     borderRadius: 5,
                   }}
                 >
-                  95% Confidence Band
+                  95% CI (z=1.960)
                 </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
@@ -205,8 +227,14 @@ export function DriversForecast() {
             </div>
           </div>
 
-          {/* Bottom: 3 Key Insights Nested inside Graph Space */}
-          <KeyInsightsStrip />
+          {/* Bottom: 3 Key Insights — data from JSON (Fix 5 & 8) */}
+          <KeyInsightsStrip
+            projectedGrowthPct={kpi?.projected_growth_pct ?? null}
+            dieselCorrR={corrMap.get('diesel_avg') ?? null}
+            registrationsCorrR={corrMap.get('registrations') ?? null}
+            regYoYPct={kpi?.reg_yoy_pct ?? null}
+            lastRailTotal={kpi?.last_observed_rail_total ?? latestHistorical?.rail_total ?? null}
+          />
         </div>
       </div>
     </div>

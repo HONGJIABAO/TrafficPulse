@@ -1,6 +1,19 @@
 import React from 'react';
 import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
+interface Props {
+  /** Projected growth % (from forecast vs last historical, computed by pipeline) */
+  projectedGrowthPct?: number | null;
+  /** Pearson r between diesel price & ridership (from pipeline) */
+  dieselCorrR?: number | null;
+  /** Pearson r between vehicle registrations & ridership (from pipeline) */
+  registrationsCorrR?: number | null;
+  /** YoY registration change % (computed by pipeline) */
+  regYoYPct?: number | null;
+  /** Last observed monthly ridership total */
+  lastRailTotal?: number | null;
+}
+
 const cardStyle: React.CSSProperties = {
   background: '#FFFFFF',
   borderRadius: 12,
@@ -13,7 +26,38 @@ const cardStyle: React.CSSProperties = {
   minWidth: 0,
 };
 
-export const KeyInsightsStrip: React.FC = () => {
+export const KeyInsightsStrip: React.FC<Props> = ({
+  projectedGrowthPct,
+  dieselCorrR,
+  registrationsCorrR,
+  regYoYPct,
+  lastRailTotal,
+}) => {
+  const growthLabel =
+    projectedGrowthPct != null
+      ? `${projectedGrowthPct >= 0 ? '+' : ''}${projectedGrowthPct.toFixed(1)}%`
+      : '+—%';
+
+  const lastRailLabel =
+    lastRailTotal != null
+      ? `${(lastRailTotal / 1_000_000).toFixed(1)}M monthly trips`
+      : '—M monthly trips';
+
+  const dieselCorrLabel =
+    dieselCorrR != null
+      ? `r = ${dieselCorrR > 0 ? '+' : ''}${dieselCorrR.toFixed(2)}`
+      : 'r = —';
+
+  const regYoYLabel =
+    regYoYPct != null
+      ? `${regYoYPct >= 0 ? '+' : ''}${regYoYPct.toFixed(1)}% YoY`
+      : '—% YoY';
+
+  const regCorrLabel =
+    registrationsCorrR != null
+      ? `r = ${registrationsCorrR > 0 ? '+' : ''}${registrationsCorrR.toFixed(2)}`
+      : 'r = —';
+
   return (
     <div
       style={{
@@ -39,19 +83,16 @@ export const KeyInsightsStrip: React.FC = () => {
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>
             Ridership Growth Trajectory
           </div>
-          <div
-            style={{
-              fontSize: 11.5,
-              color: '#475569',
-              lineHeight: 1.4,
-            }}
-          >
-            Projected to grow by <strong style={{ color: '#00A389' }}>+8.7%</strong> over next 6 months, expanding toward <strong style={{ color: '#0F1E36' }}>34M+ monthly trips</strong> across all rail lines.
+          <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
+            Projected to grow by{' '}
+            <strong style={{ color: '#00A389' }}>{growthLabel}</strong> over next 6 months,
+            with the latest monthly baseline at{' '}
+            <strong style={{ color: '#0F1E36' }}>{lastRailLabel}</strong>.
           </div>
         </div>
       </div>
 
-      {/* Insight 2: Fuel Price Elasticity */}
+      {/* Insight 2: Fuel Price Association */}
       <div style={cardStyle}>
         <div style={{ flexShrink: 0 }}>
           <TelemetryIcon
@@ -64,21 +105,17 @@ export const KeyInsightsStrip: React.FC = () => {
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>
-            Fuel Price Elasticity
+            Fuel Price Association
           </div>
-          <div
-            style={{
-              fontSize: 11.5,
-              color: '#475569',
-              lineHeight: 1.4,
-            }}
-          >
-            Strong correlation (<strong style={{ color: '#0066FF' }}>r = +0.67</strong> with diesel) confirms pump price increases accelerate modal shift from private vehicles.
+          <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
+            Diesel price is associated with higher rail ridership (
+            <strong style={{ color: '#0066FF' }}>{dieselCorrLabel} with ridership</strong>) —
+            consistent with modal shift when fuel costs rise.
           </div>
         </div>
       </div>
 
-      {/* Insight 3: Road Congestion Capture */}
+      {/* Insight 3: Vehicle Growth Correlation */}
       <div style={cardStyle}>
         <div style={{ flexShrink: 0 }}>
           <TelemetryIcon
@@ -91,16 +128,12 @@ export const KeyInsightsStrip: React.FC = () => {
         </div>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 2 }}>
-            Congestion &amp; Vehicle Surge
+            Vehicle Growth &amp; Rail Uptake
           </div>
-          <div
-            style={{
-              fontSize: 11.5,
-              color: '#475569',
-              lineHeight: 1.4,
-            }}
-          >
-            New vehicle adds (<strong style={{ color: '#FF8C00' }}>+5.4% YoY</strong>) worsen highway gridlock, driving higher passenger capture along key commuter trunks.
+          <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
+            New vehicle registrations ({' '}
+            <strong style={{ color: '#FF8C00' }}>{regYoYLabel}</strong>) correlate with
+            increased rail trips ({regCorrLabel}) — road congestion likely contributes to rail uptake.
           </div>
         </div>
       </div>

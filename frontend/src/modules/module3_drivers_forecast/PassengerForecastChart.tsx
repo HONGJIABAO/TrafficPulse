@@ -110,7 +110,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
                 <strong style="color: #00E5A3;">${(predVal / 1_000_000).toFixed(2)}M trips</strong>
               </div>
               <div style="display: flex; justify-content: space-between; gap: 14px; margin: 2px 0;">
-                <span style="color: #94A3B8;">95% CI Range:</span>
+                <span style="color: #94A3B8;">95% CI (z=1.960):</span>
                 <span style="color: #FFC400; font-size: 10px;">${(lower / 1_000_000).toFixed(2)}M – ${(upper / 1_000_000).toFixed(2)}M</span>
               </div>
             `;

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-22",
+  "generated_at": "2026-11-27",
   "air_pollution_data_cutoff": "2024-12-31",
   "driver_correlations": [
     {
@@ -48,151 +48,157 @@
   "forecasts": [
     {
       "horizon": "3_months",
-      "mape_pct": 6.76,
-      "rmse": 2597640.0,
+      "mape_pct": 17.74,
+      "rmse": 3588962.0,
+      "n_cv_folds": 55,
+      "ci_level": 0.95,
       "model": "LightGBM + Holt-Winters Ensemble",
       "forecasts": [
         {
           "date": "2026-09-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31040475.0,
+          "lower_ci": 27658860.0,
+          "upper_ci": 34422090.0
         },
         {
           "date": "2026-10-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31369457.0,
+          "lower_ci": 27987842.0,
+          "upper_ci": 34751072.0
         },
         {
           "date": "2026-11-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30921181.0,
+          "lower_ci": 27539566.0,
+          "upper_ci": 34302796.0
         }
       ]
     },
     {
       "horizon": "6_months",
-      "mape_pct": 6.76,
-      "rmse": 2597640.0,
+      "mape_pct": 17.74,
+      "rmse": 3588962.0,
+      "n_cv_folds": 55,
+      "ci_level": 0.95,
       "model": "LightGBM + Holt-Winters Ensemble",
       "forecasts": [
         {
           "date": "2026-09-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31040475.0,
+          "lower_ci": 27614519.0,
+          "upper_ci": 34466432.0
         },
         {
           "date": "2026-10-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31369457.0,
+          "lower_ci": 27943500.0,
+          "upper_ci": 34795413.0
         },
         {
           "date": "2026-11-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30921181.0,
+          "lower_ci": 27495225.0,
+          "upper_ci": 34347138.0
         },
         {
           "date": "2026-12-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31674123.0,
+          "lower_ci": 28248167.0,
+          "upper_ci": 35100080.0
         },
         {
           "date": "2027-01-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31148055.0,
+          "lower_ci": 27722098.0,
+          "upper_ci": 34574012.0
         },
         {
           "date": "2027-02-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30227320.0,
+          "lower_ci": 26801364.0,
+          "upper_ci": 33653277.0
         }
       ]
     },
     {
       "horizon": "12_months",
-      "mape_pct": 6.76,
-      "rmse": 2597640.0,
+      "mape_pct": 17.74,
+      "rmse": 3588962.0,
+      "n_cv_folds": 55,
+      "ci_level": 0.95,
       "model": "LightGBM + Holt-Winters Ensemble",
       "forecasts": [
         {
           "date": "2026-09-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31040475.0,
+          "lower_ci": 27577672.0,
+          "upper_ci": 34503278.0
         },
         {
           "date": "2026-10-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31369457.0,
+          "lower_ci": 27906654.0,
+          "upper_ci": 34832260.0
         },
         {
           "date": "2026-11-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30921181.0,
+          "lower_ci": 27458378.0,
+          "upper_ci": 34383984.0
         },
         {
           "date": "2026-12-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31674123.0,
+          "lower_ci": 28211320.0,
+          "upper_ci": 35136926.0
         },
         {
           "date": "2027-01-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 31148055.0,
+          "lower_ci": 27685252.0,
+          "upper_ci": 34610858.0
         },
         {
           "date": "2027-02-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30227320.0,
+          "lower_ci": 26764517.0,
+          "upper_ci": 33690123.0
         },
         {
           "date": "2027-03-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30375880.0,
+          "lower_ci": 26913077.0,
+          "upper_ci": 33838683.0
         },
         {
           "date": "2027-04-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 29695526.0,
+          "lower_ci": 26232723.0,
+          "upper_ci": 33158329.0
         },
         {
           "date": "2027-05-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 29971017.0,
+          "lower_ci": 26508214.0,
+          "upper_ci": 33433820.0
         },
         {
           "date": "2027-06-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 29582531.0,
+          "lower_ci": 26119728.0,
+          "upper_ci": 33045334.0
         },
         {
           "date": "2027-07-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30803182.0,
+          "lower_ci": 27340379.0,
+          "upper_ci": 34265985.0
         },
         {
           "date": "2027-08-01",
-          "predicted": 28719969.0,
-          "lower_ci": 25805047.0,
-          "upper_ci": 31634891.0
+          "predicted": 30923548.0,
+          "lower_ci": 27460745.0,
+          "upper_ci": 34386351.0
         }
       ]
     }
@@ -204,6 +210,7 @@
       "diesel_avg": 2.124,
       "registrations": 114644,
       "u_rate": 3.3,
+      "lf_employed": 14992.8,
       "rail_total": 19447972.0
     },
     {
@@ -212,6 +219,7 @@
       "diesel_avg": 2.18,
       "registrations": 82585,
       "u_rate": 3.3,
+      "lf_employed": 15026.8,
       "rail_total": 16154104.0
     },
     {
@@ -220,6 +228,7 @@
       "diesel_avg": 2.18,
       "registrations": 111982,
       "u_rate": 3.4,
+      "lf_employed": 15035.2,
       "rail_total": 20157497.0
     },
     {
@@ -228,6 +237,7 @@
       "diesel_avg": 2.18,
       "registrations": 109052,
       "u_rate": 3.4,
+      "lf_employed": 15089.8,
       "rail_total": 20055305.0
     },
     {
@@ -236,6 +246,7 @@
       "diesel_avg": 2.18,
       "registrations": 119446,
       "u_rate": 3.3,
+      "lf_employed": 15122.5,
       "rail_total": 19295470.0
     },
     {
@@ -244,6 +255,7 @@
       "diesel_avg": 2.18,
       "registrations": 80715,
       "u_rate": 3.3,
+      "lf_employed": 15134.6,
       "rail_total": 17619475.0
     },
     {
@@ -252,6 +264,7 @@
       "diesel_avg": 2.18,
       "registrations": 113018,
       "u_rate": 3.3,
+      "lf_employed": 15179.8,
       "rail_total": 21036499.0
     },
     {
@@ -260,6 +273,7 @@
       "diesel_avg": 2.18,
       "registrations": 107914,
       "u_rate": 3.3,
+      "lf_employed": 15185.8,
       "rail_total": 20420797.0
     },
     {
@@ -268,6 +282,7 @@
       "diesel_avg": 2.18,
       "registrations": 96019,
       "u_rate": 3.3,
+      "lf_employed": 15229.9,
       "rail_total": 18631618.0
     },
     {
@@ -276,6 +291,7 @@
       "diesel_avg": 2.18,
       "registrations": 108761,
       "u_rate": 3.2,
+      "lf_employed": 15265.6,
       "rail_total": 21429132.0
     },
     {
@@ -284,6 +300,7 @@
       "diesel_avg": 2.18,
       "registrations": 102526,
       "u_rate": 3.2,
+      "lf_employed": 15315.0,
       "rail_total": 20938307.0
     },
     {
@@ -292,6 +309,7 @@
       "diesel_avg": 2.18,
       "registrations": 112357,
       "u_rate": 3.3,
+      "lf_employed": 15286.0,
       "rail_total": 21107563.0
     },
     {
@@ -300,6 +318,7 @@
       "diesel_avg": 2.18,
       "registrations": 106116,
       "u_rate": 3.2,
+      "lf_employed": 15317.6,
       "rail_total": 20077950.0
     },
     {
@@ -308,6 +327,7 @@
       "diesel_avg": 2.134,
       "registrations": 104794,
       "u_rate": 3.3,
+      "lf_employed": 15344.5,
       "rail_total": 19194226.0
     },
     {
@@ -316,6 +336,7 @@
       "diesel_avg": 1.815,
       "registrations": 59449,
       "u_rate": 3.8,
+      "lf_employed": 15232.4,
       "rail_total": 11314882.0
     },
     {
@@ -324,6 +345,7 @@
       "diesel_avg": 1.4675,
       "registrations": 1585,
       "u_rate": 5.0,
+      "lf_employed": 14933.4,
       "rail_total": 1253891.0
     },
     {
@@ -332,6 +354,7 @@
       "diesel_avg": 1.474,
       "registrations": 59899,
       "u_rate": 5.3,
+      "lf_employed": 14887.9,
       "rail_total": 3800296.0
     },
     {
@@ -340,6 +363,7 @@
       "diesel_avg": 1.7475,
       "registrations": 102203,
       "u_rate": 4.9,
+      "lf_employed": 14990.2,
       "rail_total": 7597898.0
     },
     {
@@ -348,6 +372,7 @@
       "diesel_avg": 1.85,
       "registrations": 125712,
       "u_rate": 4.7,
+      "lf_employed": 15073.4,
       "rail_total": 10919988.0
     },
     {
@@ -356,6 +381,7 @@
       "diesel_avg": 1.8039999999999998,
       "registrations": 111551,
       "u_rate": 4.7,
+      "lf_employed": 15153.5,
       "rail_total": 11031750.0
     },
     {
@@ -364,6 +390,7 @@
       "diesel_avg": 1.72,
       "registrations": 122910,
       "u_rate": 4.6,
+      "lf_employed": 15193.1,
       "rail_total": 12309875.0
     },
     {
@@ -372,6 +399,7 @@
       "diesel_avg": 1.722,
       "registrations": 121921,
       "u_rate": 4.7,
+      "lf_employed": 15207.1,
       "rail_total": 8426279.0
     },
     {
@@ -380,6 +408,7 @@
       "diesel_avg": 1.77,
       "registrations": 117671,
       "u_rate": 4.8,
+      "lf_employed": 15196.1,
       "rail_total": 6862420.0
     },
     {
@@ -388,6 +417,7 @@
       "diesel_avg": 1.9425,
       "registrations": 130187,
       "u_rate": 4.8,
+      "lf_employed": 15215.4,
       "rail_total": 8082092.0
     },
     {
@@ -396,6 +426,7 @@
       "diesel_avg": 2.0479999999999996,
       "registrations": 98133,
       "u_rate": 4.9,
+      "lf_employed": 15237.3,
       "rail_total": 5840917.0
     },
     {
@@ -404,6 +435,7 @@
       "diesel_avg": 2.1399999999999997,
       "registrations": 102747,
       "u_rate": 4.8,
+      "lf_employed": 15270.6,
       "rail_total": 5353886.0
     },
     {
@@ -412,6 +444,7 @@
       "diesel_avg": 2.15,
       "registrations": 157601,
       "u_rate": 4.7,
+      "lf_employed": 15329.3,
       "rail_total": 8765590.0
     },
     {
@@ -420,6 +453,7 @@
       "diesel_avg": 2.15,
       "registrations": 133921,
       "u_rate": 4.6,
+      "lf_employed": 15352.0,
       "rail_total": 9308866.0
     },
     {
@@ -428,6 +462,7 @@
       "diesel_avg": 2.15,
       "registrations": 103197,
       "u_rate": 4.5,
+      "lf_employed": 15370.8,
       "rail_total": 5657887.0
     },
     {
@@ -436,6 +471,7 @@
       "diesel_avg": 2.15,
       "registrations": 11219,
       "u_rate": 4.8,
+      "lf_employed": 15297.5,
       "rail_total": 2304574.0
     },
     {
@@ -444,6 +480,7 @@
       "diesel_avg": 2.15,
       "registrations": 28597,
       "u_rate": 4.8,
+      "lf_employed": 15294.8,
       "rail_total": 2521856.0
     },
     {
@@ -452,6 +489,7 @@
       "diesel_avg": 2.15,
       "registrations": 46521,
       "u_rate": 4.6,
+      "lf_employed": 15376.6,
       "rail_total": 3142352.0
     },
     {
@@ -460,6 +498,7 @@
       "diesel_avg": 2.15,
       "registrations": 100715,
       "u_rate": 4.5,
+      "lf_employed": 15463.5,
       "rail_total": 4831984.0
     },
     {
@@ -468,6 +507,7 @@
       "diesel_avg": 2.15,
       "registrations": 130564,
       "u_rate": 4.3,
+      "lf_employed": 15554.6,
       "rail_total": 6882170.0
     },
     {
@@ -476,6 +516,7 @@
       "diesel_avg": 2.15,
       "registrations": 127477,
       "u_rate": 4.3,
+      "lf_employed": 15610.3,
       "rail_total": 8481569.0
     },
     {
@@ -484,6 +525,7 @@
       "diesel_avg": 2.15,
       "registrations": 152167,
       "u_rate": 4.2,
+      "lf_employed": 15648.6,
       "rail_total": 9755655.0
     },
     {
@@ -492,6 +534,7 @@
       "diesel_avg": 2.15,
       "registrations": 93644,
       "u_rate": 4.2,
+      "lf_employed": 15686.1,
       "rail_total": 10014385.0
     },
     {
@@ -500,6 +543,7 @@
       "diesel_avg": 2.15,
       "registrations": 91616,
       "u_rate": 4.1,
+      "lf_employed": 15730.9,
       "rail_total": 7654617.0
     },
     {
@@ -508,6 +552,7 @@
       "diesel_avg": 2.15,
       "registrations": 138691,
       "u_rate": 4.1,
+      "lf_employed": 15769.4,
       "rail_total": 9511375.0
     },
     {
@@ -516,6 +561,7 @@
       "diesel_avg": 2.15,
       "registrations": 137392,
       "u_rate": 3.9,
+      "lf_employed": 15853.5,
       "rail_total": 11000360.0
     },
     {
@@ -524,6 +570,7 @@
       "diesel_avg": 2.15,
       "registrations": 120308,
       "u_rate": 3.9,
+      "lf_employed": 15900.0,
       "rail_total": 12479562.0
     },
     {
@@ -532,6 +579,7 @@
       "diesel_avg": 2.15,
       "registrations": 146022,
       "u_rate": 3.8,
+      "lf_employed": 15936.3,
       "rail_total": 16328341.0
     },
     {
@@ -540,6 +588,7 @@
       "diesel_avg": 2.15,
       "registrations": 120539,
       "u_rate": 3.7,
+      "lf_employed": 15978.4,
       "rail_total": 16939915.0
     },
     {
@@ -548,6 +597,7 @@
       "diesel_avg": 2.15,
       "registrations": 143386,
       "u_rate": 3.7,
+      "lf_employed": 16017.7,
       "rail_total": 16793997.0
     },
     {
@@ -556,6 +606,7 @@
       "diesel_avg": 2.15,
       "registrations": 138783,
       "u_rate": 3.6,
+      "lf_employed": 16052.2,
       "rail_total": 16913781.0
     },
     {
@@ -564,6 +615,7 @@
       "diesel_avg": 2.15,
       "registrations": 126248,
       "u_rate": 3.6,
+      "lf_employed": 16081.5,
       "rail_total": 17072868.0
     },
     {
@@ -572,6 +624,7 @@
       "diesel_avg": 2.15,
       "registrations": 127984,
       "u_rate": 3.6,
+      "lf_employed": 16108.6,
       "rail_total": 15366822.0
     },
     {
@@ -580,6 +633,7 @@
       "diesel_avg": 2.15,
       "registrations": 138112,
       "u_rate": 3.6,
+      "lf_employed": 16130.4,
       "rail_total": 18328783.0
     },
     {
@@ -588,6 +642,7 @@
       "diesel_avg": 2.15,
       "registrations": 111343,
       "u_rate": 3.6,
+      "lf_employed": 16159.3,
       "rail_total": 17206118.0
     },
     {
@@ -596,6 +651,7 @@
       "diesel_avg": 2.15,
       "registrations": 126976,
       "u_rate": 3.5,
+      "lf_employed": 16189.3,
       "rail_total": 16159839.0
     },
     {
@@ -604,6 +660,7 @@
       "diesel_avg": 2.15,
       "registrations": 150692,
       "u_rate": 3.5,
+      "lf_employed": 16223.0,
       "rail_total": 21032166.0
     },
     {
@@ -612,6 +669,7 @@
       "diesel_avg": 2.15,
       "registrations": 103569,
       "u_rate": 3.5,
+      "lf_employed": 16251.4,
       "rail_total": 18192786.0
     },
     {
@@ -620,6 +678,7 @@
       "diesel_avg": 2.15,
       "registrations": 131132,
       "u_rate": 3.5,
+      "lf_employed": 16279.5,
       "rail_total": 20651957.0
     },
     {
@@ -628,6 +687,7 @@
       "diesel_avg": 2.15,
       "registrations": 124759,
       "u_rate": 3.4,
+      "lf_employed": 16307.8,
       "rail_total": 20572190.0
     },
     {
@@ -636,6 +696,7 @@
       "diesel_avg": 2.15,
       "registrations": 128433,
       "u_rate": 3.4,
+      "lf_employed": 16335.0,
       "rail_total": 21462982.0
     },
     {
@@ -644,6 +705,7 @@
       "diesel_avg": 2.15,
       "registrations": 134837,
       "u_rate": 3.4,
+      "lf_employed": 16354.9,
       "rail_total": 22785178.0
     },
     {
@@ -652,6 +714,7 @@
       "diesel_avg": 2.15,
       "registrations": 122001,
       "u_rate": 3.4,
+      "lf_employed": 16375.1,
       "rail_total": 22004078.0
     },
     {
@@ -660,6 +723,7 @@
       "diesel_avg": 2.15,
       "registrations": 137372,
       "u_rate": 3.4,
+      "lf_employed": 16403.2,
       "rail_total": 24663447.0
     },
     {
@@ -668,6 +732,7 @@
       "diesel_avg": 2.15,
       "registrations": 131362,
       "u_rate": 3.3,
+      "lf_employed": 16431.1,
       "rail_total": 24572716.0
     },
     {
@@ -676,6 +741,7 @@
       "diesel_avg": 2.15,
       "registrations": 130828,
       "u_rate": 3.3,
+      "lf_employed": 16457.7,
       "rail_total": 25540627.0
     },
     {
@@ -684,6 +750,7 @@
       "diesel_avg": 2.15,
       "registrations": 129676,
       "u_rate": 3.3,
+      "lf_employed": 16229.4,
       "rail_total": 25161545.0
     },
     {
@@ -692,6 +759,7 @@
       "diesel_avg": 2.15,
       "registrations": 119048,
       "u_rate": 3.3,
+      "lf_employed": 16265.7,
       "rail_total": 24023348.0
     },
     {
@@ -700,6 +768,7 @@
       "diesel_avg": 2.15,
       "registrations": 136057,
       "u_rate": 3.3,
+      "lf_employed": 16296.6,
       "rail_total": 26264470.0
     },
     {
@@ -708,6 +777,7 @@
       "diesel_avg": 2.15,
       "registrations": 115213,
       "u_rate": 3.3,
+      "lf_employed": 16364.4,
       "rail_total": 24873693.0
     },
     {
@@ -716,6 +786,7 @@
       "diesel_avg": 2.15,
       "registrations": 136270,
       "u_rate": 3.3,
+      "lf_employed": 16393.5,
       "rail_total": 27868543.0
     },
     {
@@ -724,6 +795,7 @@
       "diesel_avg": 3.1100000000000003,
       "registrations": 117906,
       "u_rate": 3.3,
+      "lf_employed": 16418.5,
       "rail_total": 26027396.0
     },
     {
@@ -732,6 +804,7 @@
       "diesel_avg": 3.35,
       "registrations": 144275,
       "u_rate": 3.3,
+      "lf_employed": 16444.2,
       "rail_total": 28834706.0
     },
     {
@@ -740,6 +813,7 @@
       "diesel_avg": 3.2619999999999996,
       "registrations": 140710,
       "u_rate": 3.2,
+      "lf_employed": 16482.8,
       "rail_total": 29231479.0
     },
     {
@@ -748,6 +822,7 @@
       "diesel_avg": 3.0175,
       "registrations": 119552,
       "u_rate": 3.2,
+      "lf_employed": 16516.3,
       "rail_total": 27083671.0
     },
     {
@@ -756,6 +831,7 @@
       "diesel_avg": 2.95,
       "registrations": 138076,
       "u_rate": 3.2,
+      "lf_employed": 16549.8,
       "rail_total": 29811656.0
     },
     {
@@ -764,6 +840,7 @@
       "diesel_avg": 2.95,
       "registrations": 128956,
       "u_rate": 3.2,
+      "lf_employed": 16585.7,
       "rail_total": 28908097.0
     },
     {
@@ -772,6 +849,7 @@
       "diesel_avg": 2.95,
       "registrations": 144931,
       "u_rate": 3.1,
+      "lf_employed": 16629.9,
       "rail_total": 29811986.0
     },
     {
@@ -780,6 +858,7 @@
       "diesel_avg": 3.08,
       "registrations": 109815,
       "u_rate": 3.1,
+      "lf_employed": 16561.2,
       "rail_total": 28575493.0
     },
     {
@@ -788,6 +867,7 @@
       "diesel_avg": 3.18,
       "registrations": 127062,
       "u_rate": 3.1,
+      "lf_employed": 16588.2,
       "rail_total": 27289936.0
     },
     {
@@ -796,6 +876,7 @@
       "diesel_avg": 3.0625,
       "registrations": 143861,
       "u_rate": 3.1,
+      "lf_employed": 16604.2,
       "rail_total": 27836525.0
     },
     {
@@ -804,6 +885,7 @@
       "diesel_avg": 2.9425,
       "registrations": 123964,
       "u_rate": 3.1,
+      "lf_employed": 16623.2,
       "rail_total": 28491810.0
     },
     {
@@ -812,6 +894,7 @@
       "diesel_avg": 2.804,
       "registrations": 141124,
       "u_rate": 3.1,
+      "lf_employed": 16642.1,
       "rail_total": 30145183.0
     },
     {
@@ -820,6 +903,7 @@
       "diesel_avg": 2.7925,
       "registrations": 119343,
       "u_rate": 3.0,
+      "lf_employed": 16664.2,
       "rail_total": 28498125.0
     },
     {
@@ -828,6 +912,7 @@
       "diesel_avg": 2.8920000000000003,
       "registrations": 149176,
       "u_rate": 3.0,
+      "lf_employed": 16669.5,
       "rail_total": 31957431.0
     },
     {
@@ -836,6 +921,7 @@
       "diesel_avg": 2.8925,
       "registrations": 147780,
       "u_rate": 3.0,
+      "lf_employed": 16684.5,
       "rail_total": 31772421.0
     },
     {
@@ -844,6 +930,7 @@
       "diesel_avg": 2.914,
       "registrations": 120066,
       "u_rate": 3.0,
+      "lf_employed": 16693.4,
       "rail_total": 28586281.0
     },
     {
@@ -852,6 +939,7 @@
       "diesel_avg": 2.9250000000000003,
       "registrations": 146828,
       "u_rate": 3.0,
+      "lf_employed": 17060.1,
       "rail_total": 30717764.0
     },
     {
@@ -860,6 +948,7 @@
       "diesel_avg": 3.0675,
       "registrations": 138443,
       "u_rate": 2.9,
+      "lf_employed": 17092.5,
       "rail_total": 29630394.0
     },
     {
@@ -868,6 +957,7 @@
       "diesel_avg": 3.025,
       "registrations": 162090,
       "u_rate": 2.9,
+      "lf_employed": 16764.3,
       "rail_total": 31434024.0
     },
     {
@@ -876,6 +966,7 @@
       "diesel_avg": 2.8939999999999997,
       "registrations": 141075,
       "u_rate": 2.9,
+      "lf_employed": 16771.4,
       "rail_total": 31287211.0
     },
     {
@@ -884,6 +975,7 @@
       "diesel_avg": 2.995,
       "registrations": 116154,
       "u_rate": 2.9,
+      "lf_employed": 16790.9,
       "rail_total": 26489579.0
     },
     {
@@ -892,6 +984,7 @@
       "diesel_avg": 4.32,
       "registrations": 131863,
       "u_rate": 2.9,
+      "lf_employed": 16804.0,
       "rail_total": 29604128.0
     },
     {
@@ -900,6 +993,7 @@
       "diesel_avg": 5.79,
       "registrations": 156866,
       "u_rate": 3.0,
+      "lf_employed": 16815.8,
       "rail_total": 31238681.0
     },
     {
@@ -908,6 +1002,7 @@
       "diesel_avg": 4.97,
       "registrations": 137561,
       "u_rate": 3.0,
+      "lf_employed": 16824.8,
       "rail_total": 30117736.0
     },
     {
@@ -916,6 +1011,7 @@
       "diesel_avg": 4.445,
       "registrations": 143834,
       "u_rate": 3.0,
+      "lf_employed": 16827.1,
       "rail_total": 29195347.0
     },
     {
@@ -924,6 +1020,7 @@
       "diesel_avg": 4.21,
       "registrations": 160534,
       "u_rate": 3.0,
+      "lf_employed": 16845.6,
       "rail_total": 34471693.0
     },
     {
@@ -932,7 +1029,22 @@
       "diesel_avg": 4.6075,
       "registrations": 151050,
       "u_rate": 2.9,
+      "lf_employed": 16874.4,
       "rail_total": 32569085.0
     }
-  ]
+  ],
+  "kpi_summary": {
+    "projected_growth_pct": -4.6,
+    "fuel_mom_pct": 6.4,
+    "reg_yoy_pct": 2.2,
+    "latest_lf_employed_m": 0.0,
+    "u_rate_pearson_r": -0.9251,
+    "diesel_pearson_r": 0.6742,
+    "registrations_pearson_r": 0.602,
+    "last_observed_rail_total": 32569085,
+    "last_observed_month": "2026-08-01",
+    "last_ron95_avg": 3.745,
+    "last_registrations": 151050,
+    "last_u_rate": 2.9
+  }
 }

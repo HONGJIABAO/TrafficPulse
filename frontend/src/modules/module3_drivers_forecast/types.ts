@@ -22,19 +22,37 @@ export type ForecastHorizonKey = '3_months' | '6_months' | '12_months';
 
 export interface ForecastHorizon {
   horizon: ForecastHorizonKey;
-  mape_pct: number;
-  rmse: number;
+  mape_pct: number | null;
+  rmse: number | null;
+  n_cv_folds?: number;
+  ci_level?: number;
   model: string;
   forecasts: ForecastPoint[];
 }
 
 export interface MonthlyDriverData {
   month_start: string;
-  ron95_avg: number;
-  diesel_avg: number;
-  registrations: number;
-  u_rate: number;
+  ron95_avg: number | null;
+  diesel_avg: number | null;
+  registrations: number | null;
+  u_rate: number | null;
+  lf_employed?: number | null;
   rail_total: number;
+}
+
+export interface KpiSummary {
+  projected_growth_pct: number | null;
+  fuel_mom_pct: number | null;
+  reg_yoy_pct: number | null;
+  latest_lf_employed_m: number | null;
+  u_rate_pearson_r: number | null;
+  diesel_pearson_r: number | null;
+  registrations_pearson_r: number | null;
+  last_observed_rail_total: number | null;
+  last_observed_month: string | null;
+  last_ron95_avg: number | null;
+  last_registrations: number | null;
+  last_u_rate: number | null;
 }
 
 export interface ForecastDemandSchema {
@@ -44,6 +62,7 @@ export interface ForecastDemandSchema {
   feature_importance: FeatureImportance[];
   forecasts: ForecastHorizon[];
   monthly_driver_trend: MonthlyDriverData[];
+  kpi_summary?: KpiSummary;
 }
 
 export type TimeRangeFilter = '12m' | '24m' | 'all';

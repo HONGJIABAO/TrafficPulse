@@ -19,6 +19,12 @@ interface Props {
   onReset: () => void;
   featureImportance: FeatureImportance[];
   driverCorrelations: DriverCorrelation[];
+  /** CV-based MAPE from pipeline backtesting */
+  cvMape?: number | null;
+  /** CV-based RMSE from pipeline backtesting */
+  cvRmse?: number | null;
+  /** Number of walk-forward CV folds used */
+  nCvFolds?: number;
 }
 
 const cardStyle: React.CSSProperties = {
@@ -134,9 +140,12 @@ export const DriversFilterCard: React.FC<Props> = ({
   onReset,
   featureImportance,
   driverCorrelations,
+  cvMape,
+  cvRmse,
+  nCvFolds,
 }) => {
   const maxImportance = Math.max(...featureImportance.map((f) => f.importance), 1);
-  const corrMap = new Map(driverCorrelations.map((c) => [c.feature, c.correlation]));
+  const maxCorrAbs = Math.max(...driverCorrelations.map((c) => Math.abs(c.correlation)), 1);
 
   return (
     <div
@@ -202,23 +211,69 @@ export const DriversFilterCard: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* ── 2. Driver Correlation & Weight ────────────────────────────────────── */}
+      {/* ── 2a. ML Feature Importance (LGBM Split Count) ──────────────────────── */}
+      {/* Fix 6: bar length = importance (LGBM split count), no correlation label */}
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <SectionTitle icon="chart-bar" variant="teal" label="Driver Sensitivity (ML)" />
-          <span style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>LGBM Weights</span>
+          <SectionTitle icon="chart-bar" variant="teal" label="ML Feature Importance" />
+          <span style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>LGBM Splits</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {featureImportance.slice(0, 5).map((item) => {
-            const corr = corrMap.get(item.feature);
             const pct = Math.round((item.importance / maxImportance) * 100);
             const label = FEATURE_NAME_MAP[item.feature] || item.feature;
-            const isPositive = corr !== undefined && corr > 0;
-
             return (
               <div key={item.feature} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: '#1E293B' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#1E293B' }}>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: 175,
+                    }}
+                    title={label}
+                  >
+                    {label}
+                  </span>
+                  <span style={{ fontWeight: 700, color: '#0066FF' }}>
+                    {Math.round(item.importance)}
+                  </span>
+                </div>
+                <div style={{ width: '100%', height: 5, background: '#F1F4F9', borderRadius: 3, overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      width: `${pct}%`,
+                      height: '100%',
+                      background: 'linear-gradient(90deg, #0066FF, #00B8D9)',
+                      borderRadius: 3,
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 2b. Pearson Correlations with Ridership ───────────────────────────── */}
+      {/* Fix 6: separate section for bivariate correlation — direction shown via colour */}
+      <div style={cardStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          <SectionTitle icon="chart-bar" variant="indigo" label="Pearson Correlations" />
+          <span style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>vs Ridership</span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {driverCorrelations.slice(0, 5).map((item) => {
+            const pct = Math.round((Math.abs(item.correlation) / maxCorrAbs) * 100);
+            const label = FEATURE_NAME_MAP[item.feature] || item.feature;
+            const isPositive = item.correlation > 0;
+            return (
+              <div key={item.feature} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#1E293B' }}>
                   <span
                     style={{
                       fontWeight: 600,
@@ -232,7 +287,7 @@ export const DriversFilterCard: React.FC<Props> = ({
                     {label}
                   </span>
                   <span style={{ fontWeight: 700, color: isPositive ? '#00A389' : '#EF4444' }}>
-                    {corr !== undefined ? `${corr > 0 ? '+' : ''}${corr.toFixed(2)}` : ''}
+                    {item.correlation > 0 ? '+' : ''}{item.correlation.toFixed(2)}
                   </span>
                 </div>
                 <div style={{ width: '100%', height: 5, background: '#F1F4F9', borderRadius: 3, overflow: 'hidden' }}>
@@ -251,6 +306,9 @@ export const DriversFilterCard: React.FC<Props> = ({
             );
           })}
         </div>
+        <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 6, fontStyle: 'italic' }}>
+          Bivariate linear (Pearson r). Positive = co-moves with ridership.
+        </div>
       </div>
 
       {/* ── 3. Model Performance & Diagnostics ─────────────────────────────────── */}
@@ -262,12 +320,22 @@ export const DriversFilterCard: React.FC<Props> = ({
             <strong style={{ color: '#0F1E36' }}>LightGBM + HW</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Error (MAPE):</span>
-            <span style={{ color: '#00A389', fontWeight: 700 }}>6.76% (High Acc.)</span>
+            <span>CV Error (MAPE):</span>
+            <span style={{ color: '#00A389', fontWeight: 700 }}>
+              {cvMape != null ? `${cvMape}%` : '—'}
+            </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Residual RMSE:</span>
-            <strong style={{ color: '#0066FF' }}>2.60M trips</strong>
+            <span>CV RMSE:</span>
+            <strong style={{ color: '#0066FF' }}>
+              {cvRmse != null ? `${(cvRmse / 1_000_000).toFixed(2)}M trips` : '—'}
+            </strong>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>CV Folds:</span>
+            <span style={{ color: '#64748B', fontWeight: 600 }}>
+              {nCvFolds ? `${nCvFolds} walk-forward` : '—'}
+            </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>Confidence Level:</span>
@@ -288,18 +356,18 @@ export const DriversFilterCard: React.FC<Props> = ({
               </span>
             </div>
             <div style={{ color: '#475569', fontSize: 10.5, marginTop: 2, lineHeight: 1.35 }}>
-              Diesel floating market price; planned RON95 rationalization accelerates passenger shift to rail.
+              Diesel floating market price; planned RON95 rationalization is associated with higher rail ridership — consistent with modal shift when fuel costs rise.
             </div>
           </div>
           <div style={{ borderTop: '1px dashed rgba(0, 102, 255, 0.15)', paddingTop: 5 }}>
             <div style={{ fontWeight: 700, color: '#0F1E36', display: 'flex', justifyContent: 'space-between' }}>
               <span>Labour Market Demand</span>
               <span style={{ color: '#00A389', fontSize: 10, fontWeight: 700, background: '#E0FFF6', padding: '1px 5px', borderRadius: 4 }}>
-                16.4M Employed
+                High Employment
               </span>
             </div>
             <div style={{ color: '#475569', fontSize: 10.5, marginTop: 2, lineHeight: 1.35 }}>
-              69.8% labour participation rate directly anchors morning &amp; evening suburban-to-CBD commuter flows.
+              High labour participation rate is associated with morning &amp; evening suburban-to-CBD commuter flows.
             </div>
           </div>
         </div>
