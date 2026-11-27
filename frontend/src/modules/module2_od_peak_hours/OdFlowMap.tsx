@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -15,15 +15,13 @@ interface Props {
   flows: ResolvedOdFlow[];
   selectedFlowId?: string | null;
   onSelectFlow: (flow: ResolvedOdFlow) => void;
-  selectedStationFilter?: string;
   selectedMode?: string;
+  emptyReason?: string | null;
 }
 
-// Bounding presets
 const KLANG_VALLEY_CENTER: [number, number] = [3.147, 101.693];
 const PENINSULAR_CENTER: [number, number] = [4.21, 101.97];
 
-// Compute smooth quadratic bezier curve points between two coordinates
 function getBezierPoints(
   p0: [number, number],
   p1: [number, number],
@@ -39,12 +37,8 @@ function getBezierPoints(
 
   const midLat = (lat0 + lat1) / 2;
   const midLng = (lng0 + lng1) / 2;
-
-  // Normal vector perpendicular to chord
   const normLat = -dLng / dist;
   const normLng = dLat / dist;
-
-  // Curvature offset
   const offset = Math.max(dist * curvature, 0.008);
   const cLat = midLat + normLat * offset;
   const cLng = midLng + normLng * offset;
@@ -55,14 +49,14 @@ function getBezierPoints(
     const b0 = (1 - t) * (1 - t);
     const b1 = 2 * (1 - t) * t;
     const b2 = t * t;
-    const lat = b0 * lat0 + b1 * cLat + b2 * lat1;
-    const lng = b0 * lng0 + b1 * cLng + b2 * lng1;
-    points.push([lat, lng]);
+    points.push([
+      b0 * lat0 + b1 * cLat + b2 * lat1,
+      b0 * lng0 + b1 * cLng + b2 * lng1,
+    ]);
   }
   return points;
 }
 
-// Controller component to handle flyTo camera changes
 function MapFlyController({
   selectedFlow,
   viewPreset,
@@ -73,19 +67,19 @@ function MapFlyController({
   const map = useMap();
 
   useEffect(() => {
-    if (selectedFlow) {
+    if (selectedFlow && selectedFlow.originCoords && selectedFlow.destCoords) {
       const midLat = (selectedFlow.originCoords[0] + selectedFlow.destCoords[0]) / 2;
       const midLng = (selectedFlow.originCoords[1] + selectedFlow.destCoords[1]) / 2;
-      map.flyTo([midLat, midLng], 12, { duration: 1.2 });
+      map.flyTo([midLat, midLng], 12, { duration: 1.0 });
     }
   }, [selectedFlow, map]);
 
   useEffect(() => {
     if (!selectedFlow) {
       if (viewPreset === 'kv') {
-        map.flyTo(KLANG_VALLEY_CENTER, 10.5, { duration: 1.0 });
+        map.flyTo(KLANG_VALLEY_CENTER, 10.5, { duration: 0.9 });
       } else {
-        map.flyTo(PENINSULAR_CENTER, 7, { duration: 1.0 });
+        map.flyTo(PENINSULAR_CENTER, 7, { duration: 0.9 });
       }
     }
   }, [viewPreset, selectedFlow, map]);
@@ -98,23 +92,39 @@ export const OdFlowMap: React.FC<Props> = ({
   selectedFlowId,
   onSelectFlow,
   selectedMode = 'all',
+  emptyReason,
 }) => {
-  const [viewPreset, setViewPreset] = React.useState<'kv' | 'peninsular'>('kv');
+  const [presetOverride, setPresetOverride] = React.useState<{
+    mode: string;
+    preset: 'kv' | 'peninsular';
+  } | null>(null);
 
-  // Automatically switch view preset when mode filter changes
-  useEffect(() => {
-    if (selectedMode === 'intercity') {
-      setViewPreset('peninsular');
-    } else if (selectedMode === 'rapid_rail' || selectedMode === 'komuter') {
-      setViewPreset('kv');
-    }
-  }, [selectedMode]);
+  const viewPreset: 'kv' | 'peninsular' =
+    presetOverride && presetOverride.mode === selectedMode
+      ? presetOverride.preset
+      : selectedMode === 'intercity'
+        ? 'peninsular'
+        : 'kv';
+
+  const setViewPreset = (preset: 'kv' | 'peninsular') => {
+    setPresetOverride({ mode: selectedMode, preset });
+  };
+
+  // Only plot flows with valid verified station coordinates and positive ridership
+  const mappableFlows = useMemo(() => {
+    return flows.filter(
+      (f) => f.isVerifiedCoords && f.originCoords !== null && f.destCoords !== null && f.volume > 0
+    );
+  }, [flows]);
 
   const selectedFlow = useMemo(() => {
-    return flows.find((f) => f.id === selectedFlowId) || null;
-  }, [flows, selectedFlowId]);
+    return mappableFlows.find((f) => f.id === selectedFlowId) || null;
+  }, [mappableFlows, selectedFlowId]);
 
-  // Unique stations involved in current flows
+  const maxDailyInView = useMemo(() => {
+    return Math.max(...mappableFlows.map((f) => f.avgDaily), 1);
+  }, [mappableFlows]);
+
   const stationNodes = useMemo(() => {
     const map = new Map<
       string,
@@ -128,8 +138,9 @@ export const OdFlowMap: React.FC<Props> = ({
       }
     >();
 
-    flows.forEach((f) => {
-      // Origin node
+    mappableFlows.forEach((f) => {
+      if (!f.originCoords || !f.destCoords) return;
+
       const oKey = f.originClean;
       const oCurr = map.get(oKey) || {
         name: f.originClean,
@@ -143,7 +154,6 @@ export const OdFlowMap: React.FC<Props> = ({
       oCurr.total += f.volume;
       map.set(oKey, oCurr);
 
-      // Destination node
       const dKey = f.destinationClean;
       const dCurr = map.get(dKey) || {
         name: f.destinationClean,
@@ -159,11 +169,11 @@ export const OdFlowMap: React.FC<Props> = ({
     });
 
     return Array.from(map.values());
-  }, [flows]);
+  }, [mappableFlows]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      {/* View Presets & Legend Floating Bar */}
+      {/* View Presets */}
       <div
         style={{
           position: 'absolute',
@@ -182,9 +192,7 @@ export const OdFlowMap: React.FC<Props> = ({
         }}
       >
         <button
-          onClick={() => {
-            setViewPreset('kv');
-          }}
+          onClick={() => setViewPreset('kv')}
           style={{
             background: viewPreset === 'kv' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
             color: viewPreset === 'kv' ? '#FFFFFF' : '#475569',
@@ -198,12 +206,10 @@ export const OdFlowMap: React.FC<Props> = ({
             transition: 'all 0.15s ease',
           }}
         >
-          Klang Valley CBD
+          Klang Valley
         </button>
         <button
-          onClick={() => {
-            setViewPreset('peninsular');
-          }}
+          onClick={() => setViewPreset('peninsular')}
           style={{
             background: viewPreset === 'peninsular' ? 'linear-gradient(135deg, #0066FF, #0052CC)' : 'transparent',
             color: viewPreset === 'peninsular' ? '#FFFFFF' : '#475569',
@@ -221,47 +227,83 @@ export const OdFlowMap: React.FC<Props> = ({
         </button>
       </div>
 
-      {/* Legend on Bottom Right */}
+      {/* Empty State Overlay */}
+      {mappableFlows.length === 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 950,
+            background: 'rgba(248, 250, 252, 0.88)',
+            backdropFilter: 'blur(3px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+            textAlign: 'center',
+          }}
+        >
+          <div
+            style={{
+              background: '#FFFFFF',
+              borderRadius: 10,
+              border: '1px solid rgba(0, 102, 255, 0.15)',
+              padding: '16px 20px',
+              maxWidth: 400,
+              boxShadow: '0 4px 14px rgba(15, 30, 54, 0.08)',
+            }}
+          >
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36', marginBottom: 4 }}>
+              No OD Corridors Available for Active Filter
+            </div>
+            <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.45 }}>
+              {emptyReason || 'Adjust Rail Network Mode, Time Horizon, Day Profile, or Distance filter.'}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Network Mode Legend at Bottom Center */}
       <div
         style={{
           position: 'absolute',
           bottom: 12,
-          right: 12,
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 1000,
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: 'rgba(255, 255, 255, 0.94)',
           backdropFilter: 'blur(6px)',
-          borderRadius: 8,
-          border: '1px solid rgba(0, 102, 255, 0.12)',
-          boxShadow: '0 2px 10px rgba(0, 102, 255, 0.08)',
-          padding: '6px 10px',
-          fontSize: 10,
-          color: '#0F1E36',
+          borderRadius: 20,
+          border: '1px solid rgba(0, 102, 255, 0.15)',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          padding: '4px 14px',
+          fontSize: 10.5,
+          fontWeight: 600,
           display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
+          alignItems: 'center',
+          gap: 12,
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
         }}
       >
-        <div style={{ fontWeight: 700, fontSize: 10, color: '#64748B', letterSpacing: '0.4px' }}>
-          FLOW VOLUME
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EA580C' }} />
+          <span style={{ color: '#EA580C' }}>KTM Komuter</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 3, background: '#0052CC', borderRadius: 2 }} />
-          <span>High (&gt; 500K)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0066FF' }} />
+          <span style={{ color: '#0066FF' }}>Rapid Rail</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 2.5, background: '#FF8C00', borderRadius: 2 }} />
-          <span>Medium (150K–500K)</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 2, background: '#00A389', borderRadius: 2 }} />
-          <span>Normal (&lt; 150K)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0D9488' }} />
+          <span style={{ color: '#0D9488' }}>KTM Intercity</span>
         </div>
       </div>
 
       <MapContainer
         center={KLANG_VALLEY_CENTER}
         zoom={10.5}
-        style={{ width: '100%', height: '100%', borderRadius: 12 }}
+        style={{ width: '100%', height: '100%', borderRadius: 0 }}
         zoomControl={false}
       >
         <TileLayer
@@ -272,25 +314,24 @@ export const OdFlowMap: React.FC<Props> = ({
 
         <MapFlyController selectedFlow={selectedFlow} viewPreset={viewPreset} />
 
-        {/* ── Render Curved OD Flow Arcs ──────────────────────────────────── */}
-        {flows.map((flow) => {
+        {/* Render Curved Directional OD Flow Arcs */}
+        {mappableFlows.map((flow) => {
+          if (!flow.originCoords || !flow.destCoords) return null;
           const isSelected = selectedFlowId === flow.id;
           const points = getBezierPoints(flow.originCoords, flow.destCoords);
 
-          // Flow colors based on volume tier
-          let strokeColor = '#00A389';
-          let weight = 2.5;
-          let opacity = 0.65;
+          const modeColor =
+            flow.mode === 'rapid_rail'
+              ? '#0066FF'
+              : flow.mode === 'komuter'
+                ? '#EA580C'
+                : '#0D9488';
 
-          if (flow.volume >= 500000) {
-            strokeColor = '#0052CC';
-            weight = 4;
-            opacity = 0.85;
-          } else if (flow.volume >= 150000) {
-            strokeColor = '#FF8C00';
-            weight = 3.2;
-            opacity = 0.75;
-          }
+          // Proportional stroke width based on normalized daily passenger movement
+          const relIntensity = flow.avgDaily / maxDailyInView;
+          let strokeColor = modeColor;
+          let weight = Math.max(1.8, Math.min(4.6, 1.8 + relIntensity * 2.8));
+          let opacity = 0.78;
 
           if (selectedFlowId) {
             if (isSelected) {
@@ -298,7 +339,7 @@ export const OdFlowMap: React.FC<Props> = ({
               weight = 5.5;
               opacity = 1;
             } else {
-              opacity = 0.15;
+              opacity = 0.14;
             }
           }
 
@@ -318,35 +359,44 @@ export const OdFlowMap: React.FC<Props> = ({
               }}
             >
               <Tooltip sticky>
-                <div style={{ fontSize: 11, color: '#0F1E36' }}>
-                  <div style={{ fontWeight: 700, borderBottom: '1px solid #E2E8F0', paddingBottom: 2 }}>
-                    {flow.originClean} ➔ {flow.destinationClean}
+                <div style={{ fontSize: 11, color: '#0F1E36', minWidth: 185 }}>
+                  <div style={{ fontWeight: 700, borderBottom: '1px solid #E2E8F0', paddingBottom: 3 }}>
+                    #{flow.rank} {flow.originClean} ➔ {flow.destinationClean}
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 3 }}>
-                    <span style={{ color: '#64748B' }}>Total Ridership:</span>
-                    <strong style={{ color: '#0066FF' }}>{flow.volume.toLocaleString()} ({formatMillions(flow.volume)})</strong>
+                    <span style={{ color: '#64748B' }}>Period Total:</span>
+                    <strong style={{ color: '#0066FF' }}>
+                      {flow.volume.toLocaleString()} ({formatMillions(flow.volume)})
+                    </strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 2 }}>
-                    <span style={{ color: '#64748B' }}>Network Mode:</span>
+                    <span style={{ color: '#64748B' }}>Daily Average:</span>
+                    <strong style={{ color: '#0F1E36' }}>
+                      {flow.avgDaily.toLocaleString()} / day ({flow.observationDays}d)
+                    </strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 2 }}>
+                    <span style={{ color: '#64748B' }}>Service:</span>
                     <span style={{ fontWeight: 600 }}>{flow.modeLabel}</span>
                   </div>
-                  <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 3 }}>
-                    Click corridor to inspect details
-                  </div>
+                  {flow.distanceKm !== null && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 2 }}>
+                      <span style={{ color: '#64748B' }}>Straight-line Dist:</span>
+                      <span>{flow.distanceKm} km</span>
+                    </div>
+                  )}
                 </div>
               </Tooltip>
             </Polyline>
           );
         })}
 
-        {/* ── Render Station Nodes ────────────────────────────────────────── */}
+        {/* Render Station Nodes */}
         {stationNodes.map((node) => {
           const isOrigin = selectedFlow?.originClean === node.name;
           const isDest = selectedFlow?.destinationClean === node.name;
           const isHighlighted = isOrigin || isDest;
-
-          // Node radius according to throughput
-          const radius = Math.min(10, Math.max(4, Math.log10(node.total + 10) * 1.5));
+          const radius = Math.min(9.5, Math.max(4, Math.log10(node.total + 10) * 1.4));
 
           return (
             <CircleMarker
@@ -354,25 +404,23 @@ export const OdFlowMap: React.FC<Props> = ({
               center={node.coords}
               radius={isHighlighted ? 9 : radius}
               pathOptions={{
-                fillColor: isHighlighted
-                  ? isOrigin
-                    ? '#0066FF'
-                    : '#FF5A00'
-                  : '#FFFFFF',
+                fillColor: isHighlighted ? (isOrigin ? '#0066FF' : '#FF5A00') : '#FFFFFF',
                 fillOpacity: 0.95,
                 color: isHighlighted ? '#FFFFFF' : '#0066FF',
                 weight: isHighlighted ? 2.5 : 1.5,
               }}
             >
               <Tooltip direction="top" offset={[0, -4]}>
-                <div style={{ fontSize: 11, color: '#0F1E36', minWidth: 120 }}>
+                <div style={{ fontSize: 11, color: '#0F1E36', minWidth: 130 }}>
                   <div style={{ fontWeight: 700, color: '#0066FF' }}>{node.name}</div>
-                  <div style={{ fontSize: 10, color: '#64748B', margin: '2px 0' }}>
-                    Network Hub ({node.mode.toUpperCase()})
-                  </div>
-                  <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: 2, marginTop: 2 }}>
-                    <div>Inflow: <strong>{formatMillions(node.inflow)}</strong></div>
-                    <div>Outflow: <strong>{formatMillions(node.outflow)}</strong></div>
+                  {isHighlighted && (
+                    <div style={{ fontSize: 9.5, fontWeight: 700, color: isOrigin ? '#0066FF' : '#FF5A00' }}>
+                      {isOrigin ? 'Selected Origin' : 'Selected Destination'}
+                    </div>
+                  )}
+                  <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: 3, marginTop: 3 }}>
+                    <div>Outflow (Origin): <strong>{formatMillions(node.outflow)}</strong></div>
+                    <div>Inflow (Dest): <strong>{formatMillions(node.inflow)}</strong></div>
                   </div>
                 </div>
               </Tooltip>

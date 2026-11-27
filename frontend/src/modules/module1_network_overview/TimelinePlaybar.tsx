@@ -14,6 +14,7 @@ interface Props {
   isPlaying: boolean;
   onIdxChange: (idx: number) => void;
   onPlayPause: () => void;
+  style?: React.CSSProperties;
 }
 
 const MONTHS_LABEL = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -25,6 +26,7 @@ export function TimelinePlaybar({
   isPlaying,
   onIdxChange,
   onPlayPause,
+  style,
 }: Props) {
   const [speed, setSpeed] = useState<number>(1);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -69,6 +71,7 @@ export function TimelinePlaybar({
         alignItems: 'center',
         gap: 14,
         flexShrink: 0,
+        ...style,
       }}
     >
       {/* Play/Pause */}
