@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import type { MonthlyDriverData, TimeRangeFilter, DriverFocusFilter } from './types';
 
@@ -6,13 +6,29 @@ interface Props {
   data: MonthlyDriverData[];
   timeRange: TimeRangeFilter;
   driverFocus: DriverFocusFilter;
+  onSelectDriverFocus?: (focus: DriverFocusFilter) => void;
 }
 
 export const RidershipVsDriversChart: React.FC<Props> = ({
   data,
   timeRange,
   driverFocus,
+  onSelectDriverFocus,
 }) => {
+  // If 'all' is passed from elsewhere, default to 'fuel' for a clean 1-to-1 comparison
+  const activeFocus: 'fuel' | 'registrations' | 'labour' =
+    driverFocus === 'registrations'
+      ? 'registrations'
+      : driverFocus === 'labour'
+      ? 'labour'
+      : 'fuel';
+
+  const handlePillClick = (key: 'fuel' | 'registrations' | 'labour') => {
+    if (onSelectDriverFocus) {
+      onSelectDriverFocus(key);
+    }
+  };
+
   const filteredData = useMemo(() => {
     if (timeRange === '12m') {
       return data.slice(-12);
@@ -43,12 +59,12 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
     return filteredData.map((d) => d.registrations);
   }, [filteredData]);
 
-  const option = useMemo(() => {
-    const showFuel = driverFocus === 'all' || driverFocus === 'fuel';
-    const showReg = driverFocus === 'all' || driverFocus === 'registrations';
-    const showLabour = driverFocus === 'labour';
+  const uRateValues = useMemo(() => {
+    return filteredData.map((d) => d.u_rate);
+  }, [filteredData]);
 
-    // Series definitions
+  const option = useMemo(() => {
+    // 1. Primary Left Y-Axis Series: Rail Ridership
     const series: any[] = [
       {
         name: 'Rail Ridership',
@@ -57,7 +73,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         data: ridershipValues,
         smooth: true,
         symbol: 'circle',
-        symbolSize: filteredData.length > 36 ? 0 : 4,
+        symbolSize: filteredData.length > 36 ? 0 : 5,
         lineStyle: { width: 3, color: '#0066FF' },
         itemStyle: { color: '#0066FF' },
         areaStyle: {
@@ -76,13 +92,12 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       },
     ];
 
-    // Configure Y-Axes
+    // 2. Exactly TWO Y-Axes: Left (Ridership) & Right (Selected Driver)
     const yAxis: any[] = [
-      // Axis 0: Left Y-Axis for Rail Ridership
       {
         type: 'value',
         position: 'left',
-        min: (value: { min: number }) => Math.floor(value.min * 0.95 / 1_000_000) * 1_000_000,
+        min: (value: { min: number }) => Math.floor((value.min * 0.95) / 1_000_000) * 1_000_000,
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: { lineStyle: { color: 'rgba(241, 244, 249, 0.9)', type: 'dashed' } },
@@ -95,8 +110,10 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       },
     ];
 
-    if (showFuel) {
-      // Axis 1: Dedicated Fuel Price scale (RM 1.5 - RM 6.0)
+    let correlationBadge = '';
+
+    if (activeFocus === 'fuel') {
+      correlationBadge = 'r = +0.67';
       yAxis.push({
         type: 'value',
         position: 'right',
@@ -114,7 +131,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       });
 
       series.push({
-        name: 'RON95 (RM/L)',
+        name: 'RON95 Price',
         type: 'line',
         yAxisIndex: 1,
         data: ron95Values,
@@ -126,7 +143,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       });
 
       series.push({
-        name: 'Diesel (RM/L)',
+        name: 'Diesel Price',
         type: 'line',
         yAxisIndex: 1,
         data: dieselValues,
@@ -136,18 +153,13 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         lineStyle: { width: 2.5, color: '#EF4444' },
         itemStyle: { color: '#EF4444' },
       });
-    }
-
-    if (showReg) {
-      // In 'all' view with fuel active, give vehicle registrations its own 3rd axis
-      const regAxisIndex = showFuel ? 2 : 1;
-
+    } else if (activeFocus === 'registrations') {
+      correlationBadge = 'r = +0.60';
       yAxis.push({
         type: 'value',
         position: 'right',
-        offset: showFuel ? 56 : 0,
-        min: (value: { min: number }) => Math.floor(value.min * 0.9 / 1000) * 1000,
-        max: (value: { max: number }) => Math.ceil(value.max * 1.05 / 1000) * 1000,
+        min: (value: { min: number }) => Math.floor((value.min * 0.9) / 1000) * 1000,
+        max: (value: { max: number }) => Math.ceil((value.max * 1.05) / 1000) * 1000,
         axisLine: { lineStyle: { color: 'rgba(0, 196, 140, 0.4)' } },
         axisTick: { show: false },
         splitLine: { show: false },
@@ -160,42 +172,43 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       });
 
       series.push({
-        name: 'Vehicle Reg.',
+        name: 'Vehicle Registrations',
         type: 'line',
-        yAxisIndex: regAxisIndex,
+        yAxisIndex: 1,
         data: regValues,
         smooth: true,
         symbol: 'circle',
         symbolSize: 4,
-        lineStyle: { width: 2, color: '#00C48C' },
+        lineStyle: { width: 2.5, color: '#00C48C' },
         itemStyle: { color: '#00C48C' },
       });
-    }
-
-    if (showLabour) {
+    } else if (activeFocus === 'labour') {
+      correlationBadge = 'r = -0.93';
       yAxis.push({
         type: 'value',
         position: 'right',
-        min: 2.0,
-        max: 4.5,
+        min: 2.5,
+        max: 4.2,
         axisLine: { lineStyle: { color: 'rgba(123, 97, 255, 0.4)' } },
         axisTick: { show: false },
         splitLine: { show: false },
         axisLabel: {
           color: '#7B61FF',
           fontSize: 10,
+          margin: 6,
           formatter: (v: number) => `${v.toFixed(1)}%`,
         },
       });
 
       series.push({
-        name: 'Unemployment (%)',
+        name: 'Unemployment Rate',
         type: 'line',
         yAxisIndex: 1,
-        data: filteredData.map((d) => d.u_rate),
+        data: uRateValues,
         smooth: true,
-        symbol: 'none',
-        lineStyle: { width: 2, color: '#7B61FF' },
+        symbol: 'circle',
+        symbolSize: 4,
+        lineStyle: { width: 2.5, color: '#7B61FF' },
         itemStyle: { color: '#7B61FF' },
       });
     }
@@ -211,7 +224,12 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         formatter: (params: any[]) => {
           if (!params || !params.length) return '';
           const monthLabel = params[0].axisValue;
-          let html = `<div style="font-weight: 700; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2px;">${monthLabel}</div>`;
+          let html = `
+            <div style="font-weight: 700; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2px; display: flex; justify-content: space-between;">
+              <span>${monthLabel}</span>
+              <span style="color: #00E5A3; font-size: 10px;">${correlationBadge}</span>
+            </div>
+          `;
           params.forEach((p) => {
             let valStr = p.value;
             if (p.seriesName === 'Rail Ridership') {
@@ -235,16 +253,16 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       },
       legend: {
         top: 2,
-        left: 'center',
+        left: 6,
         icon: 'circle',
         itemWidth: 9,
         itemHeight: 9,
         itemGap: 14,
-        textStyle: { color: '#64748B', fontSize: 11, fontWeight: 500 },
+        textStyle: { color: '#475569', fontSize: 11.5, fontWeight: 600 },
       },
       grid: {
         top: 48,
-        right: showFuel && showReg ? 90 : 54,
+        right: 54,
         bottom: 34,
         left: 54,
       },
@@ -264,10 +282,86 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       yAxis,
       series,
     };
-  }, [filteredData, xLabels, ridershipValues, ron95Values, dieselValues, regValues, driverFocus]);
+  }, [
+    filteredData,
+    xLabels,
+    ridershipValues,
+    ron95Values,
+    dieselValues,
+    regValues,
+    uRateValues,
+    activeFocus,
+  ]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      {/* ── Driver Switcher Pills Header (Mirrors the Right Chart's Horizon Pills) ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 4,
+          zIndex: 10,
+          display: 'flex',
+          gap: 3,
+          background: '#F1F4F9',
+          padding: '2px',
+          borderRadius: 6,
+        }}
+      >
+        <button
+          onClick={() => handlePillClick('fuel')}
+          style={{
+            background: activeFocus === 'fuel' ? '#0066FF' : 'transparent',
+            color: activeFocus === 'fuel' ? '#FFFFFF' : '#475569',
+            border: 'none',
+            borderRadius: 5,
+            padding: '3px 9px',
+            fontSize: 11,
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          title="Compare Ridership vs Fuel Price (RON95 & Diesel)"
+        >
+          ⛽ Fuel Price
+        </button>
+        <button
+          onClick={() => handlePillClick('registrations')}
+          style={{
+            background: activeFocus === 'registrations' ? '#0066FF' : 'transparent',
+            color: activeFocus === 'registrations' ? '#FFFFFF' : '#475569',
+            border: 'none',
+            borderRadius: 5,
+            padding: '3px 9px',
+            fontSize: 11,
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          title="Compare Ridership vs Vehicle Registrations"
+        >
+          🚗 Vehicle Reg.
+        </button>
+        <button
+          onClick={() => handlePillClick('labour')}
+          style={{
+            background: activeFocus === 'labour' ? '#0066FF' : 'transparent',
+            color: activeFocus === 'labour' ? '#FFFFFF' : '#475569',
+            border: 'none',
+            borderRadius: 5,
+            padding: '3px 9px',
+            fontSize: 11,
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          title="Compare Ridership vs Jobless Rate"
+        >
+          💼 Jobless Rate
+        </button>
+      </div>
+
       <ReactECharts
         option={option}
         style={{ width: '100%', height: '100%' }}

@@ -28,9 +28,9 @@ const cardStyle: React.CSSProperties = {
 
 function SectionTitle({ icon, label }: { icon: string; label: string }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontSize: 13 }}>{icon}</span>
-      <span style={{ fontWeight: 600, fontSize: 11, color: '#0F1E36', letterSpacing: '0.3px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+      <span style={{ fontSize: 16 }}>{icon}</span>
+      <span style={{ fontWeight: 700, fontSize: 13.5, color: '#0F1E36', letterSpacing: '0.2px' }}>
         {label}
       </span>
     </div>
@@ -40,11 +40,11 @@ function SectionTitle({ icon, label }: { icon: string; label: string }) {
 export function DriversForecast() {
   // ── Filter States ──────────────────────────────────────────────────────────
   const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRangeFilter>('12m');
-  const [selectedDriverFocus, setSelectedDriverFocus] = useState<DriverFocusFilter>('all');
+  const [selectedDriverFocus, setSelectedDriverFocus] = useState<DriverFocusFilter>('fuel');
   const [selectedHorizon, setSelectedHorizon] = useState<ForecastHorizonKey>('6_months');
 
   const [pendingTimeRange, setPendingTimeRange] = useState<TimeRangeFilter>('12m');
-  const [pendingDriverFocus, setPendingDriverFocus] = useState<DriverFocusFilter>('all');
+  const [pendingDriverFocus, setPendingDriverFocus] = useState<DriverFocusFilter>('fuel');
   const [pendingHorizon, setPendingHorizon] = useState<ForecastHorizonKey>('6_months');
 
   // Compute latest metrics for KPI cards
@@ -61,10 +61,10 @@ export function DriversForecast() {
 
   const handleReset = () => {
     setPendingTimeRange('12m');
-    setPendingDriverFocus('all');
+    setPendingDriverFocus('fuel');
     setPendingHorizon('6_months');
     setSelectedTimeRange('12m');
-    setSelectedDriverFocus('all');
+    setSelectedDriverFocus('fuel');
     setSelectedHorizon('6_months');
   };
 
@@ -137,24 +137,50 @@ export function DriversForecast() {
           >
             {/* Chart 1: Ridership vs Key Drivers */}
             <div style={{ ...cardStyle, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                 <SectionTitle icon="📉" label="Ridership vs Key Drivers" />
-                <span style={{ fontSize: 10, color: '#94A3B8' }}>Dual Y-Axis Multi-Series</span>
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                    color: '#0066FF',
+                    background: '#E8F0FF',
+                    padding: '2px 8px',
+                    borderRadius: 5,
+                  }}
+                >
+                  Dual-Axis Correlation
+                </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
                 <RidershipVsDriversChart
                   data={forecastData.monthly_driver_trend}
                   timeRange={selectedTimeRange}
                   driverFocus={selectedDriverFocus}
+                  onSelectDriverFocus={(focus) => {
+                    setSelectedDriverFocus(focus);
+                    setPendingDriverFocus(focus);
+                  }}
                 />
               </div>
             </div>
 
             {/* Chart 2: Passenger Demand Forecast & Confidence Band */}
             <div style={{ ...cardStyle, height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                <SectionTitle icon="🔮" label="Passenger Demand Forecast (Ensemble)" />
-                <span style={{ fontSize: 10, color: '#94A3B8' }}>LightGBM + HW (95% CI)</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                <SectionTitle icon="🔮" label="Passenger Demand Forecast" />
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                    color: '#00A389',
+                    background: '#E0FFF6',
+                    padding: '2px 8px',
+                    borderRadius: 5,
+                  }}
+                >
+                  LightGBM + HW (95% CI)
+                </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
                 <PassengerForecastChart

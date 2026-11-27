@@ -158,10 +158,9 @@ export const DriversFilterCard: React.FC<Props> = ({
               onChange={(e) => setPendingDriverFocus(e.target.value as DriverFocusFilter)}
               style={selectStyle}
             >
-              <option value="all">All Combined Drivers</option>
               <option value="fuel">Fuel Prices (RON95 &amp; Diesel)</option>
               <option value="registrations">Private Vehicle Registrations</option>
-              <option value="labour">Labour Force &amp; Employment</option>
+              <option value="labour">Labour Force &amp; Unemployment</option>
             </select>
           </FilterRow>
 
