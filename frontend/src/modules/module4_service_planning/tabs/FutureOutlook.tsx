@@ -34,7 +34,7 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
   const watchRules = data.watchRules;
   const change = network?.change_pct ?? null;
 
-  return <Panel title="Predictive demand watchlist" badge={<EvidenceBadge kind="Model Forecast" />}
+  return <Panel icon="activity" accent="purple" title="Predictive demand watchlist" badge={<EvidenceBadge kind="Model Forecast" />}
       subtitle={`Published 90-day assessment · ${watch[0] ? dateRange(watch[0].forecast_start, watch[0].forecast_end) : 'Unavailable'}`}
       controls={<Segmented label="Forecast view" value={scope} options={forecastScopes} onChange={setScope} />}>
       <p><strong>Monitoring signals.</strong>{' '}
@@ -75,15 +75,15 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
           <Segmented label="Forecast horizon from cutoff" value={horizon} options={dayOptions} onChange={setHorizon} />
         </div>
         <Headline>
-          <Kpi lead label="Forecast service-sum trips" value={num(network?.total)} badge={<EvidenceBadge kind="Model Forecast" />}
+          <Kpi lead icon="trend-up" accent="blue" countUp label="Forecast service-sum trips" value={num(network?.total)} badge={<EvidenceBadge kind="Model Forecast" />}
             note={<>{scope === 'full' ? 'Full cutoff window' : 'After reference date'} · {dateRange(network?.start ?? null, network?.end ?? null)}</>} />
-          <Kpi label="Forecast average trips per day" value={num(network?.average)} note={`${num(network?.days)} forecast days`} />
-          <Kpi label="Change vs weekday-matched baseline" value={signed(change, 2, '%')}
+          <Kpi icon="activity" accent="cyan" countUp label="Forecast average trips per day" value={num(network?.average)} note={`${num(network?.days)} forecast days`} />
+          <Kpi icon="sliders-horizontal" accent="orange" countUp label="Change vs weekday-matched baseline" value={signed(change, 2, '%')}
             note={`${signed(network?.delta ?? null)} trips per day vs ${num(network?.baseline)}`} />
-          <Kpi label="Modelled headline services" value={num(data.components.length)} note={`Data cutoff ${dateText(target.data_cutoff)}`} />
+          <Kpi icon="transit-rail" accent="purple" countUp label="Modelled headline services" value={num(data.components.length)} note={`Data cutoff ${dateText(target.data_cutoff)}`} />
         </Headline>
         <div className={s.pairedPanels}>
-          <Panel heading="h4" title="Published service-sum outlook" subtitle={`Daily forecast trips across the six headline services · reference date ${dateText(data.asOf)}.`}>
+          <Panel heading="h4" icon="chart-bar" accent="blue" title="Published service-sum outlook" subtitle={`Daily forecast trips across the six headline services · reference date ${dateText(data.asOf)}.`}>
             <Lines dates={chartPoints.map(([date]) => date)} label="Daily forecast for the published Rapid Rail service sum"
               traces={scope === 'full' ? [
                 { name: 'Elapsed/reference-date projections', values: chartPoints.map(([date, value]) => !isFutureDate(date, data.asOf) ? value : null), dashed: true, color: '#94A3B8' },
@@ -94,7 +94,7 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
               {scope === 'full' ? `${elapsed} projections fall on or before the reference date and remain forecast values.` : `The first ${elapsed} cutoff-window days are elapsed or fall on the reference date and are excluded from this view.`}
             </p>
           </Panel>
-          <Panel heading="h4" title="Six headline services" subtitle="Forecast change against each service’s recent weekday-matched baseline.">
+          <Panel heading="h4" icon="shield-check" accent="teal" title="Six headline services" subtitle="Forecast change against each service’s recent weekday-matched baseline.">
             <Bars data={serviceRows.map((row) => ({ name: targetShort[row.series_id], value: row.change_pct, color: targetColor[row.series_id] }))}
               label="Change in forecast daily demand" horizontal suffix="%" decimals={2} height={228} />
           </Panel>

@@ -39,7 +39,7 @@ function ForecastExplorer({ network, history, id }: { network: NetworkData; hist
   const label = isOd ? `${titleCase(scenario)} planning scenario` : 'Published model forecast';
   const forecastEvidence = isOd && scenario !== 'base' ? 'Planning Assumption' : 'Model Forecast';
 
-  return <Panel primary title={isOd ? 'LRT3 station-origin planning scenarios' : 'Historical observations and forecast'}
+  return <Panel primary icon="trend-up" accent="blue" title={isOd ? 'LRT3 station-origin planning scenarios' : 'Historical observations and forecast'}
     badge={<div className={s.badges}><EvidenceBadge kind="Observed" /><EvidenceBadge kind={forecastEvidence} /></div>}
     subtitle={`${unitLabel(target.unit)} · selected model ${modelLabel(target.model_id)} · cutoff ${dateText(target.data_cutoff)}`}>
       <div className={s.controls}>
@@ -65,10 +65,10 @@ function ForecastExplorer({ network, history, id }: { network: NetworkData; hist
           ]}
           markers={[{ date: target.data_cutoff, name: 'Data cutoff' }, { date: network.asOf, name: 'Analysis date' }]} height={268} />
         <Headline>
-          <Kpi lead label="Cumulative forecast trips" value={num(total)} badge={<EvidenceBadge kind={forecastEvidence} />}
+          <Kpi lead icon="chart-bar" accent="blue" countUp label="Cumulative forecast trips" value={num(total)} badge={<EvidenceBadge kind={forecastEvidence} />}
             note={<>{unitLabel(target.unit)} · {dateRange(points[0]?.[0] ?? null, points.at(-1)?.[0] ?? null)}</>} />
-          <Kpi label="Average forecast trips per day" value={num(forecast.size ? total / forecast.size : null)} note={label} />
-          <Kpi label="Historical selection" value={num(historicalDates.filter((date) => observed.get(date) != null).length)} note="Days with observed demand" />
+          <Kpi icon="activity" accent="cyan" countUp label="Average forecast trips per day" value={num(forecast.size ? total / forecast.size : null)} note={label} />
+          <Kpi icon="calendar-clock" accent="purple" countUp label="Historical selection" value={num(historicalDates.filter((date) => observed.get(date) != null).length)} note="Days with observed demand" />
         </Headline>
       </div>
     </Panel>;
@@ -91,7 +91,7 @@ function ModelComparison({ data, network, id }: { data: ResearchData; network: N
   const terminal = rows.filter((row) => row.phase === 'terminal_holdout');
   const ensemble = terminal.find((row) => row.horizon_days === 14 && row.model_id === 'bottom_up_selected_components');
   const naive = terminal.find((row) => row.horizon_days === 14 && row.model_id === 'bottom_up_seasonal_naive_7');
-  return <Details title="Model reliability and backtesting"
+  return <Details icon="shield-check" accent="teal" title="Model reliability and backtesting"
     summary={`${targetShort[id]} · ${modelLabel(target.model_id)} · ${policyLabels[target.training_policy] ?? titleCase(target.training_policy)}`}>
     <div className={s.controls}><Segmented label="Evaluation horizon" value={horizon} options={evaluationOptions} onChange={setHorizon} /></div>
     <MetricTable rows={rows.filter((row) => row.phase === 'rolling_validation' && row.horizon_days === horizon)} selected={target} label="Rolling-origin model comparison" />
@@ -205,20 +205,20 @@ export default function DemandForecast() {
     </Note>}
     <PlanningWatchlist data={network} />
     <ModelComparison data={research} network={network} id={id} />
-    <Details title="Cold-start donor experiments" summary="Donor profiles did not consistently improve on Seasonal Naive.">
+    <Details icon="sliders-horizontal" accent="orange" title="Cold-start donor experiments" summary="Donor profiles did not consistently improve on Seasonal Naive.">
       <p className={s.muted}>Transferring established-rail donor profiles did not produce a consistent improvement for these short histories. The published forecasting method was retained.</p>
       <ColdStart research={research} network={network} />
     </Details>
-    {id !== network.networkId && <Details title="Forecast stability and alternatives" summary={`${targetShort[id]} · published forecasts and alternative training windows.`}>
+    {id !== network.networkId && <Details icon="clock" accent="blue" title="Forecast stability and alternatives" summary={`${targetShort[id]} · published forecasts and alternative training windows.`}>
       <StabilityExplorer key={id} id={id} network={network} research={research} />
     </Details>}
-    <Details title="Empirical uncertainty audit"
+    <Details icon="chart-bar" accent="purple" title="Empirical uncertainty audit"
       summary={`LRT3 residual band covered ${num(research.uncertainty.holdout_inside)} of ${num(research.uncertainty.holdout_points)} terminal observations.`}>
       <p>The nominal {pct((research.uncertainty.nominal_residual_quantiles[1] - research.uncertainty.nominal_residual_quantiles[0]) * 100, 0)} LRT3 band had {pct(research.uncertainty.holdout_coverage_pct)} empirical coverage.</p>
       <p className={s.muted}>{research.uncertainty.limitations}</p>
       <UncertaintyAudit data={research.uncertainty} />
     </Details>
-    <Details title="Direct versus bottom-up network comparison" summary="Network forecast stability, alternative training windows and shared-origin scores.">
+    <Details icon="globe-network" accent="teal" title="Direct versus bottom-up network comparison" summary="Network forecast stability, alternative training windows and shared-origin scores.">
       <p>The experiment shares {research.experimentContext.matchedNetworkOrigins} rolling origins. The direct model uses the
         aligned network history of {research.experimentContext.commonNetworkHistoryDays} days. Established bottom-up components can use longer training histories.
         The published network projection uses the selected component forecasts.</p>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { EChartsOption } from 'echarts';
 import { dateRange, dateText, dayTypes, holidayLabels, num, peakWindow, pct, periodLabel, scenarios, signed, supplyLabel, targetShort } from '../analytics';
-import { Chart, Lines, axisLine } from '../charts';
+import { Chart, Lines, axisColor, axisLine, gridLine } from '../charts';
 import type { DayType, Direction, Period, Scenario, ServiceData } from '../contracts';
 import { useAsset } from '../dataClient';
 import { Details, Empty, EvidenceBadge, Headline, Kpi, Note, Panel, Segmented, Select, TabHeading, Table } from '../ui';
@@ -46,7 +46,7 @@ function RouteExplorer({ data, selection, onChange }: {
   const otherDays = data.periods.filter((row) => row.route_id === routeId && row.direction_id === direction &&
     row.period === 'all_day' && row.day_type !== day);
 
-  return <Panel primary marker="A" title="GTFS scheduled service explorer" badge={<EvidenceBadge kind="Scheduled Reference" />}
+  return <Panel primary icon="calendar-clock" accent="blue" marker="A" title="GTFS scheduled service explorer" badge={<EvidenceBadge kind="Scheduled Reference" />}
     subtitle={`${route?.route_name ?? 'Route unavailable'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · terminal departures`}>
     <div className={s.controls}>
       <Select label="GTFS route" value={routeId} options={data.routes.map((row) => ({ value: row.route_id, label: row.is_rail ? row.route_name : 'Sunway BRT' }))}
@@ -56,10 +56,10 @@ function RouteExplorer({ data, selection, onChange }: {
         onChange={(value) => onChange({ ...selection, direction: value })} />
     </div>
     <Headline>
-      <Kpi lead label="Frequency-implied terminal departures" value={frequency(allDay?.reference_departures)} note="Per reference day" />
-      <Kpi label="Terminal service span" value={allDay?.reference_service_start ? `${clock(allDay.reference_service_start)}–${clock(allDay.reference_service_end)}` : 'Unavailable'}
+      <Kpi lead icon="transit-rail" accent="blue" railFlow railDelayMs={0} countUp label="Frequency-implied terminal departures" value={frequency(allDay?.reference_departures)} note="Per reference day" />
+      <Kpi icon="clock" accent="cyan" railFlow railDelayMs={150} label="Terminal service span" value={allDay?.reference_service_start ? `${clock(allDay.reference_service_start)}–${clock(allDay.reference_service_end)}` : 'Unavailable'}
         note={allDay?.terminal_service_span_hours == null ? 'Reference span unavailable' : `${num(allDay.terminal_service_span_hours, 2)} hours`} />
-      <Kpi label="Full-day effective headway" value={direction === 'both' || allDay?.effective_headway_minutes == null ? 'Unavailable' : `${num(allDay.effective_headway_minutes, 1)} min`}
+      <Kpi icon="timer" accent="orange" railFlow railDelayMs={300} countUp label="Full-day effective headway" value={direction === 'both' || allDay?.effective_headway_minutes == null ? 'Unavailable' : `${num(allDay.effective_headway_minutes, 1)} min`}
         note={direction === 'both' ? 'Select one direction' : '60 minutes ÷ departures per hour'} />
     </Headline>
     {otherDays.length > 0 && <p className={s.muted}><strong>Terminal departures on other reference days</strong>{' '}
@@ -86,14 +86,14 @@ function Supply({ data, selection, onChange }: {
   const { day, direction } = selection;
   const rows = data.nominal.filter((row) => row.day_type === day && row.direction_id === direction);
   const allDay = rows.find((row) => row.period === 'all_day');
-  return <Panel marker="B" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
+  return <Panel icon="users" accent="teal" marker="B" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
     subtitle={`${data.routes.find((row) => row.route_id === lrt3Route)?.route_name ?? 'Shah Alam Line'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · nominal passenger places`}>
     <div className={s.controls}>
       <Segmented label="Nominal supply day type" value={day} options={dayTypes} onChange={(value) => onChange({ ...selection, day: value })} />
       <Select label="Nominal supply direction" value={direction} options={directions(data, lrt3Route, day)}
         onChange={(value) => onChange({ ...selection, direction: value })} />
     </div>
-    <Kpi lead label="Nominal places per reference day" value={num(allDay?.nominal_places)}
+    <Kpi lead icon="users" accent="blue" railFlow railDelayMs={150} countUp label="Nominal places per reference day" value={num(allDay?.nominal_places)}
       note={`${frequency(allDay?.departures)} reference terminal departures × ${num(data.capacity.passenger_places)} design places per three-car train (including ${num(data.capacity.source_reported_seats)} seats)`} />
     <Table label="Direction-specific LRT3 nominal supply" columns={['Period', 'Reference terminal departures', 'Nominal places']}
       rows={rows.map((row) => ({ key: row.period, cells: [periodLabel[row.period], frequency(row.departures), num(row.nominal_places)] }))} />
@@ -115,12 +115,12 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
   const chartOption = (field: 'matchedDemand' | 'nominal', name: string, color: string): EChartsOption => ({
     grid: { left: 64, right: 18, top: 22, bottom: 66 },
     tooltip: { trigger: 'axis', confine: true, valueFormatter: (value) => typeof value === 'number' ? num(value) : 'Unavailable' },
-    xAxis: { type: 'category', data: rows.map(title), axisLabel: { hideOverlap: true } },
-    yAxis: { type: 'value', splitLine: { lineStyle: { color: axisLine } } },
-    series: [{ type: 'bar', name, data: rows.map((row) => row[field]), barMaxWidth: 40, itemStyle: { color } }],
+    xAxis: { type: 'category', data: rows.map(title), axisLine: { lineStyle: { color: axisLine } }, axisTick: { lineStyle: { color: axisLine } }, axisLabel: { color: axisColor, hideOverlap: true } },
+    yAxis: { type: 'value', axisLabel: { color: axisColor }, splitLine: { lineStyle: { color: gridLine, type: 'dashed' } } },
+    series: [{ type: 'bar', name, data: rows.map((row) => row[field]), barMaxWidth: 38, itemStyle: { color, borderRadius: [5, 5, 0, 0] }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(15, 30, 54, 0.16)' } } }],
   });
 
-  return <Panel marker="D" title="Interactive peak demand sensitivity" subtitle="KTM hourly shape applied to each selected LRT3 daily planning scenario.">
+  return <Panel icon="sliders-horizontal" accent="orange" marker="D" title="Interactive peak demand sensitivity" subtitle="KTM hourly shape applied to each selected LRT3 daily planning scenario.">
     <div className={s.badges}><EvidenceBadge kind="Proxy Estimate" /><EvidenceBadge kind="Planning Assumption" /><EvidenceBadge kind="Scheduled Reference" /></div>
     <div className={s.controls}>
       <Segmented label="Peak demand scenario" value={scenario} options={scenarios} onChange={setScenario} />
@@ -145,10 +145,10 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
     <p className={s.muted}>Demand estimates station-origin trips using a KTM profile. Supply counts nominal passenger places at terminal departures.
       Assessing occupancy or crowding requires observed service and passenger counts by direction and segment.</p>
     {resolution === 'hourly' && rows.length > 0 && supplied > 0 && <div className={s.grid2}>
-      <Panel heading="h4" title="Proxy station-origin demand" subtitle="Average trips per matched forecast date" badge={<EvidenceBadge kind="Proxy Estimate" />}>
-        <Chart label="Matched-date LRT3 proxy station-origin trips by time window" option={chartOption('matchedDemand', 'Proxy station-origin trips', '#087FBA')} height={260} />
+      <Panel heading="h4" icon="activity" accent="teal" title="Proxy station-origin demand" subtitle="Average trips per matched forecast date" badge={<EvidenceBadge kind="Proxy Estimate" />}>
+        <Chart label="Matched-date LRT3 proxy station-origin trips by time window" option={chartOption('matchedDemand', 'Proxy station-origin trips', '#0891B2')} height={260} />
       </Panel>
-      <Panel heading="h4" title="Nominal terminal supply" subtitle="Passenger places per matched reference date" badge={<EvidenceBadge kind="Scheduled Reference" />}>
+      <Panel heading="h4" icon="transit-rail" accent="blue" title="Nominal terminal supply" subtitle="Passenger places per matched reference date" badge={<EvidenceBadge kind="Scheduled Reference" />}>
         <Chart label="Matched-date nominal terminal places by time window" option={chartOption('nominal', 'Nominal terminal places', '#0066FF')} height={260} />
       </Panel>
     </div>}
@@ -174,7 +174,7 @@ export default function ServiceReadiness() {
       <RouteExplorer data={data} selection={schedule} onChange={setSchedule} />
       <Supply data={data} selection={capacity} onChange={setCapacity} />
     </div>
-    <Panel marker="C" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
+    <Panel icon="chart-bar" accent="purple" marker="C" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
       subtitle="Published headline trips per reference terminal departure, pairing the same ordinary dates and denominator with the recent baseline.">
       <Table label="Network service intensity" columns={['Headline service', 'GTFS routes', 'Forecast trips / departure', 'Baseline trips / departure', 'Change', 'Comparable dates', 'Held dates', 'Coverage']}
         rows={data.intensity.map((row) => ({ key: row.series_id, cells: [targetShort[row.series_id], row.route_ids.split('|').join(' / '),
@@ -186,7 +186,7 @@ export default function ServiceReadiness() {
         <Note key={row.series_id} title="Combined Ampang / Sri Petaling intensity unavailable" tone="warn">{row.intensity_reason}</Note>)}
     </Panel>
     <PeakSensitivity data={data} />
-    <Details marker="E" title="Service evidence and operator monitoring" summary="Schedule assumptions, source definitions and operator follow-up.">
+    <Details icon="shield-check" accent="blue" marker="E" title="Service evidence and operator monitoring" summary="Schedule assumptions, source definitions and operator follow-up.">
       <ul className={s.textList}>
         <li>Compare scheduled terminal departures with delivered trips and headway logs by direction, especially on holidays and after the GTFS calendar expires.</li>
         <li>Verify actual formations and passenger counts by time, direction and segment before assessing occupancy.</li>

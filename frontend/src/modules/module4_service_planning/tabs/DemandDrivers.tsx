@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { EChartsOption } from 'echarts';
 import { ablationOverview, calendarStatus, dateRange, dateText, evaluationOptions, findDateWindow, holidayLabels, num, pct, signed, targetOptions, targetShort, unitLabel } from '../analytics';
-import { Bars, Chart } from '../charts';
+import { Bars, Chart, axisColor } from '../charts';
 import type { EvaluationHorizon, HistoryPoint, HolidayCalendar, PatternRow } from '../contracts';
 import { useAsset } from '../dataClient';
 import { Details, Empty, EvidenceBadge, Note, Panel, Segmented, Select, TabHeading, Table } from '../ui';
@@ -23,12 +23,13 @@ function Calendar({ year, rows, label, holidays }: CalendarProps) {
       return `${dateText(date)} · ${num(value)} observed trips<br/>${holidayLabels[calendarStatus(holidays, date)]}`;
     } },
     visualMap: { min: 0, max, dimension: 1, orient: 'horizontal', left: 'center', bottom: 5,
-      calculable: false, inRange: { color: ['#E8F0FF', '#60A5FA', '#0066FF'] }, text: ['More trips', 'Zero observed'] },
+      calculable: false, inRange: { color: ['#EAF2FF', '#60A5FA', '#0066FF'] }, text: ['More trips', 'Zero observed'],
+      textStyle: { color: axisColor, fontSize: 11 } },
     calendar: { range: year, left: 32, right: 14, top: 32, bottom: 48, cellSize: ['auto', 16],
-      dayLabel: { firstDay: 1, nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] },
-      monthLabel: { nameMap: months }, yearLabel: { show: false },
-      itemStyle: { color: '#F1F4F9', borderWidth: 1, borderColor: '#fff' },
-      splitLine: { show: true, lineStyle: { color: '#CBD5E1', width: 1 } } },
+      dayLabel: { firstDay: 1, color: axisColor, nameMap: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] },
+      monthLabel: { color: axisColor, nameMap: months }, yearLabel: { show: false },
+      itemStyle: { color: '#F1F5F9', borderWidth: 1.5, borderColor: '#fff' },
+      splitLine: { show: true, lineStyle: { color: '#DCE6F2', width: 1 } } },
     series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: observed }],
   };
   return <div className={s.chartScroll} tabIndex={0} role="region" aria-label="Calendar heatmap scroll area"><div style={{ minWidth: 700 }}>
@@ -68,7 +69,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
   const complete = (row: PatternRow) => row.expected_days != null && row.observed_days === row.expected_days;
 
   return <>
-    <Panel primary marker="A" title="Weekday and weekend demand" badge={<EvidenceBadge kind="Observed" />}
+    <Panel primary icon="chart-bar" accent="blue" marker="A" title="Weekday and weekend demand" badge={<EvidenceBadge kind="Observed" />}
       subtitle="Average trips in the validated recent observation window.">
       <div className={s.weekPatterns}>
         <div className={s.stack}>
@@ -83,7 +84,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
       </div>
     </Panel>
     <div className={s.calendarLayout}>
-      <Panel marker="B" title="Monthly demand and observation coverage" badge={<EvidenceBadge kind="Observed" />}
+      <Panel icon="calendar-clock" accent="teal" marker="B" title="Monthly demand and observation coverage" badge={<EvidenceBadge kind="Observed" />}
         controls={<Select label="Observation year" value={year} options={years.map((value) => ({ value, label: value }))} onChange={setYear} />}>
         {latestMonth && <p className={s.muted}>
           <strong>{months[Number(latestMonth.group.slice(5)) - 1]} {year}</strong> · {num(latestMonth.mean_daily_trips)} trips per observed day
@@ -92,7 +93,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
         {monthly.length ? <>
           <Bars label="Monthly average observed demand" data={monthly.map((row) => ({
             name: `${months[Number(row.group.slice(5)) - 1]}${complete(row) ? '' : ' (partial)'}`,
-            value: row.mean_daily_trips, color: complete(row) ? '#0066FF' : '#FF5A00',
+            value: row.mean_daily_trips, color: complete(row) ? '#0066FF' : '#FF884D',
           }))} height={176} />
           <Details title="Monthly reporting figures">
             <Table label="Monthly demand and reporting coverage" columns={['Month', 'Observed days', 'Calendar days', 'Coverage', 'Observed trips', 'Average per observed day']}
@@ -101,16 +102,16 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
           </Details>
         </> : <Empty>No monthly observations were published for this year.</Empty>}
       </Panel>
-      <Panel marker="C" title="Calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
+      <Panel icon="map-grid" accent="purple" marker="C" title="Calendar heatmap" badge={<EvidenceBadge kind="Observed" />}
         subtitle={`${label} · daily observed trips in ${year}. Point to a cell or open the daily calendar data to inspect a date.`}>
         <Calendar year={year} rows={yearHistory} label={`${label} calendar heatmap, ${year}`} holidays={holidays} />
-        <div className={s.legend}><span><i style={{ background: '#F1F4F9' }} /> No published observation or outside the target window</span><span><i style={{ background: '#E8F0FF' }} /> Observed zero</span></div>
+        <div className={s.legend}><span><i style={{ background: '#F1F5F9' }} /> No published observation or outside the target window</span><span><i style={{ background: '#EAF2FF' }} /> Observed zero</span></div>
         <Details title="Daily calendar data" summary="Trip counts and archived holiday status for the selected target and year.">
           <DailyCalendarTable year={year} rows={yearHistory} label={label} holidays={holidays} />
         </Details>
       </Panel>
     </div>
-    <Panel marker="D" title="Verified holiday comparison" badge={<EvidenceBadge kind="Observed" />}
+    <Panel icon="spark" accent="orange" marker="D" title="Verified holiday comparison" badge={<EvidenceBadge kind="Observed" />}
       subtitle="Dates verified in the archived calendar are matched to known non-holidays on the same weekday within 28 days.">
       <Table label="Observed holiday comparisons" columns={['Comparison dates', 'Matched holiday days', 'Control-date uses', 'Holiday mean', 'Non-holiday mean', 'Difference']}
         rows={holiday.map((row) => ({ key: row.group, cells: [dateRange(row.period_start, row.period_end), num(row.observed_days), num(row.matched_control_date_uses),
@@ -120,7 +121,7 @@ function ObservedPatterns({ rows, period, label, holidays, holidaySource }: {
       <p className={s.muted}>Extracted holiday calendars for {holidays.regions.join(' and ')} cover {holidays.coveredYears.join(' and ')}.
         {' '}<a href={holidaySource} target="_blank" rel="noreferrer">Archived official calendar source</a></p>
     </Panel>
-    <Details marker="E" title="Additional temporal patterns" summary="Month-of-year profiles and recent versus prior 28-day demand.">
+    <Details icon="clock" accent="blue" marker="E" title="Additional temporal patterns" summary="Month-of-year profiles and recent versus prior 28-day demand.">
       <PatternTable label="Month-of-year profiles" rows={seasonal.map((row) => ({ ...row, group: months[Number(row.group) - 1] }))} />
       <Table label="Recent and previous 28-day demand" columns={['Comparison', 'Recent dates', 'Recent days', 'Previous days', 'Recent mean', 'Previous mean', 'Change']}
         rows={recent.map((row) => ({ key: row.group, cells: [row.group, dateRange(row.period_start, row.period_end), num(row.observed_days),
@@ -146,7 +147,7 @@ export default function DemandDrivers() {
     </TabHeading>
     <ObservedPatterns key={target} label={targetShort[target]} period={history.series[target]}
       rows={patterns.patterns.filter((row) => row.series_id === target)} holidays={calendar} holidaySource={patterns.holidaySource} />
-    <Details title="Forecast feature ablation" summary="Matched rolling-origin Ridge comparisons for weekly, seasonal and calendar feature sets.">
+    <Details icon="sliders-horizontal" accent="teal" title="Forecast feature ablation" summary="Matched rolling-origin Ridge comparisons for weekly, seasonal and calendar feature sets.">
       <div className={s.controls}><Segmented label="Ablation evaluation horizon" value={evaluation} options={evaluationOptions} onChange={setEvaluation} /></div>
       {overview.targets.length > 0 && <>
         <Table label="Mature-service ablation overview" columns={['Configuration', `Mean WAPE through ${evaluation} days`]}
