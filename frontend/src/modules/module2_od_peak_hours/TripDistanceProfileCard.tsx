@@ -33,21 +33,21 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           title: 'Intra-CBD Metro Haul (< 5 km)',
           color: '#0066FF',
           advisory:
-            'Rapid passenger turnover (e.g. KLCC ↔ Ampang Park, TRX ↔ Bukit Bintang). Mandate 100% longitudinal seating to maximize standing capacity.',
+            'Rapid passenger exchange (e.g. KLCC ↔ Ampang Park, TRX ↔ Bukit Bintang). Mandate longitudinal seating configuration to optimize peak circulation.',
         };
       case 'medium':
         return {
           title: 'Suburban Commuter Haul (5–25 km)',
           color: '#00C48C',
           advisory:
-            'Peak suburban corridors (e.g. Batu Caves ↔ KL Sentral, 12.4 km). Balance 6-car EMU trainsets with 60% seated / 40% standing space.',
+            'Suburban radial trunk corridors (e.g. Batu Caves ↔ KL Sentral). Maintain 6-car EMU sets balancing seated and standing capacity.',
         };
       case 'long':
         return {
           title: 'Regional Long-Distance (> 25 km)',
           color: '#FF8C00',
           advisory:
-            'Extended dwell times (e.g. Seremban ↔ KL Sentral: 61 km, Dabong ↔ Wakaf Bharu: 104 km). Require transverse seating with luggage racks.',
+            'Extended passenger dwell times (e.g. Seremban ↔ KL Sentral: 61 km). Recommend transverse seating with luggage accommodation.',
         };
       case 'all':
       default:
@@ -55,7 +55,7 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
           title: 'Network Distance Distribution',
           color: '#64748B',
           advisory:
-            'Click a distance tier above to filter the flow map and inspect rolling stock configuration needs.',
+            'Passenger-trip-weighted average straight-line distance across all verified station pairs.',
         };
     }
   }, [activeHaul]);
@@ -74,151 +74,154 @@ export const TripDistanceProfileCard: React.FC<Props> = ({
         flexShrink: 0,
       }}
     >
-      {/* Title & Key Metric */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-          <TelemetryIcon name="haul-vector" variant="cobalt" badge />
-          <span style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
-            Trip Distance &amp; Haul Profile
-          </span>
+      {/* Title */}
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+        <TelemetryIcon name="haul-vector" variant="cobalt" badge />
+        <span style={{ fontWeight: 700, fontSize: 12, color: '#0F1E36', letterSpacing: '0.3px' }}>
+          Trip Distance &amp; Haul Profile
+        </span>
+      </div>
+
+      {/* Hero Metric: Average Trip Distance */}
+      <div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: '#0F1E36', lineHeight: 1.1 }}>
+          {avgDistance} km
         </div>
-        <div
-          style={{
-            fontSize: 9.5,
-            fontWeight: 700,
-            color: '#0066FF',
-            background: 'rgba(0, 102, 255, 0.08)',
-            borderRadius: 4,
-            padding: '2px 5px',
-          }}
-        >
-          Avg {avgDistance} km
+        <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
+          Average trip distance
         </div>
       </div>
 
       {/* 3-Part Color Distribution Bar */}
       <div
         style={{
-          background: '#F8FAFF',
-          borderRadius: 7,
-          padding: '6px 8px',
-          border: '1px solid rgba(0, 102, 255, 0.1)',
+          height: 8,
+          width: '100%',
+          background: '#E2E8F0',
+          borderRadius: 4,
+          overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
+          margin: '2px 0',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#64748B' }}>
-          <span style={{ color: '#0066FF', fontWeight: 600 }}>&lt;5km: {shortPct}%</span>
-          <span style={{ color: '#00C48C', fontWeight: 600 }}>5–25km: {medPct}%</span>
-          <span style={{ color: '#FF8C00', fontWeight: 600 }}>&gt;25km: {longPct}%</span>
-        </div>
-
-        {/* Multi-segment Bar */}
         <div
+          title={`Intra-CBD (<5 km): ${shortPct}%`}
           style={{
-            height: 6,
-            width: '100%',
-            background: '#E2E8F0',
-            borderRadius: 3,
-            overflow: 'hidden',
+            width: `${shortPct}%`,
+            background: '#0066FF',
+            transition: 'width 0.3s ease',
+          }}
+        />
+        <div
+          title={`Suburban (5–25 km): ${medPct}%`}
+          style={{
+            width: `${medPct}%`,
+            background: '#00C48C',
+            transition: 'width 0.3s ease',
+          }}
+        />
+        <div
+          title={`Regional (>25 km): ${longPct}%`}
+          style={{
+            width: `${longPct}%`,
+            background: '#FF8C00',
+            transition: 'width 0.3s ease',
+          }}
+        />
+      </div>
+
+      {/* 3 Interactive Legend Items matching picture */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 2 }}>
+        {/* Short trips */}
+        <div
+          onClick={() => onSelectHaul(activeHaul === 'short' ? 'all' : 'short')}
+          style={{
             display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: 11,
+            cursor: 'pointer',
+            padding: '3px 6px',
+            borderRadius: 5,
+            background: activeHaul === 'short' ? 'rgba(0, 102, 255, 0.08)' : 'transparent',
+            transition: 'background 0.15s ease',
           }}
         >
-          <div
-            title="Intra-CBD (<5 km)"
-            style={{
-              width: `${shortPct}%`,
-              background: '#0066FF',
-            }}
-          />
-          <div
-            title="Suburban (5-25 km)"
-            style={{
-              width: `${medPct}%`,
-              background: '#00C48C',
-            }}
-          />
-          <div
-            title="Regional (>25 km)"
-            style={{
-              width: `${longPct}%`,
-              background: '#FF8C00',
-            }}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0066FF', flexShrink: 0 }} />
+            <span style={{ color: activeHaul === 'short' ? '#0066FF' : '#334155', fontWeight: activeHaul === 'short' ? 700 : 500 }}>
+              Short trips (&lt; 5km)
+            </span>
+          </div>
+          <span style={{ color: '#0066FF', fontWeight: 700 }}>{shortPct}%</span>
+        </div>
+
+        {/* Medium trips */}
+        <div
+          onClick={() => onSelectHaul(activeHaul === 'medium' ? 'all' : 'medium')}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: 11,
+            cursor: 'pointer',
+            padding: '3px 6px',
+            borderRadius: 5,
+            background: activeHaul === 'medium' ? 'rgba(0, 196, 140, 0.08)' : 'transparent',
+            transition: 'background 0.15s ease',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#00C48C', flexShrink: 0 }} />
+            <span style={{ color: activeHaul === 'medium' ? '#00C48C' : '#334155', fontWeight: activeHaul === 'medium' ? 700 : 500 }}>
+              Medium trips (5–25km)
+            </span>
+          </div>
+          <span style={{ color: '#00C48C', fontWeight: 700 }}>{medPct}%</span>
+        </div>
+
+        {/* Long trips */}
+        <div
+          onClick={() => onSelectHaul(activeHaul === 'long' ? 'all' : 'long')}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: 11,
+            cursor: 'pointer',
+            padding: '3px 6px',
+            borderRadius: 5,
+            background: activeHaul === 'long' ? 'rgba(255, 140, 0, 0.08)' : 'transparent',
+            transition: 'background 0.15s ease',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF8C00', flexShrink: 0 }} />
+            <span style={{ color: activeHaul === 'long' ? '#FF8C00' : '#334155', fontWeight: activeHaul === 'long' ? 700 : 500 }}>
+              Long trips (&gt; 25km)
+            </span>
+          </div>
+          <span style={{ color: '#FF8C00', fontWeight: 700 }}>{longPct}%</span>
         </div>
       </div>
 
-      {/* Interactive Haul Filter Pills */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 5,
-        }}
-      >
-        {HAUL_OPTIONS.map((opt) => {
-          const isActive = activeHaul === opt.id;
-          return (
-            <button
-              key={opt.id}
-              onClick={() => onSelectHaul(opt.id)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                padding: '6px 8px',
-                borderRadius: 7,
-                border: isActive
-                  ? '1.5px solid #0066FF'
-                  : '1px solid rgba(0, 102, 255, 0.1)',
-                background: isActive ? 'linear-gradient(135deg, #F0F6FF 0%, #E8F0FF 100%)' : '#FFFFFF',
-                boxShadow: isActive ? '0 2px 6px rgba(0, 102, 255, 0.12)' : '0 1px 2px rgba(0, 0, 0, 0.02)',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                textAlign: 'left',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#F8FAFF';
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <TelemetryIcon name={opt.icon} variant={isActive ? 'cobalt' : opt.variant} size={13} />
-                <span
-                  style={{
-                    fontSize: 10.5,
-                    fontWeight: isActive ? 700 : 600,
-                    color: isActive ? '#0066FF' : '#0F1E36',
-                  }}
-                >
-                  {opt.label}
-                </span>
-              </div>
-              <span style={{ fontSize: 8.5, color: '#64748B', marginTop: 1, paddingLeft: 14 }}>
-                {opt.range}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Dynamic Rolling Stock Advisory */}
+      {/* Advisory & Methodology Disclosure */}
       <div
         style={{
           background: 'rgba(0, 102, 255, 0.04)',
-          borderRadius: 7,
-          padding: '7px 9px',
-          border: '1px solid rgba(0, 102, 255, 0.1)',
+          borderRadius: 6,
+          padding: '6px 8px',
+          borderLeft: `3px solid ${dynamicAdvisory.color}`,
+          fontSize: 9.5,
+          color: '#475569',
+          lineHeight: 1.35,
+          marginTop: 2,
         }}
       >
-        <div style={{ fontSize: 10, fontWeight: 700, color: dynamicAdvisory.color, marginBottom: 2 }}>
-          {dynamicAdvisory.title}
-        </div>
-        <div style={{ fontSize: 9.5, color: '#475569', lineHeight: 1.35 }}>
-          {dynamicAdvisory.advisory}
+        <span style={{ fontWeight: 700, color: '#0F1E36' }}>{dynamicAdvisory.title}: </span>
+        {dynamicAdvisory.advisory}
+        <div style={{ fontSize: 8.5, color: '#94A3B8', marginTop: 3 }}>
+          * Straight-line (Haversine) distance. 100% station pairs verified.
         </div>
       </div>
     </div>

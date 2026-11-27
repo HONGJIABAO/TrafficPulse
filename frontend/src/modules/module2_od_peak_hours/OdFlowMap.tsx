@@ -221,40 +221,35 @@ export const OdFlowMap: React.FC<Props> = ({
         </button>
       </div>
 
-      {/* Legend on Bottom Right */}
+      {/* Network Mode Legend at Bottom Center matching design */}
       <div
         style={{
           position: 'absolute',
           bottom: 12,
-          right: 12,
+          left: '50%',
+          transform: 'translateX(-50%)',
           zIndex: 1000,
-          background: 'rgba(255, 255, 255, 0.95)',
+          background: 'rgba(255, 255, 255, 0.94)',
           backdropFilter: 'blur(6px)',
-          borderRadius: 8,
-          border: '1px solid rgba(0, 102, 255, 0.12)',
-          boxShadow: '0 2px 10px rgba(0, 102, 255, 0.08)',
-          padding: '6px 10px',
-          fontSize: 10,
-          color: '#0F1E36',
+          borderRadius: 20,
+          border: '1px solid rgba(0, 102, 255, 0.15)',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          padding: '4px 14px',
+          fontSize: 10.5,
+          fontWeight: 600,
           display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
+          alignItems: 'center',
+          gap: 14,
+          pointerEvents: 'none',
         }}
       >
-        <div style={{ fontWeight: 700, fontSize: 10, color: '#64748B', letterSpacing: '0.4px' }}>
-          FLOW VOLUME
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#EA580C' }} />
+          <span style={{ color: '#EA580C' }}>KTM Komuter</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 3, background: '#0052CC', borderRadius: 2 }} />
-          <span>High (&gt; 500K)</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 2.5, background: '#FF8C00', borderRadius: 2 }} />
-          <span>Medium (150K–500K)</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ width: 14, height: 2, background: '#00A389', borderRadius: 2 }} />
-          <span>Normal (&lt; 150K)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0066FF' }} />
+          <span style={{ color: '#0066FF' }}>Rapid Rail</span>
         </div>
       </div>
 
@@ -277,20 +272,17 @@ export const OdFlowMap: React.FC<Props> = ({
           const isSelected = selectedFlowId === flow.id;
           const points = getBezierPoints(flow.originCoords, flow.destCoords);
 
-          // Flow colors based on volume tier
-          let strokeColor = '#00A389';
-          let weight = 2.5;
-          let opacity = 0.65;
+          // Flow colors based on network mode and volume weight
+          const modeColor =
+            flow.mode === 'rapid_rail'
+              ? '#0066FF'
+              : flow.mode === 'komuter'
+                ? '#EA580C'
+                : '#0D9488';
 
-          if (flow.volume >= 500000) {
-            strokeColor = '#0052CC';
-            weight = 4;
-            opacity = 0.85;
-          } else if (flow.volume >= 150000) {
-            strokeColor = '#FF8C00';
-            weight = 3.2;
-            opacity = 0.75;
-          }
+          let strokeColor = modeColor;
+          let weight = flow.volume >= 500000 ? 3.8 : flow.volume >= 150000 ? 2.8 : 2.0;
+          let opacity = 0.8;
 
           if (selectedFlowId) {
             if (isSelected) {

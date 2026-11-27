@@ -55,7 +55,7 @@ export const TopOdPairsList: React.FC<Props> = ({
       }}
     >
       {/* Search Bar & Header Stats */}
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
         <div style={{ position: 'relative', flex: 1 }}>
           <input
             type="text"
@@ -141,9 +141,9 @@ export const TopOdPairsList: React.FC<Props> = ({
                   ? '#EA580C'
                   : '#795548';
 
-            // Growth badge based on rank
-            const growthPcts = ['+8.1%', '+7.5%', '+6.9%', '+6.4%', '+5.7%', '+5.1%', '+4.8%'];
-            const growthBadge = growthPcts[index % growthPcts.length];
+            // Calculate genuine mode share percentage across current filtered list
+            const totalFilteredVolume = filteredFlows.reduce((sum, f) => sum + f.volume, 0);
+            const modeShare = totalFilteredVolume > 0 ? ((flow.volume / totalFilteredVolume) * 100).toFixed(1) : '0.0';
 
             return (
               <div
@@ -259,25 +259,20 @@ export const TopOdPairsList: React.FC<Props> = ({
                   </div>
                 </div>
 
-                {/* Right: Total Trips & Growth Badge */}
+                {/* Right: Total Trips & Verified Mode Share */}
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                   <div style={{ fontWeight: 800, fontSize: 13, color: '#0F1E36', lineHeight: 1.1 }}>
                     {formatMillions(flow.volume)}
                   </div>
                   <div
                     style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: '#00C48C',
+                      fontSize: 9.5,
+                      fontWeight: 600,
+                      color: '#64748B',
                       marginTop: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                      gap: 2,
                     }}
                   >
-                    <span>▲</span>
-                    <span>{growthBadge}</span>
+                    {modeShare}% share
                   </div>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import type { WeekdayVsWeekendData, OdModeFilter } from './types';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   komuterData: WeekdayVsWeekendData;
@@ -20,6 +21,37 @@ export const WeekdayVsWeekendChart: React.FC<Props> = ({
   intercityData,
   selectedMode,
 }) => {
+  // Clear unavailable state when Rapid Rail is selected (audit integrity compliance)
+  if (selectedMode === 'rapid_rail') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: 210,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F8FAFC',
+          borderRadius: 8,
+          border: '1px dashed rgba(0, 102, 255, 0.2)',
+          padding: '24px 20px',
+          textAlign: 'center',
+          gap: 8,
+        }}
+      >
+        <TelemetryIcon name="dual-waveform" variant="cobalt" badge size={16} />
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
+          Hourly Profile Unavailable for Rapid Rail
+        </div>
+        <div style={{ fontSize: 11, color: '#64748B', maxWidth: 400, lineHeight: 1.45 }}>
+          Rapid Rail publishing frequency contains daily totals without hourly breakdowns. Select KTM Komuter or All Modes for dual-peak hourly comparison.
+        </div>
+      </div>
+    );
+  }
+
   const activeSource = useMemo(() => {
     if (selectedMode === 'intercity') {
       return intercityData;

@@ -59,7 +59,7 @@ export const OperatorInsightStrip: React.FC = () => {
           fontSize: 12,
         }}
       >
-        {/* Directive 1: Morning Rush Surge */}
+        {/* Directive 1: Morning Rush Relief */}
         <div
           style={{
             background: '#FFFFFF',
@@ -73,16 +73,21 @@ export const OperatorInsightStrip: React.FC = () => {
             gap: 4,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <TelemetryIcon name="clock-radar" variant="cobalt" badge size={13} style={{ width: 22, height: 22 }} />
-            <span style={{ fontWeight: 700, color: '#0066FF', fontSize: 12 }}>
-              1. Suburban Morning Rush Relief
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <TelemetryIcon name="transit-rail" variant="cobalt" badge size={13} style={{ width: 22, height: 22 }} />
+            <div>
+              <div style={{ fontWeight: 700, color: '#0066FF', fontSize: 12 }}>
+                Morning Rush Relief
+              </div>
+              <div style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>
+                Peak-hour service frequency
+              </div>
+            </div>
           </div>
-          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11.5 }}>
-            Suburban-to-CBD corridors (e.g. <strong>Batu Caves ➔ KL Sentral</strong>, 915k trips) peak at <strong>07:00–08:45 AM</strong> with 2.2x volume over weekend.
+          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11, marginTop: 2 }}>
+            Suburban-to-CBD corridors (e.g. <strong>Batu Caves ➔ KL Sentral</strong>) exhibit sharp 07:00–08:45 AM commuter concentration (2.2× off-peak volume).
             <div style={{ color: '#0F1E36', fontWeight: 600, marginTop: 4 }}>
-              Action: Deploy 3 extra 6-car EMU sets to achieve 5-min headways.
+              Action: Assess additional train services and express turnarounds on high-density radial lines.
             </div>
           </div>
         </div>
@@ -101,16 +106,21 @@ export const OperatorInsightStrip: React.FC = () => {
             gap: 4,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <TelemetryIcon name="offpeak-drop" variant="amber" badge size={13} style={{ width: 22, height: 22 }} />
-            <span style={{ fontWeight: 700, color: '#EA580C', fontSize: 12 }}>
-              2. Dynamic Off-Peak Energy Optimization
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <TelemetryIcon name="lightning" variant="amber" badge size={13} style={{ width: 22, height: 22 }} />
+            <div>
+              <div style={{ fontWeight: 700, color: '#EA580C', fontSize: 12 }}>
+                Off-Peak Energy Optimisation
+              </div>
+              <div style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>
+                Midday service intervals
+              </div>
+            </div>
           </div>
-          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11.5 }}>
-            Midday demand drops by <strong>75%</strong> between 11:00 AM and 2:00 PM (averaging only ~891 trips/hr vs ~3,994 peak).
+          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11, marginTop: 2 }}>
+            Observed midday ridership (11:00 AM–2:00 PM) declines by ~75% relative to morning peak (~891 trips/hr).
             <div style={{ color: '#0F1E36', fontWeight: 600, marginTop: 4 }}>
-              Action: Widen midday intervals from 10m to 15m; cuts traction energy by ~22%.
+              Action: Evaluate timetable adjustments during off-peak lulls to optimize traction energy.
             </div>
           </div>
         </div>
@@ -129,16 +139,21 @@ export const OperatorInsightStrip: React.FC = () => {
             gap: 4,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <TelemetryIcon name="od-route" variant="teal" badge size={13} style={{ width: 22, height: 22 }} />
-            <span style={{ fontWeight: 700, color: '#0D9488', fontSize: 12 }}>
-              3. Weekend Retail &amp; Feeder Sync
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <TelemetryIcon name="transit-rail" variant="teal" badge size={13} style={{ width: 22, height: 22 }} />
+            <div>
+              <div style={{ fontWeight: 700, color: '#0D9488', fontSize: 12 }}>
+                Weekend Retail &amp; Feeder Sync
+              </div>
+              <div style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>
+                Feeder connectivity
+              </div>
+            </div>
           </div>
-          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11.5 }}>
-            Weekend travel shifts to a single broad leisure curve peaking at <strong>12:00–16:00 PM</strong> around TRX, Bukit Bintang, and KLCC.
+          <div style={{ color: '#475569', lineHeight: 1.4, fontSize: 11, marginTop: 2 }}>
+            Weekend travel transitions to broader 12:00–18:00 leisure flows concentrated around commercial transit interchanges.
             <div style={{ color: '#0F1E36', fontWeight: 600, marginTop: 4 }}>
-              Action: Re-time weekend feeder buses to match 8-min mall hub train schedules.
+              Action: Coordinate rail and bus schedules around commercial hubs during afternoon leisure peaks.
             </div>
           </div>
         </div>

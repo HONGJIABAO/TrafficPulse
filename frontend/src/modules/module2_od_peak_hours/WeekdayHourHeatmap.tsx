@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import type { HeatmapPoint, OdModeFilter } from './types';
 import { formatMillions } from '@/modules/shared/types';
+import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
   komuterData: HeatmapPoint[];
@@ -22,6 +23,40 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
   intercityData,
   selectedMode,
 }) => {
+  // Clear unavailable state when Rapid Rail is selected (audit integrity compliance)
+  if (selectedMode === 'rapid_rail') {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          minHeight: 210,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F8FAFC',
+          borderRadius: 8,
+          border: '1px dashed rgba(0, 102, 255, 0.2)',
+          padding: '24px 20px',
+          textAlign: 'center',
+          gap: 8,
+        }}
+      >
+        <TelemetryIcon name="clock-radar" variant="cobalt" badge size={16} />
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
+          Hourly Demand Matrix Unavailable for Rapid Rail
+        </div>
+        <div style={{ fontSize: 11, color: '#64748B', maxWidth: 400, lineHeight: 1.45 }}>
+          Prasarana / Rapid Rail open data provides daily Origin-Destination aggregate matrices only. High-resolution 24-hour telemetry records are captured for KTM Komuter &amp; KTM Intercity.
+        </div>
+        <div style={{ fontSize: 10, color: '#0066FF', fontWeight: 600, background: 'rgba(0, 102, 255, 0.08)', padding: '3px 9px', borderRadius: 5 }}>
+          Select "All Rail Modes" or "KTM Komuter" to inspect 24-hour demand heatmaps.
+        </div>
+      </div>
+    );
+  }
+
   // Combine or select data depending on filter
   const dataset = useMemo(() => {
     if (selectedMode === 'intercity') {
@@ -30,7 +65,7 @@ export const WeekdayHourHeatmap: React.FC<Props> = ({
     if (selectedMode === 'komuter') {
       return komuterData;
     }
-    // 'all' or 'rapid_rail' fallback:
+    // 'all' network mode (combines Komuter + Intercity hourly datasets):
     const map = new Map<string, number>();
     komuterData.forEach((p) => {
       const k = `${p.weekday}-${p.hour}`;
