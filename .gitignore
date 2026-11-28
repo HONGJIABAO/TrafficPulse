@@ -45,6 +45,8 @@ env/
 backend/data/raw/rapidrail_2026_daily.csv
 backend/data/raw/malaysia-states.geojson
 backend/data/raw/malaysia-country.geojson
+backend/data/module2_capacity_screening/raw/
+backend/data/module2_capacity_screening/processed/
 
 # Intermediate pipeline cache (temporary heavy tables & features)
 backend/data/processed/*
