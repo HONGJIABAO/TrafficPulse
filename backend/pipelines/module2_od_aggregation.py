@@ -4,15 +4,21 @@ TransitPulse Malaysia — MDIT: Global Challenge 2026
 Module 2: OD Flow & Peak-Hour Analytics
 Output: frontend/src/data/od_summary.json
 
-Aggregates 2026 Komuter + 2026 Intercity + COMPLETE 2026 Rapid Rail OD data on a
+Aggregates 2026 KTM Komuter (Klang Valley) + 2026 KTM Intercity + COMPLETE 2026 Rapid Rail OD data on a
 common 2026 observation window (2026-01-01 to 2026-11-20, 324 days).
+Note: ETS, KTM Komuter Utara, and Shuttle Tebrau are integrated in Panel 1 (Station Demand Intelligence),
+not in this upper OD flow summary.
 
 Corrections applied:
 - Malaysian operating week classification: Mon-Fri (dow 0..4 / ISO 1..5) = Weekday,
   Sat-Sun (dow 5..6 / ISO 6..7) = Weekend.
-- Full-dataset Rapid Rail OD computation (196.63M non-A0 trips across ~17,048 pairs)
-  across full 2026, quarters (q1-q4), months (2026-01..2026-11), and day profiles
-  (all/weekday/weekend), while keeping hourly analytics strictly disabled for Rapid Rail.
+- Exclusion of non-physical administrative/transaction codes ('Penalty', 'Unknown', 'A0') on
+  EITHER origin OR destination (without double-counting dual-admin rows) from physical station-to-station
+  OD ridership, unique pairs, distance averages, rankings, heatmaps, and hourly profiles, while preserving
+  full source-reported reconciliation metadata.
+- Full-dataset Rapid Rail OD computation (196.63M non-A0 trips across 17,048 positive-volume pairs out of
+  17,055 matrix pairs including 7 zero-ridership pairs) across full 2026, quarters (q1-q4),
+  months (2026-01..2026-11), and day profiles, while keeping hourly analytics strictly disabled for Rapid Rail.
 - Explicit internal A0 reconciliation & Shah Alam (SA) zero-period disclosure.
 - Full-population trip-weighted Haversine distance & mapped-coverage statistics using
   verified GTFS/curated coordinates (never synthetic coords for 'Penalty'/'Unknown').
@@ -35,6 +41,7 @@ sys.path.insert(0, str(THIS_DIR / "module2_station_demand"))
 
 from config import FRONTEND_DATA_DIR, RAW_DATA_DIR, save_frontend_json
 from station_registry import (
+    NON_PHYSICAL_STATION_KEYS,
     haversine_km,
     load_station_lookup,
     resolve_ktmb_station,
@@ -45,6 +52,58 @@ from station_registry import (
 def classify_dayofweek(dow: int) -> str:
     """Malaysian railway operating week: 0..4 (Mon-Fri) = Weekday, 5..6 (Sat-Sun) = Weekend."""
     return "Weekend" if dow >= 5 else "Weekday"
+
+
+def partition_ktmb_admin_records(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """
+    Separate valid physical station-to-station OD journeys from administrative/non-physical
+    codes ('Penalty', 'Unknown', 'A0') on either origin OR destination without double-counting
+    dual-admin rows (e.g., Unknown -> Unknown).
+    """
+    if df.empty:
+        return df, {
+            "source_reported_trips": 0,
+            "physical_od_trips": 0,
+            "excluded_admin_trips": 0,
+            "excluded_admin_rows": 0,
+            "excluded_admin_pairs": 0,
+            "origin_penalty_trips": 0,
+            "dest_penalty_trips": 0,
+            "origin_unknown_trips": 0,
+            "dest_unknown_trips": 0,
+            "dual_admin_trips": 0,
+            "dual_admin_rows": 0,
+            "physical_self_loop_trips": 0,
+            "physical_self_loop_pairs": 0,
+        }
+
+    orig_norm = df["origin"].astype(str).str.strip().str.lower()
+    dest_norm = df["destination"].astype(str).str.strip().str.lower()
+    orig_non_phys = orig_norm.isin(NON_PHYSICAL_STATION_KEYS) | (orig_norm == "")
+    dest_non_phys = dest_norm.isin(NON_PHYSICAL_STATION_KEYS) | (dest_norm == "")
+    any_admin = orig_non_phys | dest_non_phys
+    dual_admin = orig_non_phys & dest_non_phys
+
+    phys_df = df.loc[~any_admin]
+    admin_df = df.loc[any_admin]
+    self_loops = phys_df.loc[phys_df["origin"] == phys_df["destination"]]
+
+    summary = {
+        "source_reported_trips": int(df["ridership"].sum()),
+        "physical_od_trips": int(phys_df["ridership"].sum()),
+        "excluded_admin_trips": int(admin_df["ridership"].sum()),
+        "excluded_admin_rows": int(any_admin.sum()),
+        "excluded_admin_pairs": int(admin_df.groupby(["origin", "destination"]).ngroups) if not admin_df.empty else 0,
+        "origin_penalty_trips": int(df.loc[orig_norm == "penalty", "ridership"].sum()),
+        "dest_penalty_trips": int(df.loc[dest_norm == "penalty", "ridership"].sum()),
+        "origin_unknown_trips": int(df.loc[orig_norm == "unknown", "ridership"].sum()),
+        "dest_unknown_trips": int(df.loc[dest_norm == "unknown", "ridership"].sum()),
+        "dual_admin_trips": int(df.loc[dual_admin, "ridership"].sum()),
+        "dual_admin_rows": int(dual_admin.sum()),
+        "physical_self_loop_trips": int(self_loops["ridership"].sum()),
+        "physical_self_loop_pairs": int(self_loops.groupby(["origin", "destination"]).ngroups) if not self_loops.empty else 0,
+    }
+    return phys_df, summary
 
 
 def validate_od_dataframe(df: pd.DataFrame, name: str) -> dict:
@@ -102,12 +161,18 @@ def compute_heatmap_records(df: pd.DataFrame) -> list:
     ]
 
 
-def compute_wd_vs_we_hourly(df: pd.DataFrame) -> dict:
+def compute_wd_vs_we_hourly(
+    df: pd.DataFrame,
+    n_wd_override: int | None = None,
+    n_we_override: int | None = None,
+) -> dict:
     """Average hourly profile: Weekday (Mon-Fri, dow 0..4) vs Weekend (Sat-Sun, dow 5..6)."""
     wd_df = df[df["day_type"] == "Weekday"]
     we_df = df[df["day_type"] == "Weekend"]
-    n_wd = max(int(wd_df["date_dt"].nunique()), 1) if not wd_df.empty else 0
-    n_we = max(int(we_df["date_dt"].nunique()), 1) if not we_df.empty else 0
+    n_wd_actual = int(wd_df["date_dt"].nunique()) if not wd_df.empty else 0
+    n_we_actual = int(we_df["date_dt"].nunique()) if not we_df.empty else 0
+    n_wd = n_wd_override if n_wd_override is not None else n_wd_actual
+    n_we = n_we_override if n_we_override is not None else n_we_actual
 
     def hourly_series(sub: pd.DataFrame, days: int) -> list:
         if sub.empty or days <= 0:
@@ -116,8 +181,8 @@ def compute_wd_vs_we_hourly(df: pd.DataFrame) -> dict:
         return [{"hour": h, "avg_ridership": round(float(by_hr.get(h, 0)) / days, 1)} for h in range(24)]
 
     return {
-        "weekday_days": int(wd_df["date_dt"].nunique()) if not wd_df.empty else 0,
-        "weekend_days": int(we_df["date_dt"].nunique()) if not we_df.empty else 0,
+        "weekday_days": n_wd,
+        "weekend_days": n_we,
         "weekday": hourly_series(wd_df, n_wd),
         "weekend": hourly_series(we_df, n_we),
     }
@@ -212,12 +277,17 @@ def aggregate_ktmb_mode_period(
     coord_resolver: dict[str, tuple[float, float] | None],
     top_limit: int = 30,
 ) -> dict:
-    wd_df = df[df["day_type"] == "Weekday"]
-    we_df = df[df["day_type"] == "Weekend"]
+    wd_all_df = df[df["day_type"] == "Weekday"]
+    we_all_df = df[df["day_type"] == "Weekend"]
 
     n_all = int(df["date_dt"].nunique())
-    n_wd = int(wd_df["date_dt"].nunique())
-    n_we = int(we_df["date_dt"].nunique())
+    n_wd = int(wd_all_df["date_dt"].nunique())
+    n_we = int(we_all_df["date_dt"].nunique())
+
+    # Partition verified physical OD trips vs administrative/non-physical Penalty/Unknown records
+    phys_df, admin_rec = partition_ktmb_admin_records(df)
+    phys_wd_df = phys_df[phys_df["day_type"] == "Weekday"]
+    phys_we_df = phys_df[phys_df["day_type"] == "Weekend"]
 
     def extract_pairs(sub: pd.DataFrame) -> list[tuple[str, str, int]]:
         if sub.empty:
@@ -225,25 +295,30 @@ def aggregate_ktmb_mode_period(
         g = sub.groupby(["origin", "destination"], as_index=False)["ridership"].sum()
         return [(str(r.origin), str(r.destination), int(r.ridership)) for r in g.itertuples(index=False)]
 
-    top_all, u_all, dist_all = compute_full_pair_metrics(extract_pairs(df), n_all, top_limit, coord_resolver)
-    top_wd, u_wd, dist_wd = compute_full_pair_metrics(extract_pairs(wd_df), n_wd, top_limit, coord_resolver)
-    top_we, u_we, dist_we = compute_full_pair_metrics(extract_pairs(we_df), n_we, top_limit, coord_resolver)
+    top_all, u_all, dist_all = compute_full_pair_metrics(extract_pairs(phys_df), n_all, top_limit, coord_resolver)
+    top_wd, u_wd, dist_wd = compute_full_pair_metrics(extract_pairs(phys_wd_df), n_wd, top_limit, coord_resolver)
+    top_we, u_we, dist_we = compute_full_pair_metrics(extract_pairs(phys_we_df), n_we, top_limit, coord_resolver)
 
     return {
-        "total_trips": int(df["ridership"].sum()),
-        "weekday_trips": int(wd_df["ridership"].sum()),
-        "weekend_trips": int(we_df["ridership"].sum()),
+        "total_trips": int(phys_df["ridership"].sum()),
+        "weekday_trips": int(phys_wd_df["ridership"].sum()),
+        "weekend_trips": int(phys_we_df["ridership"].sum()),
+        "source_reported_total_trips": admin_rec["source_reported_trips"],
+        "source_reported_weekday_trips": int(wd_all_df["ridership"].sum()),
+        "source_reported_weekend_trips": int(we_all_df["ridership"].sum()),
+        "excluded_admin_trips": admin_rec["excluded_admin_trips"],
+        "excluded_admin_pairs": admin_rec["excluded_admin_pairs"],
         "unique_od_all": u_all,
         "unique_od_weekday": u_wd,
         "unique_od_weekend": u_we,
         "top_od": {"all": top_all, "weekday": top_wd, "weekend": top_we},
         "distance_stats": {"all": dist_all, "weekday": dist_wd, "weekend": dist_we},
         "heatmap": {
-            "all": compute_heatmap_records(df),
-            "weekday": compute_heatmap_records(wd_df),
-            "weekend": compute_heatmap_records(we_df),
+            "all": compute_heatmap_records(phys_df),
+            "weekday": compute_heatmap_records(phys_wd_df),
+            "weekend": compute_heatmap_records(phys_we_df),
         },
-        "weekday_vs_weekend": compute_wd_vs_we_hourly(df),
+        "weekday_vs_weekend": compute_wd_vs_we_hourly(phys_df, n_wd_override=n_wd, n_we_override=n_we),
     }
 
 
@@ -291,6 +366,17 @@ def load_full_rapid_rail() -> tuple[pl.DataFrame, dict, dict[str, int]]:
         .collect()
     )
 
+    # Audit positive vs zero-ridership OD pairs across non-A0 station-to-station matrix
+    rr_pair_totals = (
+        lf.filter(~pl.col("origin").str.starts_with("A0:") & ~pl.col("destination").str.starts_with("A0:"))
+        .group_by(["origin", "destination"])
+        .agg(pl.col("ridership").sum().cast(pl.Int64).alias("pair_trips"))
+        .collect()
+    )
+    total_non_a0_pairs_all = rr_pair_totals.height
+    positive_non_a0_pairs = int(rr_pair_totals.filter(pl.col("pair_trips") > 0).height)
+    zero_ridership_pairs = int(rr_pair_totals.filter(pl.col("pair_trips") == 0).height)
+
     # Filter non-A0 positive station-to-station records
     det_df = (
         lf.filter(
@@ -333,6 +419,9 @@ def load_full_rapid_rail() -> tuple[pl.DataFrame, dict, dict[str, int]]:
         "hourly_supported": False,
         "non_a0_valid_rows": det_df.height,
         "non_a0_total_trips": int(det_df["ridership"].sum()),
+        "total_non_a0_pairs_all": total_non_a0_pairs_all,
+        "positive_non_a0_pairs": positive_non_a0_pairs,
+        "zero_ridership_pairs": zero_ridership_pairs,
         "row_categories": cats,
         "a0_reconciliation": {
             "station_dates_checked": rec.height,
@@ -403,6 +492,10 @@ def main() -> None:
     ic_val = validate_od_dataframe(intercity_raw, "intercity_2026")
     kom_df = kom_val["df"]
     ic_df = ic_val["df"]
+    _, kom_admin_full = partition_ktmb_admin_records(kom_df)
+    _, ic_admin_full = partition_ktmb_admin_records(ic_df)
+    kom_val["report"]["admin_reconciliation"] = kom_admin_full
+    ic_val["report"]["admin_reconciliation"] = ic_admin_full
 
     rr_df, rr_report, rr_monthly_totals = load_full_rapid_rail()
 
@@ -470,14 +563,21 @@ def main() -> None:
         min_d = k_m["date_dt"].min().strftime("%Y-%m-%d")
         max_d = k_m["date_dt"].max().strftime("%Y-%m-%d")
 
+        k_phys_m, k_adm_m = partition_ktmb_admin_records(k_m)
+        i_phys_m, i_adm_m = partition_ktmb_admin_records(i_m)
+
         monthly_totals.append({
             "year_month": ym,
             "days": n_all,
             "weekday_days": wd_days,
             "weekend_days": we_days,
             "date_range": f"{min_d} to {max_d}",
-            "komuter_trips": int(k_m["ridership"].sum()),
-            "intercity_trips": int(i_m["ridership"].sum()),
+            "komuter_trips": k_adm_m["physical_od_trips"],
+            "komuter_source_trips": k_adm_m["source_reported_trips"],
+            "komuter_excluded_admin_trips": k_adm_m["excluded_admin_trips"],
+            "intercity_trips": i_adm_m["physical_od_trips"],
+            "intercity_source_trips": i_adm_m["source_reported_trips"],
+            "intercity_excluded_admin_trips": i_adm_m["excluded_admin_trips"],
             "rapid_rail_trips": rr_monthly_totals.get(ym, 0),
         })
         monthly_periods[ym] = {
@@ -500,8 +600,23 @@ def main() -> None:
             "weekday_days": full_period["weekday_days"],
             "weekend_days": full_period["weekend_days"],
             "day_classification_rule": "Malaysian operating week: Mon–Fri = Weekday, Sat–Sun = Weekend",
-            "corridor_definition": "Directional (Origin -> Destination)",
-            "distance_methodology": "Trip-weighted straight-line Haversine distance (km, R=6,371 km) calculated over ALL eligible OD pairs with verified physical station coordinates; non-physical codes ('Penalty', 'Unknown') excluded from distance averages.",
+            "corridor_definition": "Directional physical station-to-station OD (Origin -> Destination)",
+            "included_od_services": [
+                "Rapid Rail (LRT, MRT & KL Monorail)",
+                "KTM Komuter (Klang Valley)",
+                "KTM Intercity",
+            ],
+            "excluded_od_services_note": (
+                "KTM ETS, KTM Komuter Utara, and Shuttle Tebrau do not publish paired OD matrices in this upper OD view "
+                "and are covered separately in Panel 1 — Station Demand Intelligence."
+            ),
+            "admin_exclusion_policy": (
+                "Non-physical administrative/transaction codes ('Penalty', 'Unknown', 'A0') appearing on either origin OR "
+                "destination are excluded from physical OD volume, unique OD pairs, rankings, distance averages, heatmaps, "
+                "and hourly profiles without double-counting dual-admin records (e.g., 18,847 deduplicated KTMB Komuter "
+                "admin trips excluded from 7,405,913 source total -> 7,387,066 physical OD trips)."
+            ),
+            "distance_methodology": "Trip-weighted straight-line Haversine distance (km, R=6,371 km) calculated over ALL eligible physical OD pairs with verified station coordinates; non-physical codes ('Penalty', 'Unknown') excluded cleanly from both numerator and denominator.",
             "data_quality": {
                 "komuter_2026": kom_val["report"],
                 "intercity_2026": ic_val["report"],

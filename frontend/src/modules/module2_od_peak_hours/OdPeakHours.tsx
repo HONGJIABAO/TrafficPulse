@@ -484,7 +484,18 @@ export function OdPeakHours() {
                 : '0 Pairs'}
             </span>
           </div>
-          <div style={{ fontSize: 19, fontWeight: 800, color: '#0F1E36', marginTop: 4 }}>
+          <div
+            style={{ fontSize: 19, fontWeight: 800, color: '#0F1E36', marginTop: 4 }}
+            title={
+              dataset.networkTotalTrips !== null
+                ? `Physical station-to-station OD: ${dataset.networkTotalTrips.toLocaleString()} trips${
+                    dataset.excludedAdminTrips > 0
+                      ? ` (excluded ${dataset.excludedAdminTrips.toLocaleString()} non-physical Penalty/Unknown admin trips from ${(dataset.sourceReportedTotalTrips ?? dataset.networkTotalTrips).toLocaleString()} source-reported total)`
+                      : ''
+                  }`
+                : undefined
+            }
+          >
             {dataset.networkTotalTrips !== null
               ? `${formatMillions(dataset.networkTotalTrips)} trips`
               : 'Unavailable'}
@@ -493,7 +504,11 @@ export function OdPeakHours() {
             {dataset.networkAvgDailyTrips !== null
               ? `Avg ${Math.round(dataset.networkAvgDailyTrips).toLocaleString()}/day across ${
                   dataset.activeDaysDenominator
-                } valid days${!dataset.networkTotalIsExact ? ' (RR Top-20)' : ''}`
+                } valid days${!dataset.networkTotalIsExact ? ' (RR Top-20)' : ''}${
+                  dataset.excludedAdminTrips > 0
+                    ? ` · Excl. ${dataset.excludedAdminTrips.toLocaleString()} admin`
+                    : ''
+                }`
               : 'No valid observations for current filter'}
           </div>
         </div>
@@ -617,11 +632,14 @@ export function OdPeakHours() {
                   onChange={(e) => handlePendingModeChange(e.target.value as OdModeFilter)}
                   style={selectStyle}
                 >
-                  <option value="all">All Rail Modes (2026 Common Window)</option>
-                  <option value="rapid_rail">Rapid Rail (LRT &amp; MRT — Full Daily OD)</option>
-                  <option value="komuter">KTM Komuter (Hourly &amp; Daily)</option>
-                  <option value="intercity">KTM Intercity &amp; ETS (Hourly &amp; Daily)</option>
+                  <option value="all">All Included OD Services (Rapid Rail, Komuter KV &amp; Intercity)</option>
+                  <option value="rapid_rail">Rapid Rail (LRT, MRT &amp; Monorail — Daily OD)</option>
+                  <option value="komuter">KTM Komuter (Klang Valley · Hourly &amp; Daily)</option>
+                  <option value="intercity">KTM Intercity (Excl. ETS/Utara · Hourly &amp; Daily)</option>
                 </select>
+                <div style={{ fontSize: 9.5, color: '#64748B', marginTop: 3, lineHeight: 1.3 }}>
+                  Upper OD excludes non-physical Penalty/Unknown codes ({dataset.excludedAdminTrips.toLocaleString()} trips in active slice). ETS, Komuter Utara &amp; Shuttle Tebrau are in Panel 1 below.
+                </div>
               </FilterRow>
 
               {/* Time Range */}
@@ -703,6 +721,7 @@ export function OdPeakHours() {
             mappedCoveragePct={distanceProfileMetrics.mappedCoveragePct}
             totalPairsCount={distanceProfileMetrics.totalCount}
             isPopulationLevel={distanceProfileMetrics.isPopulationLevel}
+            zeroRidershipPairsDisclosed={dataset.zeroRidershipPairsDisclosed}
           />
 
           {/* Card: Active Corridor Focus Inspector */}
@@ -992,10 +1011,10 @@ export function OdPeakHours() {
               <strong style={{ color: '#0F1E36' }}>Independent Controls:</strong> Both panels below use dedicated local filters and do not mutate top OD map filters.
             </span>
             <span>
-              <strong style={{ color: '#0066FF' }}>Panel 1 Scope:</strong> Full aligned OD telemetry (2026-01-01 to 2026-11-20, 324 days; Rapid Rail daily-only).
+              <strong style={{ color: '#0066FF' }}>Panel 1 Scope:</strong> Full aligned OD telemetry (2026-01-01 to 2026-11-20, 324 days across all 6 rail services; Rapid Rail daily-only).
             </span>
             <span>
-              <strong style={{ color: '#0F1E36' }}>Panel 2 Scope:</strong> Validated KTMB GTFS timetable overlap (2026-08-18 to 2026-11-26, 101 days; unsupported networks flagged Unavailable).
+              <strong style={{ color: '#0F1E36' }}>Panel 2 Scope:</strong> Validated KTMB GTFS timetable overlap (2026-08-18 to 2026-11-26: 100 active days KV excl. Nov 9 / 101 days Utara; unsupported networks flagged Unavailable).
             </span>
           </div>
         </div>
@@ -1034,7 +1053,7 @@ export function OdPeakHours() {
                   Panel 2 — Capacity &amp; Service Bottlenecks
                 </span>
                 <span style={{ fontSize: 10.5, color: '#64748B' }}>
-                  2026-08-18 to 2026-11-26 GTFS Overlap · Scenario Screening (2023 Nominal Rate Card)
+                  2026-08-18 to 2026-11-26 GTFS Overlap (100d KV excl. Nov 9 / 101d Utara) · Scenario Screening (2023 Nominal Rate Card)
                 </span>
               </div>
               <IntelligencePanelErrorBoundary panelName="Panel 2 — Capacity & Service Bottlenecks">

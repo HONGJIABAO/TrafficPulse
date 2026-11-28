@@ -50,16 +50,16 @@ export function getServiceOptionsForNetwork(
     label: string;
     networks: Array<StationDemandFilterState['network']>;
   }> = [
-    { value: 'all', label: 'All Services in Scope', networks: ['all', 'ktmb', 'rapid_rail', 'brt'] },
-    { value: 'rapid_rail', label: 'Rapid Rail (LRT / MRT / Monorail)', networks: ['all', 'rapid_rail'] },
-    { value: 'komuter', label: 'KTM Komuter (Klang Valley)', networks: ['all', 'ktmb'] },
-    { value: 'komuter_utara', label: 'KTM Komuter Utara', networks: ['all', 'ktmb'] },
-    { value: 'ets', label: 'KTM ETS (Electric Train Service)', networks: ['all', 'ktmb'] },
-    { value: 'intercity', label: 'KTM Intercity', networks: ['all', 'ktmb'] },
-    { value: 'shuttle_tebrau', label: 'Shuttle Tebrau', networks: ['all', 'ktmb'] },
-    { value: 'brt', label: 'BRT Sunway (GTFS Only — No OD)', networks: ['all', 'brt'] },
-    { value: 'ktmb_gtfs_only', label: 'KTMB GTFS Only (No OD)', networks: ['all', 'ktmb'] },
-  ];
+      { value: 'all', label: 'All Services in Scope', networks: ['all', 'ktmb', 'rapid_rail', 'brt'] },
+      { value: 'rapid_rail', label: 'Rapid Rail (LRT / MRT / Monorail)', networks: ['all', 'rapid_rail'] },
+      { value: 'komuter', label: 'KTM Komuter (Klang Valley)', networks: ['all', 'ktmb'] },
+      { value: 'komuter_utara', label: 'KTM Komuter Utara', networks: ['all', 'ktmb'] },
+      { value: 'ets', label: 'KTM ETS (Electric Train Service)', networks: ['all', 'ktmb'] },
+      { value: 'intercity', label: 'KTM Intercity', networks: ['all', 'ktmb'] },
+      { value: 'shuttle_tebrau', label: 'Shuttle Tebrau', networks: ['all', 'ktmb'] },
+      { value: 'brt', label: 'BRT Sunway (GTFS Only — No OD)', networks: ['all', 'brt'] },
+      { value: 'ktmb_gtfs_only', label: 'KTMB GTFS Only (No OD)', networks: ['all', 'ktmb'] },
+    ];
   return allServices
     .filter((item) => item.networks.includes(network))
     .map(({ value, label }) => ({ value, label }));
@@ -102,11 +102,21 @@ export function resolveStationRows(
   const observationDays = computeObservationDays(summary, filters.period, filters.dayType);
   const query = filters.searchQuery.trim().toLowerCase();
 
+  const isDailyOnlySelection =
+    filters.network === 'rapid_rail' ||
+    filters.network === 'brt' ||
+    filters.service === 'rapid_rail' ||
+    filters.service === 'brt' ||
+    filters.service === 'ktmb_gtfs_only';
+
   const matchingStations = inventory.stations.filter((st) => {
     if (!st.is_physical_station && !filters.includeNonPhysicalCodes) {
       return false;
     }
     if (st.availability_status === 'unavailable_no_od_data' && !filters.includeUnmeasuredStops) {
+      return false;
+    }
+    if (filters.hourWindow !== 'all' && !isDailyOnlySelection && !st.hourly_supported) {
       return false;
     }
     if (filters.network !== 'all' && st.network !== filters.network) {
@@ -168,8 +178,8 @@ export function resolveStationRows(
       hourlyAllowed && Array.isArray(rawProfile) && rawProfile.length === 24
         ? rawProfile
         : hourlyAllowed && totalTrips === 0
-        ? Array.from({ length: 24 }, () => 0)
-        : null;
+          ? Array.from({ length: 24 }, () => 0)
+          : null;
 
     const peakHour = hourlyAllowed && metric ? metric.pk_h : null;
     const peakHourAvg = hourlyAllowed && metric ? metric.pk_avg : null;
@@ -297,11 +307,24 @@ export interface StationSpotlightMetrics {
   dailyOnlyCount: number;
   unmeasuredCount: number;
   observationDays: number;
+  isHourlyWindowFiltered: boolean;
+  isPeakFocus: boolean;
+  hourlyWindowLabel: string;
+}
+
+export function getHourlyWindowLabel(
+  filters?: Pick<StationDemandFilterState, 'hourWindow' | 'selectedHour'>
+): string {
+  if (!filters || filters.hourWindow === 'all') return '24h Daily Total';
+  if (filters.hourWindow === 'am_peak') return 'AM Peak (06:00–09:59 MYT)';
+  if (filters.hourWindow === 'pm_peak') return 'PM Peak (17:00–20:59 MYT)';
+  return `Hour ${formatHourWindow24(filters.selectedHour)} MYT`;
 }
 
 export function computeSpotlightMetrics(
   rows: ResolvedStationRow[],
-  observationDays: number
+  observationDays: number,
+  filters?: Pick<StationDemandFilterState, 'hourWindow' | 'selectedHour' | 'metricFocus'>
 ): StationSpotlightMetrics {
   const physicalMeasured = rows.filter(
     (r) => r.station.is_physical_station && r.station.availability_status !== 'unavailable_no_od_data'
@@ -314,19 +337,48 @@ export function computeSpotlightMetrics(
     (r) => r.station.availability_status === 'unavailable_no_od_data'
   ).length;
 
+  const isHourlyWindowFiltered = Boolean(
+    filters && filters.hourWindow !== 'all' && !(dailyOnlyCount > 0 && hourlySupported.length === 0)
+  );
+  const isPeakFocus = Boolean(filters && filters.metricFocus === 'peak_hour');
+  const hourlyWindowLabel = getHourlyWindowLabel(isHourlyWindowFiltered ? filters : undefined);
+
+  // Enforce strict KTMB hourly scope whenever an hourly window or Peak-Hour ranking focus is active
+  const scopedMeasured = isHourlyWindowFiltered || isPeakFocus ? hourlySupported : physicalMeasured;
+
   const topDailyStation =
-    [...physicalMeasured].sort(
-      (a, b) => (b.avgDailyTrips ?? -1) - (a.avgDailyTrips ?? -1) || (b.totalTrips ?? -1) - (a.totalTrips ?? -1)
-    )[0] || null;
+    [...scopedMeasured].sort((a, b) => {
+      if (isHourlyWindowFiltered) {
+        const va = a.activeWindowValue ?? -1;
+        const vb = b.activeWindowValue ?? -1;
+        if (vb !== va) return vb - va;
+      }
+      return (
+        (b.avgDailyTrips ?? -1) - (a.avgDailyTrips ?? -1) ||
+        (b.totalTrips ?? -1) - (a.totalTrips ?? -1) ||
+        a.station.id.localeCompare(b.station.id)
+      );
+    })[0] || null;
 
   const topHourlyPeakStation =
     [...hourlySupported].sort(
-      (a, b) => (b.peakHourAvg ?? -1) - (a.peakHourAvg ?? -1) || (b.totalTrips ?? -1) - (a.totalTrips ?? -1)
+      (a, b) =>
+        (b.peakHourAvg ?? -1) - (a.peakHourAvg ?? -1) ||
+        (b.totalTrips ?? -1) - (a.totalTrips ?? -1) ||
+        a.station.id.localeCompare(b.station.id)
     )[0] || null;
 
-  const filteredTotalTrips = physicalMeasured.reduce((acc, r) => acc + (r.totalTrips ?? 0), 0);
-  const filteredAvgDailyTrips =
-    observationDays > 0 ? Math.round((filteredTotalTrips / observationDays) * 10) / 10 : 0;
+  let filteredTotalTrips = 0;
+  let filteredAvgDailyTrips = 0;
+  if (isHourlyWindowFiltered) {
+    const windowDailySum = scopedMeasured.reduce((acc, r) => acc + (r.activeWindowValue ?? 0), 0);
+    filteredAvgDailyTrips = Math.round(windowDailySum * 10) / 10;
+    filteredTotalTrips = Math.round(windowDailySum * Math.max(observationDays, 0));
+  } else {
+    filteredTotalTrips = scopedMeasured.reduce((acc, r) => acc + (r.totalTrips ?? 0), 0);
+    filteredAvgDailyTrips =
+      observationDays > 0 ? Math.round((filteredTotalTrips / observationDays) * 10) / 10 : 0;
+  }
 
   return {
     topDailyStation,
@@ -338,6 +390,9 @@ export function computeSpotlightMetrics(
     dailyOnlyCount,
     unmeasuredCount,
     observationDays,
+    isHourlyWindowFiltered,
+    isPeakFocus,
+    hourlyWindowLabel,
   };
 }
 
@@ -360,11 +415,49 @@ export function getAvailabilityBadgeTone(status: AvailabilityStatus): {
   }
 }
 
+function matchesPeriodMonth(ym: string, period: string): boolean {
+  if (period === '12m' || !period) return true;
+  if (period === 'q1') return ym >= '2026-01' && ym <= '2026-03';
+  if (period === 'q2') return ym >= '2026-04' && ym <= '2026-06';
+  if (period === 'q3') return ym >= '2026-07' && ym <= '2026-09';
+  if (period === 'q4') return ym >= '2026-10' && ym <= '2026-11';
+  if (period.startsWith('2026-')) return ym === period;
+  return true;
+}
+
+function getMonthDayWeights(
+  ym: string,
+  summary: StationDemandSummaryPayload | null
+): { weekdayDays: number; weekendDays: number } {
+  const cat = summary?.period_catalog?.[ym];
+  if (cat) {
+    return { weekdayDays: cat.weekday_days, weekendDays: cat.weekend_days };
+  }
+  const [yStr, mStr] = ym.split('-');
+  const year = Number(yStr);
+  const monthIdx = Number(mStr) - 1;
+  if (!Number.isFinite(year) || !Number.isFinite(monthIdx)) {
+    return { weekdayDays: 0, weekendDays: 0 };
+  }
+  const lastCalDay = new Date(Date.UTC(year, monthIdx + 1, 0)).getUTCDate();
+  // Aligned 2026 window ends on Nov 20
+  const maxDay = ym === '2026-11' ? Math.min(20, lastCalDay) : lastCalDay;
+  let weekdayDays = 0;
+  let weekendDays = 0;
+  for (let d = 1; d <= maxDay; d += 1) {
+    const dow = new Date(Date.UTC(year, monthIdx, d)).getUTCDay();
+    if (dow === 0 || dow === 6) weekendDays += 1;
+    else weekdayDays += 1;
+  }
+  return { weekdayDays, weekendDays };
+}
+
 export function computeDailySeriesSummary(
   row: ResolvedStationRow,
   dailyProfiles: StationDailyProfilesPayload | null,
   period: string,
-  dayType: StationDemandFilterState['dayType']
+  dayType: StationDemandFilterState['dayType'],
+  summary: StationDemandSummaryPayload | null = null
 ): {
   labels: string[];
   values: (number | null)[];
@@ -419,23 +512,59 @@ export function computeDailySeriesSummary(
   const trend = dailyProfiles.monthly_trends?.[row.station.id];
   if (!trend) return null;
 
-  const seriesValues =
+  const activeIndices: number[] = [];
+  for (let i = 0; i < trend.months.length; i += 1) {
+    if (matchesPeriodMonth(trend.months[i], period)) {
+      activeIndices.push(i);
+    }
+  }
+
+  const labels = activeIndices.map((i) => trend.months[i]);
+  const rawSeries =
     dayType === 'weekday'
       ? trend.weekday_avg_daily
       : dayType === 'weekend'
-      ? trend.weekend_avg_daily
-      : trend.avg_daily;
+        ? trend.weekend_avg_daily
+        : trend.avg_daily;
+  const values = activeIndices.map((i) => rawSeries[i] ?? null);
 
-  const wdValid = trend.weekday_avg_daily.filter((v): v is number => v !== null);
-  const weValid = trend.weekend_avg_daily.filter((v): v is number => v !== null);
+  // Day-weighted average over selected months: sum(eligible trips) / sum(eligible observation days)
+  let wdTripsSum = 0;
+  let wdDaysSum = 0;
+  let weTripsSum = 0;
+  let weDaysSum = 0;
+
+  for (const idx of activeIndices) {
+    const ym = trend.months[idx];
+    const { weekdayDays, weekendDays } = getMonthDayWeights(ym, summary);
+    const wdMetric = summary?.metrics?.[ym]?.weekday?.[row.station.id];
+    const weMetric = summary?.metrics?.[ym]?.weekend?.[row.station.id];
+
+    if (summary?.metrics?.[ym]) {
+      wdTripsSum += wdMetric ? wdMetric.tot : 0;
+      wdDaysSum += weekdayDays;
+      weTripsSum += weMetric ? weMetric.tot : 0;
+      weDaysSum += weekendDays;
+    } else {
+      const wdRate = trend.weekday_avg_daily[idx];
+      const weRate = trend.weekend_avg_daily[idx];
+      if (wdRate !== null && wdRate !== undefined && weekdayDays > 0) {
+        wdTripsSum += wdRate * weekdayDays;
+        wdDaysSum += weekdayDays;
+      }
+      if (weRate !== null && weRate !== undefined && weekendDays > 0) {
+        weTripsSum += weRate * weekendDays;
+        weDaysSum += weekendDays;
+      }
+    }
+  }
+
   return {
-    labels: trend.months,
-    values: seriesValues,
+    labels,
+    values,
     mode: 'monthly',
-    weekdayAvg:
-      wdValid.length > 0 ? Math.round((wdValid.reduce((a, b) => a + b, 0) / wdValid.length) * 10) / 10 : null,
-    weekendAvg:
-      weValid.length > 0 ? Math.round((weValid.reduce((a, b) => a + b, 0) / weValid.length) * 10) / 10 : null,
+    weekdayAvg: wdDaysSum > 0 ? Math.round((wdTripsSum / wdDaysSum) * 10) / 10 : null,
+    weekendAvg: weDaysSum > 0 ? Math.round((weTripsSum / weDaysSum) * 10) / 10 : null,
   };
 }
 
@@ -521,25 +650,42 @@ export function generateStationDemandInsight(
   const topDaily = spotlight.topDailyStation;
   const topHourly = spotlight.topHourlyPeakStation;
 
-  let headline = 'No verified physical stations match the active filter combination.';
+  let headline = 'No verified station-service records match the active filter combination.';
   let detail = 'Clear search text or broaden network/service filters to inspect verified 2026 station demand.';
 
-  if (topDaily && topHourly) {
+  if (spotlight.isHourlyWindowFiltered && topDaily) {
+    headline = `${topDaily.station.name} (${topDaily.station.service_label}) leads KTMB ${spotlight.hourlyWindowLabel} demand at ${Math.round(
+      topDaily.activeWindowValue || 0
+    ).toLocaleString()} trips/day (${Math.round(
+      (topDaily.activeWindowValue || 0) * spotlight.observationDays
+    ).toLocaleString()} window trips across ${spotlight.observationDays}d).`;
+
+    detail = `Hourly-window filter covers ${spotlight.hourlySupportedCount} KTMB hourly-supported station-service records totalling ${spotlight.filteredTotalTrips.toLocaleString()} window trips (${Math.round(
+      spotlight.filteredAvgDailyTrips
+    ).toLocaleString()}/day across ${spotlight.observationDays}d). Rapid Rail daily-only records are excluded because Prasarana open data omits hourly timestamps.`;
+  } else if (spotlight.isPeakFocus && topHourly) {
+    headline = `${topHourly.station.name} (${topHourly.station.service_label}) leads KTMB peak-hour concentration at ${formatHourWindow24(
+      topHourly.peakHour
+    )} (${Math.round(topHourly.peakHourAvg || 0).toLocaleString()} trips/hr); daily total in KTMB hourly scope led by ${
+      topDaily ? `${topDaily.station.name} (${Math.round(topDaily.avgDailyTrips || 0).toLocaleString()}/day)` : '—'
+    }.`;
+
+    detail = `Peak-hour ranking covers ${spotlight.hourlySupportedCount} KTMB hourly-supported station-service records (${spotlight.filteredTotalTrips.toLocaleString()} 24h origin trips across ${spotlight.observationDays}d); ${spotlight.dailyOnlyCount} daily-only Rapid Rail records remain unranked without sub-hourly timestamps. Figures reflect observed passenger demand without inferring rolling-stock capacity.`;
+  } else if (topDaily && topHourly) {
     headline = `${topDaily.station.name} (${topDaily.station.service_label}) leads filtered daily demand at ${Math.round(
       topDaily.avgDailyTrips || 0
     ).toLocaleString()} origin trips/day; highest hourly concentration in KTMB logs occurs at ${topHourly.station.name} (${topHourly.station.service_label}) during ${formatHourWindow24(
       topHourly.peakHour
     )} (${Math.round(topHourly.peakHourAvg || 0).toLocaleString()} trips/hr).`;
 
-    detail = `Filtered scope covers ${spotlight.physicalMeasuredCount} measured physical stations totalling ${spotlight.filteredTotalTrips.toLocaleString()} trips across ${spotlight.observationDays} observation days (${spotlight.hourlySupportedCount} stations with sub-hourly KTMB timestamps; ${spotlight.dailyOnlyCount} daily-only Rapid Rail stations). These figures reflect observed passenger origin demand without inferring rolling-stock capacity or overcrowding.`;
+    detail = `Filtered scope covers ${spotlight.physicalMeasuredCount} measured station-service records totalling ${spotlight.filteredTotalTrips.toLocaleString()} trips across ${spotlight.observationDays} observation days (${spotlight.hourlySupportedCount} KTMB hourly-supported records; ${spotlight.dailyOnlyCount} daily-only Rapid Rail records). These figures reflect observed passenger origin demand without inferring rolling-stock capacity or overcrowding.`;
   } else if (topDaily) {
     headline = `${topDaily.station.name} (${topDaily.station.line}) leads Rapid Rail filtered demand at ${Math.round(
       topDaily.avgDailyTrips || 0
-    ).toLocaleString()} origin trips/day (${(topDaily.totalTrips || 0).toLocaleString()} total trips across ${
-      spotlight.observationDays
-    } days).`;
+    ).toLocaleString()} origin trips/day (${(topDaily.totalTrips || 0).toLocaleString()} total trips across ${spotlight.observationDays
+      } days).`;
 
-    detail = `All ${spotlight.dailyOnlyCount} Rapid Rail stations in view originate from full-matrix daily AFC OD aggregates (0-delta reconciled against station-to-A0 marginals; hourly timestamps are unavailable in Prasarana open data). Sub-hourly station peaks require KTMB services or future operator AFC hourly releases.`;
+    detail = `All ${spotlight.dailyOnlyCount} Rapid Rail station-service records in view originate from full-matrix daily AFC OD aggregates (0-delta reconciled against station-to-A0 marginals; hourly timestamps are unavailable in Prasarana open data). Sub-hourly station peaks require KTMB services or future operator AFC hourly releases.`;
   }
 
   const hasShahAlamScope =

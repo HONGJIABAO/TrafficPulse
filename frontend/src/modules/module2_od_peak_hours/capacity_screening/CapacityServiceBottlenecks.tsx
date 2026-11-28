@@ -1,8 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import rawSummaryData from '@/data/module2_capacity_screening/capacity_screening_summary.json';
-import rawHourlyProfilesData from '@/data/module2_capacity_screening/capacity_hourly_profiles.json';
-import rawCoverageData from '@/data/module2_capacity_screening/capacity_coverage.json';
-import rawMethodologyData from '@/data/module2_capacity_screening/capacity_methodology.json';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
 import type {
   BottleneckStatus,
@@ -39,10 +35,31 @@ import {
 import { HourlyDemandCapacityChart } from './HourlyDemandCapacityChart';
 import { StationBoardingBar } from './StationBoardingBar';
 
-const summaryData = rawSummaryData as unknown as CapacityScreeningSummarySchema;
-const hourlyData = rawHourlyProfilesData as unknown as CapacityHourlyProfilesSchema;
-const coverageData = rawCoverageData as unknown as CapacityCoverageSchema;
-const methodologyData = rawMethodologyData as unknown as CapacityMethodologySchema;
+interface LoadedCapacityDatasets {
+  summary: CapacityScreeningSummarySchema;
+  hourly: CapacityHourlyProfilesSchema;
+  coverage: CapacityCoverageSchema;
+  methodology: CapacityMethodologySchema;
+}
+
+const DEFAULT_FILTERS: ScreeningFilters = {
+  network: 'all',
+  dayProfile: 'weekday',
+  period: 'aug18_nov26_all',
+  capacityMode: 'official_2023_nominal',
+  statMode: 'max_date',
+  searchQuery: '',
+  statusFilter: 'all',
+  includeUnavailable: false,
+};
+
+const PERIOD_LABELS: Record<PeriodScope, string> = {
+  aug18_nov26_all: 'Aug 18–Nov 26, 2026',
+  '2026-11': 'Nov 1–26, 2026',
+  '2026-10': 'Oct 1–31, 2026',
+  '2026-09': 'Sep 1–30, 2026',
+  '2026-08': 'Aug 18–31, 2026',
+};
 
 const PAGE_SIZE = 12;
 
@@ -153,17 +170,10 @@ const cardStyle: React.CSSProperties = {
 };
 
 export function CapacityServiceBottlenecks() {
-  const [filters, setFilters] = useState<ScreeningFilters>({
-    network: summaryData.metadata.default_filters.network,
-    dayProfile: summaryData.metadata.default_filters.day_profile,
-    period: summaryData.metadata.default_filters.period,
-    capacityMode: summaryData.metadata.default_filters.capacity_mode,
-    statMode: summaryData.metadata.default_filters.stat_mode,
-    searchQuery: '',
-    statusFilter: 'all',
-    includeUnavailable: false,
-  });
+  const [data, setData] = useState<LoadedCapacityDatasets | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
+  const [filters, setFilters] = useState<ScreeningFilters>(DEFAULT_FILTERS);
   const [viewMode, setViewMode] = useState<ExplorerViewMode>('segment');
   const [sortField, setSortField] = useState<SortField>('loadRatio');
   const [sortDir, setSortDir] = useState<SortDirection>('desc');
@@ -172,25 +182,69 @@ export function CapacityServiceBottlenecks() {
   const [selectedSegmentIdOverride, setSelectedSegmentIdOverride] = useState<string | null>(null);
   const [showCoverageModal, setShowCoverageModal] = useState<boolean>(false);
 
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      import('@/data/module2_capacity_screening/capacity_screening_summary.json'),
+      import('@/data/module2_capacity_screening/capacity_hourly_profiles.json'),
+      import('@/data/module2_capacity_screening/capacity_coverage.json'),
+      import('@/data/module2_capacity_screening/capacity_methodology.json'),
+    ])
+      .then(([sum, hr, cov, meth]) => {
+        if (cancelled) return;
+        const summary = (sum.default || sum) as unknown as CapacityScreeningSummarySchema;
+        setData({
+          summary,
+          hourly: (hr.default || hr) as unknown as CapacityHourlyProfilesSchema,
+          coverage: (cov.default || cov) as unknown as CapacityCoverageSchema,
+          methodology: (meth.default || meth) as unknown as CapacityMethodologySchema,
+        });
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(err instanceof Error ? err.message : 'Unable to load capacity screening datasets.');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const segmentById = useMemo(
-    () => new Map<string, ScreenedSegmentRecord>(summaryData.segments.map((s) => [s.segment_id, s])),
-    []
+    () => new Map<string, ScreenedSegmentRecord>((data?.summary.segments ?? []).map((s) => [s.segment_id, s])),
+    [data]
   );
   const stationByKey = useMemo(
-    () => new Map<string, ScreenedStationRecord>(summaryData.stations.map((s) => [s.station_key, s])),
-    []
+    () => new Map<string, ScreenedStationRecord>((data?.summary.stations ?? []).map((s) => [s.station_key, s])),
+    [data]
   );
   const unavailableByKey = useMemo(
-    () => new Map<string, UnavailableStationRecord>(summaryData.unavailable_stations.map((u) => [u.station_key, u])),
-    []
+    () => new Map<string, UnavailableStationRecord>((data?.summary.unavailable_stations ?? []).map((u) => [u.station_key, u])),
+    [data]
   );
 
-  const kpis = useMemo(() => computeKpiSummary(summaryData, filters), [filters]);
+  const kpis = useMemo(() => {
+    if (!data) {
+      return {
+        peakLoadRatioPct: null,
+        peakSegmentLabel: 'Loading...',
+        peakContextLabel: 'Loading...',
+        oversubscribedCount: 0,
+        watchCount: 0,
+        totalEvaluatedCount: 0,
+        totalSegmentDeficitDays: 0,
+        maxSingleSegmentExtraTrains: 0,
+        maxExtraTrainsSegmentLabel: 'Loading...',
+        activeDaysCount: 0,
+      };
+    }
+    return computeKpiSummary(data.summary, filters);
+  }, [data, filters]);
 
   const sortedRows = useMemo(() => {
-    const raw = buildDisplayRows(summaryData, filters, viewMode);
+    if (!data) return [];
+    const raw = buildDisplayRows(data.summary, filters, viewMode);
     return sortDisplayRows(raw, sortField, sortDir);
-  }, [filters, viewMode, sortField, sortDir]);
+  }, [data, filters, viewMode, sortField, sortDir]);
 
   const totalPages = Math.max(1, Math.ceil(sortedRows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -201,6 +255,7 @@ export function CapacityServiceBottlenecks() {
 
   // Determine actively focused spotlight item cleanly
   const activeSelection = useMemo(() => {
+    if (!data) return { kind: 'empty' as const };
     const firstValid = sortedRows[0] ?? null;
     const chosenRow: DisplayTableRow | null =
       (selectedRowKey && sortedRows.find((r) => r.rowKey === selectedRowKey)) || firstValid;
@@ -232,21 +287,28 @@ export function CapacityServiceBottlenecks() {
 
     const slice = getSliceMetrics(segRecord, filters.period, filters.dayProfile);
     const evalData = evaluateSegmentMetrics(segRecord, slice, filters.statMode, filters.capacityMode);
-    const profileKey = `${segRecord.segment_id}|${filters.dayProfile}`;
-    const hourlyProfile = hourlyData.profiles[profileKey] ?? null;
+    const profileKey = `${segRecord.segment_id}|${filters.period}|${filters.dayProfile}`;
+    const hourlyProfile =
+      data.hourly.profiles[profileKey] ??
+      data.hourly.profiles[`${segRecord.segment_id}|${filters.dayProfile}`] ??
+      null;
 
     return {
       kind: 'screened' as const,
       row: chosenRow,
       station: stRecord,
       segment: segRecord,
+      slice,
       evalData,
       profileKey,
       hourlyProfile,
     };
-  }, [sortedRows, selectedRowKey, selectedSegmentIdOverride, filters, stationByKey, segmentById, unavailableByKey]);
+  }, [data, sortedRows, selectedRowKey, selectedSegmentIdOverride, filters, stationByKey, segmentById, unavailableByKey]);
 
-  const directives = useMemo(() => generateDynamicDirectives(summaryData, filters, kpis), [filters, kpis]);
+  const directives = useMemo(
+    () => (data ? generateDynamicDirectives(data.summary, filters, kpis) : []),
+    [data, filters, kpis]
+  );
 
   const updateFilter = <K extends keyof ScreeningFilters>(key: K, value: ScreeningFilters[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -278,6 +340,33 @@ export function CapacityServiceBottlenecks() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  if (loadError) {
+    return (
+      <div style={{ ...cardStyle, padding: 18, fontSize: 12, color: '#DC2626' }}>
+        Failed to load Capacity &amp; Service Bottlenecks datasets: {loadError}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div style={{ ...cardStyle, padding: 18, fontSize: 12, color: '#64748B' }}>
+        Loading Directional Capacity &amp; Service Bottlenecks telemetry…
+      </div>
+    );
+  }
+
+  const summaryData = data.summary;
+  const hourlyData = data.hourly;
+  const coverageData = data.coverage;
+  const methodologyData = data.methodology;
+  const byNetCounts = summaryData.metadata.slice_day_counts_by_net;
+  const allPeriodKey = `${filters.period}|all`;
+  const activeAllDaysCount =
+    filters.network === 'ktm_komuter_utara'
+      ? (byNetCounts?.ktm_komuter_utara?.[allPeriodKey] ?? summaryData.metadata.slice_day_counts[allPeriodKey] ?? 0)
+      : (byNetCounts?.ktm_komuter_kv?.[allPeriodKey] ?? summaryData.metadata.slice_day_counts[allPeriodKey] ?? 0);
 
   const auditKvPct = (
     coverageData.path_assignment_audit?.ktm_komuter_kv as
@@ -389,9 +478,11 @@ export function CapacityServiceBottlenecks() {
             onChange={(e) => updateFilter('dayProfile', e.target.value as DayProfileFilter)}
             style={{ width: '100%', padding: '7px 10px', borderRadius: 8, border: '1px solid #CBD5E1', fontSize: 12, background: '#FFFFFF', color: '#0F1E36' }}
           >
-            <option value="weekday">Weekday Schedule (Mon–Fri, excl. GTFS holidays)</option>
-            <option value="weekend">Weekend / Public Holiday Schedule</option>
-            <option value="all">All Calendar Days ({kpis.activeDaysCount}d)</option>
+            <option value="weekday">Weekday Schedule (Mon–Fri, excl. holidays)</option>
+            <option value="weekend">Weekend &amp; GTFS Holiday Schedule</option>
+            <option value="all">
+              All Verified Days ({filters.network === 'all' && byNetCounts ? `${byNetCounts.ktm_komuter_kv?.[allPeriodKey] ?? activeAllDaysCount}d KV / ${byNetCounts.ktm_komuter_utara?.[allPeriodKey] ?? activeAllDaysCount}d Utara` : `${activeAllDaysCount}d`})
+            </option>
           </select>
         </div>
 
@@ -436,7 +527,7 @@ export function CapacityServiceBottlenecks() {
             style={{ width: '100%', padding: '7px 10px', borderRadius: 8, border: '1px solid #CBD5E1', fontSize: 12, background: '#FFFFFF', color: '#0F1E36' }}
           >
             <option value="max_date">Max Observed Surge Date</option>
-            <option value="p90">90th Percentile High-Demand Day</option>
+            <option value="p90">P90 Representative High-Demand Day</option>
             <option value="mean">Mean Operational Day</option>
           </select>
         </div>
@@ -641,6 +732,46 @@ export function CapacityServiceBottlenecks() {
                 evalData={activeSelection.evalData}
                 gtfsInterpolated={activeSelection.segment.gtfs_interpolated_missing_stop}
               />
+
+              {activeSelection.segment.network_code === 'ktm_komuter_utara' && activeSelection.segment.sensitivity && (
+                <div
+                  style={{
+                    background: 'rgba(245, 158, 11, 0.14)',
+                    border: '1px solid rgba(251, 191, 36, 0.45)',
+                    borderRadius: 8,
+                    padding: '8px 10px',
+                    fontSize: 11,
+                    lineHeight: 1.45,
+                    color: '#FEF3C7',
+                  }}
+                >
+                  <div style={{ fontWeight: 700, color: '#FCD34D', marginBottom: 2 }}>
+                    KITS Temporal Sensitivity Band ({activeSelection.segment.sensitivity.robust_p90_gt_100 ? 'Robust >100% P90 Overload' : 'Model-Sensitive Peak'})
+                  </div>
+                  <div>
+                    Peak load spans <strong>{activeSelection.segment.sensitivity.max_lr_range[0].toFixed(1)}%–{activeSelection.segment.sensitivity.max_lr_range[1].toFixed(1)}%</strong> across forward/arrival/mixed models (P90 band: <strong>{activeSelection.segment.sensitivity.p90_lr_range[0].toFixed(1)}%–{activeSelection.segment.sensitivity.p90_lr_range[1].toFixed(1)}%</strong>; +{activeSelection.segment.sensitivity.extra_trains_range[0]}–{activeSelection.segment.sensitivity.extra_trains_range[1]} trains/hr).
+                    {activeSelection.slice?.is_kits_anomaly_peak_date && activeSelection.segment.sensitivity.excl_kits_max_lr !== null
+                      ? ` Peak date ${activeSelection.evalData.peakDate} coincides with KITS batch spike; ex-anomaly 50/50 peak = ${activeSelection.segment.sensitivity.excl_kits_max_lr.toFixed(1)}%.`
+                      : ''}
+                  </div>
+                </div>
+              )}
+
+              {activeSelection.segment.network_code === 'ktm_komuter_kv' && (
+                <div
+                  style={{
+                    background: 'rgba(59, 130, 246, 0.14)',
+                    border: '1px solid rgba(96, 165, 250, 0.35)',
+                    borderRadius: 8,
+                    padding: '7px 10px',
+                    fontSize: 11,
+                    color: '#DBEAFE',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  <strong>Reference-Timetable Screening:</strong> Evaluated against Nov 2026 published KTMB GTFS schedule (2026-11-09 Deepavali replacement holiday excluded from matched comparisons).
+                </div>
+              )}
             </>
           ) : (
             <div style={{ fontSize: 13, color: '#CBD5E1' }}>
@@ -671,11 +802,14 @@ export function CapacityServiceBottlenecks() {
             <HourlyDemandCapacityChart
               profileKey={activeSelection.profileKey}
               profile={activeSelection.hourlyProfile}
+              schedCatalog={hourlyData.sched_catalog}
               segmentLabel={`${activeSelection.segment.from_station_name} -> ${activeSelection.segment.to_station_name}`}
               networkCode={activeSelection.segment.network_code}
               capacityMode={filters.capacityMode}
               statMode={filters.statMode}
               dayProfile={filters.dayProfile}
+              period={filters.period}
+              periodLabel={PERIOD_LABELS[filters.period]}
               trainCapNom={activeSelection.segment.train_capacity_nom}
               trainCap80={activeSelection.segment.train_capacity_80}
             />
@@ -683,11 +817,14 @@ export function CapacityServiceBottlenecks() {
             <HourlyDemandCapacityChart
               profileKey="none"
               profile={null}
+              schedCatalog={hourlyData.sched_catalog}
               segmentLabel="Unavailable"
               networkCode="ktm_komuter_kv"
               capacityMode={filters.capacityMode}
               statMode={filters.statMode}
               dayProfile={filters.dayProfile}
+              period={filters.period}
+              periodLabel={PERIOD_LABELS[filters.period]}
               trainCapNom={1118}
               trainCap80={894}
             />
@@ -1074,6 +1211,12 @@ export function CapacityServiceBottlenecks() {
                   <li>Komuter Utara GTFS-window OD assigned: <strong>{auditUtaraPct ?? 'N/A'}%</strong> (daily diff = 0)</li>
                   <li>Station flow conservation error: <strong>&lt; 1e-6</strong> (`D_in - A + B == D_out`)</li>
                   <li>Calendar holiday overrides honored: Aug 25, Aug 31, Sep 16 switched to weekend schedule</li>
+                  <li>Unverified Nov 9 Deepavali holiday excluded from matched weekday &amp; KV checks (isolated in sensitivity audit)</li>
+                  {coverageData.observation_window_comparison && (
+                    <li>
+                      Panel alignment: Panel 1 ends Nov 20 (324d) vs Panel 2 full archive ending Nov 26 (330d); GTFS screening spans Aug 18–Nov 26
+                    </li>
+                  )}
                 </ul>
               </div>
 
@@ -1086,6 +1229,42 @@ export function CapacityServiceBottlenecks() {
                 </ul>
               </div>
             </div>
+
+            {coverageData.utara_temporal_sensitivity && (
+              <>
+                <h4 style={{ margin: '12px 0 6px', fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>
+                  Komuter Utara KITS Temporal-Assignment &amp; Anomaly Sensitivity Matrix
+                </h4>
+                <div style={{ overflowX: 'auto', marginBottom: 14 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+                    <thead>
+                      <tr style={{ background: '#FFFBEB', borderBottom: '2px solid #FDE68A', textAlign: 'left' }}>
+                        <th style={{ padding: 6 }}>Timing Scenario</th>
+                        <th style={{ padding: 6 }}>Matched %</th>
+                        <th style={{ padding: 6 }}>Top Segment</th>
+                        <th style={{ padding: 6 }}>Max Peak LR</th>
+                        <th style={{ padding: 6 }}>Date / Hr</th>
+                        <th style={{ padding: 6 }}>Segs &gt;100% (Max / P90 / Mean)</th>
+                        <th style={{ padding: 6 }}>Max Extra Trains</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {coverageData.utara_temporal_sensitivity.network_scenarios.map((sc) => (
+                        <tr key={sc.id} style={{ borderBottom: '1px solid #E2E8F0', background: sc.id === 'mixed_50_50_120m' ? '#F0F9FF' : undefined }}>
+                          <td style={{ padding: 6, fontWeight: sc.id === 'mixed_50_50_120m' ? 700 : 500 }}>{sc.label}</td>
+                          <td style={{ padding: 6 }}>{sc.matched_pct.toFixed(2)}%</td>
+                          <td style={{ padding: 6 }}>{sc.top_segment_label}</td>
+                          <td style={{ padding: 6, fontWeight: 700, color: '#B45309' }}>{sc.max_lr_pct.toFixed(1)}%</td>
+                          <td style={{ padding: 6 }}>{sc.max_date} {String(sc.max_hr).padStart(2, '0')}:00</td>
+                          <td style={{ padding: 6 }}>{sc.segments_gt_100_max} / {sc.segments_gt_100_p90} / {sc.segments_gt_100_mean}</td>
+                          <td style={{ padding: 6 }}>+{sc.max_extra_trains}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
 
             {/* Formulas */}
             <h4 style={{ margin: '10px 0 6px', fontSize: 13, fontWeight: 700, color: '#0F1E36' }}>

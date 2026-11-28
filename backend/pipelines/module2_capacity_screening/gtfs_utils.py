@@ -16,6 +16,34 @@ OUT_DIR = DATA_DIR / "processed"
 GTFS_WINDOW_START = "2026-08-18"
 GTFS_WINDOW_END = "2026-11-26"
 
+UNVERIFIED_HOLIDAY_EXCEPTIONS: dict[str, dict] = {
+    "2026-11-09": {
+        "name": "Deepavali Replacement Public Holiday",
+        "weekday": "Monday",
+        "affects_networks": ["ktm_komuter_kv"],
+        "notes": (
+            "Malaysian federal replacement holiday omitted from ktmb_gtfs.zip calendar_dates.txt "
+            "(which ends exceptions after 2026-09-16). Klang Valley ridership dropped to 14,870 pax "
+            "(64.9% of weekday median); excluded from KV matched scheduled comparisons and isolated in "
+            "nov09_holiday_sensitivity. Komuter Utara runs an identical 1,1,1,1,1,1,1 daily timetable "
+            "(effective 24 Jul 2026) and remains schedule-valid on 2026-11-09 (excluded from normal weekday average)."
+        ),
+    }
+}
+
+KITS_BATCH_ANOMALY_HOURS: list[tuple[str, int, str]] = [
+    (
+        "2026-11-06",
+        10,
+        "Simultaneous KITS 10:00 AM batch/transaction spike (KV 4.59x, Utara 4.89x, Intercity 3.65x vs median)",
+    ),
+    (
+        "2026-11-08",
+        1,
+        "Simultaneous KITS 01:00 AM offline settlement spike (KV 3,775 / 943.8x, Utara 2,392 / 61.3x while zero trains operate)",
+    ),
+]
+
 SERVICE_CAPACITY_CONFIG = {
     "ktm_komuter_kv": {
         "official_2023_nominal": 1118,
@@ -53,11 +81,13 @@ def iter_dates(start_str: str = GTFS_WINDOW_START, end_str: str = GTFS_WINDOW_EN
 def resolve_active_services_by_date(
     start_str: str = GTFS_WINDOW_START,
     end_str: str = GTFS_WINDOW_END,
-) -> dict[str, dict[str, str]]:
+) -> dict[str, dict]:
     """
     For each date in [start_str, end_str], resolve active GTFS service_id for each network:
       - ktm_komuter_kv: komuter_weekday or komuter_weekend (honoring calendar.txt & calendar_dates.txt)
-      - ktm_komuter_utara: komuter_utara
+      - ktm_komuter_utara: komuter_utara (identical 1,1,1,1,1,1,1 Mon-Sun/Holiday schedule since 24 Jul 2026)
+      - Distinguishes verified GTFS weekend/holiday overrides from late-2026 unverified holiday dates
+        (2026-11-09 Deepavali replacement holiday lacking a GTFS calendar_dates.txt override).
     """
     with zipfile.ZipFile(RAW_DIR / "ktmb_gtfs.zip") as zf:
         calendars = read_gtfs_table(zf, "calendar.txt")
@@ -69,7 +99,7 @@ def resolve_active_services_by_date(
         (cd["date"], cd["service_id"]): cd["exception_type"] for cd in cal_dates
     }
 
-    result: dict[str, dict[str, str]] = {}
+    result: dict[str, dict] = {}
     for d_str in iter_dates(start_str, end_str):
         d_obj = dt.date.fromisoformat(d_str)
         d_compact = d_obj.strftime("%Y%m%d")
@@ -89,12 +119,39 @@ def resolve_active_services_by_date(
         kv_sid = "komuter_weekend" if "komuter_weekend" in active else "komuter_weekday"
         assert kv_sid in active, f"No active KV service on {d_str}: {active}"
         assert "komuter_utara" in active, f"No active Komuter Utara service on {d_str}: {active}"
+
+        holiday_meta = UNVERIFIED_HOLIDAY_EXCEPTIONS.get(d_str)
+        if holiday_meta is not None:
+            day_profile = "holiday_unverified"
+        elif kv_sid == "komuter_weekend":
+            day_profile = "weekend"
+        else:
+            day_profile = "weekday"
+
         result[d_str] = {
             "ktm_komuter_kv": kv_sid,
             "ktm_komuter_utara": "komuter_utara",
-            "day_profile": "weekend" if kv_sid == "komuter_weekend" else "weekday",
+            "day_profile": day_profile,
+            "kv_matched_eligible": holiday_meta is None or ("ktm_komuter_kv" not in holiday_meta["affects_networks"]),
+            "utara_matched_eligible": holiday_meta is None or ("ktm_komuter_utara" not in holiday_meta["affects_networks"]),
+            "is_unverified_holiday": holiday_meta is not None,
         }
     return result
+
+
+def is_date_eligible_for_slice(date_info: dict, net: str, day_prof: str) -> bool:
+    """Return True if date_info participates in matched capacity evaluation for (net, day_prof)."""
+    eligible_key = "kv_matched_eligible" if net == "ktm_komuter_kv" else "utara_matched_eligible"
+    if not date_info.get(eligible_key, True):
+        return False
+    dp = date_info["day_profile"]
+    if day_prof == "all":
+        return True
+    if day_prof == "weekday":
+        return dp == "weekday"
+    if day_prof == "weekend":
+        return dp == "weekend"
+    return False
 
 
 def load_topology_and_paths() -> tuple[dict, dict[str, list[dict[str, str]]], dict[tuple[str, str, str], list[str]]]:

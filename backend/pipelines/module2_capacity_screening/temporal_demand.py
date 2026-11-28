@@ -4,14 +4,17 @@ import bisect
 import csv
 import datetime as dt
 import json
+import math
 from collections import defaultdict
 from pathlib import Path
 
 from gtfs_utils import (
     GTFS_WINDOW_END,
     GTFS_WINDOW_START,
+    KITS_BATCH_ANOMALY_HOURS,
     OUT_DIR,
     RAW_DIR,
+    SERVICE_CAPACITY_CONFIG,
     load_expanded_gtfs_trips,
     load_topology_and_paths,
     resolve_active_services_by_date,
@@ -23,12 +26,15 @@ class ItineraryPlanner:
     """
     Deterministic schedule-traversal planner along verified unique physical paths P.
 
-    Empirical KTMB data reconciliation:
+    Empirical KTMB ticketing reconciliation:
       - ktm_komuter_kv (AFC gantry tap-out timestamps): primarily arrival-aligned
         (latest itinerary arriving at destination within [t_tx - 5400, t_tx - buffer]),
         with bounded forward fallback [t_tx + buffer, t_tx + 5400] for pre-departure QR/token purchases.
-      - ktm_komuter_utara (ticket gate / origin purchase timestamps): forward origin-aligned
-        (earliest itinerary departing origin >= t_tx + buffer).
+      - ktm_komuter_utara (KITS mixed gate/counter/mobile timestamps; 20-31% of long-corridor OD rows fall in
+        arrival-only zero-departure hours): adopted baseline uses symmetric 50/50 bounded mixed matching
+        (50% arrival-aligned within 120m w/ forward fallback <= 120m + 50% forward departure-aligned <= 120m),
+        eliminating unbounded overnight (01:00 AM -> 05:30 AM) and 2h off-peak gap distortion while computing
+        full sensitivity envelopes across forward (+5m), arrival-hybrid, and transaction-hour assumptions.
     """
 
     def __init__(self, reg: dict, paths: dict[tuple[str, str, str], list[str]]):
@@ -52,14 +58,12 @@ class ItineraryPlanner:
         for key in self.departures_at_stop:
             self.departures_at_stop[key].sort(key=lambda x: x[0])
 
-        # Cache of all valid non-dominated itineraries for KV (service_id, o, d):
-        # sorted by dest_arr -> list[(dest_arr, first_dep, n_transfers, legs)]
-        self._kv_itineraries_cache: dict[
-            tuple[str, str, str],
+        self._itineraries_cache: dict[
+            tuple[str, str, str, str],
             tuple[list[tuple[int, int, int, list[tuple[int, int, int]]]], list[tuple[int, int, int, list[tuple[int, int, int]]]]],
         ] = {}
         self._hour_cache: dict[
-            tuple[str, str, str, str, int, int],
+            tuple,
             tuple[
                 dict[tuple[str, int, int], float],
                 dict[tuple[str, str, int, int], tuple[float, float, float, float]],
@@ -139,8 +143,8 @@ class ItineraryPlanner:
             return None
         return best_score[0], best_score[2], best_legs  # (dest_arr, first_dep, legs)
 
-    def _get_kv_itineraries(
-        self, sid: str, o_stop: str, d_stop: str
+    def _get_network_itineraries(
+        self, net: str, sid: str, o_stop: str, d_stop: str
     ) -> tuple[
         list[tuple[int, int, int, list[tuple[int, int, int]]]],
         list[tuple[int, int, int, list[tuple[int, int, int]]]],
@@ -151,11 +155,10 @@ class ItineraryPlanner:
           - by_arr: [(dest_arr, first_dep, transfers, legs)] sorted ascending by (dest_arr, -first_dep, transfers)
           - by_dep: [(first_dep, dest_arr, transfers, legs)] sorted ascending by (first_dep, dest_arr, transfers)
         """
-        ck = (sid, o_stop, d_stop)
-        if ck in self._kv_itineraries_cache:
-            return self._kv_itineraries_cache[ck]
+        ck = (net, sid, o_stop, d_stop)
+        if ck in self._itineraries_cache:
+            return self._itineraries_cache[ck]
 
-        net = "ktm_komuter_kv"
         path = self.paths[(net, o_stop, d_stop)]
         tlist = self.trip_list.get((net, sid), [])
         pos_maps = self.trip_stop_pos.get((net, sid), [])
@@ -180,7 +183,6 @@ class ItineraryPlanner:
                 candidates.append((arr_d, dep_o_secs, 0, [(tidx1, pos1_start, pos1_start + max_p)]))
                 continue
 
-            # Best 1-transfer option for this departure
             best_arr_1t: int | None = None
             best_legs_1t: list[tuple[int, int, int]] | None = None
             for p_k in range(1, max_p + 1):
@@ -207,11 +209,18 @@ class ItineraryPlanner:
             if best_arr_1t is not None and best_legs_1t is not None:
                 candidates.append((best_arr_1t, dep_o_secs, 1, best_legs_1t))
 
-        # Keep fastest-arrival / non-dominated options when multiple departures arrive at same instant
         by_arr = sorted(candidates, key=lambda x: (x[0], -x[1], x[2]))
         by_dep = sorted(((c[1], c[0], c[2], c[3]) for c in candidates), key=lambda x: (x[0], x[1], x[2]))
-        self._kv_itineraries_cache[ck] = (by_arr, by_dep)
+        self._itineraries_cache[ck] = (by_arr, by_dep)
         return by_arr, by_dep
+
+    def _get_kv_itineraries(
+        self, sid: str, o_stop: str, d_stop: str
+    ) -> tuple[
+        list[tuple[int, int, int, list[tuple[int, int, int]]]],
+        list[tuple[int, int, int, list[tuple[int, int, int]]]],
+    ]:
+        return self._get_network_itineraries("ktm_komuter_kv", sid, o_stop, d_stop)
 
     def _accumulate_legs(
         self,
@@ -252,14 +261,21 @@ class ItineraryPlanner:
                     sd_v[1] += w
 
     def get_hour_projection(
-        self, net: str, sid: str, orig: str, dest: str, buffer_secs: int, hour: int
+        self,
+        net: str,
+        sid: str,
+        orig: str,
+        dest: str,
+        buffer_secs: int,
+        hour: int,
+        utara_mode: str = "mixed_50_50_120m",
     ) -> tuple[
         dict[tuple[str, int, int], float],
         dict[tuple[str, str, int, int], tuple[float, float, float, float]],
         float,
         float,
     ]:
-        ckey = (net, sid, orig, dest, buffer_secs, hour)
+        ckey = (net, sid, orig, dest, buffer_secs, hour, utara_mode if net == "ktm_komuter_utara" else "kv")
         if ckey in self._hour_cache:
             return self._hour_cache[ckey]
 
@@ -267,11 +283,10 @@ class ItineraryPlanner:
         seg_weights: dict[tuple[str, int, int], float] = defaultdict(float)
         station_deltas: dict[tuple[str, str, int, int], list[float]] = defaultdict(lambda: [0.0, 0.0, 0.0, 0.0])
 
-        arr_mins = 0
-        fwd_mins = 0
+        arr_mins = 0.0
+        fwd_mins = 0.0
 
-        if net == "ktm_komuter_utara":
-            # Forward origin-aligned schedule traversal
+        if net == "ktm_komuter_utara" and utara_mode == "forward_5m_unbounded":
             m = 0
             while m < 60:
                 t_ready = hour * 3600.0 + (m + 0.5) * 60.0 + buffer_secs
@@ -285,15 +300,65 @@ class ItineraryPlanner:
                 fwd_mins += span
                 self._accumulate_legs(net, sid, legs, span / 60.0, seg_weights, station_deltas)
                 m = end_m + 1
+        elif net == "ktm_komuter_utara":
+            # Generalized bounded matching for Komuter Utara (supports mixed_50_50_120m, forward_5m_120m, arrival_120m_hybrid)
+            by_arr, by_dep = self._get_network_itineraries(net, sid, orig, dest)
+            arr_times = [x[0] for x in by_arr]
+            dep_times = [x[0] for x in by_dep]
+            win_secs = 7200
+
+            chosen_weights: dict[tuple[tuple[int, int, int], ...], float] = defaultdict(float)
+            for m in range(60):
+                t_tx = hour * 3600.0 + (m + 0.5) * 60.0
+                target_dep_min = int(t_tx + buffer_secs + 0.9999)
+                idx_d = bisect.bisect_left(dep_times, target_dep_min)
+                fwd_legs: tuple[tuple[int, int, int], ...] | None = None
+                if idx_d < len(dep_times) and (dep_times[idx_d] - t_tx) <= win_secs:
+                    fwd_legs = tuple(by_dep[idx_d][3])
+
+                target_arr_max = int(t_tx - buffer_secs)
+                idx_a = bisect.bisect_right(arr_times, target_arr_max) - 1
+                arr_legs: tuple[tuple[int, int, int], ...] | None = None
+                arr_is_direct_arr = False
+                if idx_a >= 0 and (t_tx - arr_times[idx_a]) <= win_secs:
+                    arr_legs = tuple(by_arr[idx_a][3])
+                    arr_is_direct_arr = True
+                elif fwd_legs is not None:
+                    arr_legs = fwd_legs
+
+                if utara_mode == "forward_5m_120m":
+                    if fwd_legs is not None:
+                        chosen_weights[fwd_legs] += 1.0 / 60.0
+                        fwd_mins += 1.0
+                elif utara_mode == "arrival_120m_hybrid":
+                    if arr_legs is not None:
+                        chosen_weights[arr_legs] += 1.0 / 60.0
+                        if arr_is_direct_arr:
+                            arr_mins += 1.0
+                        else:
+                            fwd_mins += 1.0
+                else:
+                    # Symmetric mixed_50_50_120m reflecting KITS mixed entry/counter/exit timestamps
+                    if arr_legs is not None:
+                        chosen_weights[arr_legs] += 0.5 / 60.0
+                        if arr_is_direct_arr:
+                            arr_mins += 0.5
+                        else:
+                            fwd_mins += 0.5
+                    if fwd_legs is not None:
+                        chosen_weights[fwd_legs] += 0.5 / 60.0
+                        fwd_mins += 0.5
+
+            for key_legs, total_w in chosen_weights.items():
+                self._accumulate_legs(net, sid, list(key_legs), total_w, seg_weights, station_deltas)
         else:
             # KV: Arrival-aligned AFC primary (latest arrival <= t_tx - buffer within 90m)
             # + bounded forward fallback (earliest departure in [t_tx + buffer, t_tx + 5400])
-            by_arr, by_dep = self._get_kv_itineraries(sid, orig, dest)
+            by_arr, by_dep = self._get_network_itineraries("ktm_komuter_kv", sid, orig, dest)
             arr_times = [x[0] for x in by_arr]
             dep_times = [x[0] for x in by_dep]
 
-            # Group identical leg plans across the 60 minutes of this hour before accumulating
-            chosen_spans: dict[tuple[tuple[int, int, int], ...], list[int]] = defaultdict(lambda: [0, 0])  # [arr_cnt, fwd_cnt]
+            chosen_spans: dict[tuple[tuple[int, int, int], ...], list[int]] = defaultdict(lambda: [0, 0])
             for m in range(60):
                 t_tx = hour * 3600.0 + (m + 0.5) * 60.0
                 target_arr_max = int(t_tx - buffer_secs)
@@ -314,10 +379,10 @@ class ItineraryPlanner:
                     key_legs = tuple(chosen_legs)
                     if is_arr_mode:
                         chosen_spans[key_legs][0] += 1
-                        arr_mins += 1
+                        arr_mins += 1.0
                     else:
                         chosen_spans[key_legs][1] += 1
-                        fwd_mins += 1
+                        fwd_mins += 1.0
 
             for key_legs, (ac, fc) in chosen_spans.items():
                 self._accumulate_legs(net, sid, list(key_legs), (ac + fc) / 60.0, seg_weights, station_deltas)
@@ -326,6 +391,206 @@ class ItineraryPlanner:
         out = (dict(seg_weights), frozen_st, arr_mins / 60.0, fwd_mins / 60.0)
         self._hour_cache[ckey] = out
         return out
+
+
+def _compute_utara_temporal_sensitivity(
+    segs_by_net: dict[str, list[dict[str, str]]],
+    paths: dict[tuple[str, str, str], list[str]],
+    active_by_date: dict[str, dict],
+    planner: ItineraryPlanner,
+    ut_cached_rows: list[tuple[str, int, str, str, int]],
+) -> dict:
+    """
+    Evaluate Komuter Utara temporal-assignment sensitivity across 6 transparent scenarios,
+    quantifying both structural bottleneck robustness and max-surge KITS assumption uncertainty.
+    """
+    net = "ktm_komuter_utara"
+    c_nom = SERVICE_CAPACITY_CONFIG[net]["official_2023_nominal"]
+    ut_segs = sorted(segs_by_net[net], key=lambda s: s["segment_id"])
+    seg_ids = [s["segment_id"] for s in ut_segs]
+    seg_labels = {s["segment_id"]: f"{s['from_station_name']} -> {s['to_station_name']}" for s in ut_segs}
+    all_dates = sorted(active_by_date)
+    n_days = len(all_dates)
+
+    # Precompute hourly scheduled train crossings for komuter_utara
+    sched_n: dict[tuple[str, str, int], int] = defaultdict(int)
+    for (n_c, sid), tlist in planner.trips_by_svc.items():
+        if n_c != net:
+            continue
+        for tr in tlist:
+            for (u, v, dep_u_secs, _, _) in tr["edges"]:
+                sched_n[(sid, f"{net}:{u}->{v}", (dep_u_secs // 3600) % 24)] += 1
+
+    anomaly_hours = {(d, h) for (d, h, _) in KITS_BATCH_ANOMALY_HOURS}
+    scenario_specs = [
+        ("mixed_50_50_120m", "Symmetric 50/50 Mixed (<=120m, +5m) [Adopted Baseline]", "mixed_50_50_120m", False),
+        ("mixed_50_50_120m_excl_kits_batch", "Symmetric 50/50 Excl. KITS Batch Spikes (Nov 6 10:00, Nov 8 01:00)", "mixed_50_50_120m", True),
+        ("forward_5m_120m", "Forward Departure-Aligned (<=120m, +5m)", "forward_5m_120m", False),
+        ("forward_5m_unbounded", "Forward Departure-Aligned (Unbounded Wait, +5m Legacy)", "forward_5m_unbounded", False),
+        ("arrival_120m_hybrid", "Arrival-Aligned Primary + Forward Fallback (<=120m, +5m)", "arrival_120m_hybrid", False),
+        ("transaction_hour_cohort", "Instantaneous Transaction Clock Hour (No Shift)", "transaction_hour_cohort", False),
+    ]
+
+    key_corridor_ids = [
+        "ktm_komuter_utara:42400->41400",
+        "ktm_komuter_utara:41400->40500",
+        "ktm_komuter_utara:43100->42400",
+        "ktm_komuter_utara:44400->44000",
+        "ktm_komuter_utara:44000->43100",
+        "ktm_komuter_utara:40500->600",
+    ]
+    corridor_results: dict[str, dict[str, dict]] = {cid: {} for cid in key_corridor_ids if cid in seg_labels}
+    per_seg_ranges: dict[str, dict[str, list[float]]] = {
+        sid_s: {"max_lr": [], "p90_lr": [], "mean_lr": [], "ext_max": []}
+        for sid_s in seg_ids
+    }
+    excl_kits_max_by_seg: dict[str, float] = {}
+    network_scenarios = []
+
+    date_cache_obj = {d: dt.date.fromisoformat(d) for d in all_dates}
+
+    for sc_id, sc_label, mode_arg, excl_batch in scenario_specs:
+        demand_dh: dict[tuple[str, int, str], float] = defaultdict(float)
+        total_pax = 0
+        matched_pax = 0.0
+
+        for d_str, hr, o_id, d_id, pax in ut_cached_rows:
+            if excl_batch and (d_str, hr) in anomaly_hours:
+                continue
+            total_pax += pax
+            svc_id = active_by_date[d_str][net]
+            d_obj = date_cache_obj[d_str]
+            if mode_arg == "transaction_hour_cohort":
+                p = paths[(net, o_id, d_id)]
+                matched_pax += pax
+                for i in range(len(p) - 1):
+                    demand_dh[(d_str, hr, f"{net}:{p[i]}->{p[i+1]}")] += pax
+            else:
+                sw, _, af, ff = planner.get_hour_projection(net, svc_id, o_id, d_id, 300, hr, utara_mode=mode_arg)
+                matched_pax += pax * (af + ff)
+                for (seg_id, day_off, cross_hr), w in sw.items():
+                    target_d = d_str if day_off == 0 else (d_obj + dt.timedelta(days=day_off)).isoformat()
+                    if target_d <= GTFS_WINDOW_END:
+                        demand_dh[(target_d, cross_hr, seg_id)] += pax * w
+
+        top_seg = ("", -1.0, "", -1, 0.0, 0)
+        segs_gt100_max = 0
+        segs_gt100_p90 = 0
+        segs_gt100_mean = 0
+        max_def_all = 0.0
+        max_ext_all = 0
+
+        for seg_id in seg_ids:
+            daily_peaks = []
+            seg_max = (-1.0, "", -1, 0.0, 0)
+            hr_sum_d = [0.0] * 24
+            hr_sum_s = [0] * 24
+            for d_str in all_dates:
+                svc_id = active_by_date[d_str][net]
+                day_best_lr = -1.0
+                for h in range(24):
+                    dem = demand_dh.get((d_str, h, seg_id), 0.0)
+                    n_tr = sched_n.get((svc_id, seg_id, h), 0)
+                    s_cap = n_tr * c_nom
+                    hr_sum_d[h] += dem
+                    hr_sum_s[h] += s_cap
+                    if s_cap > 0:
+                        lr = dem / s_cap * 100.0
+                        if lr > day_best_lr:
+                            day_best_lr = lr
+                        if lr > seg_max[0]:
+                            seg_max = (lr, d_str, h, dem, s_cap)
+                if day_best_lr >= 0:
+                    daily_peaks.append(day_best_lr)
+
+            daily_peaks.sort()
+            p90_idx = max(0, min(len(daily_peaks) - 1, math.ceil(0.90 * len(daily_peaks)) - 1)) if daily_peaks else 0
+            p90_lr = round(daily_peaks[p90_idx], 1) if daily_peaks else 0.0
+            mean_lr = round(
+                max((hr_sum_d[h] / hr_sum_s[h] * 100.0 for h in range(24) if hr_sum_s[h] > 0), default=0.0),
+                1,
+            )
+            max_lr_val = round(max(0.0, seg_max[0]), 1)
+            def_max = max(0.0, seg_max[3] - seg_max[4])
+            ext_max = math.ceil((def_max - 1e-9) / c_nom) if def_max > 1e-6 else 0
+
+            if max_lr_val > 100.0:
+                segs_gt100_max += 1
+            if p90_lr > 100.0:
+                segs_gt100_p90 += 1
+            if mean_lr > 100.0:
+                segs_gt100_mean += 1
+            if max_lr_val > top_seg[1]:
+                top_seg = (seg_id, max_lr_val, seg_max[1], seg_max[2], def_max, ext_max)
+            max_def_all = max(max_def_all, def_max)
+            max_ext_all = max(max_ext_all, ext_max)
+
+            if sc_id != "mixed_50_50_120m_excl_kits_batch" and sc_id != "transaction_hour_cohort":
+                per_seg_ranges[seg_id]["max_lr"].append(max_lr_val)
+                per_seg_ranges[seg_id]["p90_lr"].append(p90_lr)
+                per_seg_ranges[seg_id]["mean_lr"].append(mean_lr)
+                per_seg_ranges[seg_id]["ext_max"].append(float(ext_max))
+            if sc_id == "mixed_50_50_120m_excl_kits_batch":
+                excl_kits_max_by_seg[seg_id] = max_lr_val
+                per_seg_ranges[seg_id]["max_lr"].append(max_lr_val)
+
+            if seg_id in corridor_results:
+                corridor_results[seg_id][sc_id] = {
+                    "max_lr_pct": max_lr_val,
+                    "max_date": seg_max[1],
+                    "max_hr": seg_max[2],
+                    "p90_lr_pct": p90_lr,
+                    "mean_lr_pct": mean_lr,
+                    "extra_trains_max": ext_max,
+                }
+
+        network_scenarios.append(
+            {
+                "id": sc_id,
+                "label": sc_label,
+                "assigned_pax": total_pax,
+                "matched_pax": round(matched_pax, 1),
+                "matched_pct": round(matched_pax / max(total_pax, 1) * 100.0, 2),
+                "unmatched_pax": round(total_pax - matched_pax, 1),
+                "top_segment_id": top_seg[0],
+                "top_segment_label": seg_labels.get(top_seg[0], top_seg[0]),
+                "max_lr_pct": top_seg[1],
+                "max_date": top_seg[2],
+                "max_hr": top_seg[3],
+                "max_deficit": round(max_def_all, 1),
+                "max_extra_trains": max_ext_all,
+                "segments_gt_100_max": segs_gt100_max,
+                "segments_gt_100_p90": segs_gt100_p90,
+                "segments_gt_100_mean": segs_gt100_mean,
+            }
+        )
+
+    per_seg_summary = {}
+    for seg_id in seg_ids:
+        r = per_seg_ranges[seg_id]
+        per_seg_summary[seg_id] = {
+            "max_lr_range": [min(r["max_lr"]), max(r["max_lr"])],
+            "p90_lr_range": [min(r["p90_lr"]), max(r["p90_lr"])],
+            "mean_lr_range": [min(r["mean_lr"]), max(r["mean_lr"])],
+            "extra_trains_range": [int(min(r["ext_max"])), int(max(r["ext_max"]))],
+            "excl_kits_max_lr": excl_kits_max_by_seg.get(seg_id),
+            "robust_p90_gt_100": min(r["p90_lr"]) > 100.0,
+            "robust_mean_gt_100": min(r["mean_lr"]) > 100.0,
+        }
+
+    out = {
+        "gtfs_window": f"{GTFS_WINDOW_START}..{GTFS_WINDOW_END}",
+        "days_evaluated": n_days,
+        "kits_batch_anomaly_hours": [{"date": d, "hour": h, "note": n} for d, h, n in KITS_BATCH_ANOMALY_HOURS],
+        "network_scenarios": network_scenarios,
+        "corridor_scenarios": {
+            cid: {"label": seg_labels[cid], "scenarios": corridor_results[cid]}
+            for cid in corridor_results
+        },
+        "per_segment": per_seg_summary,
+    }
+    (OUT_DIR / "utara_temporal_sensitivity.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
+    return out
 
 
 def compute_temporal_demand() -> dict:
@@ -356,6 +621,8 @@ def compute_temporal_demand() -> dict:
     excl_buckets = reg["excluded_station_buckets"]
     station_meta = reg["stations"]
 
+    ut_cached_rows: list[tuple[str, int, str, str, int]] = []
+
     for net, csv_name in datasets:
         csv_map = reg["csv_to_stop_id"][net]
         pair_cache: dict[tuple[str, str], tuple[str, str | None, str | None]] = {}
@@ -363,7 +630,7 @@ def compute_temporal_demand() -> dict:
 
         with (RAW_DIR / csv_name).open("r", encoding="utf-8-sig", newline="") as f:
             for r in csv.DictReader(f):
-                d_str = r["date"]
+                d_str = r["date"][:10]
                 if not (GTFS_WINDOW_START <= d_str <= GTFS_WINDOW_END):
                     continue
                 orig, dest = r["origin"], r["destination"]
@@ -379,6 +646,8 @@ def compute_temporal_demand() -> dict:
                 pax = int(float(r["ridership"]))
                 hr = int(r["time"].split(":")[0])
                 total_assigned_win_pax[net] += pax
+                if net == "ktm_komuter_utara":
+                    ut_cached_rows.append((d_str, hr, o_id, d_id, pax))
 
                 p = paths[(net, o_id, d_id)]
                 for i in range(len(p) - 1):
@@ -478,6 +747,8 @@ def compute_temporal_demand() -> dict:
     }
     (OUT_DIR / "station_flow_events.json").write_text(json.dumps(station_flow_dump), encoding="utf-8")
 
+    ut_sensitivity = _compute_utara_temporal_sensitivity(segs_by_net, paths, active_by_date, planner, ut_cached_rows)
+
     summary = {
         "gtfs_window": f"{GTFS_WINDOW_START}..{GTFS_WINDOW_END}",
         "total_assigned_window_pax": dict(total_assigned_win_pax),
@@ -491,6 +762,8 @@ def compute_temporal_demand() -> dict:
         },
         "out_of_window_midnight_spill_base_pax": {k: round(v, 2) for k, v in out_of_window_spill_base.items()},
         "segment_demand_rows": len(seg_demand),
+        "utara_primary_model": "mixed_50_50_120m",
+        "utara_sensitivity_scenarios": ut_sensitivity["network_scenarios"],
     }
     (OUT_DIR / "temporal_demand_audit.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print("Backend C Updated Summary:", json.dumps(summary, indent=2))

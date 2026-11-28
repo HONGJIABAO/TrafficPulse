@@ -11,6 +11,7 @@ from gtfs_utils import (
     GTFS_WINDOW_START,
     OUT_DIR,
     SERVICE_CAPACITY_CONFIG,
+    is_date_eligible_for_slice,
     load_topology_and_paths,
     resolve_active_services_by_date,
 )
@@ -60,6 +61,8 @@ def compute_capacity_gaps_and_boarding() -> dict:
     gap_path = OUT_DIR / "potential_capacity_gap.csv"
     e_stats = {
         "rows": 0,
+        "verified_matched_rows": 0,
+        "unverified_holiday_kv_excluded_rows": 0,
         "deficit_rows_nominal_base": 0,
         "deficit_rows_80pct_base": 0,
         "no_service_with_demand_rows": 0,
@@ -104,6 +107,11 @@ def compute_capacity_gaps_and_boarding() -> dict:
             c_nom = cfg["official_2023_nominal"]
             c_80 = cfg["planning_sensitivity_80pct"]
             n_tr, _, s_nom, _, s_80, n_int = cap_map.get(key, (0, c_nom, 0, c_80, 0, 0))
+            is_verified_matched = is_date_eligible_for_slice(active_by_date[d_str], net, "all")
+            if is_verified_matched:
+                e_stats["verified_matched_rows"] += 1
+            else:
+                e_stats["unverified_holiday_kv_excluded_rows"] += 1
 
             if s_nom > 0:
                 lr_nom = round(d_base / s_nom * 100.0, 1)
@@ -112,24 +120,30 @@ def compute_capacity_gaps_and_boarding() -> dict:
                     ext_nom = math.ceil((def_nom - 1e-9) / c_nom)
                     ext_check = max(0, math.ceil((d_base - 1e-9) / c_nom) - n_tr)
                     assert ext_nom == ext_check, f"Extra train formula mismatch: {ext_nom} vs {ext_check} on {key}"
-                    status = "deficit"
-                    e_stats["deficit_rows_nominal_base"] += 1
+                    status = "deficit" if is_verified_matched else "unverified_holiday_schedule"
+                    if is_verified_matched:
+                        e_stats["deficit_rows_nominal_base"] += 1
                 else:
                     ext_nom = 0
-                    status = "watch" if lr_nom >= 80.0 else "within_capacity"
+                    if not is_verified_matched:
+                        status = "unverified_holiday_schedule"
+                    else:
+                        status = "watch" if lr_nom >= 80.0 else "within_capacity"
 
                 lr_80 = round(d_base / s_80 * 100.0, 1)
                 def_80 = max(0.0, d_base - s_80)
                 if def_80 > 1e-6:
                     ext_80 = math.ceil((def_80 - 1e-9) / c_80)
-                    e_stats["deficit_rows_80pct_base"] += 1
+                    if is_verified_matched:
+                        e_stats["deficit_rows_80pct_base"] += 1
                 else:
                     ext_80 = 0
 
-                if lr_nom > e_stats["max_load_ratio_nominal_base"]:
-                    e_stats["max_load_ratio_nominal_base"] = lr_nom
-                if ext_nom > e_stats["max_extra_trains_nominal_base"]:
-                    e_stats["max_extra_trains_nominal_base"] = ext_nom
+                if is_verified_matched:
+                    if lr_nom > e_stats["max_load_ratio_nominal_base"]:
+                        e_stats["max_load_ratio_nominal_base"] = lr_nom
+                    if ext_nom > e_stats["max_extra_trains_nominal_base"]:
+                        e_stats["max_extra_trains_nominal_base"] = ext_nom
             else:
                 lr_nom = None
                 def_nom = None
@@ -139,7 +153,7 @@ def compute_capacity_gaps_and_boarding() -> dict:
                 ext_80 = None
                 if d_base > 1e-6 or d_tx > 1e-6:
                     status = "no_scheduled_service_in_hour"
-                    if d_base > 1e-6:
+                    if d_base > 1e-6 and is_verified_matched:
                         e_stats["no_service_with_demand_rows"] += 1
                 else:
                     status = "no_service_no_demand"

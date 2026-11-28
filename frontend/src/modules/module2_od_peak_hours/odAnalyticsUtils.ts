@@ -320,11 +320,15 @@ export interface ActiveDatasetResult {
   rapidRailCoverageNote: string | null;
   hourlyCoverageNote: string;
   hourlySupported: boolean;
-  // Network totals (exact for Komuter/Intercity; top-20 sample disclosed for Rapid Rail)
+  // Network totals (physical station-to-station OD; source totals & excluded admin counts preserved)
   networkTotalTrips: number | null;
   networkTotalIsExact: boolean;
   networkAvgDailyTrips: number | null;
   uniqueOdCorridorsCount: number | null;
+  sourceReportedTotalTrips: number | null;
+  excludedAdminTrips: number;
+  excludedAdminPairs: number;
+  zeroRidershipPairsDisclosed: number;
   weekdayTotalTrips: number | null;
   weekendTotalTrips: number | null;
   weekdayAvgDailyTrips: number | null;
@@ -453,6 +457,10 @@ export function selectActiveDataset(
       networkTotalIsExact: true,
       networkAvgDailyTrips: 0,
       uniqueOdCorridorsCount: 0,
+      sourceReportedTotalTrips: 0,
+      excludedAdminTrips: 0,
+      excludedAdminPairs: 0,
+      zeroRidershipPairsDisclosed: 0,
       weekdayTotalTrips: 0,
       weekendTotalTrips: 0,
       weekdayAvgDailyTrips: 0,
@@ -494,6 +502,10 @@ export function selectActiveDataset(
       networkTotalIsExact: true,
       networkAvgDailyTrips: 0,
       uniqueOdCorridorsCount: 0,
+      sourceReportedTotalTrips: 0,
+      excludedAdminTrips: 0,
+      excludedAdminPairs: 0,
+      zeroRidershipPairsDisclosed: 0,
       weekdayTotalTrips: 0,
       weekendTotalTrips: 0,
       weekdayAvgDailyTrips: 0,
@@ -533,6 +545,10 @@ export function selectActiveDataset(
       networkTotalIsExact: false,
       networkAvgDailyTrips: null,
       uniqueOdCorridorsCount: null,
+      sourceReportedTotalTrips: null,
+      excludedAdminTrips: 0,
+      excludedAdminPairs: 0,
+      zeroRidershipPairsDisclosed: 0,
       weekdayTotalTrips: null,
       weekendTotalTrips: null,
       weekdayAvgDailyTrips: null,
@@ -568,6 +584,18 @@ export function selectActiveDataset(
     if (dayType === 'weekday') return mSummary.unique_od_weekday;
     if (dayType === 'weekend') return mSummary.unique_od_weekend;
     return mSummary.unique_od_all;
+  };
+
+  const getModeExcludedAdminTrips = (mSummary: typeof periodSource.komuter): number => {
+    if (dayType === 'weekday') {
+      const src = mSummary.source_reported_weekday_trips ?? mSummary.weekday_trips;
+      return Math.max(0, src - mSummary.weekday_trips);
+    }
+    if (dayType === 'weekend') {
+      const src = mSummary.source_reported_weekend_trips ?? mSummary.weekend_trips;
+      return Math.max(0, src - mSummary.weekend_trips);
+    }
+    return mSummary.excluded_admin_trips ?? 0;
   };
 
   const buildFlowsForMode = (
@@ -643,7 +671,7 @@ export function selectActiveDataset(
       ...buildFlowsForMode(
         periodSource.intercity.top_od[dayType] || [],
         'intercity',
-        'KTM Intercity & ETS',
+        'KTM Intercity',
         'Interstate Long-Distance',
         activeDaysDenominator
       )
@@ -659,17 +687,23 @@ export function selectActiveDataset(
   let uniqueOdCorridorsCount: number | null = 0;
   let weekdayTotalTrips: number | null = 0;
   let weekendTotalTrips: number | null = 0;
+  let excludedAdminTrips = 0;
+  let excludedAdminPairs = 0;
 
   if (mode === 'komuter') {
     networkTotalTrips = getModeTripsForDayType(periodSource.komuter);
     uniqueOdCorridorsCount = getModeUniqueOdCount(periodSource.komuter);
     weekdayTotalTrips = periodSource.komuter.weekday_trips;
     weekendTotalTrips = periodSource.komuter.weekend_trips;
+    excludedAdminTrips = getModeExcludedAdminTrips(periodSource.komuter);
+    excludedAdminPairs = periodSource.komuter.excluded_admin_pairs ?? 0;
   } else if (mode === 'intercity') {
     networkTotalTrips = getModeTripsForDayType(periodSource.intercity);
     uniqueOdCorridorsCount = getModeUniqueOdCount(periodSource.intercity);
     weekdayTotalTrips = periodSource.intercity.weekday_trips;
     weekendTotalTrips = periodSource.intercity.weekend_trips;
+    excludedAdminTrips = getModeExcludedAdminTrips(periodSource.intercity);
+    excludedAdminPairs = periodSource.intercity.excluded_admin_pairs ?? 0;
   } else if (mode === 'rapid_rail') {
     if (periodSource.rapid_rail) {
       networkTotalIsExact = true;
@@ -685,6 +719,12 @@ export function selectActiveDataset(
       weekendTotalTrips = null;
     }
   } else {
+    excludedAdminTrips =
+      getModeExcludedAdminTrips(periodSource.komuter) +
+      getModeExcludedAdminTrips(periodSource.intercity);
+    excludedAdminPairs =
+      (periodSource.komuter.excluded_admin_pairs ?? 0) +
+      (periodSource.intercity.excluded_admin_pairs ?? 0);
     if (periodSource.rapid_rail) {
       networkTotalIsExact = true;
       networkTotalTrips =
@@ -722,6 +762,13 @@ export function selectActiveDataset(
       weekendTotalTrips = periodSource.komuter.weekend_trips + periodSource.intercity.weekend_trips;
     }
   }
+
+  const sourceReportedTotalTrips =
+    networkTotalTrips !== null ? networkTotalTrips + excludedAdminTrips : null;
+  const zeroRidershipPairsDisclosed =
+    includeRapidRail && timeRange === '12m' && !timelineMonthKey && dayType === 'all'
+      ? odData.metadata?.data_quality?.rapid_rail_2026?.zero_ridership_pairs ?? 0
+      : 0;
 
   const activeDistanceStats: DistanceStats[] = [];
   if (includeRapidRail && periodSource.rapid_rail?.distance_stats?.[dayType]) {
@@ -764,11 +811,11 @@ export function selectActiveDataset(
   if (mode === 'komuter') {
     heatmapPoints = periodSource.komuter.heatmap?.[dayType] || [];
     wdVsWe = periodSource.komuter.weekday_vs_weekend || wdVsWe;
-    hourlyCoverageNote = `KTM Komuter (${periodSource.date_range})`;
+    hourlyCoverageNote = `KTM Komuter (Klang Valley · ${periodSource.date_range})`;
   } else if (mode === 'intercity') {
     heatmapPoints = periodSource.intercity.heatmap?.[dayType] || [];
     wdVsWe = periodSource.intercity.weekday_vs_weekend || wdVsWe;
-    hourlyCoverageNote = `KTM Intercity & ETS (${periodSource.date_range})`;
+    hourlyCoverageNote = `KTM Intercity (${periodSource.date_range} · Excl. ETS & Shuttle Tebrau)`;
   } else if (mode === 'all') {
     const map = new Map<string, number>();
     (periodSource.komuter.heatmap?.[dayType] || []).forEach((p) => {
@@ -797,7 +844,7 @@ export function selectActiveDataset(
       ),
     };
     hourlyCoverageNote =
-      'KTM Komuter & Intercity hourly logs (Rapid Rail excluded: daily OD aggregates only)';
+      'KTM Komuter (KV) & KTM Intercity hourly logs (Rapid Rail daily-only; ETS/Komuter Utara/Shuttle Tebrau in Panel 1)';
   } else {
     hourlyCoverageNote = 'Unavailable for Rapid Rail (publishes daily OD aggregates only).';
   }
@@ -857,6 +904,10 @@ export function selectActiveDataset(
     networkTotalIsExact,
     networkAvgDailyTrips,
     uniqueOdCorridorsCount,
+    sourceReportedTotalTrips,
+    excludedAdminTrips,
+    excludedAdminPairs,
+    zeroRidershipPairsDisclosed,
     weekdayTotalTrips,
     weekendTotalTrips,
     weekdayAvgDailyTrips,
@@ -908,7 +959,7 @@ export function generateDynamicInsights(
 
   // Insight 2: Midday Off-Peak vs Peak Contrast (SDG 11)
   let middayObs = 'Midday hourly comparison unavailable when Rapid Rail daily-only mode is selected.';
-  let middayAction = 'Switch to KTM Komuter or All Rail Modes to assess hourly peak-to-midday spread.';
+  let middayAction = 'Switch to KTM Komuter (KV), KTM Intercity, or All Included OD Services to assess hourly peak-to-midday spread.';
   if (peak.hasData && peak.middayLull && peak.busiestHour) {
     middayObs = `Midday demand at 12:00 PM averages ${peak.middayLull.noonTrips.toLocaleString()} trips/hr (${peak.middayLull.avgPerHour.toLocaleString()}/hr across 12–2 PM), representing a ${peak.middayLull.dropVsBusiestPct}% reduction relative to the busiest hour (${peak.busiestHour.avgTrips.toLocaleString()}/hr).`;
     middayAction =
@@ -935,16 +986,21 @@ export function generateDynamicInsights(
 
     const modeScopeLabel =
       mode === 'intercity'
-        ? 'Intercity & ETS'
+        ? 'KTM Intercity'
         : mode === 'komuter'
-        ? 'KTM Komuter'
+        ? 'KTM Komuter (Klang Valley)'
         : mode === 'rapid_rail'
         ? 'Rapid Rail daily OD'
         : dataset.rapidRailCoverageNote
-        ? 'Observed KTMB'
-        : 'Combined Rail (Rapid Rail + KTMB)';
+        ? 'Observed KTMB (Komuter KV & Intercity)'
+        : 'All Included OD Services (Rapid Rail, KTM Komuter KV & Intercity)';
 
-    wdWeObs = `${modeScopeLabel} telemetry across ${dataset.weekdayDays} weekdays vs ${dataset.weekendDays} weekends shows ${comparisonPhrase} (${Math.round(dataset.weekdayAvgDailyTrips).toLocaleString()} vs ${Math.round(dataset.weekendAvgDailyTrips).toLocaleString()} trips/day).${peakCompare}`;
+    const adminNote =
+      dataset.excludedAdminTrips > 0
+        ? ` Physical station OD flows exclude ${dataset.excludedAdminTrips.toLocaleString()} non-physical Penalty/Unknown admin trips.`
+        : '';
+
+    wdWeObs = `${modeScopeLabel} telemetry across ${dataset.weekdayDays} weekdays vs ${dataset.weekendDays} weekends shows ${comparisonPhrase} (${Math.round(dataset.weekdayAvgDailyTrips).toLocaleString()} vs ${Math.round(dataset.weekendAvgDailyTrips).toLocaleString()} trips/day).${peakCompare}${adminNote}`;
     wdWeAction =
       dayType === 'weekend'
         ? 'Synchronise feeder bus transfers and station retail concourse staffing with observed midday-afternoon weekend demand.'

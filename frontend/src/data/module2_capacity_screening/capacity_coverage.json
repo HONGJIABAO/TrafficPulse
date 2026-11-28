@@ -2,25 +2,25 @@
   "feasibility_matrix": [
     {
       "service_name": "KTM Komuter Klang Valley (Seremban & Port Klang Lines)",
-      "od_granularity": "Hourly OD (`komuter_2026.csv`, AFC tap-out timestamps; 100% full file)",
-      "timetable_coverage": "Full trip stop_times (`KC05_KB18`, `KA15_KD19`) active `2026-08-18..2026-12-12`; matches Nov 10 & 14 KVDT2 PDFs",
+      "od_granularity": "Hourly OD (`komuter_2026.csv`, AFC tap-out timestamps; 100% full file up to 2026-11-26)",
+      "timetable_coverage": "Reference-Timetable Scenario vs published Nov 2026 GTFS (`KC05_KB18`, `KA15_KD19` active `2026-08-18..2026-12-12`; matches Nov 10/14 BC-PS & Nov 23/28-29 TM-PK RIDT PDFs)",
       "capacity_reference": "6-car SCS: 1,118 pax (Seated & Standing, ETS-REDCARD p.3) + 894 comfort sensitivity",
-      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 101 days)",
+      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 100 matched days excl. unverified 2026-11-09 Deepavali holiday)",
       "station_boarding_screening": "Supported on 55 non-junction stations; fallback_downstream_segment at Putra & KL Sentral Y-junctions",
-      "status_and_reason": "ELIGIBLE FULL \u2014 `Segambut Utara` & `Segambut 2` (absent from GTFS stops.txt), `Penalty`/`Unknown`, and Shuttle Selatan gate sales excluded transparently."
+      "status_and_reason": "ELIGIBLE REFERENCE SCENARIO \u2014 Exact matched schedule across Nov 10-26, reference timetable baseline for Aug 18-Nov 9; `Segambut Utara` & `Segambut 2`, `Penalty`/`Unknown`, Shuttle Selatan, and 2026-11-09 unverified holiday excluded cleanly."
     },
     {
       "service_name": "KTM Komuter Utara (Butterworth - Padang Besar & Ipoh Lines)",
-      "od_granularity": "Hourly OD (`komuter_utara_2026.csv`, origin gate/ticket timestamps; 100% full file)",
-      "timetable_coverage": "Full trip stop_times (`100_47300`, `100_9000`) daily active `2026-08-18..2026-12-12`",
+      "od_granularity": "Hourly OD (`komuter_utara_2026.csv`, KITS transaction timestamps; 20-31% of long-corridor OD in arrival-only hours)",
+      "timetable_coverage": "Verified constant daily timetable (`100_47300`, `100_9000`, `1,1,1,1,1,1,1`) identical to KTMB 24 Jul 2026 PDF across all 101 days",
       "capacity_reference": "3-car EMU: 400 pax (Seated & Standing, ETS-REDCARD p.3) + 320 comfort sensitivity",
-      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 101 days)",
+      "hourly_segment_screening": "Supported (`2026-08-18..2026-11-26`, 101 operational days; 69 normal non-holiday weekdays)",
       "station_boarding_screening": "Supported on 22 non-junction stations; fallback_downstream_segment at Bukit Mertajam junction",
-      "status_and_reason": "ELIGIBLE FULL \u2014 Strong Deepavali/weekend single-train load peaks verified (up to 427.3% vs 400-pax 3-car EMU)."
+      "status_and_reason": "ELIGIBLE W/ TEMPORAL SENSITIVITY \u2014 Structural >100% corridor overload robust across all temporal models (adopted 50/50 mixed peak 280.4% vs 253.0% excl. Nov 6/8 KITS batch spikes; full sensitivity band exposed)."
     },
     {
       "service_name": "KTM ETS (Padang Besar - Gemas / JB Sentral)",
-      "od_granularity": "Hourly OD (`ets_2026.csv`; 5.80M trips full 2026)",
+      "od_granularity": "Hourly OD (`ets_2026.csv`; 5.80M trips up to 2026-11-26)",
       "timetable_coverage": "Full GTFS stop_times (`ETS` 93 trips/day variable skip-stop)",
       "capacity_reference": "6-car ETS: 315 pax (Seated only, ETS-REDCARD p.3; ETS1 vs ETS2 mixed)",
       "hourly_segment_screening": "Unavailable (Demand only / Capacity withheld)",
@@ -29,7 +29,7 @@
     },
     {
       "service_name": "KTM Intercity (Shuttle Timur & Ekspres Rakyat Timuran)",
-      "od_granularity": "Hourly OD (`intercity_2026.csv` pools SH + ERT; 0.98M trips)",
+      "od_granularity": "Hourly OD (`intercity_2026.csv` pools SH + ERT; 0.98M trips up to 2026-11-26)",
       "timetable_coverage": "GTFS stop_times (`SH` + `ERT`, overnight 24:00+ spans)",
       "capacity_reference": "4-car DMU: 198 pax Seated-only (applies to SH only; ERT loco-hauled unverified)",
       "hourly_segment_screening": "Unavailable",
@@ -38,7 +38,7 @@
     },
     {
       "service_name": "KTM Shuttle Tebrau (JB Sentral - Woodlands CIQ)",
-      "od_granularity": "Hourly OD (`shuttle_tebrau_2026.csv`; 2.83M trips)",
+      "od_granularity": "Hourly OD (`shuttle_tebrau_2026.csv`; 2.83M trips up to 2026-11-26)",
       "timetable_coverage": "GTFS stop_times (`ST`, 31 trips/day)",
       "capacity_reference": "Not documented in ETS-REDCARD.pdf",
       "hourly_segment_screening": "Unavailable",
@@ -47,7 +47,7 @@
     },
     {
       "service_name": "Prasarana Rapid Rail (LRT / MRT / Monorail / BRT)",
-      "od_granularity": "Daily OD ONLY (`rapidrail_2026_daily.csv`, 601.4M total incl. A0 rows)",
+      "od_granularity": "Daily OD ONLY (`rapidrail_2026_daily.csv` up to 2026-11-26; A0 rows excluded from station sums)",
       "timetable_coverage": "Frequency-based GTFS (`frequencies.txt`, no individual trip stop_times; generic weekday expired 2026-03-31)",
       "capacity_reference": "Mixed 2/4/6-car automated fleets without per-trip assignment",
       "hourly_segment_screening": "Unavailable (Daily OD only; hourly unavailable)",
@@ -56,28 +56,1444 @@
     }
   ],
   "date_window_disclosure": {
-    "active_comparison_window": "2026-08-18 to 2026-11-26 (101 days)",
+    "active_comparison_window": "2026-08-18 to 2026-11-26 (101 calendar days; 100 matched KV days excl. 2026-11-09, 101 operational Utara days)",
     "excluded_pre_gtfs_window": "2026-01-01 to 2026-08-17 (229 days excluded from capacity deficit calculations because active ktmb_gtfs.zip calendar starts 2026-08-18)",
     "gtfs_calendar_exceptions_honored": [
       {
         "date": "2026-08-25",
-        "reason": "KTMB GTFS calendar_dates override -> komuter_weekend schedule"
+        "reason": "Maulidur Rasul \u2014 KTMB GTFS calendar_dates override -> komuter_weekend schedule (excluded from normal weekday slice)"
       },
       {
         "date": "2026-08-31",
-        "reason": "Hari Merdeka override -> komuter_weekend schedule"
+        "reason": "Hari Merdeka \u2014 KTMB GTFS calendar_dates override -> komuter_weekend schedule (excluded from normal weekday slice)"
       },
       {
         "date": "2026-09-16",
-        "reason": "Malaysia Day override -> komuter_weekend schedule"
+        "reason": "Malaysia Day \u2014 KTMB GTFS calendar_dates override -> komuter_weekend schedule (excluded from normal weekday slice)"
+      }
+    ],
+    "unverified_holiday_exceptions": [
+      {
+        "date": "2026-11-09",
+        "name": "Deepavali Replacement Public Holiday",
+        "treatment": "Excluded from matched KV comparisons and from normal weekday slice across both networks; isolated in nov09_holiday_sensitivity",
+        "notes": "Malaysian federal replacement holiday omitted from ktmb_gtfs.zip calendar_dates.txt (which ends exceptions after 2026-09-16). Klang Valley ridership dropped to 14,870 pax (64.9% of weekday median); excluded from KV matched scheduled comparisons and isolated in nov09_holiday_sensitivity. Komuter Utara runs an identical 1,1,1,1,1,1,1 daily timetable (effective 24 Jul 2026) and remains schedule-valid on 2026-11-09 (excluded from normal weekday average)."
       }
     ],
     "additional_forensic_disclosures": [
-      "KVDT2 Closure (FAQ_KVDT_2.pdf): Salak Selatan-Seremban single-line works from 2026-04-18 to 2026-12-31 limit Seremban Line through-trips to 5 weekday peak pairs (2 weekend), matching Nov 10 & Nov 14 official PDFs trip-for-trip.",
-      "GTFS Southbound Stop Omission: ktmb_gtfs.zip omits southbound KA15_KD19 stop_times at Kuala Kubu Bharu (16100) and Rasa (16300) despite 121,059 southbound riders. Topology reconstructs symmetric physical track traversal via proportional interpolation (+13m/+18m of 22m run) and flags those segments transparently.",
-      "Late-2026 Holiday Calendar Note: ktmb_gtfs.zip calendar_dates.txt ends exceptions after 2026-09-16; Deepavali replacement holiday (2026-11-09) has no GTFS override row.",
-      "Segambut Utara Observation: 86,501 Komuter trips reference Segambut Utara (spiking May-Nov 2026), absent from ktmb_gtfs.zip stops.txt; cleanly flagged as unverified GTFS stop rather than silently dropped or guessed."
+      "KV Reference-Timetable Scope: ktmb_gtfs.zip publishes November 2026 KV schedules (matching BC-PS Nov 10/14 + TM-PK Nov 23/28-29 RIDT works) backdated to 2026-08-18 in calendar.txt. KV screening strictly represents a Reference-Timetable Scenario (exact timetable match Nov 10-26; indicative baseline Aug 18-Nov 9), whereas Komuter Utara matches KTMB's continuous 24 Jul 2026 timetable identically across all 101 days.",
+      "Komuter Utara KITS Timestamp Sensitivity & Batch Anomalies: Empirical audits confirm 20-31% of long-distance Utara corridor OD flows appear in arrival-only zero-departure hours and reveal system-wide KITS batch flushes on 2026-11-06 10:00 (KV 4.59x, Utara 4.89x) and 2026-11-08 01:00 AM (KV 3,775 / 943.8x, Utara 2,392 / 61.3x while zero trains operate). Adopted symmetric 50/50 bounded mixed matching bounds multi-hour drift; all 6 temporal scenarios are disclosed.",
+      "KVDT2 Closure (FAQ_KVDT_2.pdf): Salak Selatan-Seremban single-line works from 2026-04-18 to 2026-12-31 limit Seremban Line through-trips to 5 weekday peak pairs (2 weekend).",
+      "GTFS Southbound Stop Omission: ktmb_gtfs.zip omits southbound KA15_KD19 stop_times at Kuala Kubu Bharu (16100) and Rasa (16300); topology reconstructs symmetric track traversal via proportional interpolation (+13m/+18m of 22m run) and flags affected segments.",
+      "Late-2026 Holiday Calendar Exclusion: ktmb_gtfs.zip calendar_dates.txt ends exceptions after 2026-09-16; Deepavali replacement holiday (2026-11-09, KV 14,870 pax = 64.9% weekday median) lacks a GTFS override and is excluded from matched weekday/all comparisons.",
+      "Segambut Utara & Window Alignment Disclosure: Panel 1 Station Demand covers 2026-01-01..2026-11-20 (324d), whereas Panel 2 Unavailable reference totals cover 2026-01-01..2026-11-26 (330d) and Segambut Utara/Segambut 2 remain unverified in GTFS stops.txt."
     ]
+  },
+  "utara_temporal_sensitivity": {
+    "gtfs_window": "2026-08-18..2026-11-26",
+    "days_evaluated": 101,
+    "kits_batch_anomaly_hours": [
+      {
+        "date": "2026-11-06",
+        "hour": 10,
+        "note": "Simultaneous KITS 10:00 AM batch/transaction spike (KV 4.59x, Utara 4.89x, Intercity 3.65x vs median)"
+      },
+      {
+        "date": "2026-11-08",
+        "hour": 1,
+        "note": "Simultaneous KITS 01:00 AM offline settlement spike (KV 3,775 / 943.8x, Utara 2,392 / 61.3x while zero trains operate)"
+      }
+    ],
+    "network_scenarios": [
+      {
+        "id": "mixed_50_50_120m",
+        "label": "Symmetric 50/50 Mixed (<=120m, +5m) [Adopted Baseline]",
+        "assigned_pax": 1822239,
+        "matched_pax": 1772044.9,
+        "matched_pct": 97.25,
+        "unmatched_pax": 50194.1,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 280.4,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 721.5,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 36,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 14
+      },
+      {
+        "id": "mixed_50_50_120m_excl_kits_batch",
+        "label": "Symmetric 50/50 Excl. KITS Batch Spikes (Nov 6 10:00, Nov 8 01:00)",
+        "assigned_pax": 1815570,
+        "matched_pax": 1767888.6,
+        "matched_pct": 97.37,
+        "unmatched_pax": 47681.4,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 253.0,
+        "max_date": "2026-08-31",
+        "max_hr": 13,
+        "max_deficit": 612.1,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 36,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 14
+      },
+      {
+        "id": "forward_5m_120m",
+        "label": "Forward Departure-Aligned (<=120m, +5m)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1741501.8,
+        "matched_pct": 95.57,
+        "unmatched_pax": 80737.2,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 420.6,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 1282.5,
+        "max_extra_trains": 4,
+        "segments_gt_100_max": 39,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 15
+      },
+      {
+        "id": "forward_5m_unbounded",
+        "label": "Forward Departure-Aligned (Unbounded Wait, +5m Legacy)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1786199.8,
+        "matched_pct": 98.02,
+        "unmatched_pax": 36039.2,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 427.3,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 1309.1,
+        "max_extra_trains": 4,
+        "segments_gt_100_max": 42,
+        "segments_gt_100_p90": 19,
+        "segments_gt_100_mean": 15
+      },
+      {
+        "id": "arrival_120m_hybrid",
+        "label": "Arrival-Aligned Primary + Forward Fallback (<=120m, +5m)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1802588.0,
+        "matched_pct": 98.92,
+        "unmatched_pax": 19651.0,
+        "top_segment_id": "ktm_komuter_utara:43100->42400",
+        "top_segment_label": "Kobah -> Gurun",
+        "max_lr_pct": 358.1,
+        "max_date": "2026-11-06",
+        "max_hr": 9,
+        "max_deficit": 1032.5,
+        "max_extra_trains": 3,
+        "segments_gt_100_max": 37,
+        "segments_gt_100_p90": 26,
+        "segments_gt_100_mean": 16
+      },
+      {
+        "id": "transaction_hour_cohort",
+        "label": "Instantaneous Transaction Clock Hour (No Shift)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1822239.0,
+        "matched_pct": 100.0,
+        "unmatched_pax": 0.0,
+        "top_segment_id": "ktm_komuter_utara:40500->600",
+        "top_segment_label": "Tasek Gelugor -> Bukit Mertajam",
+        "max_lr_pct": 296.0,
+        "max_date": "2026-11-06",
+        "max_hr": 10,
+        "max_deficit": 784.0,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 26,
+        "segments_gt_100_p90": 17,
+        "segments_gt_100_mean": 9
+      }
+    ],
+    "corridor_scenarios": {
+      "ktm_komuter_utara:42400->41400": {
+        "label": "Gurun -> Sungai Petani",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 280.4,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 207.0,
+            "mean_lr_pct": 150.1,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 253.0,
+            "max_date": "2026-08-31",
+            "max_hr": 13,
+            "p90_lr_pct": 201.8,
+            "mean_lr_pct": 150.0,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 420.6,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 209.8,
+            "mean_lr_pct": 136.2,
+            "extra_trains_max": 4
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 427.3,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 214.1,
+            "mean_lr_pct": 142.6,
+            "extra_trains_max": 4
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 354.0,
+            "max_date": "2026-11-06",
+            "max_hr": 9,
+            "p90_lr_pct": 248.0,
+            "mean_lr_pct": 164.0,
+            "extra_trains_max": 3
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 206.8,
+            "max_date": "2026-11-09",
+            "max_hr": 17,
+            "p90_lr_pct": 129.5,
+            "mean_lr_pct": 85.5,
+            "extra_trains_max": 2
+          }
+        }
+      },
+      "ktm_komuter_utara:41400->40500": {
+        "label": "Sungai Petani -> Tasek Gelugor",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 255.0,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 195.6,
+            "mean_lr_pct": 140.5,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 251.8,
+            "max_date": "2026-11-09",
+            "max_hr": 13,
+            "p90_lr_pct": 191.9,
+            "mean_lr_pct": 140.4,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 388.1,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 189.8,
+            "mean_lr_pct": 127.9,
+            "extra_trains_max": 3
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 394.8,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 197.9,
+            "mean_lr_pct": 134.2,
+            "extra_trains_max": 3
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 308.3,
+            "max_date": "2026-08-31",
+            "max_hr": 13,
+            "p90_lr_pct": 238.5,
+            "mean_lr_pct": 153.1,
+            "extra_trains_max": 3
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 199.8,
+            "max_date": "2026-11-09",
+            "max_hr": 17,
+            "p90_lr_pct": 123.5,
+            "mean_lr_pct": 77.9,
+            "extra_trains_max": 1
+          }
+        }
+      },
+      "ktm_komuter_utara:43100->42400": {
+        "label": "Kobah -> Gurun",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 278.1,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 207.0,
+            "mean_lr_pct": 149.8,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 249.9,
+            "max_date": "2026-08-31",
+            "max_hr": 13,
+            "p90_lr_pct": 204.3,
+            "mean_lr_pct": 149.7,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 414.6,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 204.1,
+            "mean_lr_pct": 135.8,
+            "extra_trains_max": 4
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 421.3,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 207.5,
+            "mean_lr_pct": 142.0,
+            "extra_trains_max": 4
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 358.1,
+            "max_date": "2026-11-06",
+            "max_hr": 9,
+            "p90_lr_pct": 238.8,
+            "mean_lr_pct": 163.9,
+            "extra_trains_max": 3
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 208.2,
+            "max_date": "2026-10-30",
+            "max_hr": 7,
+            "p90_lr_pct": 158.0,
+            "mean_lr_pct": 105.7,
+            "extra_trains_max": 2
+          }
+        }
+      },
+      "ktm_komuter_utara:44400->44000": {
+        "label": "Anak Bukit -> Alor Setar",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 231.2,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 176.8,
+            "mean_lr_pct": 126.2,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 226.6,
+            "max_date": "2026-10-23",
+            "max_hr": 13,
+            "p90_lr_pct": 176.8,
+            "mean_lr_pct": 126.0,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 333.3,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 167.0,
+            "mean_lr_pct": 115.6,
+            "extra_trains_max": 3
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 338.9,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 175.6,
+            "mean_lr_pct": 120.9,
+            "extra_trains_max": 3
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 313.3,
+            "max_date": "2026-11-06",
+            "max_hr": 9,
+            "p90_lr_pct": 215.9,
+            "mean_lr_pct": 136.8,
+            "extra_trains_max": 3
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 183.0,
+            "max_date": "2026-10-01",
+            "max_hr": 16,
+            "p90_lr_pct": 120.5,
+            "mean_lr_pct": 91.7,
+            "extra_trains_max": 1
+          }
+        }
+      },
+      "ktm_komuter_utara:44000->43100": {
+        "label": "Alor Setar -> Kobah",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 269.2,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 196.3,
+            "mean_lr_pct": 146.0,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 243.4,
+            "max_date": "2026-11-05",
+            "max_hr": 13,
+            "p90_lr_pct": 196.3,
+            "mean_lr_pct": 145.8,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 398.7,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 191.7,
+            "mean_lr_pct": 132.1,
+            "extra_trains_max": 3
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 405.0,
+            "max_date": "2026-11-06",
+            "max_hr": 11,
+            "p90_lr_pct": 199.7,
+            "mean_lr_pct": 138.0,
+            "extra_trains_max": 4
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 353.5,
+            "max_date": "2026-11-06",
+            "max_hr": 9,
+            "p90_lr_pct": 237.7,
+            "mean_lr_pct": 159.9,
+            "extra_trains_max": 3
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 202.0,
+            "max_date": "2026-10-01",
+            "max_hr": 16,
+            "p90_lr_pct": 156.5,
+            "mean_lr_pct": 105.0,
+            "extra_trains_max": 2
+          }
+        }
+      },
+      "ktm_komuter_utara:40500->600": {
+        "label": "Tasek Gelugor -> Bukit Mertajam",
+        "scenarios": {
+          "mixed_50_50_120m": {
+            "max_lr_pct": 241.4,
+            "max_date": "2026-11-09",
+            "max_hr": 14,
+            "p90_lr_pct": 177.2,
+            "mean_lr_pct": 127.0,
+            "extra_trains_max": 2
+          },
+          "mixed_50_50_120m_excl_kits_batch": {
+            "max_lr_pct": 241.4,
+            "max_date": "2026-11-09",
+            "max_hr": 14,
+            "p90_lr_pct": 177.1,
+            "mean_lr_pct": 126.8,
+            "extra_trains_max": 2
+          },
+          "forward_5m_120m": {
+            "max_lr_pct": 342.9,
+            "max_date": "2026-11-06",
+            "max_hr": 12,
+            "p90_lr_pct": 168.1,
+            "mean_lr_pct": 116.3,
+            "extra_trains_max": 3
+          },
+          "forward_5m_unbounded": {
+            "max_lr_pct": 349.7,
+            "max_date": "2026-11-06",
+            "max_hr": 12,
+            "p90_lr_pct": 183.8,
+            "mean_lr_pct": 122.2,
+            "extra_trains_max": 3
+          },
+          "arrival_120m_hybrid": {
+            "max_lr_pct": 281.7,
+            "max_date": "2026-11-09",
+            "max_hr": 14,
+            "p90_lr_pct": 221.1,
+            "mean_lr_pct": 137.6,
+            "extra_trains_max": 2
+          },
+          "transaction_hour_cohort": {
+            "max_lr_pct": 296.0,
+            "max_date": "2026-11-06",
+            "max_hr": 10,
+            "p90_lr_pct": 181.2,
+            "mean_lr_pct": 118.7,
+            "extra_trains_max": 2
+          }
+        }
+      }
+    },
+    "per_segment": {
+      "ktm_komuter_utara:100->400": {
+        "max_lr_range": [
+          68.2,
+          111.2
+        ],
+        "p90_lr_range": [
+          46.7,
+          57.0
+        ],
+        "mean_lr_range": [
+          32.9,
+          38.7
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 68.2,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1000->1700": {
+        "max_lr_range": [
+          132.1,
+          207.2
+        ],
+        "p90_lr_range": [
+          94.3,
+          133.9
+        ],
+        "mean_lr_range": [
+          66.4,
+          87.8
+        ],
+        "extra_trains_range": [
+          1,
+          2
+        ],
+        "excl_kits_max_lr": 132.1,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1000->600": {
+        "max_lr_range": [
+          100.6,
+          161.0
+        ],
+        "p90_lr_range": [
+          82.3,
+          93.6
+        ],
+        "mean_lr_range": [
+          53.7,
+          74.6
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 100.6,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1700->1000": {
+        "max_lr_range": [
+          104.4,
+          163.4
+        ],
+        "p90_lr_range": [
+          83.6,
+          92.7
+        ],
+        "mean_lr_range": [
+          52.3,
+          70.9
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 104.4,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1700->1900": {
+        "max_lr_range": [
+          125.2,
+          199.2
+        ],
+        "p90_lr_range": [
+          86.5,
+          125.6
+        ],
+        "mean_lr_range": [
+          62.4,
+          81.9
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 125.2,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1900->1700": {
+        "max_lr_range": [
+          101.4,
+          148.8
+        ],
+        "p90_lr_range": [
+          78.8,
+          88.7
+        ],
+        "mean_lr_range": [
+          48.1,
+          63.8
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 101.4,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:1900->2600": {
+        "max_lr_range": [
+          122.5,
+          188.2
+        ],
+        "p90_lr_range": [
+          84.7,
+          120.5
+        ],
+        "mean_lr_range": [
+          59.4,
+          76.0
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 122.5,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:2600->1900": {
+        "max_lr_range": [
+          104.0,
+          139.7
+        ],
+        "p90_lr_range": [
+          76.2,
+          83.3
+        ],
+        "mean_lr_range": [
+          45.9,
+          55.5
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 104.0,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:2600->4500": {
+        "max_lr_range": [
+          121.5,
+          179.2
+        ],
+        "p90_lr_range": [
+          83.6,
+          117.0
+        ],
+        "mean_lr_range": [
+          58.0,
+          72.6
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 121.5,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:400->100": {
+        "max_lr_range": [
+          61.7,
+          93.3
+        ],
+        "p90_lr_range": [
+          48.9,
+          57.8
+        ],
+        "mean_lr_range": [
+          33.5,
+          39.9
+        ],
+        "extra_trains_range": [
+          0,
+          0
+        ],
+        "excl_kits_max_lr": 61.7,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:400->600": {
+        "max_lr_range": [
+          96.3,
+          161.4
+        ],
+        "p90_lr_range": [
+          62.9,
+          72.7
+        ],
+        "mean_lr_range": [
+          42.9,
+          51.5
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 112.6,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:40500->41400": {
+        "max_lr_range": [
+          230.9,
+          330.7
+        ],
+        "p90_lr_range": [
+          171.7,
+          183.0
+        ],
+        "mean_lr_range": [
+          116.6,
+          129.1
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 230.9,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:40500->600": {
+        "max_lr_range": [
+          241.4,
+          349.7
+        ],
+        "p90_lr_range": [
+          168.1,
+          221.1
+        ],
+        "mean_lr_range": [
+          116.3,
+          137.6
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 241.4,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:41400->40500": {
+        "max_lr_range": [
+          251.8,
+          394.8
+        ],
+        "p90_lr_range": [
+          189.8,
+          238.5
+        ],
+        "mean_lr_range": [
+          127.9,
+          153.1
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 251.8,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:41400->42400": {
+        "max_lr_range": [
+          247.5,
+          340.5
+        ],
+        "p90_lr_range": [
+          181.0,
+          205.8
+        ],
+        "mean_lr_range": [
+          130.3,
+          154.3
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 247.5,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:42400->41400": {
+        "max_lr_range": [
+          253.0,
+          427.3
+        ],
+        "p90_lr_range": [
+          207.0,
+          248.0
+        ],
+        "mean_lr_range": [
+          136.2,
+          164.0
+        ],
+        "extra_trains_range": [
+          2,
+          4
+        ],
+        "excl_kits_max_lr": 253.0,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:42400->43100": {
+        "max_lr_range": [
+          249.0,
+          342.4
+        ],
+        "p90_lr_range": [
+          182.2,
+          212.0
+        ],
+        "mean_lr_range": [
+          126.2,
+          144.6
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 249.0,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:43100->42400": {
+        "max_lr_range": [
+          249.9,
+          421.3
+        ],
+        "p90_lr_range": [
+          204.1,
+          238.8
+        ],
+        "mean_lr_range": [
+          135.8,
+          163.9
+        ],
+        "extra_trains_range": [
+          2,
+          4
+        ],
+        "excl_kits_max_lr": 249.9,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:43100->44000": {
+        "max_lr_range": [
+          240.7,
+          332.0
+        ],
+        "p90_lr_range": [
+          184.0,
+          213.2
+        ],
+        "mean_lr_range": [
+          122.8,
+          143.4
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 240.7,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:44000->43100": {
+        "max_lr_range": [
+          243.4,
+          405.0
+        ],
+        "p90_lr_range": [
+          191.7,
+          237.7
+        ],
+        "mean_lr_range": [
+          132.1,
+          159.9
+        ],
+        "extra_trains_range": [
+          2,
+          4
+        ],
+        "excl_kits_max_lr": 243.4,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:44000->44400": {
+        "max_lr_range": [
+          207.5,
+          270.4
+        ],
+        "p90_lr_range": [
+          163.0,
+          195.0
+        ],
+        "mean_lr_range": [
+          114.6,
+          137.1
+        ],
+        "extra_trains_range": [
+          2,
+          2
+        ],
+        "excl_kits_max_lr": 207.5,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:44400->44000": {
+        "max_lr_range": [
+          226.6,
+          338.9
+        ],
+        "p90_lr_range": [
+          167.0,
+          215.9
+        ],
+        "mean_lr_range": [
+          115.6,
+          136.8
+        ],
+        "extra_trains_range": [
+          2,
+          3
+        ],
+        "excl_kits_max_lr": 226.6,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:44400->45600": {
+        "max_lr_range": [
+          200.6,
+          234.4
+        ],
+        "p90_lr_range": [
+          151.0,
+          181.5
+        ],
+        "mean_lr_range": [
+          99.9,
+          121.0
+        ],
+        "extra_trains_range": [
+          2,
+          2
+        ],
+        "excl_kits_max_lr": 200.6,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:4500->2600": {
+        "max_lr_range": [
+          104.4,
+          136.9
+        ],
+        "p90_lr_range": [
+          74.1,
+          81.7
+        ],
+        "mean_lr_range": [
+          44.7,
+          51.4
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 104.4,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:4500->4700": {
+        "max_lr_range": [
+          117.5,
+          162.1
+        ],
+        "p90_lr_range": [
+          79.2,
+          112.6
+        ],
+        "mean_lr_range": [
+          55.1,
+          68.2
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 117.5,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:45600->44400": {
+        "max_lr_range": [
+          220.5,
+          282.0
+        ],
+        "p90_lr_range": [
+          146.3,
+          185.9
+        ],
+        "mean_lr_range": [
+          101.6,
+          120.8
+        ],
+        "extra_trains_range": [
+          2,
+          2
+        ],
+        "excl_kits_max_lr": 220.5,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:45600->45800": {
+        "max_lr_range": [
+          194.4,
+          221.6
+        ],
+        "p90_lr_range": [
+          138.8,
+          166.7
+        ],
+        "mean_lr_range": [
+          94.8,
+          115.4
+        ],
+        "extra_trains_range": [
+          1,
+          2
+        ],
+        "excl_kits_max_lr": 194.4,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:45800->45600": {
+        "max_lr_range": [
+          215.5,
+          275.2
+        ],
+        "p90_lr_range": [
+          133.2,
+          166.6
+        ],
+        "mean_lr_range": [
+          95.7,
+          112.2
+        ],
+        "extra_trains_range": [
+          2,
+          2
+        ],
+        "excl_kits_max_lr": 215.5,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:45800->46300": {
+        "max_lr_range": [
+          136.2,
+          169.2
+        ],
+        "p90_lr_range": [
+          96.9,
+          120.4
+        ],
+        "mean_lr_range": [
+          64.2,
+          80.4
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 136.2,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:46300->45800": {
+        "max_lr_range": [
+          113.3,
+          162.2
+        ],
+        "p90_lr_range": [
+          77.6,
+          95.2
+        ],
+        "mean_lr_range": [
+          50.1,
+          65.3
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 113.3,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:46300->47300": {
+        "max_lr_range": [
+          127.3,
+          163.1
+        ],
+        "p90_lr_range": [
+          83.9,
+          107.8
+        ],
+        "mean_lr_range": [
+          56.9,
+          74.2
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 127.3,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:4700->4500": {
+        "max_lr_range": [
+          102.9,
+          129.6
+        ],
+        "p90_lr_range": [
+          71.3,
+          78.6
+        ],
+        "mean_lr_range": [
+          43.4,
+          47.7
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 102.9,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:4700->5700": {
+        "max_lr_range": [
+          105.5,
+          143.8
+        ],
+        "p90_lr_range": [
+          72.1,
+          102.6
+        ],
+        "mean_lr_range": [
+          47.8,
+          60.6
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 105.5,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:47300->46300": {
+        "max_lr_range": [
+          105.2,
+          153.6
+        ],
+        "p90_lr_range": [
+          68.8,
+          86.0
+        ],
+        "mean_lr_range": [
+          43.1,
+          57.7
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 105.2,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:5700->4700": {
+        "max_lr_range": [
+          101.8,
+          125.0
+        ],
+        "p90_lr_range": [
+          65.0,
+          69.4
+        ],
+        "mean_lr_range": [
+          40.4,
+          43.6
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 101.8,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:5700->6300": {
+        "max_lr_range": [
+          103.6,
+          141.2
+        ],
+        "p90_lr_range": [
+          68.8,
+          101.2
+        ],
+        "mean_lr_range": [
+          46.7,
+          59.1
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 103.6,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:600->1000": {
+        "max_lr_range": [
+          138.3,
+          212.8
+        ],
+        "p90_lr_range": [
+          98.3,
+          135.9
+        ],
+        "mean_lr_range": [
+          68.3,
+          90.2
+        ],
+        "extra_trains_range": [
+          1,
+          2
+        ],
+        "excl_kits_max_lr": 138.3,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:600->400": {
+        "max_lr_range": [
+          81.0,
+          119.0
+        ],
+        "p90_lr_range": [
+          59.4,
+          72.0
+        ],
+        "mean_lr_range": [
+          41.7,
+          48.6
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 81.0,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:600->40500": {
+        "max_lr_range": [
+          205.7,
+          299.8
+        ],
+        "p90_lr_range": [
+          155.9,
+          164.8
+        ],
+        "mean_lr_range": [
+          107.0,
+          116.1
+        ],
+        "extra_trains_range": [
+          2,
+          2
+        ],
+        "excl_kits_max_lr": 205.7,
+        "robust_p90_gt_100": true,
+        "robust_mean_gt_100": true
+      },
+      "ktm_komuter_utara:6300->5700": {
+        "max_lr_range": [
+          100.0,
+          121.6
+        ],
+        "p90_lr_range": [
+          63.8,
+          69.7
+        ],
+        "mean_lr_range": [
+          39.7,
+          42.7
+        ],
+        "extra_trains_range": [
+          1,
+          1
+        ],
+        "excl_kits_max_lr": 100.0,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:6300->7300": {
+        "max_lr_range": [
+          94.7,
+          126.4
+        ],
+        "p90_lr_range": [
+          63.6,
+          90.7
+        ],
+        "mean_lr_range": [
+          42.9,
+          52.3
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 94.7,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:7300->6300": {
+        "max_lr_range": [
+          84.8,
+          103.8
+        ],
+        "p90_lr_range": [
+          57.1,
+          61.9
+        ],
+        "mean_lr_range": [
+          36.3,
+          39.4
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 84.8,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:7300->9000": {
+        "max_lr_range": [
+          88.4,
+          121.6
+        ],
+        "p90_lr_range": [
+          59.6,
+          83.4
+        ],
+        "mean_lr_range": [
+          40.3,
+          49.7
+        ],
+        "extra_trains_range": [
+          0,
+          1
+        ],
+        "excl_kits_max_lr": 88.4,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      },
+      "ktm_komuter_utara:9000->7300": {
+        "max_lr_range": [
+          84.4,
+          95.5
+        ],
+        "p90_lr_range": [
+          54.7,
+          57.6
+        ],
+        "mean_lr_range": [
+          34.4,
+          37.5
+        ],
+        "extra_trains_range": [
+          0,
+          0
+        ],
+        "excl_kits_max_lr": 84.4,
+        "robust_p90_gt_100": false,
+        "robust_mean_gt_100": false
+      }
+    }
+  },
+  "nov09_holiday_sensitivity": {
+    "date": "2026-11-09",
+    "holiday_name": "Deepavali Replacement Public Holiday (Monday)",
+    "reason": "Malaysian federal replacement holiday omitted from ktmb_gtfs.zip calendar_dates.txt (which ends exceptions after 2026-09-16). Klang Valley ridership dropped to 14,870 pax (64.9% of weekday median); excluded from KV matched scheduled comparisons and isolated in nov09_holiday_sensitivity. Komuter Utara runs an identical 1,1,1,1,1,1,1 daily timetable (effective 24 Jul 2026) and remains schedule-valid on 2026-11-09 (excluded from normal weekday average).",
+    "ktm_komuter_kv": {
+      "treatment": "Excluded from matched KV weekday & all capacity slices; audited separately",
+      "top_hour_under_gtfs_weekday_if_unexcluded": {
+        "segment_id": "ktm_komuter_kv:50500->50400",
+        "label": "Taman Wahyu -> Kampung Batu",
+        "clock_hour": 10,
+        "demand": 432.6,
+        "gtfs_weekday_cap": 1118,
+        "load_ratio_under_gtfs_weekday_pct": 38.7,
+        "hypothetical_weekend_cap": 1118,
+        "load_ratio_under_weekend_cap_pct": 38.7
+      }
+    },
+    "ktm_komuter_utara": {
+      "treatment": "Valid under constant 1,1,1,1,1,1,1 daily timetable (kept in 'all' 101d; excluded from normal non-holiday 'weekday' 69d)",
+      "top_hour": {
+        "segment_id": "ktm_komuter_utara:41400->40500",
+        "label": "Sungai Petani -> Tasek Gelugor",
+        "clock_hour": 13,
+        "demand": 1007.1,
+        "scheduled_cap": 400,
+        "load_ratio_pct": 251.8
+      }
+    }
+  },
+  "observation_window_comparison": {
+    "panel1_station_demand_period": "2026-01-01..2026-11-20 (324 days; aligned pre-freeze snapshot)",
+    "panel2_unavailable_full_period": "2026-01-01..2026-11-26 (330 days; bounded KTMB/Prasarana 2026 archive)",
+    "panel2_screening_gtfs_window": "2026-08-18..2026-11-26 (100 matched KV days excl. 2026-11-09 unverified holiday; 101 operational Utara days)"
   },
   "path_assignment_audit": {
     "ktm_komuter_kv": {
@@ -222,32 +1638,150 @@
     },
     "matched_arrival_aligned_base_pax": {
       "ktm_komuter_kv": 1600051.53,
-      "ktm_komuter_utara": 0.0
+      "ktm_komuter_utara": 762059.52
     },
     "matched_forward_aligned_base_pax": {
       "ktm_komuter_kv": 241596.13,
-      "ktm_komuter_utara": 1786199.77
+      "ktm_komuter_utara": 1009985.35
     },
     "unmatched_outside_schedule_base_pax": {
       "ktm_komuter_kv": 61344.33,
-      "ktm_komuter_utara": 36039.23
+      "ktm_komuter_utara": 50194.13
     },
     "unmatched_outside_schedule_tight_0m_pax": {
       "ktm_komuter_kv": 53318.95,
-      "ktm_komuter_utara": 32739.8
+      "ktm_komuter_utara": 37819.03
     },
     "unmatched_share_base_pct": {
       "ktm_komuter_kv": 3.224,
-      "ktm_komuter_utara": 1.978
+      "ktm_komuter_utara": 2.755
     },
     "out_of_window_midnight_spill_base_pax": {
       "ktm_komuter_kv": 2.37
     },
-    "segment_demand_rows": 307087
+    "segment_demand_rows": 307087,
+    "utara_primary_model": "mixed_50_50_120m",
+    "utara_sensitivity_scenarios": [
+      {
+        "id": "mixed_50_50_120m",
+        "label": "Symmetric 50/50 Mixed (<=120m, +5m) [Adopted Baseline]",
+        "assigned_pax": 1822239,
+        "matched_pax": 1772044.9,
+        "matched_pct": 97.25,
+        "unmatched_pax": 50194.1,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 280.4,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 721.5,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 36,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 14
+      },
+      {
+        "id": "mixed_50_50_120m_excl_kits_batch",
+        "label": "Symmetric 50/50 Excl. KITS Batch Spikes (Nov 6 10:00, Nov 8 01:00)",
+        "assigned_pax": 1815570,
+        "matched_pax": 1767888.6,
+        "matched_pct": 97.37,
+        "unmatched_pax": 47681.4,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 253.0,
+        "max_date": "2026-08-31",
+        "max_hr": 13,
+        "max_deficit": 612.1,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 36,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 14
+      },
+      {
+        "id": "forward_5m_120m",
+        "label": "Forward Departure-Aligned (<=120m, +5m)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1741501.8,
+        "matched_pct": 95.57,
+        "unmatched_pax": 80737.2,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 420.6,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 1282.5,
+        "max_extra_trains": 4,
+        "segments_gt_100_max": 39,
+        "segments_gt_100_p90": 18,
+        "segments_gt_100_mean": 15
+      },
+      {
+        "id": "forward_5m_unbounded",
+        "label": "Forward Departure-Aligned (Unbounded Wait, +5m Legacy)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1786199.8,
+        "matched_pct": 98.02,
+        "unmatched_pax": 36039.2,
+        "top_segment_id": "ktm_komuter_utara:42400->41400",
+        "top_segment_label": "Gurun -> Sungai Petani",
+        "max_lr_pct": 427.3,
+        "max_date": "2026-11-06",
+        "max_hr": 11,
+        "max_deficit": 1309.1,
+        "max_extra_trains": 4,
+        "segments_gt_100_max": 42,
+        "segments_gt_100_p90": 19,
+        "segments_gt_100_mean": 15
+      },
+      {
+        "id": "arrival_120m_hybrid",
+        "label": "Arrival-Aligned Primary + Forward Fallback (<=120m, +5m)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1802588.0,
+        "matched_pct": 98.92,
+        "unmatched_pax": 19651.0,
+        "top_segment_id": "ktm_komuter_utara:43100->42400",
+        "top_segment_label": "Kobah -> Gurun",
+        "max_lr_pct": 358.1,
+        "max_date": "2026-11-06",
+        "max_hr": 9,
+        "max_deficit": 1032.5,
+        "max_extra_trains": 3,
+        "segments_gt_100_max": 37,
+        "segments_gt_100_p90": 26,
+        "segments_gt_100_mean": 16
+      },
+      {
+        "id": "transaction_hour_cohort",
+        "label": "Instantaneous Transaction Clock Hour (No Shift)",
+        "assigned_pax": 1822239,
+        "matched_pax": 1822239.0,
+        "matched_pct": 100.0,
+        "unmatched_pax": 0.0,
+        "top_segment_id": "ktm_komuter_utara:40500->600",
+        "top_segment_label": "Tasek Gelugor -> Bukit Mertajam",
+        "max_lr_pct": 296.0,
+        "max_date": "2026-11-06",
+        "max_hr": 10,
+        "max_deficit": 784.0,
+        "max_extra_trains": 2,
+        "segments_gt_100_max": 26,
+        "segments_gt_100_p90": 17,
+        "segments_gt_100_mean": 9
+      }
+    ]
   },
   "scheduled_capacity_audit": {
     "gtfs_window": "2026-08-18..2026-11-26",
     "excluded_pre_gtfs_window": "2026-01-01..2026-08-17 (excluded from capacity deficit comparisons because ktmb_gtfs.zip calendar starts 2026-08-18)",
+    "unverified_kv_holiday_excluded_from_matched": [
+      "2026-11-09 (Deepavali replacement holiday lacks calendar_dates.txt exception; isolated in holiday sensitivity)"
+    ],
+    "reference_timetable_validity": {
+      "ktm_komuter_kv": "Reference-Timetable Scenario vs published Nov 2026 KTMB GTFS feed (BC-PS Nov 10/14 + TM-PK Nov 23/28-29 RIDT works backdated to 2026-08-18 in calendar.txt); exact matched schedule across Nov 10-26 and indicative reference baseline for Aug 18-Nov 9.",
+      "ktm_komuter_utara": "Verified continuous fixed schedule across 2026-08-18..2026-11-26 matching KTMB official 24 Jul 2026 timetable PDF daily (1,1,1,1,1,1,1)."
+    },
     "rows_written": 158292,
     "total_segment_train_crossings": {
       "ktm_komuter_kv": 137280,
@@ -269,18 +1803,20 @@
   "gap_and_boarding_audit": {
     "backend_e_segment_gap": {
       "rows": 307565,
-      "deficit_rows_nominal_base": 3797,
-      "deficit_rows_80pct_base": 6426,
+      "verified_matched_rows": 305471,
+      "unverified_holiday_kv_excluded_rows": 2094,
+      "deficit_rows_nominal_base": 3762,
+      "deficit_rows_80pct_base": 6802,
       "no_service_with_demand_rows": 0,
-      "max_load_ratio_nominal_base": 427.3,
-      "max_extra_trains_nominal_base": 4
+      "max_load_ratio_nominal_base": 280.4,
+      "max_extra_trains_nominal_base": 2
     },
     "backend_f_station_boarding": {
       "rows": 158292,
       "full_boarding_rows": 145535,
       "fallback_downstream_rows": 12757,
-      "upstream_already_full_rows": 2597,
-      "boarding_deficit_rows_nominal": 3578,
+      "upstream_already_full_rows": 2444,
+      "boarding_deficit_rows_nominal": 3575,
       "max_conservation_abs_error": 1.0000002248489182e-06
     }
   },
@@ -311,6 +1847,11 @@
       "kv_unknown": 14545,
       "utara_penalty": 2290,
       "utara_unknown": 3654
+    },
+    "observation_window_comparison": {
+      "panel1_station_demand_period": "2026-01-01..2026-11-20 (324 days; aligned pre-freeze snapshot)",
+      "panel2_unavailable_full_period": "2026-01-01..2026-11-26 (330 days; bounded KTMB/Prasarana 2026 archive)",
+      "panel2_screening_gtfs_window": "2026-08-18..2026-11-26 (100 matched KV days excl. 2026-11-09 unverified holiday; 101 operational Utara days)"
     },
     "manifest_raw_files": [
       {

@@ -152,9 +152,20 @@ export const StationDemandIntelligence: React.FC = () => {
   }, [data, filters.period, filters.dayType]);
 
   const spotlight = useMemo(
-    () => computeSpotlightMetrics(resolvedRows, observationDays),
-    [resolvedRows, observationDays]
+    () => computeSpotlightMetrics(resolvedRows, observationDays, filters),
+    [resolvedRows, observationDays, filters]
   );
+
+  const uniqueMeasuredStationHubs = useMemo(() => {
+    if (!data) return 0;
+    const hubs = new Set<string>();
+    for (const st of data.inventory.stations) {
+      if (st.is_physical_station && st.availability_status !== 'unavailable_no_od_data') {
+        hubs.add(st.physical_interchange_id || st.name.toLowerCase());
+      }
+    }
+    return hubs.size;
+  }, [data]);
 
   const insight = useMemo(
     () => generateStationDemandInsight(spotlight, filters, data?.coverage || null),
@@ -187,7 +198,7 @@ export const StationDemandIntelligence: React.FC = () => {
 
   const dailySeriesInfo = useMemo(() => {
     if (!activeStationRow || !data) return null;
-    return computeDailySeriesSummary(activeStationRow, data.daily, filters.period, filters.dayType);
+    return computeDailySeriesSummary(activeStationRow, data.daily, filters.period, filters.dayType, data.summary);
   }, [activeStationRow, data, filters.period, filters.dayType]);
 
   // ECharts option for KTMB 24h Hourly Station Demand Profile
@@ -278,7 +289,11 @@ export const StationDemandIntelligence: React.FC = () => {
         axisLabel: {
           color: '#64748B',
           fontSize: 9.5,
-          interval: isDaily ? Math.max(1, Math.floor(dailySeriesInfo.labels.length / 5)) : 1,
+          interval: isDaily
+            ? Math.max(1, Math.floor(dailySeriesInfo.labels.length / 5))
+            : dailySeriesInfo.labels.length <= 12
+            ? 0
+            : 1,
           formatter: (val: string) => (isDaily ? val.slice(5) : val.replace('2026-', 'M')),
         },
         axisLine: { lineStyle: { color: '#E2E8F0' } },
@@ -356,6 +371,16 @@ export const StationDemandIntelligence: React.FC = () => {
           next.line = 'all';
         }
       }
+      if (
+        next.network === 'rapid_rail' ||
+        next.network === 'brt' ||
+        next.service === 'rapid_rail' ||
+        next.service === 'brt' ||
+        next.service === 'ktmb_gtfs_only'
+      ) {
+        next.hourWindow = 'all';
+        next.metricFocus = 'daily_avg';
+      }
       return next;
     });
   };
@@ -363,7 +388,11 @@ export const StationDemandIntelligence: React.FC = () => {
   const handleExportCsv = () => {
     if (!data) return;
     const periodLabel = data.summary.period_catalog?.[filters.period]?.label || filters.period;
-    const scopeLabel = `${filters.network} / ${filters.service} / ${filters.line} / ${periodLabel} / ${filters.dayType} / ${filters.hourWindow}`;
+    const hourScope =
+      filters.hourWindow === 'selected_hour'
+        ? `selected_hour (${formatHourWindow24(filters.selectedHour)})`
+        : filters.hourWindow;
+    const scopeLabel = `${filters.network} / ${filters.service} / ${filters.line} / ${periodLabel} / ${filters.dayType} / ${hourScope} / ${filters.metricFocus}`;
     const csvText = buildStationCsvContent(sortedRows, scopeLabel);
     const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -436,8 +465,9 @@ export const StationDemandIntelligence: React.FC = () => {
                   borderRadius: 5,
                   padding: '2px 7px',
                 }}
+                title={`${data.inventory.total_inventory_records} total inventory records: ${data.inventory.physical_stations_with_od} measured station-service records (${uniqueMeasuredStationHubs} unique physical interchange hubs) + ${data.inventory.gtfs_unmeasured_stops} unmeasured GTFS stops + ${data.inventory.non_physical_codes} non-physical Unknown codes.`}
               >
-                6 Official OD Datasets · {data.inventory.physical_stations_with_od} Measured Physical Stations
+                6 Official OD Datasets · {data.inventory.physical_stations_with_od} Measured Station-Service Records ({uniqueMeasuredStationHubs} Physical Hubs)
               </span>
             </div>
             <div style={{ fontSize: 11.5, color: '#64748B', marginTop: 2 }}>
@@ -589,15 +619,23 @@ export const StationDemandIntelligence: React.FC = () => {
       >
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: '#93C5FD', letterSpacing: '0.5px' }}>
-            Top Daily Origin Station
+            {spotlight.isHourlyWindowFiltered
+              ? `Top ${spotlight.hourlyWindowLabel} Station`
+              : spotlight.isPeakFocus
+              ? 'Top Daily KTMB Station (Peak Scope)'
+              : 'Top Daily Origin Station'}
           </div>
           <div style={{ fontSize: 15, fontWeight: 800, marginTop: 3 }}>
             {spotlight.topDailyStation ? spotlight.topDailyStation.station.name : 'No Measured Station'}
           </div>
           <div style={{ fontSize: 11, color: '#CBD5E1', marginTop: 2 }}>
             {spotlight.topDailyStation
-              ? `${Math.round(spotlight.topDailyStation.avgDailyTrips || 0).toLocaleString()} trips/day · ${
-                  spotlight.topDailyStation.station.line
+              ? `${Math.round(
+                  (spotlight.isHourlyWindowFiltered
+                    ? spotlight.topDailyStation.activeWindowValue
+                    : spotlight.topDailyStation.avgDailyTrips) || 0
+                ).toLocaleString()} trips/day${spotlight.isHourlyWindowFiltered ? ' in window' : ''} · ${
+                  spotlight.topDailyStation.station.service_label
                 }`
               : 'No numeric OD records in active filter'}
           </div>
@@ -625,22 +663,27 @@ export const StationDemandIntelligence: React.FC = () => {
 
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: '#93C5FD', letterSpacing: '0.5px' }}>
-            Filtered Scope Total Volume
+            {spotlight.isHourlyWindowFiltered
+              ? `Filtered Window Volume (KTMB · ${spotlight.hourlyWindowLabel})`
+              : spotlight.isPeakFocus
+              ? 'Filtered KTMB Hourly-Scope Volume'
+              : 'Filtered Scope Total Volume'}
           </div>
           <div style={{ fontSize: 15, fontWeight: 800, marginTop: 3 }}>
             {formatMillions(spotlight.filteredTotalTrips)} trips
           </div>
           <div style={{ fontSize: 11, color: '#CBD5E1', marginTop: 2 }}>
             Avg {Math.round(spotlight.filteredAvgDailyTrips).toLocaleString()}/day across {spotlight.observationDays}d
+            {spotlight.isHourlyWindowFiltered || spotlight.isPeakFocus ? ' · KTMB hourly only' : ''}
           </div>
         </div>
 
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: '#93C5FD', letterSpacing: '0.5px' }}>
-            Physical Station Telemetry Scope
+            Station-Service Telemetry Scope
           </div>
           <div style={{ fontSize: 15, fontWeight: 800, marginTop: 3 }}>
-            {spotlight.physicalMeasuredCount} Stations in View
+            {spotlight.physicalMeasuredCount} Station-Service Records
           </div>
           <div style={{ fontSize: 11, color: '#CBD5E1', marginTop: 2 }}>
             {spotlight.hourlySupportedCount} KTMB Hourly · {spotlight.dailyOnlyCount} Daily-Only · {spotlight.unmeasuredCount}{' '}
@@ -903,6 +946,26 @@ export const StationDemandIntelligence: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {(spotlight.isHourlyWindowFiltered || (spotlight.isPeakFocus && spotlight.dailyOnlyCount > 0)) && (
+          <div
+            data-testid="hourly-scope-notice"
+            style={{
+              background: '#EFF6FF',
+              border: '1px solid #BFDBFE',
+              borderRadius: 7,
+              padding: '6px 10px',
+              fontSize: 10.5,
+              color: '#1E40AF',
+              lineHeight: 1.4,
+            }}
+          >
+            <strong>Hourly Scope Active ({spotlight.hourlyWindowLabel}):</strong>{' '}
+            {spotlight.isHourlyWindowFiltered
+              ? 'Table, spotlight metrics, insights, and CSV export show KTMB hourly-supported station-service records only (Rapid Rail daily-only records excluded because Prasarana open data omits hourly timestamps).'
+              : `Peak-hour ranking and spotlight KPIs reflect KTMB hourly-supported station-service records only; ${spotlight.dailyOnlyCount} daily-only Rapid Rail records remain unranked at bottom.`}
+          </div>
+        )}
       </div>
 
       {/* 4. Split View: Station Ranking Table (Left) + Station Deep-Dive Chart (Right) */}
@@ -1333,12 +1396,12 @@ export const StationDemandIntelligence: React.FC = () => {
                 <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                     <span style={{ fontSize: 11, fontWeight: 700, color: '#334155' }}>
-                      Monthly Daily-Average Progression (Jan–Nov 2026)
+                      Monthly Daily-Average Progression ({activePeriodMeta?.date_range || 'Jan–Nov 2026'})
                     </span>
                     {dailySeriesInfo && (
                       <span style={{ fontSize: 10, color: '#64748B' }}>
-                        WD Avg {Math.round(dailySeriesInfo.weekdayAvg || 0).toLocaleString()} · WE Avg{' '}
-                        {Math.round(dailySeriesInfo.weekendAvg || 0).toLocaleString()}
+                        Weighted WD {Math.round(dailySeriesInfo.weekdayAvg || 0).toLocaleString()}/d · WE{' '}
+                        {Math.round(dailySeriesInfo.weekendAvg || 0).toLocaleString()}/d
                       </span>
                     )}
                   </div>
