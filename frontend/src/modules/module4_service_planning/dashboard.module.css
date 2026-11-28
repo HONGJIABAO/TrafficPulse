@@ -777,6 +777,7 @@
 .detailsBody { display: grid; gap: 11px; padding: 13px 15px; border-block-start: 1px solid var(--line); }
 
 .methodology {
+  --drawer-padding: clamp(12px, 3vw, 22px);
   position: fixed;
   inset: 0 0 0 auto;
   width: min(100%, 48rem);
@@ -784,9 +785,8 @@
   height: 100dvh;
   max-height: none;
   margin: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scroll-padding-block-start: 78px;
+  padding: 0;
+  overflow: hidden;
   border: 0;
   border-inline-start: 1px solid var(--border-strong);
   background: var(--background);
@@ -794,12 +794,108 @@
   color: var(--ink);
 }
 
+.methodology[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .methodology::backdrop { background: rgba(15, 30, 54, 0.45); }
-.drawerHeader { position: sticky; inset-block-start: 0; z-index: 3; align-items: center; padding: 12px clamp(12px, 3vw, 22px); border-block-end: 1px solid var(--line); background: var(--surface); }
+.drawerHeader { align-items: center; gap: 8px; padding: 12px var(--drawer-padding); border-block-end: 1px solid var(--line); background: var(--surface); }
 .drawerHeader h2 { font-size: clamp(1.14rem, 2.25vw, 1.55rem); line-height: 1.2; }
-.drawerBody { display: grid; gap: 12px; padding: 15px clamp(12px, 3vw, 22px) 24px; }
-.drawerContext { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 9px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-.drawerContext > a { font-size: .88rem; font-weight: 700; }
+.drawerBody { display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
+.drawerBody > :not(.methodologyTabs, .methodologyContent) { margin: 12px var(--drawer-padding); }
+.methodologyTabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 8px var(--drawer-padding);
+  border-block-end: 1px solid var(--line);
+  background: var(--surface);
+}
+.methodologyTabs button {
+  min-height: 40px;
+  padding: 6px 2px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: clamp(.82rem, 2.5vw, .94rem);
+  font-weight: 650;
+  cursor: pointer;
+}
+.methodologyTabs button:hover, .methodologyTabs button[aria-selected='true'] { background: var(--accent-light); color: var(--depot); }
+.methodologyTabs button[aria-selected='true'] { border-color: var(--border-strong); }
+.methodologyContent {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 8px;
+  padding: 14px var(--drawer-padding) 24px;
+}
+.methodologyContent code { overflow-wrap: anywhere; }
+.methodologyPanel:not([hidden]) { display: grid; gap: 16px; }
+.methodologySection { display: grid; gap: 8px; min-width: 0; }
+.methodologyPanel :is(h3, h4) { color: var(--depot); line-height: 1.3; }
+.methodologyPanel h3 { font-size: 1.06rem; font-weight: 750; }
+.methodologyPanel h4 { font-size: .94rem; font-weight: 700; }
+.methodologyGrid, .methodologyModels, .methodologyEvidence, .methodologyStats, .methodologyWorkflow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 8px;
+}
+.methodologyModels, .methodologyEvidence { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+.methodologyStats, .methodologyWorkflow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.methodologyWorkflow { gap: 18px; list-style: none; }
+.methodologyCard, .methodologyStat, .methodologyWorkflow li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.methodologyStat dt { order: 1; color: var(--depot); font-size: .84rem; font-weight: 650; }
+.methodologyStat dd:first-of-type { color: var(--accent); font-size: clamp(1.23rem, 3vw, 1.55rem); font-weight: 750; font-variant-numeric: tabular-nums; }
+.methodologyStat dd + dd { order: 2; }
+.methodologyWorkflow li { position: relative; }
+.methodologyWorkflow li:not(:last-child)::after {
+  position: absolute;
+  inset-block-start: calc(50% - 4px);
+  inset-inline-end: -12px;
+  width: 7px;
+  height: 7px;
+  border-block-start: 2px solid var(--border-strong);
+  border-inline-end: 2px solid var(--border-strong);
+  transform: rotate(45deg);
+  content: '';
+}
+.methodologyWorkflow strong { color: var(--depot); font-size: .84rem; }
+.methodologyWorkflow span, .methodologyLabel { color: var(--muted); font-size: .83rem; }
+.methodologyLabel { font-weight: 650; }
+.methodologyScores, .methodologyDownloads { display: grid; gap: 6px; }
+.methodologyScores > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: var(--background);
+}
+.methodologyScores dd { color: var(--depot); font-weight: 750; font-variant-numeric: tabular-nums; }
+.methodologyDownloads { list-style: none; }
+.methodologyDownloads a { font-weight: 650; }
+
+@media (max-width: 620px) {
+  .methodologyStats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .methodologyWorkflow { grid-template-columns: minmax(0, 1fr); }
+  .methodologyWorkflow li:not(:last-child)::after {
+    inset-block-start: auto;
+    inset-block-end: -12px;
+    inset-inline-end: calc(50% - 4px);
+    transform: rotate(135deg);
+  }
+}
+
 .source { display: grid; gap: 2px; min-width: 0; padding: 6px 0; overflow-wrap: anywhere; }
 .source small { color: var(--muted); }
 
@@ -812,19 +908,13 @@
 .facts dd { text-align: end; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .inlineLink { padding: 0; border: 0; background: transparent; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font: inherit; cursor: pointer; }
 .stack { display: grid; gap: 8px; }
-.weekPatterns, .calendarLayout { display: grid; gap: 9px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-.calendarLayout { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
-.mapLayout > .card + .card { background: #F8FAFF; }
+.weekPatterns { display: grid; gap: 9px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 .facts dt { color: var(--muted); }
 
 @media (min-width: 1080px) {
-  .pairedPanels { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .pairedPanels { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
   .forecastLayout { grid-template-columns: minmax(0, 3fr) minmax(16rem, 1fr); align-items: start; }
   .forecastLayout > .headline { grid-template-columns: minmax(0, 1fr); }
-}
-
-@media (max-width: 1110px) {
-  .calendarLayout { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 920px) {

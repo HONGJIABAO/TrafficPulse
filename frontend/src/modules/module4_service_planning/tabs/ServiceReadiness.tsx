@@ -46,7 +46,7 @@ function RouteExplorer({ data, selection, onChange }: {
   const otherDays = data.periods.filter((row) => row.route_id === routeId && row.direction_id === direction &&
     row.period === 'all_day' && row.day_type !== day);
 
-  return <Panel primary icon="calendar-clock" accent="blue" marker="A" title="GTFS scheduled service explorer" badge={<EvidenceBadge kind="Scheduled Reference" />}
+  return <Panel primary icon="calendar-clock" accent="blue" marker="A" title="Scheduled service explorer" badge={<EvidenceBadge kind="Scheduled Reference" />}
     subtitle={`${route?.route_name ?? 'Route unavailable'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · terminal departures`}>
     <div className={s.controls}>
       <Select label="GTFS route" value={routeId} options={data.routes.map((row) => ({ value: row.route_id, label: row.is_rail ? row.route_name : 'Sunway BRT' }))}
@@ -77,6 +77,12 @@ function RouteExplorer({ data, selection, onChange }: {
       Later supply uses a held-reference timetable assumption.
       Verified or tentative holidays without a validated timetable and dates with unknown calendar coverage retain unavailable dated supply.
     </p>
+    <Details title="Timetable evidence and dated supply">
+      <p>{data.definitions.terminal_departure}</p>
+      <p>{data.definitions.schedule_lifespan}</p>
+      <p>Forecast dates with unavailable holiday or uncovered-calendar supply include {data.holidayDatesWithoutSupply.map(dateText).join(', ')}.</p>
+      <p>Compare reference departures with delivered trips and headway logs by direction, especially on holidays and after GTFS validity ends.</p>
+    </Details>
   </Panel>;
 }
 
@@ -86,7 +92,7 @@ function Supply({ data, selection, onChange }: {
   const { day, direction } = selection;
   const rows = data.nominal.filter((row) => row.day_type === day && row.direction_id === direction);
   const allDay = rows.find((row) => row.period === 'all_day');
-  return <Panel icon="users" accent="teal" marker="B" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
+  return <Panel heading="h4" icon="users" accent="teal" title="LRT3 nominal capacity" badge={<EvidenceBadge kind="Scheduled Reference" />}
     subtitle={`${data.routes.find((row) => row.route_id === lrt3Route)?.route_name ?? 'Shah Alam Line'} · ${dayLabel(day)} · ${allDay?.direction_label ?? 'Direction unavailable'} · nominal passenger places`}>
     <div className={s.controls}>
       <Segmented label="Nominal supply day type" value={day} options={dayTypes} onChange={(value) => onChange({ ...selection, day: value })} />
@@ -98,6 +104,20 @@ function Supply({ data, selection, onChange }: {
     <Table label="Direction-specific LRT3 nominal supply" columns={['Period', 'Reference terminal departures', 'Nominal places']}
       rows={rows.map((row) => ({ key: row.period, cells: [periodLabel[row.period], frequency(row.departures), num(row.nominal_places)] }))} />
     <p className={s.muted}>{data.capacity.limitations} <a href={data.capacity.source_url} target="_blank" rel="noreferrer">Documented LRV capacity</a>.</p>
+  </Panel>;
+}
+
+function ServiceIntensity({ data }: { data: ServiceData }) {
+  return <Panel heading="h4" icon="chart-bar" accent="purple" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
+    subtitle="Published headline trips per reference terminal departure, pairing the same ordinary dates and denominator with the recent baseline.">
+    <Table label="Network service intensity" columns={['Headline service', 'GTFS routes', 'Forecast trips / departure', 'Baseline trips / departure', 'Change', 'Comparable dates', 'Held dates', 'Coverage']}
+      rows={data.intensity.map((row) => ({ key: row.series_id, cells: [targetShort[row.series_id], row.route_ids.split('|').join(' / '),
+        num(row.forecast_published_trips_per_reference_departure, 1), num(row.recent_published_trips_per_same_reference_departure, 1), signed(row.change_in_trips_per_departure_pct, 2, '%'),
+        `${row.intensity_covered_days} / ${row.calendar_comparable_days}`, num(row.intensity_dates_held_beyond_validity),
+        row.forecast_published_trips_per_reference_departure == null ? <EvidenceBadge kind="Unavailable" /> : 'Available',
+      ] }))} />
+    {data.intensity.filter((row) => row.intensity_status === 'unavailable_shared_trunk').map((row) =>
+      <Note key={row.series_id} title="Combined Ampang / Sri Petaling intensity unavailable" tone="warn">{row.intensity_reason}</Note>)}
   </Panel>;
 }
 
@@ -120,7 +140,7 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
     series: [{ type: 'bar', name, data: rows.map((row) => row[field]), barMaxWidth: 38, itemStyle: { color, borderRadius: [5, 5, 0, 0] }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(15, 30, 54, 0.16)' } } }],
   });
 
-  return <Panel icon="sliders-horizontal" accent="orange" marker="D" title="Interactive peak demand sensitivity" subtitle="KTM hourly shape applied to each selected LRT3 daily planning scenario.">
+  return <Panel icon="sliders-horizontal" accent="orange" marker="C" title="Peak demand planning" subtitle="KTM hourly shape applied to each selected LRT3 daily planning scenario.">
     <div className={s.badges}><EvidenceBadge kind="Proxy Estimate" /><EvidenceBadge kind="Planning Assumption" /><EvidenceBadge kind="Scheduled Reference" /></div>
     <div className={s.controls}>
       <Segmented label="Peak demand scenario" value={scenario} options={scenarios} onChange={setScenario} />
@@ -155,6 +175,11 @@ function PeakSensitivity({ data }: { data: ServiceData }) {
     <Table label="Peak sensitivity by time window" columns={['Window', 'Hours', 'Proxy profile share', 'All-date proxy origin trips / day', 'Matched-date proxy origin trips / day', 'Matched-date nominal terminal places / day']}
       rows={rows.map((row) => ({ key: row.window, cells: [title(row), `${clock(row.start)}–${clock(row.end)}`, pct(row.share * 100), num(row.allDemand), num(row.matchedDemand),
         row.nominal == null ? <EvidenceBadge kind="Unavailable" /> : num(row.nominal)] }))} />
+    <Details title="Proxy evidence and operator follow-up">
+      <p>{data.definitions.peak_proxy}</p>
+      <p>{data.definitions.coverage}</p>
+      <p>Use measured LRT3 hourly entries to replace the proxy when available. Check delivered service, train formations and passenger counts by direction and segment before assessing occupancy.</p>
+    </Details>
   </Panel>;
 }
 
@@ -165,35 +190,18 @@ export default function ServiceReadiness() {
   const sameReference = schedule.routeId === lrt3Route && schedule.day === capacity.day && schedule.direction === capacity.direction;
   return <div className={s.tabBody}>
     <TabHeading title="Service Readiness & Capacity" detail="Compare scheduled terminal frequency, nominal LRT3 capacity and KTM-informed demand sensitivity." />
-    <p className={s.selectionContext} role="status">
-      {sameReference
-        ? 'Both panels use the same Shah Alam Line timetable, day type and direction. Each panel has its own filters.'
-        : 'The panels show different selections. Match the Shah Alam Line, day type and direction to compare the timetable with its nominal capacity.'}
-    </p>
-    <div className={s.pairedPanels}>
-      <RouteExplorer data={data} selection={schedule} onChange={setSchedule} />
-      <Supply data={data} selection={capacity} onChange={setCapacity} />
-    </div>
-    <Panel icon="chart-bar" accent="purple" marker="C" title="Network service intensity" badge={<EvidenceBadge kind="Model Forecast" />}
-      subtitle="Published headline trips per reference terminal departure, pairing the same ordinary dates and denominator with the recent baseline.">
-      <Table label="Network service intensity" columns={['Headline service', 'GTFS routes', 'Forecast trips / departure', 'Baseline trips / departure', 'Change', 'Comparable dates', 'Held dates', 'Coverage']}
-        rows={data.intensity.map((row) => ({ key: row.series_id, cells: [targetShort[row.series_id], row.route_ids.split('|').join(' / '),
-          num(row.forecast_published_trips_per_reference_departure, 1), num(row.recent_published_trips_per_same_reference_departure, 1), signed(row.change_in_trips_per_departure_pct, 2, '%'),
-          `${row.intensity_covered_days} / ${row.calendar_comparable_days}`, num(row.intensity_dates_held_beyond_validity),
-          row.forecast_published_trips_per_reference_departure == null ? <EvidenceBadge kind="Unavailable" /> : 'Available',
-        ] }))} />
-      {data.intensity.filter((row) => row.intensity_status === 'unavailable_shared_trunk').map((row) =>
-        <Note key={row.series_id} title="Combined Ampang / Sri Petaling intensity unavailable" tone="warn">{row.intensity_reason}</Note>)}
+    <RouteExplorer data={data} selection={schedule} onChange={setSchedule} />
+    <Panel icon="users" accent="teal" marker="B" title="Capacity & service intensity">
+      <p className={s.selectionContext} role="status">
+        {sameReference
+          ? 'The explorer and capacity panel use the same Shah Alam Line timetable, day type and direction. Their filters are independent.'
+          : 'Match the Shah Alam Line, day type and direction in the explorer and capacity panel to compare the timetable with nominal capacity.'}
+      </p>
+      <div className={s.pairedPanels}>
+        <Supply data={data} selection={capacity} onChange={setCapacity} />
+        <ServiceIntensity data={data} />
+      </div>
     </Panel>
     <PeakSensitivity data={data} />
-    <Details icon="shield-check" accent="blue" marker="E" title="Service evidence and operator monitoring" summary="Schedule assumptions, source definitions and operator follow-up.">
-      <ul className={s.textList}>
-        <li>Compare scheduled terminal departures with delivered trips and headway logs by direction, especially on holidays and after the GTFS calendar expires.</li>
-        <li>Verify actual formations and passenger counts by time, direction and segment before assessing occupancy.</li>
-        <li>Replace the KTM proxy with measured LRT3 hourly entries as operator data becomes available.</li>
-      </ul>
-      <p>Forecast dates with unavailable holiday or uncovered-calendar supply include {data.holidayDatesWithoutSupply.map(dateText).join(', ')}.</p>
-      {Object.entries(data.definitions).map(([key, text]) => <p key={key}>{text}</p>)}
-    </Details>
   </div>;
 }

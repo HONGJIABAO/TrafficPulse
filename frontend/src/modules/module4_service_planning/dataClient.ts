@@ -4,17 +4,22 @@ import type { AssetMap } from './contracts';
 export const districtGeographyUrl = new URL('./data/district-geography.json', import.meta.url).href;
 export const equityDataUrl = new URL('./data/equity.json', import.meta.url).href;
 export const manifestUrl = new URL('./data/manifest.json', import.meta.url).href;
+export const networkDataUrl = new URL('./data/network.json', import.meta.url).href;
+export const historyDataUrl = new URL('./data/history.json', import.meta.url).href;
+export const researchDataUrl = new URL('./data/research.json', import.meta.url).href;
+export const patternsDataUrl = new URL('./data/patterns.json', import.meta.url).href;
+export const methodologyDataUrl = new URL('./data/methodology.json', import.meta.url).href;
 
 const assets = {
   manifest: manifestUrl,
-  network: new URL('./data/network.json', import.meta.url).href,
-  history: new URL('./data/history.json', import.meta.url).href,
-  research: new URL('./data/research.json', import.meta.url).href,
-  patterns: new URL('./data/patterns.json', import.meta.url).href,
+  network: networkDataUrl,
+  history: historyDataUrl,
+  research: researchDataUrl,
+  patterns: patternsDataUrl,
   service: new URL('./data/service.json', import.meta.url).href,
   equity: equityDataUrl,
   geography: districtGeographyUrl,
-  methodology: new URL('./data/methodology.json', import.meta.url).href,
+  methodology: methodologyDataUrl,
 };
 
 type Asset = keyof AssetMap;

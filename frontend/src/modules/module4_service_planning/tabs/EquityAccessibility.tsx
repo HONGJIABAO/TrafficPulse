@@ -84,18 +84,47 @@ function DistrictExplorer({ data, geography }: { data: EquityData; geography: Ge
   }));
   const thresholds = [...new Set(data.screens.map((row) => row.scenario_id))];
   const markers = scale?.legend ?? Object.values(priorityClasses);
+  const codes = sum(data.districts.map((d) => d.mapped_published_origin_codes));
 
   return <>
-    <div className={s.mapLayout}>
-      <Panel primary icon="pin-marker" accent="blue" title="District map and selected district" badge={<EvidenceBadge kind="Observed" />}
-        subtitle="Eight administrative comparison units. Choose a district on the map or from the list.">
-        <div className={s.controls}>
-          <Segmented label="Socioeconomic cohort" value={cohort} options={cohorts} onChange={setCohort} />
-          <Select label="Equity screening rule" value={rule} options={rules} onChange={setRule} />
-          <Select label="District map metric" value={metricKey}
-            options={[...metrics.map(({ value, label }) => ({ value, label })), { value: 'priority', label: 'Equity screening classification' }]} onChange={setMetricKey} />
-          <Select label="Selected district" value={selected} options={data.districts.map((row) => ({ value: row.district_id, label: row.district }))} onChange={setSelected} />
+    <Panel primary icon="pin-marker" accent="blue" title="Interactive district accessibility map" badge={<EvidenceBadge kind="Observed" />}
+      subtitle="Choose a district on the map or from the list.">
+      <Headline>
+        <Kpi lead icon="transit-rail" accent="blue" countUp label="Published network station origins" value={num(data.activityTotal)} badge={<EvidenceBadge kind="Observed" />}
+          note={<>{dateRange(data.observation.start, data.observation.end)} · {num(data.observation.days)} observed days · {num(codes)} origin codes</>} />
+        <Kpi icon="pin-marker" accent="teal" countUp label="Mapped physical stations" value={num(data.physicalStations)} note={`${num(data.districts.length)} administrative units · population ${data.populationYear}`} />
+        <Kpi icon="users" accent="purple" countUp label="Published LRT3 station origins" value={num(data.lrt3Trips)} note={`${num(data.lrt3Stations)} corridor stations`} />
+      </Headline>
+      <div className={s.controls}>
+        <Segmented label="Socioeconomic cohort" value={cohort} options={cohorts} onChange={setCohort} />
+        <Select label="Equity screening rule" value={rule} options={rules} onChange={setRule} />
+        <Select label="District map metric" value={metricKey}
+          options={[...metrics.map(({ value, label }) => ({ value, label })), { value: 'priority', label: 'Equity screening classification' }]} onChange={setMetricKey} />
+        <Select label="Selected district" value={selected} options={data.districts.map((row) => ({ value: row.district_id, label: row.district }))} onChange={setSelected} />
+      </div>
+      <div className={s.mapLayout}>
+        <div className={s.stack}>
+          <DistrictMap geography={geography} selected={selected} values={values} onSelect={setSelected} />
+          <div className={s.legend} aria-label="District map legend">
+            <strong>{metric?.label ?? 'Equity screening classification'}</strong>
+            {markers.map((entry) => <span key={entry.label}><i style={{ background: entry.color }} />{entry.label}</span>)}
+          </div>
         </div>
+        <DistrictDetail district={active} coverage={data.coverage[active.district_id]} screen={screens[active.district_id]} selectedMetric={values[active.district_id]} />
+      </div>
+      <p className={s.muted}>Mapped station density and published origins describe coverage and activity. Walking access, unmet demand and journey capture require separate evidence.</p>
+      <p className={s.muted}>District indicators use OpenStreetMap boundaries and Rapid Rail GTFS stop points. The historical study used PLANMalaysia boundaries.{' '}
+        <a href={equityDataUrl} download="equity.json">Download equity data and source notices</a>.
+      </p>
+      <DistrictActivity data={data} />
+      <Details title="Geographical scope, station mapping and limitations">
+        <p>{data.scope}</p><p>{data.physicalDeduplication}</p>
+        <p>Putrajaya Line coverage includes {num(data.putrajayaOrigins)} published origin codes and {num(data.putrajayaDestinations)} destination codes.</p>
+        <ul className={s.textList}>{data.limitations.map((text) => <li key={text}>{text}</li>)}</ul>
+      </Details>
+    </Panel>
+    <AnalysisGroup icon="accessibility" accent="purple" title="Equity priority screening">
+      <Panel heading="h4" icon="shield-check" accent="teal" title="Equity priority matrix" subtitle="Validated Step 4 rules compare relative household vulnerability with station density. Step 4B activity provides descriptive context.">
         {activeScreen ? <p>
           <strong>{scenarioLabel(activeScenario)}</strong>{' · '}
           {priorityDistricts.length > 0
@@ -103,21 +132,6 @@ function DistrictExplorer({ data, geography }: { data: EquityData; geography: Ge
             : 'No districts meet the priority rule in this cohort.'}{' '}
           {num(activeScreen.comparison_cohort_size)} districts are comparable in this cohort.
         </p> : <Empty>Screening evidence is unavailable for this selection.</Empty>}
-        <DistrictMap geography={geography} selected={selected} values={values} onSelect={setSelected} />
-        <div className={s.legend} aria-label="District map legend">
-          <strong>{metric?.label ?? 'Equity screening classification'}</strong>
-          {markers.map((entry) => <span key={entry.label}><i style={{ background: entry.color }} />{entry.label}</span>)}
-        </div>
-        <p className={s.muted}>Published district indicators use OpenStreetMap boundaries and Rapid Rail GTFS stop points.
-          The historical study used PLANMalaysia boundaries.{' '}
-          <a href={equityDataUrl} download="equity.json">Download equity data and source notices</a>.
-        </p>
-      </Panel>
-      <DistrictDetail district={active} coverage={data.coverage[active.district_id]} screen={screens[active.district_id]} selectedMetric={values[active.district_id]} />
-    </div>
-    <AnalysisGroup icon="accessibility" accent="purple" title="Equity priority screening">
-      <Panel heading="h4" icon="shield-check" accent="teal" title="Equity priority matrix" subtitle="Validated Step 4 rules compare relative household vulnerability with station density. Step 4B activity provides descriptive context.">
-        <p className={s.muted}>The screen helps select districts for follow-up. Assessing actual access or unmet demand requires further evidence on walking access and travel behaviour.</p>
         {activeScreen && <Details title={activeScenario === data.primaryScenario ? 'Original Step 4 screening thresholds' : 'Selected sensitivity thresholds'}>
           <p>
             Income at or below {currency(activeScreen.income_cutoff_myr, 2)} {activeScreen.vulnerability_rule === 'either' ? 'or' : 'and'} absolute poverty at or above {pct(activeScreen.poverty_cutoff_pct)}.
@@ -148,34 +162,38 @@ function DistrictExplorer({ data, geography }: { data: EquityData; geography: Ge
   </>;
 }
 
-function Activity({ data }: { data: EquityData }) {
+function DistrictActivity({ data }: { data: EquityData }) {
   const districts = [...data.districts].sort((a, b) => (b.observed_rapid_rail_station_origin_trips ?? 0) - (a.observed_rapid_rail_station_origin_trips ?? 0));
-  const corridor = districts.filter((d) => ['Petaling', 'Klang'].includes(d.district));
+  return <Details title="District activity and station coverage" summary="Compare published origin totals and rates across all eight districts.">
+    <Table label="District published activity and coverage" columns={['District', 'Population', 'Physical stations', 'LRT3 stations', 'Station origins', 'Daily origins', 'Network share', 'Origins per 1,000 residents', 'Daily origins per station', 'LRT3 share']}
+      rows={districts.map((row) => ({ key: row.district_id, cells: [row.district, num(row.total_population_residents),
+        num(row.rapid_rail_physical_stations), num(data.coverage[row.district_id].lrt3_stations), num(row.observed_rapid_rail_station_origin_trips),
+        num(row.average_daily_rapid_rail_station_origin_trips, 1), pct(row.share_of_published_network_station_origin_trips_pct),
+        num(row.rapid_rail_station_origin_trips_per_1k_residents_period, 1), num(row.average_daily_rapid_rail_station_origin_trips_per_physical_station, 1),
+        pct(row.lrt3_share_of_observed_district_station_origin_trips_pct)] }))} />
+  </Details>;
+}
+
+function CorridorAnalysis({ data }: { data: EquityData }) {
+  const corridor = data.districts.filter((d) => ['Petaling', 'Klang'].includes(d.district))
+    .sort((a, b) => (b.observed_rapid_rail_station_origin_trips ?? 0) - (a.observed_rapid_rail_station_origin_trips ?? 0));
   const stations = [...data.stationContributions].sort((a, b) => b.station_origin_trips - a.station_origin_trips);
   const [stationFilter, setStationFilter] = useState('all');
   const shown = stations.filter((row) => stationFilter === 'all' || row.district_id === stationFilter);
   const stationDistrict = (id: string) => data.districts.find((d) => d.district_id === id)?.district ?? id;
 
-  return <>
-    <Panel icon="globe-network" accent="blue" title="Published network district activity" badge={<EvidenceBadge kind="Observed" />}
-      subtitle={`${dateRange(data.observation.start, data.observation.end)} · ${num(data.observation.days)} observed days.`}>
-      <Bars label="Average daily published station origins by district" horizontal height={270}
-        data={districts.map((row) => ({ name: row.district, value: row.average_daily_rapid_rail_station_origin_trips }))} />
-      <Table label="District published activity and coverage" columns={['District', 'Population', 'Physical stations', 'LRT3 stations', 'Station origins', 'Daily origins', 'Network share', 'Origins per 1,000 residents', 'Daily origins per station', 'LRT3 share']}
-        rows={districts.map((row) => ({ key: row.district_id, cells: [row.district, num(row.total_population_residents),
-          num(row.rapid_rail_physical_stations), num(data.coverage[row.district_id].lrt3_stations), num(row.observed_rapid_rail_station_origin_trips),
-          num(row.average_daily_rapid_rail_station_origin_trips, 1), pct(row.share_of_published_network_station_origin_trips_pct),
-          num(row.rapid_rail_station_origin_trips_per_1k_residents_period, 1), num(row.average_daily_rapid_rail_station_origin_trips_per_physical_station, 1),
-          pct(row.lrt3_share_of_observed_district_station_origin_trips_pct)] }))} />
-    </Panel>
-    <Panel icon="transit-rail" accent="teal" title="Klang and Petaling corridor comparison" badge={<EvidenceBadge kind="Observed" />}>
+  return <Panel icon="transit-rail" accent="orange" title="LRT3 corridor analysis" badge={<EvidenceBadge kind="Observed" />}
+    subtitle={`${dateRange(data.observation.start, data.observation.end)} · ${num(data.observation.days)} observed days.`}>
+    <div className={s.stack}>
+      <h4>Klang and Petaling comparison</h4>
       <Table label="LRT3 district comparison" columns={['District', 'LRT3 stations', 'LRT3 station origins', 'Share of LRT3 origins', 'LRT3 share of district origins', 'Network station density']}
         rows={corridor.map((row) => ({ key: row.district_id, cells: [row.district, num(data.coverage[row.district_id].lrt3_stations), num(row.observed_lrt3_station_origin_trips_step4),
           pct(row.observed_lrt3_station_origin_trips_step4 == null ? null : row.observed_lrt3_station_origin_trips_step4 / data.lrt3Trips * 100),
           pct(row.lrt3_share_of_observed_district_station_origin_trips_pct), num(row.rapid_rail_stations_per_100k_residents, 2)] }))} />
-    </Panel>
-    <Panel icon="activity" accent="orange" title="LRT3 station-origin concentration" badge={<EvidenceBadge kind="Observed" />}
-      subtitle={`${num(shown.length)} stations account for ${pct(sum(shown.map((row) => row.station_origin_trips)) / data.lrt3Trips * 100)} of published LRT3 station origins in this selection.`}>
+    </div>
+    <div className={s.stack}>
+      <h4>LRT3 station-origin concentration</h4>
+      <p className={s.muted}>{num(shown.length)} stations account for {pct(sum(shown.map((row) => row.station_origin_trips)) / data.lrt3Trips * 100)} of published LRT3 station origins in this selection.</p>
       <div className={s.controls}><Select label="Station concentration district" value={stationFilter} options={[
         { value: 'all', label: 'All LRT3 stations' }, ...corridor.map((row) => ({ value: row.district_id, label: row.district })),
       ]} onChange={setStationFilter} /></div>
@@ -185,37 +203,20 @@ function Activity({ data }: { data: EquityData }) {
         <Table label="LRT3 station-origin counts" columns={['Station', 'Code', 'District', 'Published station origins', 'Share of LRT3 origins']}
           rows={shown.map((row) => ({ key: row.station_code, cells: [row.station_name, row.station_code, stationDistrict(row.district_id), num(row.station_origin_trips), pct(row.line_share_pct)] }))} />
       </Details>
-    </Panel>
-  </>;
+    </div>
+  </Panel>;
 }
 
 export default function EquityAccessibility() {
   const data = useAsset('equity');
   const geography = useAsset('geography');
-  const codes = sum(data.districts.map((d) => d.mapped_published_origin_codes));
   return <div className={s.tabBody}>
     <TabHeading title="Equity & Accessibility" detail="Compare published rail origins, station coverage and socioeconomic screening by district." />
     <DistrictExplorer data={data} geography={geography} />
-    <Details icon="transit-rail" accent="blue" title="Published demand and station coverage" summary="Observation window, network and LRT3 station origins, and mapped facilities.">
-      <Headline>
-        <Kpi lead icon="transit-rail" accent="blue" countUp label="Published network station origins" value={num(data.activityTotal)} badge={<EvidenceBadge kind="Observed" />}
-          note={<>{dateRange(data.observation.start, data.observation.end)} · {num(data.observation.days)} observed days · {num(codes)} origin codes</>} />
-        <Kpi icon="pin-marker" accent="teal" countUp label="Mapped physical stations" value={num(data.physicalStations)} note={`${num(data.districts.length)} administrative units · population ${data.populationYear}`} />
-        <Kpi icon="users" accent="purple" countUp label="Published LRT3 station origins" value={num(data.lrt3Trips)} note={`${num(data.lrt3Stations)} corridor stations`} />
-      </Headline>
-      <p>Source-internal reconciliation leaves underlying journey capture unverified. Resident travel behaviour, congestion, walking accessibility and unmet demand require separate evidence.</p>
-    </Details>
-    <p className={s.muted}><strong>Published OD coverage.</strong> Putrajaya Line coverage includes {num(data.putrajayaOrigins)} published origin codes and {num(data.putrajayaDestinations)} destination codes. Actual journey capture remains unverified.</p>
-    <Details icon="chart-bar" accent="orange" title="District and corridor activity" summary="Origin rates by district, Klang and Petaling comparison, and station contribution charts and tables.">
-      <Activity data={data} />
-    </Details>
+    <CorridorAnalysis data={data} />
     <Note title={data.policy.name}>
       The policy sets a {pct(data.policy.target_percent, 0)} public transport modal share target for {data.policy.geographical_scope} by {data.policy.target_year}.
       District rail-origin counts cannot establish achieved modal share. <a href={data.policy.official_faq} target="_blank" rel="noreferrer">Official RMK13 policy context</a>.
     </Note>
-    <Details icon="shield-check" accent="teal" title="Geographical scope, station mapping and limitations">
-      <p>{data.scope}</p><p>{data.physicalDeduplication}</p>
-      <ul className={s.textList}>{data.limitations.map((text) => <li key={text}>{text}</li>)}</ul>
-    </Details>
   </div>;
 }

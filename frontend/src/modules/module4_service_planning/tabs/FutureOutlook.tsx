@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { dateRange, dateText, dayOptions, forecastScopes, getWindow, isFutureDate, modelLabel, num, pct, signed, targetColor, targetShort } from '../analytics';
-import { Bars, Lines } from '../charts';
+import { dateRange, dateText, dayOptions, forecastScopes, getWindow, isFutureDate, modelLabel, num, pct, signed, targetShort } from '../analytics';
 import type { ForecastScope, Horizon, NetworkData, WatchRow } from '../contracts';
 import { Badge, Details, EvidenceBadge, Headline, Kpi, Panel, Segmented, Table } from '../ui';
 import s from '../dashboard.module.css';
@@ -21,8 +20,6 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
   const [scope, setScope] = useState<ForecastScope>('future');
   const network = getWindow(data, data.networkId, horizon, scope);
   const target = data.targets[data.networkId];
-  const fullPoints = data.daily[data.networkId].slice(0, horizon);
-  const chartPoints = fullPoints.filter(([date]) => scope === 'full' || isFutureDate(date, data.asOf));
   const serviceRows = data.components.flatMap((id) => {
     const row = getWindow(data, id, horizon, scope);
     return row ? [row] : [];
@@ -30,7 +27,7 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
   const watch = data.watchlist.filter((row) => row.view === (scope === 'full' ? 'full_90_day' : 'future_only_after_as_of'));
   const flagged = watch.filter((row) => row.material_change !== 'within_threshold' || row.watch_uncertainty);
   const shah = watch.find((row) => row.series_id === 'rail_lrt_shah_alam');
-  const elapsed = fullPoints.filter(([date]) => !isFutureDate(date, data.asOf)).length;
+  const elapsed = data.daily[data.networkId].slice(0, horizon).filter(([date]) => !isFutureDate(date, data.asOf)).length;
   const watchRules = data.watchRules;
   const change = network?.change_pct ?? null;
 
@@ -70,7 +67,7 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
         </ul>
         <p>Evaluation covers near-term horizons through 28 days where enough data was available. Forecasts extending to 90 days support planning.</p>
       </Details>
-      <Details title="Headline forecast behind the watchlist" summary="Daily service-sum outlook and changes against weekday-matched baselines.">
+      <Details title="Headline forecast comparisons" summary="Service-sum totals and six-service changes against weekday-matched baselines.">
         <div className={s.controls}>
           <Segmented label="Forecast horizon from cutoff" value={horizon} options={dayOptions} onChange={setHorizon} />
         </div>
@@ -82,29 +79,20 @@ export default function PlanningWatchlist({ data }: { data: NetworkData }) {
             note={`${signed(network?.delta ?? null)} trips per day vs ${num(network?.baseline)}`} />
           <Kpi icon="transit-rail" accent="purple" countUp label="Modelled headline services" value={num(data.components.length)} note={`Data cutoff ${dateText(target.data_cutoff)}`} />
         </Headline>
-        <div className={s.pairedPanels}>
-          <Panel heading="h4" icon="chart-bar" accent="blue" title="Published service-sum outlook" subtitle={`Daily forecast trips across the six headline services · reference date ${dateText(data.asOf)}.`}>
-            <Lines dates={chartPoints.map(([date]) => date)} label="Daily forecast for the published Rapid Rail service sum"
-              traces={scope === 'full' ? [
-                { name: 'Elapsed/reference-date projections', values: chartPoints.map(([date, value]) => !isFutureDate(date, data.asOf) ? value : null), dashed: true, color: '#94A3B8' },
-                { name: 'Future projections', values: chartPoints.map(([date, value]) => isFutureDate(date, data.asOf) ? value : null), color: targetColor[data.networkId], area: true },
-              ] : [{ name: 'Future projections', values: chartPoints.map(([, value]) => value), color: targetColor[data.networkId], area: true }]}
-              markers={[{ date: data.asOf, name: 'Analysis date' }]} height={250} />
-            <p className={s.muted}>
-              {scope === 'full' ? `${elapsed} projections fall on or before the reference date and remain forecast values.` : `The first ${elapsed} cutoff-window days are elapsed or fall on the reference date and are excluded from this view.`}
-            </p>
-          </Panel>
-          <Panel heading="h4" icon="shield-check" accent="teal" title="Six headline services" subtitle="Forecast change against each service’s recent weekday-matched baseline.">
-            <Bars data={serviceRows.map((row) => ({ name: targetShort[row.series_id], value: row.change_pct, color: targetColor[row.series_id] }))}
-              label="Change in forecast daily demand" horizontal suffix="%" decimals={2} height={228} />
-          </Panel>
-        </div>
-        <Table label="Headline forecast comparisons" columns={['Service', 'Forecast per day', 'Baseline per day', 'Change per day', 'Change', '90-day watchlist signal']}
-          rows={serviceRows.map((row) => ({
-            key: row.series_id,
-            cells: [targetShort[row.series_id], num(row.average), num(row.baseline), signed(row.delta), signed(row.change_pct, 2, '%'),
-              watch.find((item) => item.series_id === row.series_id)?.watch_uncertainty ? <Badge tone="warning">Elevated uncertainty</Badge> : 'See 90-day watchlist'],
-          }))} />
+        <p className={s.muted}>
+          Reference date {dateText(data.asOf)}. {scope === 'full'
+            ? `${elapsed} days on or before that date retain their forecast status.`
+            : `This scope starts after that date and excludes ${elapsed} cutoff-window days.`}
+          {' '}The active Ridge models apply the verified holiday adjustment. Tentative and unknown dates keep their evidence status.
+        </p>
+        <Panel heading="h4" icon="shield-check" accent="teal" title="Six headline services" subtitle="Forecast change against each service’s recent weekday-matched baseline.">
+          <Table label="Headline forecast comparisons" columns={['Service', 'Forecast per day', 'Baseline per day', 'Change per day', 'Change', '90-day watchlist signal']}
+            rows={serviceRows.map((row) => ({
+              key: row.series_id,
+              cells: [targetShort[row.series_id], num(row.average), num(row.baseline), signed(row.delta), signed(row.change_pct, 2, '%'),
+                watch.find((item) => item.series_id === row.series_id)?.watch_uncertainty ? <Badge tone="warning">Elevated uncertainty</Badge> : 'See 90-day watchlist'],
+            }))} />
+        </Panel>
       </Details>
     </Panel>;
 }
