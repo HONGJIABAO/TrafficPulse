@@ -1,208 +1,2797 @@
 {
-  "generated_at": "2026-11-27",
-  "air_pollution_data_cutoff": "2024-12-31",
+  "generated_at": "2026-11-28",
+  "forecast_origin_month": "2026-08-01",
+  "information_cutoff": "2026-08-31",
+  "historical_observation_count": 92,
+  "daily_source_records": 2800,
+  "data_freshness": {
+    "ridership_latest_month": "2026-08-01",
+    "fuelprice_latest_raw_date": "2026-11-19",
+    "registrations_latest_raw_date": "2026-10-01",
+    "labour_latest_raw_date": "2026-09-01",
+    "post_cutoff_drivers_excluded_from_forecast": true,
+    "conservative_backtest_pub_lags_months": {
+      "ridership": 0,
+      "fuelprice": 0,
+      "registrations": 1,
+      "labour_force": 1
+    }
+  },
   "driver_correlations": [
     {
       "feature": "u_rate",
-      "correlation": -0.9251
+      "label": "Unemployment Rate",
+      "correlation": -0.9251,
+      "n_obs": 92,
+      "missing_values_dropped": 0,
+      "period_start": "2019-01-01",
+      "period_end": "2026-08-01",
+      "units": "%",
+      "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
     },
     {
       "feature": "lf_employed",
-      "correlation": 0.8033
+      "label": "Employed Labour Force",
+      "correlation": 0.8033,
+      "n_obs": 92,
+      "missing_values_dropped": 0,
+      "period_start": "2019-01-01",
+      "period_end": "2026-08-01",
+      "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+      "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
     },
     {
       "feature": "diesel_avg",
-      "correlation": 0.6742
+      "label": "Diesel Retail Market Price",
+      "correlation": 0.6742,
+      "n_obs": 92,
+      "missing_values_dropped": 0,
+      "period_start": "2019-01-01",
+      "period_end": "2026-08-01",
+      "units": "RM / litre",
+      "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
     },
     {
       "feature": "registrations",
-      "correlation": 0.602
+      "label": "Vehicle Registrations",
+      "correlation": 0.602,
+      "n_obs": 92,
+      "missing_values_dropped": 0,
+      "period_start": "2019-01-01",
+      "period_end": "2026-08-01",
+      "units": "vehicles / month",
+      "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
     },
     {
       "feature": "ron95_avg",
-      "correlation": 0.5398
+      "label": "RON95 Retail Market Price",
+      "correlation": 0.5398,
+      "n_obs": 92,
+      "missing_values_dropped": 0,
+      "period_start": "2019-01-01",
+      "period_end": "2026-08-01",
+      "units": "RM / litre",
+      "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
     }
   ],
+  "correlations_by_period": {
+    "all": {
+      "label": "Full History (Jan 2019 – Aug 2026, incl. COVID-19 shock)",
+      "n_obs": 92,
+      "correlations": [
+        {
+          "feature": "u_rate",
+          "label": "Unemployment Rate",
+          "correlation": -0.9251,
+          "n_obs": 92,
+          "missing_values_dropped": 0,
+          "period_start": "2019-01-01",
+          "period_end": "2026-08-01",
+          "units": "%",
+          "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
+        },
+        {
+          "feature": "lf_employed",
+          "label": "Employed Labour Force",
+          "correlation": 0.8033,
+          "n_obs": 92,
+          "missing_values_dropped": 0,
+          "period_start": "2019-01-01",
+          "period_end": "2026-08-01",
+          "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+          "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
+        },
+        {
+          "feature": "diesel_avg",
+          "label": "Diesel Retail Market Price",
+          "correlation": 0.6742,
+          "n_obs": 92,
+          "missing_values_dropped": 0,
+          "period_start": "2019-01-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
+        },
+        {
+          "feature": "registrations",
+          "label": "Vehicle Registrations",
+          "correlation": 0.602,
+          "n_obs": 92,
+          "missing_values_dropped": 0,
+          "period_start": "2019-01-01",
+          "period_end": "2026-08-01",
+          "units": "vehicles / month",
+          "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
+        },
+        {
+          "feature": "ron95_avg",
+          "label": "RON95 Retail Market Price",
+          "correlation": 0.5398,
+          "n_obs": 92,
+          "missing_values_dropped": 0,
+          "period_start": "2019-01-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
+        }
+      ]
+    },
+    "24m": {
+      "label": "Last 24 Months (Sep 2024 – Aug 2026)",
+      "n_obs": 24,
+      "correlations": [
+        {
+          "feature": "registrations",
+          "label": "Vehicle Registrations",
+          "correlation": 0.8126,
+          "n_obs": 24,
+          "missing_values_dropped": 0,
+          "period_start": "2024-09-01",
+          "period_end": "2026-08-01",
+          "units": "vehicles / month",
+          "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
+        },
+        {
+          "feature": "ron95_avg",
+          "label": "RON95 Retail Market Price",
+          "correlation": 0.4534,
+          "n_obs": 24,
+          "missing_values_dropped": 0,
+          "period_start": "2024-09-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
+        },
+        {
+          "feature": "lf_employed",
+          "label": "Employed Labour Force",
+          "correlation": 0.4166,
+          "n_obs": 24,
+          "missing_values_dropped": 0,
+          "period_start": "2024-09-01",
+          "period_end": "2026-08-01",
+          "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+          "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
+        },
+        {
+          "feature": "u_rate",
+          "label": "Unemployment Rate",
+          "correlation": -0.3754,
+          "n_obs": 24,
+          "missing_values_dropped": 0,
+          "period_start": "2024-09-01",
+          "period_end": "2026-08-01",
+          "units": "%",
+          "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
+        },
+        {
+          "feature": "diesel_avg",
+          "label": "Diesel Retail Market Price",
+          "correlation": 0.3483,
+          "n_obs": 24,
+          "missing_values_dropped": 0,
+          "period_start": "2024-09-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
+        }
+      ]
+    },
+    "12m": {
+      "label": "Last 12 Months (Sep 2025 – Aug 2026)",
+      "n_obs": 12,
+      "correlations": [
+        {
+          "feature": "registrations",
+          "label": "Vehicle Registrations",
+          "correlation": 0.8554,
+          "n_obs": 12,
+          "missing_values_dropped": 0,
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-01",
+          "units": "vehicles / month",
+          "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
+        },
+        {
+          "feature": "ron95_avg",
+          "label": "RON95 Retail Market Price",
+          "correlation": 0.4022,
+          "n_obs": 12,
+          "missing_values_dropped": 0,
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
+        },
+        {
+          "feature": "diesel_avg",
+          "label": "Diesel Retail Market Price",
+          "correlation": 0.3133,
+          "n_obs": 12,
+          "missing_values_dropped": 0,
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
+        },
+        {
+          "feature": "u_rate",
+          "label": "Unemployment Rate",
+          "correlation": 0.1422,
+          "n_obs": 12,
+          "missing_values_dropped": 0,
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-01",
+          "units": "%",
+          "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
+        },
+        {
+          "feature": "lf_employed",
+          "label": "Employed Labour Force",
+          "correlation": 0.1216,
+          "n_obs": 12,
+          "missing_values_dropped": 0,
+          "period_start": "2025-09-01",
+          "period_end": "2026-08-01",
+          "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+          "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
+        }
+      ]
+    },
+    "post_covid": {
+      "label": "Post-COVID Period (Jan 2022 – Aug 2026)",
+      "n_obs": 56,
+      "correlations": [
+        {
+          "feature": "u_rate",
+          "label": "Unemployment Rate",
+          "correlation": -0.9547,
+          "n_obs": 56,
+          "missing_values_dropped": 0,
+          "period_start": "2022-01-01",
+          "period_end": "2026-08-01",
+          "units": "%",
+          "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
+        },
+        {
+          "feature": "lf_employed",
+          "label": "Employed Labour Force",
+          "correlation": 0.929,
+          "n_obs": 56,
+          "missing_values_dropped": 0,
+          "period_start": "2022-01-01",
+          "period_end": "2026-08-01",
+          "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+          "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
+        },
+        {
+          "feature": "diesel_avg",
+          "label": "Diesel Retail Market Price",
+          "correlation": 0.645,
+          "n_obs": 56,
+          "missing_values_dropped": 0,
+          "period_start": "2022-01-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
+        },
+        {
+          "feature": "registrations",
+          "label": "Vehicle Registrations",
+          "correlation": 0.5,
+          "n_obs": 56,
+          "missing_values_dropped": 0,
+          "period_start": "2022-01-01",
+          "period_end": "2026-08-01",
+          "units": "vehicles / month",
+          "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
+        },
+        {
+          "feature": "ron95_avg",
+          "label": "RON95 Retail Market Price",
+          "correlation": 0.4409,
+          "n_obs": 56,
+          "missing_values_dropped": 0,
+          "period_start": "2022-01-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
+        }
+      ]
+    },
+    "post_covid_diff": {
+      "label": "Month-over-Month First Differences (Feb 2022 – Aug 2026, detrended)",
+      "n_obs": 55,
+      "correlations": [
+        {
+          "feature": "registrations",
+          "label": "Vehicle Registrations",
+          "correlation": 0.7192,
+          "n_obs": 55,
+          "missing_values_dropped": 0,
+          "period_start": "2022-02-01",
+          "period_end": "2026-08-01",
+          "units": "vehicles / month",
+          "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels')."
+        },
+        {
+          "feature": "ron95_avg",
+          "label": "RON95 Retail Market Price",
+          "correlation": 0.1326,
+          "n_obs": 55,
+          "missing_values_dropped": 0,
+          "period_start": "2022-02-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers)."
+        },
+        {
+          "feature": "u_rate",
+          "label": "Unemployment Rate",
+          "correlation": 0.1106,
+          "n_obs": 55,
+          "missing_values_dropped": 0,
+          "period_start": "2022-02-01",
+          "period_end": "2026-08-01",
+          "units": "%",
+          "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted)."
+        },
+        {
+          "feature": "diesel_avg",
+          "label": "Diesel Retail Market Price",
+          "correlation": 0.0817,
+          "n_obs": 55,
+          "missing_values_dropped": 0,
+          "period_start": "2022-02-01",
+          "period_end": "2026-08-01",
+          "units": "RM / litre",
+          "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers)."
+        },
+        {
+          "feature": "lf_employed",
+          "label": "Employed Labour Force",
+          "correlation": 0.0525,
+          "n_obs": 55,
+          "missing_values_dropped": 0,
+          "period_start": "2022-02-01",
+          "period_end": "2026-08-01",
+          "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+          "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia."
+        }
+      ]
+    }
+  },
   "feature_importance": [
     {
       "feature": "registrations",
+      "label": "Vehicle Registrations",
       "importance": 102.0
     },
     {
       "feature": "u_rate",
+      "label": "Unemployment Rate",
       "importance": 70.0
     },
     {
       "feature": "lf_employed",
+      "label": "Employed Labour Force",
       "importance": 51.0
     },
     {
       "feature": "diesel_avg",
+      "label": "Diesel Retail Market Price",
       "importance": 21.0
     },
     {
       "feature": "ron95_avg",
+      "label": "RON95 Retail Market Price",
       "importance": 18.0
     }
   ],
+  "feature_importance_scope": {
+    "model": "LGBMRegressor (driver sensitivity analysis only; not used for final point forecasting)",
+    "training_period": "2019-01-01 to 2026-08-01",
+    "n_obs": 92,
+    "metric": "Split count on StandardScaler-transformed full-period driver matrix"
+  },
+  "selected_forecast_model": {
+    "name": "Holt-Winters Additive (Undamped)",
+    "specification": "statsmodels ExponentialSmoothing(seasonal='add', seasonal_periods=12, trend='add', damped_trend=False, initialization_method='estimated') scaled in millions",
+    "final_fit_convergence_warnings": 0,
+    "final_fit_fallback_used": false,
+    "role_separation_note": "Selected from the horizon-purged chronological model-selection split, ranking first at H=3, H=6, and H=12, with zero convergence failures and a coherent seasonal trajectory. Independent holdout results are evaluation evidence only; other candidates score better at some short horizons. LightGBM is retained strictly for nonlinear feature-importance analysis."
+  },
+  "model_evaluation": {
+    "chronological_boundary_audit": {
+      "selection_rule": "Horizon-aware purged selection: o >= 2023-01-01 and target date (o + H) <= 2024-07-01",
+      "holdout_first_origin": "2024-07-01",
+      "holdout_first_target": "2024-08-01",
+      "selection_max_target_cutoff": "2024-07-01",
+      "selection_targets_strictly_pre_holdout": true,
+      "note": "Enforcing target <= 2024-07-01 eliminates multi-step calendar overlap at H=3, 6, 12 and reduces purged selection H=12 sample size to n=7 origins (2023-01..2023-07); Holt-Winters Additive (Undamped) ranks #1 across H=3, 6, 12 in purged selection."
+    },
+    "selection_window": {
+      "1_month": {
+        "horizon_steps": 1,
+        "n_origins": 18,
+        "origin_start": "2023-01-01",
+        "origin_end": "2024-06-01",
+        "target_start": "2023-02-01",
+        "target_end": "2024-07-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 7056845.0,
+              "rmse": 7270764.0,
+              "mape_pct": 30.98,
+              "wape_pct": 30.19,
+              "bias": -7056845.0
+            },
+            "window_mean": {
+              "mae": 7056845.0,
+              "rmse": 7270764.0,
+              "mape_pct": 30.98,
+              "wape_pct": 30.19,
+              "bias": -7056845.0
+            },
+            "window_monthly_pooled": {
+              "mae": 7056845.0,
+              "rmse": 7270764.0,
+              "mape_pct": 30.98,
+              "wape_pct": 30.19,
+              "bias": -7056845.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1388848.0,
+              "rmse": 1738934.0,
+              "mape_pct": 6.04,
+              "wape_pct": 5.94,
+              "bias": -673895.0
+            },
+            "window_mean": {
+              "mae": 1388848.0,
+              "rmse": 1738934.0,
+              "mape_pct": 6.04,
+              "wape_pct": 5.94,
+              "bias": -673895.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1388848.0,
+              "rmse": 1738934.0,
+              "mape_pct": 6.04,
+              "wape_pct": 5.94,
+              "bias": -673895.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1408199.0,
+              "rmse": 1754568.0,
+              "mape_pct": 6.09,
+              "wape_pct": 6.03,
+              "bias": -754760.0
+            },
+            "window_mean": {
+              "mae": 1408199.0,
+              "rmse": 1754568.0,
+              "mape_pct": 6.09,
+              "wape_pct": 6.03,
+              "bias": -754760.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1408199.0,
+              "rmse": 1754568.0,
+              "mape_pct": 6.09,
+              "wape_pct": 6.03,
+              "bias": -754760.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 1720928.0,
+              "rmse": 2037509.0,
+              "mape_pct": 7.39,
+              "wape_pct": 7.36,
+              "bias": -1481519.0
+            },
+            "window_mean": {
+              "mae": 1720928.0,
+              "rmse": 2037509.0,
+              "mape_pct": 7.39,
+              "wape_pct": 7.36,
+              "bias": -1481519.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1720928.0,
+              "rmse": 2037509.0,
+              "mape_pct": 7.39,
+              "wape_pct": 7.36,
+              "bias": -1481519.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1308633.0,
+              "rmse": 1744693.0,
+              "mape_pct": 5.55,
+              "wape_pct": 5.6,
+              "bias": -1077707.0
+            },
+            "window_mean": {
+              "mae": 1308633.0,
+              "rmse": 1744693.0,
+              "mape_pct": 5.55,
+              "wape_pct": 5.6,
+              "bias": -1077707.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1308633.0,
+              "rmse": 1744693.0,
+              "mape_pct": 5.55,
+              "wape_pct": 5.6,
+              "bias": -1077707.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1270416.0,
+              "rmse": 1702350.0,
+              "mape_pct": 5.43,
+              "wape_pct": 5.44,
+              "bias": -875801.0
+            },
+            "window_mean": {
+              "mae": 1270416.0,
+              "rmse": 1702350.0,
+              "mape_pct": 5.43,
+              "wape_pct": 5.44,
+              "bias": -875801.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1270416.0,
+              "rmse": 1702350.0,
+              "mape_pct": 5.43,
+              "wape_pct": 5.44,
+              "bias": -875801.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "3_months": {
+        "horizon_steps": 3,
+        "n_origins": 16,
+        "origin_start": "2023-01-01",
+        "origin_end": "2024-04-01",
+        "target_start": "2023-04-01",
+        "target_end": "2024-07-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 6687325.0,
+              "rmse": 6830468.0,
+              "mape_pct": 28.14,
+              "wape_pct": 27.9,
+              "bias": -6687325.0
+            },
+            "window_mean": {
+              "mae": 6923744.0,
+              "rmse": 7022513.0,
+              "mape_pct": 30.03,
+              "wape_pct": 29.54,
+              "bias": -6923744.0
+            },
+            "window_monthly_pooled": {
+              "mae": 6923744.0,
+              "rmse": 7128005.0,
+              "mape_pct": 30.02,
+              "wape_pct": 29.54,
+              "bias": -6923744.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 2058130.0,
+              "rmse": 2615113.0,
+              "mape_pct": 8.92,
+              "wape_pct": 8.59,
+              "bias": -1910263.0
+            },
+            "window_mean": {
+              "mae": 1588446.0,
+              "rmse": 1986269.0,
+              "mape_pct": 7.1,
+              "wape_pct": 6.78,
+              "bias": -1408238.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1700075.0,
+              "rmse": 2215696.0,
+              "mape_pct": 7.5,
+              "wape_pct": 7.25,
+              "bias": -1408238.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 2219560.0,
+              "rmse": 2725757.0,
+              "mape_pct": 9.52,
+              "wape_pct": 9.26,
+              "bias": -2136310.0
+            },
+            "window_mean": {
+              "mae": 1697293.0,
+              "rmse": 2050863.0,
+              "mape_pct": 7.51,
+              "wape_pct": 7.24,
+              "bias": -1558940.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1803613.0,
+              "rmse": 2282363.0,
+              "mape_pct": 7.89,
+              "wape_pct": 7.7,
+              "bias": -1558940.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 3191800.0,
+              "rmse": 3777998.0,
+              "mape_pct": 13.54,
+              "wape_pct": 13.32,
+              "bias": -3191800.0
+            },
+            "window_mean": {
+              "mae": 2314711.0,
+              "rmse": 2538743.0,
+              "mape_pct": 10.11,
+              "wape_pct": 9.88,
+              "bias": -2314711.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2427336.0,
+              "rmse": 2892409.0,
+              "mape_pct": 10.43,
+              "wape_pct": 10.36,
+              "bias": -2314711.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 2551031.0,
+              "rmse": 2953866.0,
+              "mape_pct": 10.9,
+              "wape_pct": 10.64,
+              "bias": -2551031.0
+            },
+            "window_mean": {
+              "mae": 1861475.0,
+              "rmse": 2084514.0,
+              "mape_pct": 8.19,
+              "wape_pct": 7.94,
+              "bias": -1861475.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1913942.0,
+              "rmse": 2357019.0,
+              "mape_pct": 8.26,
+              "wape_pct": 8.17,
+              "bias": -1861475.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 2230647.0,
+              "rmse": 2706361.0,
+              "mape_pct": 9.58,
+              "wape_pct": 9.31,
+              "bias": -2230647.0
+            },
+            "window_mean": {
+              "mae": 1647516.0,
+              "rmse": 1983109.0,
+              "mape_pct": 7.29,
+              "wape_pct": 7.03,
+              "bias": -1634856.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1746378.0,
+              "rmse": 2227530.0,
+              "mape_pct": 7.6,
+              "wape_pct": 7.45,
+              "bias": -1634856.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "6_months": {
+        "horizon_steps": 6,
+        "n_origins": 13,
+        "origin_start": "2023-01-01",
+        "origin_end": "2024-01-01",
+        "target_start": "2023-07-01",
+        "target_end": "2024-07-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 6722194.0,
+              "rmse": 6849792.0,
+              "mape_pct": 26.96,
+              "wape_pct": 26.96,
+              "bias": -6722194.0
+            },
+            "window_mean": {
+              "mae": 6826163.0,
+              "rmse": 6848477.0,
+              "mape_pct": 29.19,
+              "wape_pct": 29.02,
+              "bias": -6826163.0
+            },
+            "window_monthly_pooled": {
+              "mae": 6826163.0,
+              "rmse": 7022211.0,
+              "mape_pct": 29.26,
+              "wape_pct": 29.02,
+              "bias": -6826163.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 3281572.0,
+              "rmse": 3639089.0,
+              "mape_pct": 13.2,
+              "wape_pct": 13.16,
+              "bias": -3281572.0
+            },
+            "window_mean": {
+              "mae": 2149442.0,
+              "rmse": 2584372.0,
+              "mape_pct": 9.42,
+              "wape_pct": 9.14,
+              "bias": -2092968.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2311315.0,
+              "rmse": 2877466.0,
+              "mape_pct": 9.98,
+              "wape_pct": 9.83,
+              "bias": -2092968.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 3671973.0,
+              "rmse": 3947722.0,
+              "mape_pct": 14.72,
+              "wape_pct": 14.73,
+              "bias": -3671973.0
+            },
+            "window_mean": {
+              "mae": 2332154.0,
+              "rmse": 2712155.0,
+              "mape_pct": 10.14,
+              "wape_pct": 9.91,
+              "bias": -2325565.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2505487.0,
+              "rmse": 3027633.0,
+              "mape_pct": 10.73,
+              "wape_pct": 10.65,
+              "bias": -2325565.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 5778983.0,
+              "rmse": 5945736.0,
+              "mape_pct": 23.28,
+              "wape_pct": 23.18,
+              "bias": -5778983.0
+            },
+            "window_mean": {
+              "mae": 3518660.0,
+              "rmse": 3656132.0,
+              "mape_pct": 15.21,
+              "wape_pct": 14.96,
+              "bias": -3518660.0
+            },
+            "window_monthly_pooled": {
+              "mae": 3587968.0,
+              "rmse": 4093159.0,
+              "mape_pct": 15.18,
+              "wape_pct": 15.25,
+              "bias": -3518660.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 4530278.0,
+              "rmse": 4676306.0,
+              "mape_pct": 18.24,
+              "wape_pct": 18.17,
+              "bias": -4530278.0
+            },
+            "window_mean": {
+              "mae": 2805814.0,
+              "rmse": 2951869.0,
+              "mape_pct": 12.19,
+              "wape_pct": 11.93,
+              "bias": -2805814.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2838102.0,
+              "rmse": 3295540.0,
+              "mape_pct": 12.05,
+              "wape_pct": 12.06,
+              "bias": -2805814.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 3905925.0,
+              "rmse": 4116797.0,
+              "mape_pct": 15.72,
+              "wape_pct": 15.67,
+              "bias": -3905925.0
+            },
+            "window_mean": {
+              "mae": 2449391.0,
+              "rmse": 2714563.0,
+              "mape_pct": 10.68,
+              "wape_pct": 10.41,
+              "bias": -2449391.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2519519.0,
+              "rmse": 3025909.0,
+              "mape_pct": 10.76,
+              "wape_pct": 10.71,
+              "bias": -2449391.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "12_months": {
+        "horizon_steps": 12,
+        "n_origins": 7,
+        "origin_start": "2023-01-01",
+        "origin_end": "2023-07-01",
+        "target_start": "2024-01-01",
+        "target_end": "2024-07-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 6825095.0,
+              "rmse": 6900474.0,
+              "mape_pct": 26.22,
+              "wape_pct": 26.1,
+              "bias": -6825095.0
+            },
+            "window_mean": {
+              "mae": 6851023.0,
+              "rmse": 6856122.0,
+              "mape_pct": 29.17,
+              "wape_pct": 29.07,
+              "bias": -6851023.0
+            },
+            "window_monthly_pooled": {
+              "mae": 6851023.0,
+              "rmse": 7042188.0,
+              "mape_pct": 29.28,
+              "wape_pct": 29.07,
+              "bias": -6851023.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 6561261.0,
+              "rmse": 6706387.0,
+              "mape_pct": 25.29,
+              "wape_pct": 25.09,
+              "bias": -6561261.0
+            },
+            "window_mean": {
+              "mae": 3597377.0,
+              "rmse": 4015066.0,
+              "mape_pct": 15.51,
+              "wape_pct": 15.26,
+              "bias": -3597377.0
+            },
+            "window_monthly_pooled": {
+              "mae": 3763365.0,
+              "rmse": 4462987.0,
+              "mape_pct": 15.77,
+              "wape_pct": 15.97,
+              "bias": -3597377.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 7025842.0,
+              "rmse": 7104864.0,
+              "mape_pct": 27.0,
+              "wape_pct": 26.87,
+              "bias": -7025842.0
+            },
+            "window_mean": {
+              "mae": 3870516.0,
+              "rmse": 4159320.0,
+              "mape_pct": 16.62,
+              "wape_pct": 16.42,
+              "bias": -3870516.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4006904.0,
+              "rmse": 4654996.0,
+              "mape_pct": 16.71,
+              "wape_pct": 17.0,
+              "bias": -3870516.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 13284652.0,
+              "rmse": 13513443.0,
+              "mape_pct": 50.69,
+              "wape_pct": 50.8,
+              "bias": -13284652.0
+            },
+            "window_mean": {
+              "mae": 6462260.0,
+              "rmse": 6488956.0,
+              "mape_pct": 27.45,
+              "wape_pct": 27.42,
+              "bias": -6462260.0
+            },
+            "window_monthly_pooled": {
+              "mae": 6490478.0,
+              "rmse": 7389076.0,
+              "mape_pct": 26.59,
+              "wape_pct": 27.54,
+              "bias": -6462260.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 9922957.0,
+              "rmse": 10041047.0,
+              "mape_pct": 37.99,
+              "wape_pct": 37.95,
+              "bias": -9922957.0
+            },
+            "window_mean": {
+              "mae": 5029819.0,
+              "rmse": 5134934.0,
+              "mape_pct": 21.48,
+              "wape_pct": 21.34,
+              "bias": -5029819.0
+            },
+            "window_monthly_pooled": {
+              "mae": 5041127.0,
+              "rmse": 5770705.0,
+              "mape_pct": 20.77,
+              "wape_pct": 21.39,
+              "bias": -5029819.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 8242109.0,
+              "rmse": 8346028.0,
+              "mape_pct": 31.64,
+              "wape_pct": 31.52,
+              "bias": -8242109.0
+            },
+            "window_mean": {
+              "mae": 4313598.0,
+              "rmse": 4534052.0,
+              "mape_pct": 18.49,
+              "wape_pct": 18.3,
+              "bias": -4313598.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4359155.0,
+              "rmse": 5061652.0,
+              "mape_pct": 18.07,
+              "wape_pct": 18.5,
+              "bias": -4313598.0
+            },
+            "fallback_count": 0
+          }
+        }
+      }
+    },
+    "holdout_eval": {
+      "1_month": {
+        "horizon_steps": 1,
+        "n_origins": 25,
+        "origin_start": "2024-07-01",
+        "origin_end": "2026-07-01",
+        "target_start": "2024-08-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 2575111.0,
+              "rmse": 3024055.0,
+              "mape_pct": 8.73,
+              "wape_pct": 8.64,
+              "bias": -2508887.0
+            },
+            "window_mean": {
+              "mae": 2575111.0,
+              "rmse": 3024055.0,
+              "mape_pct": 8.73,
+              "wape_pct": 8.64,
+              "bias": -2508887.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2575111.0,
+              "rmse": 3024055.0,
+              "mape_pct": 8.73,
+              "wape_pct": 8.64,
+              "bias": -2508887.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1459633.0,
+              "rmse": 1784835.0,
+              "mape_pct": 4.91,
+              "wape_pct": 4.9,
+              "bias": 5429.0
+            },
+            "window_mean": {
+              "mae": 1459633.0,
+              "rmse": 1784835.0,
+              "mape_pct": 4.91,
+              "wape_pct": 4.9,
+              "bias": 5429.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1459633.0,
+              "rmse": 1784835.0,
+              "mape_pct": 4.91,
+              "wape_pct": 4.9,
+              "bias": 5429.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1441995.0,
+              "rmse": 1780862.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.84,
+              "bias": -143895.0
+            },
+            "window_mean": {
+              "mae": 1441995.0,
+              "rmse": 1780862.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.84,
+              "bias": -143895.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1441995.0,
+              "rmse": 1780862.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.84,
+              "bias": -143895.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 1287613.0,
+              "rmse": 1572334.0,
+              "mape_pct": 4.27,
+              "wape_pct": 4.32,
+              "bias": -506708.0
+            },
+            "window_mean": {
+              "mae": 1287613.0,
+              "rmse": 1572334.0,
+              "mape_pct": 4.27,
+              "wape_pct": 4.32,
+              "bias": -506708.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1287613.0,
+              "rmse": 1572334.0,
+              "mape_pct": 4.27,
+              "wape_pct": 4.32,
+              "bias": -506708.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1252815.0,
+              "rmse": 1497075.0,
+              "mape_pct": 4.19,
+              "wape_pct": 4.21,
+              "bias": -250640.0
+            },
+            "window_mean": {
+              "mae": 1252815.0,
+              "rmse": 1497075.0,
+              "mape_pct": 4.19,
+              "wape_pct": 4.21,
+              "bias": -250640.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1252815.0,
+              "rmse": 1497075.0,
+              "mape_pct": 4.19,
+              "wape_pct": 4.21,
+              "bias": -250640.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1315848.0,
+              "rmse": 1602033.0,
+              "mape_pct": 4.42,
+              "wape_pct": 4.42,
+              "bias": -122605.0
+            },
+            "window_mean": {
+              "mae": 1315848.0,
+              "rmse": 1602033.0,
+              "mape_pct": 4.42,
+              "wape_pct": 4.42,
+              "bias": -122605.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1315848.0,
+              "rmse": 1602033.0,
+              "mape_pct": 4.42,
+              "wape_pct": 4.42,
+              "bias": -122605.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "3_months": {
+        "horizon_steps": 3,
+        "n_origins": 23,
+        "origin_start": "2024-07-01",
+        "origin_end": "2026-05-01",
+        "target_start": "2024-10-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 2297908.0,
+              "rmse": 2647933.0,
+              "mape_pct": 7.71,
+              "wape_pct": 7.68,
+              "bias": -2225925.0
+            },
+            "window_mean": {
+              "mae": 2407054.0,
+              "rmse": 2742426.0,
+              "mape_pct": 8.2,
+              "wape_pct": 8.11,
+              "bias": -2407054.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2479037.0,
+              "rmse": 2872572.0,
+              "mape_pct": 8.4,
+              "wape_pct": 8.35,
+              "bias": -2407054.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1274422.0,
+              "rmse": 1520897.0,
+              "mape_pct": 4.31,
+              "wape_pct": 4.26,
+              "bias": -114360.0
+            },
+            "window_mean": {
+              "mae": 1099010.0,
+              "rmse": 1382918.0,
+              "mape_pct": 3.7,
+              "wape_pct": 3.7,
+              "bias": -30324.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1406436.0,
+              "rmse": 1752688.0,
+              "mape_pct": 4.77,
+              "wape_pct": 4.74,
+              "bias": -30324.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1284182.0,
+              "rmse": 1563719.0,
+              "mape_pct": 4.3,
+              "wape_pct": 4.29,
+              "bias": -552809.0
+            },
+            "window_mean": {
+              "mae": 1083739.0,
+              "rmse": 1384268.0,
+              "mape_pct": 3.63,
+              "wape_pct": 3.65,
+              "bias": -324251.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1395953.0,
+              "rmse": 1761901.0,
+              "mape_pct": 4.71,
+              "wape_pct": 4.7,
+              "bias": -324251.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 1623963.0,
+              "rmse": 2020291.0,
+              "mape_pct": 5.3,
+              "wape_pct": 5.43,
+              "bias": -1047504.0
+            },
+            "window_mean": {
+              "mae": 971159.0,
+              "rmse": 1130461.0,
+              "mape_pct": 3.26,
+              "wape_pct": 3.27,
+              "bias": -635749.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1391212.0,
+              "rmse": 1731786.0,
+              "mape_pct": 4.62,
+              "wape_pct": 4.68,
+              "bias": -635749.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1291922.0,
+              "rmse": 1426225.0,
+              "mape_pct": 4.28,
+              "wape_pct": 4.32,
+              "bias": -580932.0
+            },
+            "window_mean": {
+              "mae": 778808.0,
+              "rmse": 955770.0,
+              "mape_pct": 2.61,
+              "wape_pct": 2.62,
+              "bias": -333037.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1282828.0,
+              "rmse": 1496775.0,
+              "mape_pct": 4.31,
+              "wape_pct": 4.32,
+              "bias": -333037.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1203813.0,
+              "rmse": 1372157.0,
+              "mape_pct": 4.03,
+              "wape_pct": 4.02,
+              "bias": -347646.0
+            },
+            "window_mean": {
+              "mae": 879163.0,
+              "rmse": 1114698.0,
+              "mape_pct": 2.95,
+              "wape_pct": 2.96,
+              "bias": -181680.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1295158.0,
+              "rmse": 1567589.0,
+              "mape_pct": 4.38,
+              "wape_pct": 4.36,
+              "bias": -181680.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "6_months": {
+        "horizon_steps": 6,
+        "n_origins": 20,
+        "origin_start": "2024-07-01",
+        "origin_end": "2026-02-01",
+        "target_start": "2025-01-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 1954847.0,
+              "rmse": 2210447.0,
+              "mape_pct": 6.54,
+              "wape_pct": 6.52,
+              "bias": -1872067.0
+            },
+            "window_mean": {
+              "mae": 2304770.0,
+              "rmse": 2540868.0,
+              "mape_pct": 7.85,
+              "wape_pct": 7.78,
+              "bias": -2304770.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2386636.0,
+              "rmse": 2720203.0,
+              "mape_pct": 8.08,
+              "wape_pct": 8.05,
+              "bias": -2304770.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1628732.0,
+              "rmse": 1988753.0,
+              "mape_pct": 5.4,
+              "wape_pct": 5.43,
+              "bias": -200947.0
+            },
+            "window_mean": {
+              "mae": 1129521.0,
+              "rmse": 1451191.0,
+              "mape_pct": 3.78,
+              "wape_pct": 3.81,
+              "bias": -63579.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1555080.0,
+              "rmse": 1898502.0,
+              "mape_pct": 5.24,
+              "wape_pct": 5.25,
+              "bias": -63579.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1764698.0,
+              "rmse": 2149749.0,
+              "mape_pct": 5.81,
+              "wape_pct": 5.88,
+              "bias": -1050381.0
+            },
+            "window_mean": {
+              "mae": 1149362.0,
+              "rmse": 1491730.0,
+              "mape_pct": 3.85,
+              "wape_pct": 3.88,
+              "bias": -569674.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1526915.0,
+              "rmse": 1947333.0,
+              "mape_pct": 5.11,
+              "wape_pct": 5.15,
+              "bias": -569674.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 1390074.0,
+              "rmse": 1760026.0,
+              "mape_pct": 4.54,
+              "wape_pct": 4.63,
+              "bias": -949874.0
+            },
+            "window_mean": {
+              "mae": 870814.0,
+              "rmse": 1074996.0,
+              "mape_pct": 2.92,
+              "wape_pct": 2.94,
+              "bias": -753829.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1385935.0,
+              "rmse": 1719931.0,
+              "mape_pct": 4.61,
+              "wape_pct": 4.68,
+              "bias": -753829.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1128016.0,
+              "rmse": 1568105.0,
+              "mape_pct": 3.7,
+              "wape_pct": 3.76,
+              "bias": -575411.0
+            },
+            "window_mean": {
+              "mae": 675274.0,
+              "rmse": 930221.0,
+              "mape_pct": 2.26,
+              "wape_pct": 2.28,
+              "bias": -408704.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1228435.0,
+              "rmse": 1536977.0,
+              "mape_pct": 4.12,
+              "wape_pct": 4.14,
+              "bias": -408704.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1288639.0,
+              "rmse": 1714696.0,
+              "mape_pct": 4.26,
+              "wape_pct": 4.3,
+              "bias": -388179.0
+            },
+            "window_mean": {
+              "mae": 817597.0,
+              "rmse": 1137657.0,
+              "mape_pct": 2.73,
+              "wape_pct": 2.76,
+              "bias": -236141.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1324943.0,
+              "rmse": 1659388.0,
+              "mape_pct": 4.46,
+              "wape_pct": 4.47,
+              "bias": -236141.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "12_months": {
+        "horizon_steps": 12,
+        "n_origins": 14,
+        "origin_start": "2024-07-01",
+        "origin_end": "2025-08-01",
+        "target_start": "2025-07-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 1605633.0,
+              "rmse": 1862145.0,
+              "mape_pct": 5.16,
+              "wape_pct": 5.24,
+              "bias": -1487375.0
+            },
+            "window_mean": {
+              "mae": 2233359.0,
+              "rmse": 2357170.0,
+              "mape_pct": 7.54,
+              "wape_pct": 7.51,
+              "bias": -2233359.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2301362.0,
+              "rmse": 2598428.0,
+              "mape_pct": 7.76,
+              "wape_pct": 7.74,
+              "bias": -2233359.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 961061.0,
+              "rmse": 1142057.0,
+              "mape_pct": 3.19,
+              "wape_pct": 3.14,
+              "bias": 195060.0
+            },
+            "window_mean": {
+              "mae": 1004556.0,
+              "rmse": 1209397.0,
+              "mape_pct": 3.36,
+              "wape_pct": 3.38,
+              "bias": 224002.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1471157.0,
+              "rmse": 1803725.0,
+              "mape_pct": 4.99,
+              "wape_pct": 4.94,
+              "bias": 224002.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1622534.0,
+              "rmse": 1868043.0,
+              "mape_pct": 5.22,
+              "wape_pct": 5.29,
+              "bias": -1487193.0
+            },
+            "window_mean": {
+              "mae": 1134792.0,
+              "rmse": 1317928.0,
+              "mape_pct": 3.82,
+              "wape_pct": 3.81,
+              "bias": -717946.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1563212.0,
+              "rmse": 1928945.0,
+              "mape_pct": 5.22,
+              "wape_pct": 5.25,
+              "bias": -717946.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 3443768.0,
+              "rmse": 3804281.0,
+              "mape_pct": 11.0,
+              "wape_pct": 11.24,
+              "bias": -3443768.0
+            },
+            "window_mean": {
+              "mae": 1725020.0,
+              "rmse": 1832671.0,
+              "mape_pct": 5.79,
+              "wape_pct": 5.8,
+              "bias": -1725020.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2037363.0,
+              "rmse": 2505507.0,
+              "mape_pct": 6.67,
+              "wape_pct": 6.85,
+              "bias": -1725020.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1733370.0,
+              "rmse": 2038316.0,
+              "mape_pct": 5.52,
+              "wape_pct": 5.66,
+              "bias": -1624354.0
+            },
+            "window_mean": {
+              "mae": 784370.0,
+              "rmse": 969354.0,
+              "mape_pct": 2.65,
+              "wape_pct": 2.64,
+              "bias": -750509.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1363259.0,
+              "rmse": 1667267.0,
+              "mape_pct": 4.52,
+              "wape_pct": 4.58,
+              "bias": -750509.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1090488.0,
+              "rmse": 1340183.0,
+              "mape_pct": 3.52,
+              "wape_pct": 3.56,
+              "bias": -714647.0
+            },
+            "window_mean": {
+              "mae": 733063.0,
+              "rmse": 912902.0,
+              "mape_pct": 2.46,
+              "wape_pct": 2.46,
+              "bias": -263253.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1302737.0,
+              "rmse": 1587505.0,
+              "mape_pct": 4.38,
+              "wape_pct": 4.38,
+              "bias": -263253.0
+            },
+            "fallback_count": 0
+          }
+        }
+      }
+    },
+    "all_post_2023": {
+      "1_month": {
+        "horizon_steps": 1,
+        "n_origins": 43,
+        "origin_start": "2023-01-01",
+        "origin_end": "2026-07-01",
+        "target_start": "2023-02-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 4451186.0,
+              "rmse": 5238886.0,
+              "mape_pct": 18.04,
+              "wape_pct": 16.42,
+              "bias": -4412683.0
+            },
+            "window_mean": {
+              "mae": 4451186.0,
+              "rmse": 5238886.0,
+              "mape_pct": 18.04,
+              "wape_pct": 16.42,
+              "bias": -4412683.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4451186.0,
+              "rmse": 5238886.0,
+              "mape_pct": 18.04,
+              "wape_pct": 16.42,
+              "bias": -4412683.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1430002.0,
+              "rmse": 1765766.0,
+              "mape_pct": 5.38,
+              "wape_pct": 5.28,
+              "bias": -278939.0
+            },
+            "window_mean": {
+              "mae": 1430002.0,
+              "rmse": 1765766.0,
+              "mape_pct": 5.38,
+              "wape_pct": 5.28,
+              "bias": -278939.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1430002.0,
+              "rmse": 1765766.0,
+              "mape_pct": 5.38,
+              "wape_pct": 5.28,
+              "bias": -278939.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1427848.0,
+              "rmse": 1769903.0,
+              "mape_pct": 5.36,
+              "wape_pct": 5.27,
+              "bias": -399606.0
+            },
+            "window_mean": {
+              "mae": 1427848.0,
+              "rmse": 1769903.0,
+              "mape_pct": 5.36,
+              "wape_pct": 5.27,
+              "bias": -399606.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1427848.0,
+              "rmse": 1769903.0,
+              "mape_pct": 5.36,
+              "wape_pct": 5.27,
+              "bias": -399606.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 1469000.0,
+              "rmse": 1781898.0,
+              "mape_pct": 5.58,
+              "wape_pct": 5.42,
+              "bias": -914768.0
+            },
+            "window_mean": {
+              "mae": 1469000.0,
+              "rmse": 1781898.0,
+              "mape_pct": 5.58,
+              "wape_pct": 5.42,
+              "bias": -914768.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1469000.0,
+              "rmse": 1781898.0,
+              "mape_pct": 5.58,
+              "wape_pct": 5.42,
+              "bias": -914768.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1276181.0,
+              "rmse": 1605384.0,
+              "mape_pct": 4.76,
+              "wape_pct": 4.71,
+              "bias": -596854.0
+            },
+            "window_mean": {
+              "mae": 1276181.0,
+              "rmse": 1605384.0,
+              "mape_pct": 4.76,
+              "wape_pct": 4.71,
+              "bias": -596854.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1276181.0,
+              "rmse": 1605384.0,
+              "mape_pct": 4.76,
+              "wape_pct": 4.71,
+              "bias": -596854.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1296830.0,
+              "rmse": 1644771.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.78,
+              "bias": -437897.0
+            },
+            "window_mean": {
+              "mae": 1296830.0,
+              "rmse": 1644771.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.78,
+              "bias": -437897.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1296830.0,
+              "rmse": 1644771.0,
+              "mape_pct": 4.84,
+              "wape_pct": 4.78,
+              "bias": -437897.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "3_months": {
+        "horizon_steps": 3,
+        "n_origins": 41,
+        "origin_start": "2023-01-01",
+        "origin_end": "2026-05-01",
+        "target_start": "2023-04-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 4179878.0,
+              "rmse": 4876793.0,
+              "mape_pct": 16.3,
+              "wape_pct": 15.19,
+              "bias": -4139497.0
+            },
+            "window_mean": {
+              "mae": 4362580.0,
+              "rmse": 5043674.0,
+              "mape_pct": 17.42,
+              "wape_pct": 16.05,
+              "bias": -4362580.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4402961.0,
+              "rmse": 5144677.0,
+              "mape_pct": 17.52,
+              "wape_pct": 16.2,
+              "bias": -4362580.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 1569124.0,
+              "rmse": 2004973.0,
+              "mape_pct": 6.08,
+              "wape_pct": 5.7,
+              "bias": -758590.0
+            },
+            "window_mean": {
+              "mae": 1285574.0,
+              "rmse": 1636102.0,
+              "mape_pct": 5.02,
+              "wape_pct": 4.73,
+              "bias": -539701.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1517813.0,
+              "rmse": 1933141.0,
+              "mape_pct": 5.84,
+              "wape_pct": 5.58,
+              "bias": -539701.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 1617921.0,
+              "rmse": 2071645.0,
+              "mape_pct": 6.24,
+              "wape_pct": 5.88,
+              "bias": -1112438.0
+            },
+            "window_mean": {
+              "mae": 1321062.0,
+              "rmse": 1665284.0,
+              "mape_pct": 5.15,
+              "wape_pct": 4.86,
+              "bias": -776217.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1546613.0,
+              "rmse": 1965342.0,
+              "mape_pct": 5.93,
+              "wape_pct": 5.69,
+              "bias": -776217.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 2263423.0,
+              "rmse": 2856744.0,
+              "mape_pct": 8.63,
+              "wape_pct": 8.23,
+              "bias": -1940043.0
+            },
+            "window_mean": {
+              "mae": 1553997.0,
+              "rmse": 1860680.0,
+              "mape_pct": 6.15,
+              "wape_pct": 5.72,
+              "bias": -1365840.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1833588.0,
+              "rmse": 2286286.0,
+              "mape_pct": 7.03,
+              "wape_pct": 6.75,
+              "bias": -1365840.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1748165.0,
+              "rmse": 2139511.0,
+              "mape_pct": 6.75,
+              "wape_pct": 6.35,
+              "bias": -1349317.0
+            },
+            "window_mean": {
+              "mae": 1202838.0,
+              "rmse": 1500437.0,
+              "mape_pct": 4.8,
+              "wape_pct": 4.43,
+              "bias": -952771.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1519374.0,
+              "rmse": 1872542.0,
+              "mape_pct": 5.82,
+              "wape_pct": 5.59,
+              "bias": -952771.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 1558344.0,
+              "rmse": 1980019.0,
+              "mape_pct": 6.05,
+              "wape_pct": 5.66,
+              "bias": -1053953.0
+            },
+            "window_mean": {
+              "mae": 1172376.0,
+              "rmse": 1503172.0,
+              "mape_pct": 4.63,
+              "wape_pct": 4.31,
+              "bias": -746236.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1452678.0,
+              "rmse": 1837882.0,
+              "mape_pct": 5.58,
+              "wape_pct": 5.34,
+              "bias": -746236.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "6_months": {
+        "horizon_steps": 6,
+        "n_origins": 38,
+        "origin_start": "2023-01-01",
+        "origin_end": "2026-02-01",
+        "target_start": "2023-07-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 3993850.0,
+              "rmse": 4697642.0,
+              "mape_pct": 14.96,
+              "wape_pct": 14.2,
+              "bias": -3950282.0
+            },
+            "window_mean": {
+              "mae": 4337163.0,
+              "rmse": 4918596.0,
+              "mape_pct": 16.94,
+              "wape_pct": 15.87,
+              "bias": -4337163.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4380250.0,
+              "rmse": 5062849.0,
+              "mape_pct": 17.09,
+              "wape_pct": 16.03,
+              "bias": -4337163.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 2149685.0,
+              "rmse": 2649744.0,
+              "mape_pct": 7.94,
+              "wape_pct": 7.64,
+              "bias": -1302016.0
+            },
+            "window_mean": {
+              "mae": 1529673.0,
+              "rmse": 1940438.0,
+              "mape_pct": 5.93,
+              "wape_pct": 5.6,
+              "bias": -850864.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1824500.0,
+              "rmse": 2286319.0,
+              "mape_pct": 6.94,
+              "wape_pct": 6.68,
+              "bias": -850864.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 2414867.0,
+              "rmse": 2887584.0,
+              "mape_pct": 8.88,
+              "wape_pct": 8.59,
+              "bias": -1985176.0
+            },
+            "window_mean": {
+              "mae": 1636491.0,
+              "rmse": 2039313.0,
+              "mape_pct": 6.34,
+              "wape_pct": 5.99,
+              "bias": -1253866.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1900070.0,
+              "rmse": 2393360.0,
+              "mape_pct": 7.22,
+              "wape_pct": 6.95,
+              "bias": -1253866.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 3277851.0,
+              "rmse": 4031504.0,
+              "mape_pct": 12.31,
+              "wape_pct": 11.65,
+              "bias": -3046167.0
+            },
+            "window_mean": {
+              "mae": 2061209.0,
+              "rmse": 2530580.0,
+              "mape_pct": 8.17,
+              "wape_pct": 7.54,
+              "bias": -1999637.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2356035.0,
+              "rmse": 2951092.0,
+              "mape_pct": 9.02,
+              "wape_pct": 8.62,
+              "bias": -1999637.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 2464937.0,
+              "rmse": 3120046.0,
+              "mape_pct": 9.29,
+              "wape_pct": 8.76,
+              "bias": -2174092.0
+            },
+            "window_mean": {
+              "mae": 1565551.0,
+              "rmse": 2002192.0,
+              "mape_pct": 6.26,
+              "wape_pct": 5.73,
+              "bias": -1425250.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1883015.0,
+              "rmse": 2378078.0,
+              "mape_pct": 7.23,
+              "wape_pct": 6.89,
+              "bias": -1425250.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 2233195.0,
+              "rmse": 2811106.0,
+              "mape_pct": 8.37,
+              "wape_pct": 7.94,
+              "bias": -1738054.0
+            },
+            "window_mean": {
+              "mae": 1482514.0,
+              "rmse": 1902127.0,
+              "mape_pct": 5.87,
+              "wape_pct": 5.42,
+              "bias": -1138057.0
+            },
+            "window_monthly_pooled": {
+              "mae": 1778039.0,
+              "rmse": 2261204.0,
+              "mape_pct": 6.81,
+              "wape_pct": 6.51,
+              "bias": -1138057.0
+            },
+            "fallback_count": 0
+          }
+        }
+      },
+      "12_months": {
+        "horizon_steps": 12,
+        "n_origins": 32,
+        "origin_start": "2023-01-01",
+        "origin_end": "2025-08-01",
+        "target_start": "2024-01-01",
+        "target_end": "2026-08-01",
+        "models": {
+          "Seasonal Naive": {
+            "endpoint": {
+              "mae": 3504795.0,
+              "rmse": 4190534.0,
+              "mape_pct": 12.55,
+              "wape_pct": 12.09,
+              "bias": -3453057.0
+            },
+            "window_mean": {
+              "mae": 4423577.0,
+              "rmse": 4907110.0,
+              "mape_pct": 16.83,
+              "wape_pct": 16.02,
+              "bias": -4423577.0
+            },
+            "window_monthly_pooled": {
+              "mae": 4453328.0,
+              "rmse": 5083775.0,
+              "mape_pct": 17.0,
+              "wape_pct": 16.13,
+              "bias": -4423577.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Undamped)": {
+            "endpoint": {
+              "mae": 2752819.0,
+              "rmse": 3704196.0,
+              "mape_pct": 10.05,
+              "wape_pct": 9.49,
+              "bias": -2247016.0
+            },
+            "window_mean": {
+              "mae": 2019726.0,
+              "rmse": 2532455.0,
+              "mape_pct": 7.79,
+              "wape_pct": 7.32,
+              "bias": -1369077.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2287929.0,
+              "rmse": 2948856.0,
+              "mape_pct": 8.61,
+              "wape_pct": 8.29,
+              "bias": -1369077.0
+            },
+            "fallback_count": 0
+          },
+          "Holt-Winters Additive (Damped)": {
+            "endpoint": {
+              "mae": 3569510.0,
+              "rmse": 4286437.0,
+              "mape_pct": 12.8,
+              "wape_pct": 12.31,
+              "bias": -3510299.0
+            },
+            "window_mean": {
+              "mae": 2320429.0,
+              "rmse": 2784016.0,
+              "mape_pct": 8.91,
+              "wape_pct": 8.41,
+              "bias": -2078292.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2562210.0,
+              "rmse": 3221499.0,
+              "mape_pct": 9.57,
+              "wape_pct": 9.28,
+              "bias": -2078292.0
+            },
+            "fallback_count": 0
+          },
+          "Direct LightGBM": {
+            "endpoint": {
+              "mae": 7237151.0,
+              "rmse": 8537075.0,
+              "mape_pct": 25.73,
+              "wape_pct": 24.96,
+              "bias": -7237151.0
+            },
+            "window_mean": {
+              "mae": 3686625.0,
+              "rmse": 4214615.0,
+              "mape_pct": 14.12,
+              "wape_pct": 13.36,
+              "bias": -3686625.0
+            },
+            "window_monthly_pooled": {
+              "mae": 3837354.0,
+              "rmse": 4902701.0,
+              "mape_pct": 14.2,
+              "wape_pct": 13.9,
+              "bias": -3686625.0
+            },
+            "fallback_count": 0
+          },
+          "50/50 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 4789778.0,
+              "rmse": 5984835.0,
+              "mape_pct": 17.21,
+              "wape_pct": 16.52,
+              "bias": -4742084.0
+            },
+            "window_mean": {
+              "mae": 2542665.0,
+              "rmse": 3202663.0,
+              "mape_pct": 9.91,
+              "wape_pct": 9.21,
+              "bias": -2527851.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2815677.0,
+              "rmse": 3702605.0,
+              "mape_pct": 10.54,
+              "wape_pct": 10.2,
+              "bias": -2527851.0
+            },
+            "fallback_count": 0
+          },
+          "75/25 Ensemble (HW + LGBM)": {
+            "endpoint": {
+              "mae": 3658980.0,
+              "rmse": 4785278.0,
+              "mape_pct": 13.26,
+              "wape_pct": 12.62,
+              "bias": -3494550.0
+            },
+            "window_mean": {
+              "mae": 2192273.0,
+              "rmse": 2806673.0,
+              "mape_pct": 8.55,
+              "wape_pct": 7.94,
+              "bias": -1948464.0
+            },
+            "window_monthly_pooled": {
+              "mae": 2469817.0,
+              "rmse": 3246276.0,
+              "mape_pct": 9.29,
+              "wape_pct": 8.95,
+              "bias": -1948464.0
+            },
+            "fallback_count": 0
+          }
+        }
+      }
+    },
+    "hw_convergence_warnings_total": {
+      "Holt-Winters Additive (Undamped)": 0,
+      "Holt-Winters Additive (Damped)": 0
+    },
+    "model_failures_total": {
+      "Seasonal Naive": 0,
+      "Holt-Winters Additive (Undamped)": 0,
+      "Holt-Winters Additive (Damped)": 0,
+      "Direct LightGBM": 0,
+      "50/50 Ensemble (HW + LGBM)": 0,
+      "75/25 Ensemble (HW + LGBM)": 0
+    }
+  },
+  "prediction_range_methodology": {
+    "label": "Indicative Prediction Range",
+    "is_calibrated_95_ci": false,
+    "method": "Step-specific out-of-sample RMSE (h=1..12) computed across rolling post-2023 origins (2023-01..2026-07, n=32..43 per step) scaled by z=1.960. Labelled Indicative Prediction Range rather than calibrated 95% CI due to modest post-COVID calibration sample size and structural regime shifts (including LRT Shah Alam opening in June 2026).",
+    "coverage_audit_note": "Expanding-origin empirical coverage uses only residuals already realized at evaluation origin o (op + h <= o; strict op + h < o yields identical 98.6% mean coverage). Conservative over-coverage (92.0%-100.0%) reflects larger post-COVID recovery residuals in 2023 relative to calmer 2024-2026 demand.",
+    "half_widths_by_step": {
+      "1": 3460902.0,
+      "2": 4017156.0,
+      "3": 3929748.0,
+      "4": 4999262.0,
+      "5": 5015233.0,
+      "6": 5193498.0,
+      "7": 5779525.0,
+      "8": 6080078.0,
+      "9": 6517569.0,
+      "10": 7172634.0,
+      "11": 7062851.0,
+      "12": 7260225.0
+    },
+    "mean_expanding_holdout_coverage_pct": 98.6,
+    "step_diagnostics": [
+      {
+        "step_h": 1,
+        "oos_rmse": 1765766.0,
+        "indicative_half_width": 3460902.0,
+        "calibration_n": 43,
+        "selection_split_n": 18,
+        "selection_split_rmse": 1738934.0,
+        "holdout_eval_n": 25,
+        "expanding_prior_coverage_pct": 92.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 2,
+        "oos_rmse": 2049569.0,
+        "indicative_half_width": 4017156.0,
+        "calibration_n": 42,
+        "selection_split_n": 17,
+        "selection_split_rmse": 2170343.0,
+        "holdout_eval_n": 24,
+        "expanding_prior_coverage_pct": 95.8,
+        "selection_fixed_coverage_pct": 95.8
+      },
+      {
+        "step_h": 3,
+        "oos_rmse": 2004973.0,
+        "indicative_half_width": 3929748.0,
+        "calibration_n": 41,
+        "selection_split_n": 16,
+        "selection_split_rmse": 2615113.0,
+        "holdout_eval_n": 23,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 4,
+        "oos_rmse": 2550644.0,
+        "indicative_half_width": 4999262.0,
+        "calibration_n": 40,
+        "selection_split_n": 15,
+        "selection_split_rmse": 3204395.0,
+        "holdout_eval_n": 22,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 5,
+        "oos_rmse": 2558793.0,
+        "indicative_half_width": 5015233.0,
+        "calibration_n": 39,
+        "selection_split_n": 14,
+        "selection_split_rmse": 3246364.0,
+        "holdout_eval_n": 21,
+        "expanding_prior_coverage_pct": 95.2,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 6,
+        "oos_rmse": 2649744.0,
+        "indicative_half_width": 5193498.0,
+        "calibration_n": 38,
+        "selection_split_n": 13,
+        "selection_split_rmse": 3639089.0,
+        "holdout_eval_n": 20,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 7,
+        "oos_rmse": 2948737.0,
+        "indicative_half_width": 5779525.0,
+        "calibration_n": 37,
+        "selection_split_n": 12,
+        "selection_split_rmse": 4117905.0,
+        "holdout_eval_n": 19,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 8,
+        "oos_rmse": 3102081.0,
+        "indicative_half_width": 6080078.0,
+        "calibration_n": 36,
+        "selection_split_n": 11,
+        "selection_split_rmse": 4661651.0,
+        "holdout_eval_n": 18,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 9,
+        "oos_rmse": 3325290.0,
+        "indicative_half_width": 6517569.0,
+        "calibration_n": 35,
+        "selection_split_n": 10,
+        "selection_split_rmse": 5353008.0,
+        "holdout_eval_n": 17,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 10,
+        "oos_rmse": 3659507.0,
+        "indicative_half_width": 7172634.0,
+        "calibration_n": 34,
+        "selection_split_n": 9,
+        "selection_split_rmse": 5879097.0,
+        "holdout_eval_n": 16,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 11,
+        "oos_rmse": 3603495.0,
+        "indicative_half_width": 7062851.0,
+        "calibration_n": 33,
+        "selection_split_n": 8,
+        "selection_split_rmse": 6091429.0,
+        "holdout_eval_n": 15,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      },
+      {
+        "step_h": 12,
+        "oos_rmse": 3704196.0,
+        "indicative_half_width": 7260225.0,
+        "calibration_n": 32,
+        "selection_split_n": 7,
+        "selection_split_rmse": 6706387.0,
+        "holdout_eval_n": 14,
+        "expanding_prior_coverage_pct": 100.0,
+        "selection_fixed_coverage_pct": 100.0
+      }
+    ]
+  },
   "forecasts": [
     {
       "horizon": "3_months",
-      "mape_pct": 17.74,
-      "rmse": 3588962.0,
-      "n_cv_folds": 55,
-      "ci_level": 0.95,
-      "model": "LightGBM + Holt-Winters Ensemble",
+      "horizon_months": 3,
+      "start_date": "2026-09-01",
+      "end_date": "2026-11-01",
+      "model": "Holt-Winters Additive (Undamped)",
+      "uncertainty_label": "Indicative Prediction Range",
+      "is_calibrated_95_ci": false,
+      "mape_pct": 4.31,
+      "rmse": 1520897.0,
+      "mae": 1274422.0,
+      "wape_pct": 4.26,
+      "bias": -114360.0,
+      "n_cv_folds": 23,
+      "evaluation_scope": "Holdout origins 2024-07-01 to 2026-05-01",
+      "predicted_monthly_avg": 32502174.0,
+      "predicted_total_trips": 97506523.0,
+      "change_vs_last_observed_pct": -0.2,
+      "change_vs_yoy_comparable_pct": 9.6,
+      "yoy_comparable_period": "2025-09 to 2025-11",
+      "evaluation_window_mean": {
+        "mae": 1099010.0,
+        "rmse": 1382918.0,
+        "mape_pct": 3.7,
+        "wape_pct": 3.7,
+        "bias": -30324.0
+      },
+      "evaluation_window_monthly_pooled": {
+        "mae": 1406436.0,
+        "rmse": 1752688.0,
+        "mape_pct": 4.77,
+        "wape_pct": 4.74,
+        "bias": -30324.0
+      },
       "forecasts": [
         {
+          "step": 1,
           "date": "2026-09-01",
-          "predicted": 31040475.0,
-          "lower_ci": 27658860.0,
-          "upper_ci": 34422090.0
+          "predicted": 31881054.0,
+          "lower_ci": 28420152.0,
+          "upper_ci": 35341956.0,
+          "indicative_half_width": 3460902.0
         },
         {
+          "step": 2,
           "date": "2026-10-01",
-          "predicted": 31369457.0,
-          "lower_ci": 27987842.0,
-          "upper_ci": 34751072.0
+          "predicted": 33115765.0,
+          "lower_ci": 29098609.0,
+          "upper_ci": 37132921.0,
+          "indicative_half_width": 4017156.0
         },
         {
+          "step": 3,
           "date": "2026-11-01",
-          "predicted": 30921181.0,
-          "lower_ci": 27539566.0,
-          "upper_ci": 34302796.0
+          "predicted": 32509704.0,
+          "lower_ci": 28579956.0,
+          "upper_ci": 36439452.0,
+          "indicative_half_width": 3929748.0
         }
       ]
     },
     {
       "horizon": "6_months",
-      "mape_pct": 17.74,
-      "rmse": 3588962.0,
-      "n_cv_folds": 55,
-      "ci_level": 0.95,
-      "model": "LightGBM + Holt-Winters Ensemble",
+      "horizon_months": 6,
+      "start_date": "2026-09-01",
+      "end_date": "2027-02-01",
+      "model": "Holt-Winters Additive (Undamped)",
+      "uncertainty_label": "Indicative Prediction Range",
+      "is_calibrated_95_ci": false,
+      "mape_pct": 5.4,
+      "rmse": 1988753.0,
+      "mae": 1628732.0,
+      "wape_pct": 5.43,
+      "bias": -200947.0,
+      "n_cv_folds": 20,
+      "evaluation_scope": "Holdout origins 2024-07-01 to 2026-02-01",
+      "predicted_monthly_avg": 32570855.0,
+      "predicted_total_trips": 195425128.0,
+      "change_vs_last_observed_pct": 0.0,
+      "change_vs_yoy_comparable_pct": 9.7,
+      "yoy_comparable_period": "2025-09 to 2026-02",
+      "evaluation_window_mean": {
+        "mae": 1129521.0,
+        "rmse": 1451191.0,
+        "mape_pct": 3.78,
+        "wape_pct": 3.81,
+        "bias": -63579.0
+      },
+      "evaluation_window_monthly_pooled": {
+        "mae": 1555080.0,
+        "rmse": 1898502.0,
+        "mape_pct": 5.24,
+        "wape_pct": 5.25,
+        "bias": -63579.0
+      },
       "forecasts": [
         {
+          "step": 1,
           "date": "2026-09-01",
-          "predicted": 31040475.0,
-          "lower_ci": 27614519.0,
-          "upper_ci": 34466432.0
+          "predicted": 31881054.0,
+          "lower_ci": 28420152.0,
+          "upper_ci": 35341956.0,
+          "indicative_half_width": 3460902.0
         },
         {
+          "step": 2,
           "date": "2026-10-01",
-          "predicted": 31369457.0,
-          "lower_ci": 27943500.0,
-          "upper_ci": 34795413.0
+          "predicted": 33115765.0,
+          "lower_ci": 29098609.0,
+          "upper_ci": 37132921.0,
+          "indicative_half_width": 4017156.0
         },
         {
+          "step": 3,
           "date": "2026-11-01",
-          "predicted": 30921181.0,
-          "lower_ci": 27495225.0,
-          "upper_ci": 34347138.0
+          "predicted": 32509704.0,
+          "lower_ci": 28579956.0,
+          "upper_ci": 36439452.0,
+          "indicative_half_width": 3929748.0
         },
         {
+          "step": 4,
           "date": "2026-12-01",
-          "predicted": 31674123.0,
-          "lower_ci": 28248167.0,
-          "upper_ci": 35100080.0
+          "predicted": 33838388.0,
+          "lower_ci": 28839126.0,
+          "upper_ci": 38837650.0,
+          "indicative_half_width": 4999262.0
         },
         {
+          "step": 5,
           "date": "2027-01-01",
-          "predicted": 31148055.0,
-          "lower_ci": 27722098.0,
-          "upper_ci": 34574012.0
+          "predicted": 32995901.0,
+          "lower_ci": 27980668.0,
+          "upper_ci": 38011134.0,
+          "indicative_half_width": 5015233.0
         },
         {
+          "step": 6,
           "date": "2027-02-01",
-          "predicted": 30227320.0,
-          "lower_ci": 26801364.0,
-          "upper_ci": 33653277.0
+          "predicted": 31084316.0,
+          "lower_ci": 25890818.0,
+          "upper_ci": 36277814.0,
+          "indicative_half_width": 5193498.0
         }
       ]
     },
     {
       "horizon": "12_months",
-      "mape_pct": 17.74,
-      "rmse": 3588962.0,
-      "n_cv_folds": 55,
-      "ci_level": 0.95,
-      "model": "LightGBM + Holt-Winters Ensemble",
+      "horizon_months": 12,
+      "start_date": "2026-09-01",
+      "end_date": "2027-08-01",
+      "model": "Holt-Winters Additive (Undamped)",
+      "uncertainty_label": "Indicative Prediction Range",
+      "is_calibrated_95_ci": false,
+      "mape_pct": 3.19,
+      "rmse": 1142057.0,
+      "mae": 961061.0,
+      "wape_pct": 3.14,
+      "bias": 195060.0,
+      "n_cv_folds": 14,
+      "evaluation_scope": "Holdout origins 2024-07-01 to 2025-08-01",
+      "predicted_monthly_avg": 32650753.0,
+      "predicted_total_trips": 391809033.0,
+      "change_vs_last_observed_pct": 0.3,
+      "change_vs_yoy_comparable_pct": 7.2,
+      "yoy_comparable_period": "2025-09 to 2026-08",
+      "evaluation_window_mean": {
+        "mae": 1004556.0,
+        "rmse": 1209397.0,
+        "mape_pct": 3.36,
+        "wape_pct": 3.38,
+        "bias": 224002.0
+      },
+      "evaluation_window_monthly_pooled": {
+        "mae": 1471157.0,
+        "rmse": 1803725.0,
+        "mape_pct": 4.99,
+        "wape_pct": 4.94,
+        "bias": 224002.0
+      },
       "forecasts": [
         {
+          "step": 1,
           "date": "2026-09-01",
-          "predicted": 31040475.0,
-          "lower_ci": 27577672.0,
-          "upper_ci": 34503278.0
+          "predicted": 31881054.0,
+          "lower_ci": 28420152.0,
+          "upper_ci": 35341956.0,
+          "indicative_half_width": 3460902.0
         },
         {
+          "step": 2,
           "date": "2026-10-01",
-          "predicted": 31369457.0,
-          "lower_ci": 27906654.0,
-          "upper_ci": 34832260.0
+          "predicted": 33115765.0,
+          "lower_ci": 29098609.0,
+          "upper_ci": 37132921.0,
+          "indicative_half_width": 4017156.0
         },
         {
+          "step": 3,
           "date": "2026-11-01",
-          "predicted": 30921181.0,
-          "lower_ci": 27458378.0,
-          "upper_ci": 34383984.0
+          "predicted": 32509704.0,
+          "lower_ci": 28579956.0,
+          "upper_ci": 36439452.0,
+          "indicative_half_width": 3929748.0
         },
         {
+          "step": 4,
           "date": "2026-12-01",
-          "predicted": 31674123.0,
-          "lower_ci": 28211320.0,
-          "upper_ci": 35136926.0
+          "predicted": 33838388.0,
+          "lower_ci": 28839126.0,
+          "upper_ci": 38837650.0,
+          "indicative_half_width": 4999262.0
         },
         {
+          "step": 5,
           "date": "2027-01-01",
-          "predicted": 31148055.0,
-          "lower_ci": 27685252.0,
-          "upper_ci": 34610858.0
+          "predicted": 32995901.0,
+          "lower_ci": 27980668.0,
+          "upper_ci": 38011134.0,
+          "indicative_half_width": 5015233.0
         },
         {
+          "step": 6,
           "date": "2027-02-01",
-          "predicted": 30227320.0,
-          "lower_ci": 26764517.0,
-          "upper_ci": 33690123.0
+          "predicted": 31084316.0,
+          "lower_ci": 25890818.0,
+          "upper_ci": 36277814.0,
+          "indicative_half_width": 5193498.0
         },
         {
+          "step": 7,
           "date": "2027-03-01",
-          "predicted": 30375880.0,
-          "lower_ci": 26913077.0,
-          "upper_ci": 33838683.0
+          "predicted": 32605153.0,
+          "lower_ci": 26825628.0,
+          "upper_ci": 38384678.0,
+          "indicative_half_width": 5779525.0
         },
         {
+          "step": 8,
           "date": "2027-04-01",
-          "predicted": 29695526.0,
-          "lower_ci": 26232723.0,
-          "upper_ci": 33158329.0
+          "predicted": 31346181.0,
+          "lower_ci": 25266103.0,
+          "upper_ci": 37426259.0,
+          "indicative_half_width": 6080078.0
         },
         {
+          "step": 9,
           "date": "2027-05-01",
-          "predicted": 29971017.0,
-          "lower_ci": 26508214.0,
-          "upper_ci": 33433820.0
+          "predicted": 32046219.0,
+          "lower_ci": 25528650.0,
+          "upper_ci": 38563788.0,
+          "indicative_half_width": 6517569.0
         },
         {
+          "step": 10,
           "date": "2027-06-01",
-          "predicted": 29582531.0,
-          "lower_ci": 26119728.0,
-          "upper_ci": 33045334.0
+          "predicted": 31811906.0,
+          "lower_ci": 24639272.0,
+          "upper_ci": 38984540.0,
+          "indicative_half_width": 7172634.0
         },
         {
+          "step": 11,
           "date": "2027-07-01",
-          "predicted": 30803182.0,
-          "lower_ci": 27340379.0,
-          "upper_ci": 34265985.0
+          "predicted": 34312082.0,
+          "lower_ci": 27249231.0,
+          "upper_ci": 41374933.0,
+          "indicative_half_width": 7062851.0
         },
         {
+          "step": 12,
           "date": "2027-08-01",
-          "predicted": 30923548.0,
-          "lower_ci": 27460745.0,
-          "upper_ci": 34386351.0
+          "predicted": 34262364.0,
+          "lower_ci": 27002139.0,
+          "upper_ci": 41522589.0,
+          "indicative_half_width": 7260225.0
         }
       ]
     }
   ],
+  "horizon_summaries": {
+    "3_months": {
+      "horizon": "3_months",
+      "horizon_months": 3,
+      "start_date": "2026-09-01",
+      "end_date": "2026-11-01",
+      "predicted_monthly_avg": 32502174.0,
+      "predicted_total_trips": 97506523.0,
+      "change_vs_last_observed_pct": -0.2,
+      "baseline_last_observed_month": "2026-08-01",
+      "change_vs_yoy_comparable_pct": 9.6,
+      "yoy_comparable_period": "2025-09 to 2025-11",
+      "holdout_endpoint_mape_pct": 4.31,
+      "holdout_endpoint_rmse": 1520897.0,
+      "holdout_window_mean_mape_pct": 3.7,
+      "holdout_window_mean_rmse": 1382918.0,
+      "holdout_n_origins": 23,
+      "post2023_endpoint_mape_pct": 6.08,
+      "post2023_n_origins": 41
+    },
+    "6_months": {
+      "horizon": "6_months",
+      "horizon_months": 6,
+      "start_date": "2026-09-01",
+      "end_date": "2027-02-01",
+      "predicted_monthly_avg": 32570855.0,
+      "predicted_total_trips": 195425128.0,
+      "change_vs_last_observed_pct": 0.0,
+      "baseline_last_observed_month": "2026-08-01",
+      "change_vs_yoy_comparable_pct": 9.7,
+      "yoy_comparable_period": "2025-09 to 2026-02",
+      "holdout_endpoint_mape_pct": 5.4,
+      "holdout_endpoint_rmse": 1988753.0,
+      "holdout_window_mean_mape_pct": 3.78,
+      "holdout_window_mean_rmse": 1451191.0,
+      "holdout_n_origins": 20,
+      "post2023_endpoint_mape_pct": 7.94,
+      "post2023_n_origins": 38
+    },
+    "12_months": {
+      "horizon": "12_months",
+      "horizon_months": 12,
+      "start_date": "2026-09-01",
+      "end_date": "2027-08-01",
+      "predicted_monthly_avg": 32650753.0,
+      "predicted_total_trips": 391809033.0,
+      "change_vs_last_observed_pct": 0.3,
+      "baseline_last_observed_month": "2026-08-01",
+      "change_vs_yoy_comparable_pct": 7.2,
+      "yoy_comparable_period": "2025-09 to 2026-08",
+      "holdout_endpoint_mape_pct": 3.19,
+      "holdout_endpoint_rmse": 1142057.0,
+      "holdout_window_mean_mape_pct": 3.36,
+      "holdout_window_mean_rmse": 1209397.0,
+      "holdout_n_origins": 14,
+      "post2023_endpoint_mape_pct": 10.05,
+      "post2023_n_origins": 32
+    }
+  },
   "monthly_driver_trend": [
     {
       "month_start": "2019-01-01",
@@ -1034,17 +3623,129 @@
     }
   ],
   "kpi_summary": {
-    "projected_growth_pct": -4.6,
+    "projected_growth_pct": 0.0,
+    "projected_yoy_pct": 9.7,
     "fuel_mom_pct": 6.4,
     "reg_yoy_pct": 2.2,
     "latest_lf_employed_m": 16.9,
+    "latest_lf_employed_m_exact": 16.8744,
     "u_rate_pearson_r": -0.9251,
     "diesel_pearson_r": 0.6742,
     "registrations_pearson_r": 0.602,
     "last_observed_rail_total": 32569085,
     "last_observed_month": "2026-08-01",
     "last_ron95_avg": 3.745,
+    "last_diesel_avg": 4.6075,
     "last_registrations": 151050,
-    "last_u_rate": 2.9
+    "last_u_rate": 2.9,
+    "fuel_price_basis": "Unsubsidised retail market prices (RON95 & Diesel), excluding BUDI95/SKDS subsidised tiers",
+    "horizon_summaries": {
+      "3_months": {
+        "horizon": "3_months",
+        "horizon_months": 3,
+        "start_date": "2026-09-01",
+        "end_date": "2026-11-01",
+        "predicted_monthly_avg": 32502174.0,
+        "predicted_total_trips": 97506523.0,
+        "change_vs_last_observed_pct": -0.2,
+        "baseline_last_observed_month": "2026-08-01",
+        "change_vs_yoy_comparable_pct": 9.6,
+        "yoy_comparable_period": "2025-09 to 2025-11",
+        "holdout_endpoint_mape_pct": 4.31,
+        "holdout_endpoint_rmse": 1520897.0,
+        "holdout_window_mean_mape_pct": 3.7,
+        "holdout_window_mean_rmse": 1382918.0,
+        "holdout_n_origins": 23,
+        "post2023_endpoint_mape_pct": 6.08,
+        "post2023_n_origins": 41
+      },
+      "6_months": {
+        "horizon": "6_months",
+        "horizon_months": 6,
+        "start_date": "2026-09-01",
+        "end_date": "2027-02-01",
+        "predicted_monthly_avg": 32570855.0,
+        "predicted_total_trips": 195425128.0,
+        "change_vs_last_observed_pct": 0.0,
+        "baseline_last_observed_month": "2026-08-01",
+        "change_vs_yoy_comparable_pct": 9.7,
+        "yoy_comparable_period": "2025-09 to 2026-02",
+        "holdout_endpoint_mape_pct": 5.4,
+        "holdout_endpoint_rmse": 1988753.0,
+        "holdout_window_mean_mape_pct": 3.78,
+        "holdout_window_mean_rmse": 1451191.0,
+        "holdout_n_origins": 20,
+        "post2023_endpoint_mape_pct": 7.94,
+        "post2023_n_origins": 38
+      },
+      "12_months": {
+        "horizon": "12_months",
+        "horizon_months": 12,
+        "start_date": "2026-09-01",
+        "end_date": "2027-08-01",
+        "predicted_monthly_avg": 32650753.0,
+        "predicted_total_trips": 391809033.0,
+        "change_vs_last_observed_pct": 0.3,
+        "baseline_last_observed_month": "2026-08-01",
+        "change_vs_yoy_comparable_pct": 7.2,
+        "yoy_comparable_period": "2025-09 to 2026-08",
+        "holdout_endpoint_mape_pct": 3.19,
+        "holdout_endpoint_rmse": 1142057.0,
+        "holdout_window_mean_mape_pct": 3.36,
+        "holdout_window_mean_rmse": 1209397.0,
+        "holdout_n_origins": 14,
+        "post2023_endpoint_mape_pct": 10.05,
+        "post2023_n_origins": 32
+      }
+    }
+  },
+  "methodology": {
+    "reproducibility": {
+      "random_seed": 42,
+      "python_version": "3.14.4",
+      "polars_version": "2.0.0",
+      "numpy_version": "2.5.4",
+      "scikit_learn_version": "1.9.1",
+      "lightgbm_version": "4.7.0",
+      "statsmodels_version": "0.15.0"
+    },
+    "driver_definitions": {
+      "u_rate": {
+        "label": "Unemployment Rate",
+        "units": "%",
+        "definition": "DOSM Labour Force Survey monthly national unemployment rate (non-seasonally adjusted).",
+        "publication_lag": "1 month (conservative assumption at origin t)"
+      },
+      "lf_employed": {
+        "label": "Employed Labour Force",
+        "units": "thousands of persons (KPI displayed in millions = value / 1,000)",
+        "definition": "DOSM Labour Force Survey monthly employed persons in Malaysia.",
+        "publication_lag": "1 month (conservative assumption at origin t)"
+      },
+      "registrations": {
+        "label": "Vehicle Registrations",
+        "units": "vehicles / month",
+        "definition": "JPJ monthly total new motor vehicle registrations (type='all_types', fuel='all_fuels').",
+        "publication_lag": "1 month (conservative assumption at origin t)"
+      },
+      "diesel_avg": {
+        "label": "Diesel Retail Market Price",
+        "units": "RM / litre",
+        "definition": "Peninsular Malaysia unsubsidised floating retail market diesel price (series_type='level', monthly mean; excludes targeted SKDS/BUDI tiers).",
+        "publication_lag": "0 months (weekly retail price known through month-end)"
+      },
+      "ron95_avg": {
+        "label": "RON95 Retail Market Price",
+        "units": "RM / litre",
+        "definition": "Unsubsidised retail market RON95 price (series_type='level', monthly mean; distinct from targeted BUDI95 RM 1.99 / SKPS RM 2.05 subsidised tiers).",
+        "publication_lag": "0 months (weekly retail price known through month-end)"
+      }
+    },
+    "limitations": [
+      "Full-period Pearson correlations (r=-0.925 u_rate, r=+0.803 lf_employed, r=+0.674 diesel) are substantially driven by common post-COVID recovery trends; short-run first-differenced correlations drop below |0.14| for labour and fuel.",
+      "Pearson correlation measures linear co-movement only and does not establish causal ridership elasticity.",
+      "LRT Shah Alam launched paid service in late June 2026 (~0.7M-0.8M monthly ramp in Jul-Aug 2026), adding structural step-change uncertainty not seen in prior training years.",
+      "Prediction range uses out-of-sample RMSE (z=1.960) across 32-43 rolling post-2023 origins and is labelled Indicative Prediction Range rather than calibrated frequentist 95% coverage."
+    ]
   }
 }

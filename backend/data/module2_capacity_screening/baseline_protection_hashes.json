@@ -88,8 +88,14 @@
       "bytes": 1404
     },
     "frontend/src/data/forecast_demand.json": {
-      "sha256": "5fc7bf28642323e92c8e8047e7a1b7719fcb00714f77138d1a4d9fcf714abb04",
-      "bytes": 25985
+      "sha256": "cf3aacb7d03887146865b45bddeeecb46b43a0f645501c23d99c113ac745e421",
+      "bytes": 115992,
+      "authorized_final_cleanup_original_sha256": "5fc7bf28642323e92c8e8047e7a1b7719fcb00714f77138d1a4d9fcf714abb04",
+      "authorized_final_cleanup_original_bytes": 25985,
+      "authorized_final_cleanup_lf_sha256": "475e0006db48dc28dd3325aeece4130cf61e7cc7cd6f377c0482e84f471d80e3",
+      "authorized_final_cleanup_reference": "Prompt 1 backend remediation; historical stored variant matches commit 863fd1b560f4825328322708e49a9056ae1e7958",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 1 forecasting remediation; independently reproduced Holt-Winters, correlations, and JSON reproducibility",
+      "authorized_final_cleanup_crlf_sha256": "cf3aacb7d03887146865b45bddeeecb46b43a0f645501c23d99c113ac745e421"
     },
     "frontend/src/data/network_overview.json": {
       "sha256": "b82f64a3d798e0847fc220cab3b0679361cf2c753133c02cd08a09212cc907fa",
@@ -224,12 +230,18 @@
       "bytes": 14635
     },
     "frontend/src/modules/module2_od_peak_hours/OdPeakHours.tsx": {
-      "sha256": "60962aec7303da068a65a17d18419e8dc8f21e89f49eea5e5c110dc40893f6b7",
-      "bytes": 45348,
+      "sha256": "8c8f7993b5a7c4d89aaffa5bb26afd21b4dc15642a35a6e2443a5abf1ce507db",
+      "bytes": 42161,
       "authorized_prompt2_original_sha256": "28000e5b50eb4b8713919c1dcddcc86a8600ef19e233d0b8ff2da7316adfd9b3",
       "authorized_prompt2_original_bytes": 36716,
       "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
-      "authorized_prompt2_date": "2026-11-28"
+      "authorized_prompt2_date": "2026-11-28",
+      "authorized_final_cleanup_original_sha256": "60962aec7303da068a65a17d18419e8dc8f21e89f49eea5e5c110dc40893f6b7",
+      "authorized_final_cleanup_original_bytes": 45348,
+      "authorized_final_cleanup_lf_sha256": "1734f4c4a667b0d889b89b3b25116bf5d92fb1a6fc43c3e7b85781bb92448359",
+      "authorized_final_cleanup_reference": "299f50abb49042edd1deef0c8c3992b46d332a4c update flash card design; stored hash matches its parent",
+      "authorized_final_cleanup_reason": "Approved KPI presentation replacement; analytical expressions and lower dashboard panels retained",
+      "authorized_final_cleanup_crlf_sha256": "8c8f7993b5a7c4d89aaffa5bb26afd21b4dc15642a35a6e2443a5abf1ce507db"
     },
     "frontend/src/modules/module2_od_peak_hours/OdTimelineBar.tsx": {
       "sha256": "2e124797e97f2d3a6c6a0f45cca3b30d7fb3d7395a8b5d87decc208e4e1bc671",
@@ -288,36 +300,78 @@
       "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module3_drivers_forecast/DriversFilterCard.tsx": {
-      "sha256": "3bf350a56ddae217b1102695d0d6104007b81f9b4f36f8fb94c7f7f22c16a140",
-      "bytes": 14919
+      "sha256": "9fe7a180b3b558214bbc4ec9e3e50e4ba1533106a325532bf7aab16ac2f71ea6",
+      "bytes": 17722,
+      "authorized_final_cleanup_original_sha256": "3bf350a56ddae217b1102695d0d6104007b81f9b4f36f8fb94c7f7f22c16a140",
+      "authorized_final_cleanup_original_bytes": 14919,
+      "authorized_final_cleanup_lf_sha256": "02109cf0e969f3cfc362d31d59412708cb60f572961fa1a0e07cb04caaead7b3",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "9fe7a180b3b558214bbc4ec9e3e50e4ba1533106a325532bf7aab16ac2f71ea6"
     },
     "frontend/src/modules/module3_drivers_forecast/DriversForecast.tsx": {
-      "sha256": "19abdfe8bedc050da6f69475258367cf2928a26a3d4321374dbac5d611c12400",
-      "bytes": 9127
+      "sha256": "1f84c65097e6530480ec088cba7d6008a33bf9ce067dae779110dff73a95ae1e",
+      "bytes": 10183,
+      "authorized_final_cleanup_original_sha256": "19abdfe8bedc050da6f69475258367cf2928a26a3d4321374dbac5d611c12400",
+      "authorized_final_cleanup_original_bytes": 9127,
+      "authorized_final_cleanup_lf_sha256": "0609d0940011153a3034bd764dc84a7ebf0a66b526318ddda89f29d92aa4a921",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "1f84c65097e6530480ec088cba7d6008a33bf9ce067dae779110dff73a95ae1e"
     },
     "frontend/src/modules/module3_drivers_forecast/ForecastKpiStrip.tsx": {
-      "sha256": "ca745aa73f019a0a5e06329171ed2a4536bc0f4f95419a477532f2d99dbdac8b",
-      "bytes": 7027
+      "sha256": "272a85503fd40d346b5c0cb78050b9850c622844b2af237d87c505db5edd50d0",
+      "bytes": 11654,
+      "authorized_final_cleanup_original_sha256": "ca745aa73f019a0a5e06329171ed2a4536bc0f4f95419a477532f2d99dbdac8b",
+      "authorized_final_cleanup_original_bytes": 7027,
+      "authorized_final_cleanup_lf_sha256": "272a85503fd40d346b5c0cb78050b9850c622844b2af237d87c505db5edd50d0",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "c011582f41309ef0a7f5fed2bd1fdc86c78d376b8ef78a7f7bd37bc9c454dad6"
     },
     "frontend/src/modules/module3_drivers_forecast/KeyInsightsStrip.tsx": {
-      "sha256": "5703f3aa8ed2a7d1cbaecb5284334b204d1bdf20ed5f62af72810f6b180ce805",
-      "bytes": 4787
+      "sha256": "5136af9d3d09732ac7c7bd16a2b32116bafb97b08eb2bdd5d842648e396fed0e",
+      "bytes": 5240,
+      "authorized_final_cleanup_original_sha256": "5703f3aa8ed2a7d1cbaecb5284334b204d1bdf20ed5f62af72810f6b180ce805",
+      "authorized_final_cleanup_original_bytes": 4787,
+      "authorized_final_cleanup_lf_sha256": "35797d23afe9a2b5fe10cb2c65e9e61428f9f78221a055a9f0452156a5dd8349",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "5136af9d3d09732ac7c7bd16a2b32116bafb97b08eb2bdd5d842648e396fed0e"
     },
     "frontend/src/modules/module3_drivers_forecast/PassengerForecastChart.tsx": {
-      "sha256": "331c64ca62dd688b59c4f385a041af0f12c386c83fcb868c9184aa7d704babaf",
-      "bytes": 10468
+      "sha256": "317d13ada2ac04d00c90e4b6509a8c3c0087a735e5684241436bb9003d82d76e",
+      "bytes": 10874,
+      "authorized_final_cleanup_original_sha256": "331c64ca62dd688b59c4f385a041af0f12c386c83fcb868c9184aa7d704babaf",
+      "authorized_final_cleanup_original_bytes": 10468,
+      "authorized_final_cleanup_lf_sha256": "b07af75de542212bca8ed1a133a6ea6845c06c102fbc3c16d7b0f54fd2fc1d16",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "317d13ada2ac04d00c90e4b6509a8c3c0087a735e5684241436bb9003d82d76e"
     },
     "frontend/src/modules/module3_drivers_forecast/RidershipVsDriversChart.tsx": {
-      "sha256": "07e977ba44e56e7b01ff53a1ef0eda009918af7637aad69883193c6926d370ef",
-      "bytes": 12095
+      "sha256": "fea33a6ff8ecfca69da3feb13e2561a2f6608285a6d1409b62520539cbee35ca",
+      "bytes": 12803,
+      "authorized_final_cleanup_original_sha256": "07e977ba44e56e7b01ff53a1ef0eda009918af7637aad69883193c6926d370ef",
+      "authorized_final_cleanup_original_bytes": 12095,
+      "authorized_final_cleanup_lf_sha256": "3b81800ffe0470e09f82c1422c49dbf9829f682fbf7e5ec523c76b5edea9a272",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "fea33a6ff8ecfca69da3feb13e2561a2f6608285a6d1409b62520539cbee35ca"
     },
     "frontend/src/modules/module3_drivers_forecast/index.ts": {
       "sha256": "695c76dcbfa9daaefc0c216d42cbbec3884ef4feb388a37f3d1ff2c98f34993b",
       "bytes": 36
     },
     "frontend/src/modules/module3_drivers_forecast/types.ts": {
-      "sha256": "d609955c0c0fdbbd954afcc5e7c940846ac73ff9c7e4dde3e42a1ba9bc9ecef2",
-      "bytes": 1867
+      "sha256": "90ed4ebf27d74bc707ceff1d3623d6a07295b124d6369e0078bbbe07ddfe3f8c",
+      "bytes": 5466,
+      "authorized_final_cleanup_original_sha256": "d609955c0c0fdbbd954afcc5e7c940846ac73ff9c7e4dde3e42a1ba9bc9ecef2",
+      "authorized_final_cleanup_original_bytes": 1867,
+      "authorized_final_cleanup_lf_sha256": "d5ebc84c2cdc6c38386d011fe57e9e73b3e1e58a300e03f7b922f9e43d34d6e1",
+      "authorized_final_cleanup_reference": "Prompt 2 Module 3 frontend integration; base styling from 299f50abb49042edd1deef0c8c3992b46d332a4c",
+      "authorized_final_cleanup_reason": "User-authorised Prompt 2 analytical binding of dynamic correlations, forecast horizons, diagnostics, and wording; frontend regression verified",
+      "authorized_final_cleanup_crlf_sha256": "90ed4ebf27d74bc707ceff1d3623d6a07295b124d6369e0078bbbe07ddfe3f8c"
     },
     "frontend/src/modules/module4_service_planning/DistrictMap.tsx": {
       "sha256": "9d88f7c53dea7e596775bcfe60ae6283bed7b54c76d6321191fbb7c2d256e493",
@@ -452,5 +506,6 @@
       "bytes": 2390
     }
   },
-  "last_authorized_update": "Prompt 2 remediation 2026-11-28 \u2014 7 upper-OD files updated; 98 non-Prompt-2 entries unchanged"
+  "last_authorized_update": "Prompt 2 remediation 2026-11-28 \u2014 7 upper-OD files updated; 98 non-Prompt-2 entries unchanged",
+  "module3_final_cleanup_note": "2026-11-28: nine independently reviewed authorised entries updated; original hashes and existing provenance retained; remaining 96 entries unchanged."
 }

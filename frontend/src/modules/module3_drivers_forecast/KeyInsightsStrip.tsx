@@ -1,5 +1,7 @@
 import React from 'react';
 import { TelemetryIcon } from '@/modules/shared/TelemetryIcon';
+import type { CorrelationPeriod, ForecastHorizon } from './types';
+import { formatCorrelation, forecastDirection, forecastNarrative } from './module3Analytics';
 
 interface Props {
   /** Projected growth % (from forecast vs last historical, computed by pipeline) */
@@ -12,6 +14,9 @@ interface Props {
   regYoYPct?: number | null;
   /** Last observed monthly ridership total */
   lastRailTotal?: number | null;
+  lastObservedMonth?: string | null;
+  activeForecast: ForecastHorizon | null;
+  correlationPeriod: CorrelationPeriod;
 }
 
 const cardStyle: React.CSSProperties = {
@@ -32,11 +37,18 @@ export const KeyInsightsStrip: React.FC<Props> = ({
   registrationsCorrR,
   regYoYPct,
   lastRailTotal,
+  lastObservedMonth,
+  activeForecast,
+  correlationPeriod,
 }) => {
-  const growthLabel =
-    projectedGrowthPct != null
-      ? `${projectedGrowthPct >= 0 ? '+' : ''}${projectedGrowthPct.toFixed(1)}%`
-      : '+—%';
+  const activeGrowth = activeForecast?.change_vs_last_observed_pct ?? projectedGrowthPct;
+  const growthDirection = forecastDirection(activeGrowth);
+  const growthColor = growthDirection === 'increase'
+    ? '#00A389'
+    : growthDirection === 'decrease'
+      ? '#EF4444'
+      : '#64748B';
+  const growthSentence = forecastNarrative(activeForecast, lastObservedMonth);
 
   const lastRailLabel =
     lastRailTotal != null
@@ -45,8 +57,8 @@ export const KeyInsightsStrip: React.FC<Props> = ({
 
   const dieselCorrLabel =
     dieselCorrR != null
-      ? `r = ${dieselCorrR > 0 ? '+' : ''}${dieselCorrR.toFixed(2)}`
-      : 'r = —';
+      ? `r = ${formatCorrelation(dieselCorrR)}`
+      : 'r = N/A';
 
   const regYoYLabel =
     regYoYPct != null
@@ -55,8 +67,8 @@ export const KeyInsightsStrip: React.FC<Props> = ({
 
   const regCorrLabel =
     registrationsCorrR != null
-      ? `r = ${registrationsCorrR > 0 ? '+' : ''}${registrationsCorrR.toFixed(2)}`
-      : 'r = —';
+      ? `r = ${formatCorrelation(registrationsCorrR)}`
+      : 'r = N/A';
 
   return (
     <div
@@ -84,10 +96,8 @@ export const KeyInsightsStrip: React.FC<Props> = ({
             Ridership Growth Trajectory
           </div>
           <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
-            Projected to grow by{' '}
-            <strong style={{ color: '#00A389' }}>{growthLabel}</strong> over next 6 months,
-            with the latest monthly baseline at{' '}
-            <strong style={{ color: '#0F1E36' }}>{lastRailLabel}</strong>.
+            <strong style={{ color: growthColor }}>{growthSentence}</strong>{' '}
+            Latest observed volume: <strong style={{ color: '#0F1E36' }}>{lastRailLabel}</strong>.
           </div>
         </div>
       </div>
@@ -108,9 +118,8 @@ export const KeyInsightsStrip: React.FC<Props> = ({
             Fuel Price Association
           </div>
           <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
-            Diesel price is associated with higher rail ridership (
-            <strong style={{ color: '#0066FF' }}>{dieselCorrLabel} with ridership</strong>) —
-            consistent with modal shift when fuel costs rise.
+            Diesel and ridership: <strong style={{ color: '#0066FF' }}>{dieselCorrLabel}</strong>{' '}
+            for the selected window (n={correlationPeriod.n_obs}). Pearson association does not establish causation.
           </div>
         </div>
       </div>
@@ -131,9 +140,8 @@ export const KeyInsightsStrip: React.FC<Props> = ({
             Vehicle Growth &amp; Rail Uptake
           </div>
           <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.4 }}>
-            New vehicle registrations ({' '}
-            <strong style={{ color: '#FF8C00' }}>{regYoYLabel}</strong>) correlate with
-            increased rail trips ({regCorrLabel}) — road congestion likely contributes to rail uptake.
+            Registrations are <strong style={{ color: '#FF8C00' }}>{regYoYLabel}</strong>; selected-window
+            Pearson association is <strong style={{ color: '#00A389' }}>{regCorrLabel}</strong> (n={correlationPeriod.n_obs}), not a causal effect.
           </div>
         </div>
       </div>

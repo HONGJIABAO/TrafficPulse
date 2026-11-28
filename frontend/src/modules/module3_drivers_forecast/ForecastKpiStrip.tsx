@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import type { KpiSummary } from './types';
+import type { ForecastHorizon, KpiSummary } from './types';
+import { formatCorrelation, formatEmploymentMillions, formatMonth, forecastDirection } from './module3Analytics';
 import './ForecastKpiCard.css';
 
 interface Props {
@@ -7,6 +8,8 @@ interface Props {
   latestFuelPrice?: number | null;
   latestRegistrations?: number | null;
   latestUnemploymentRate?: number | null;
+  activeForecast: ForecastHorizon | null;
+  unemploymentCorrelation: number | null;
 }
 
 type ForecastKpiVariant = 'forecast' | 'fuel' | 'registrations' | 'labour';
@@ -201,13 +204,19 @@ function ForecastKpiCard({
 }
 
 function growthBadge(pct: number | null | undefined) {
-  if (pct == null) return null;
-  const color = pct >= 0 ? '#00C48C' : '#EF4444';
-  const bg = pct >= 0 ? '#E0FFF6' : '#FEE2E2';
-  const arrow = pct >= 0 ? '▲' : '▼';
+  const direction = forecastDirection(pct);
+  if (direction === 'unavailable') {
+    return <span className="m3-kpi-badge" style={{ color: '#64748B', background: '#F1F4F9' }}>N/A</span>;
+  }
+  if (direction === 'stable') {
+    return <span className="m3-kpi-badge" style={{ color: '#64748B', background: '#F1F4F9' }}>≈ Stable</span>;
+  }
+  const color = direction === 'increase' ? '#00C48C' : '#EF4444';
+  const bg = direction === 'increase' ? '#E0FFF6' : '#FEE2E2';
+  const arrow = direction === 'increase' ? '▲' : '▼';
   return (
     <span className="m3-kpi-badge" style={{ color, background: bg }}>
-      {arrow} {pct >= 0 ? '+' : ''}{pct.toFixed(1)}% Proj.
+      {arrow} {Math.abs(pct!).toFixed(1)}% Proj.
     </span>
   );
 }
@@ -217,17 +226,27 @@ export const ForecastKpiStrip: React.FC<Props> = ({
   latestFuelPrice,
   latestRegistrations,
   latestUnemploymentRate,
+  activeForecast,
+  unemploymentCorrelation,
 }) => {
-  // Resolve values: prefer kpi_summary (from pipeline), fallback to passed props
-  const growthPct = kpi?.projected_growth_pct ?? null;
+  const growthPct = activeForecast?.change_vs_last_observed_pct ?? null;
   const fuelMoM = kpi?.fuel_mom_pct ?? null;
   const regYoY = kpi?.reg_yoy_pct ?? null;
-  const uRateCorr = kpi?.u_rate_pearson_r ?? null;
-  const lfMillions = kpi?.latest_lf_employed_m ?? null;
+  const lfMillions = kpi?.latest_lf_employed_m_exact ?? kpi?.latest_lf_employed_m ?? null;
 
   const fuelPrice = kpi?.last_ron95_avg ?? latestFuelPrice ?? null;
   const regCount = kpi?.last_registrations ?? latestRegistrations ?? null;
   const uRate = kpi?.last_u_rate ?? latestUnemploymentRate ?? null;
+  const dieselPrice = kpi?.last_diesel_avg ?? null;
+  const direction = forecastDirection(growthPct);
+  const forecastValue = direction === 'stable'
+    ? 'Broadly Stable'
+    : direction === 'unavailable'
+      ? 'N/A'
+      : `${growthPct! > 0 ? '+' : '-'}${Math.abs(growthPct!).toFixed(1)}% Change`;
+  const forecastSub = activeForecast
+    ? `${activeForecast.horizon_months}M avg ${activeForecast.predicted_monthly_avg != null ? `${(activeForecast.predicted_monthly_avg / 1_000_000).toFixed(2)}M` : 'N/A'} · ${formatMonth(activeForecast.start_date)}–${formatMonth(activeForecast.end_date)} vs ${formatMonth(kpi?.last_observed_month)}`
+    : 'Forecast horizon unavailable';
 
   return (
     <div
@@ -244,8 +263,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
         delayIndex={0}
         label="Passenger Forecast"
         badge={growthBadge(growthPct)}
-        value={growthPct != null ? `${growthPct >= 0 ? '+' : ''}${growthPct.toFixed(1)}% Growth` : '—'}
-        sub="6-Month Projection vs last observed"
+        value={forecastValue}
+        sub={<span title={forecastSub}>{forecastSub}</span>}
       />
 
       {/* KPI 2: Fuel Price Index */}
@@ -266,8 +285,8 @@ export const ForecastKpiStrip: React.FC<Props> = ({
             </span>
           ) : null
         }
-        value={fuelPrice != null ? `RM ${fuelPrice.toFixed(2)} / L` : '—'}
-        sub="RON95 latest avg • Subsidy Rationalization"
+        value={fuelPrice != null ? `RON95 RM ${fuelPrice.toFixed(2)} / L` : 'N/A'}
+        sub={<span title={kpi?.fuel_price_basis}>Diesel {dieselPrice != null ? `RM ${dieselPrice.toFixed(2)} / L` : 'N/A'} · unsubsidised market</span>}
       />
 
       {/* KPI 3: Vehicle Registrations */}
@@ -298,22 +317,20 @@ export const ForecastKpiStrip: React.FC<Props> = ({
         delayIndex={3}
         label="Labour & Economy"
         badge={
-          uRateCorr != null ? (
-            <span
-              className="m3-kpi-badge"
-              style={{
-                color: '#7B61FF',
-                background: '#F0EDFF',
-              }}
-            >
-              r = {uRateCorr.toFixed(2)} (u_rate)
-            </span>
-          ) : null
+          <span
+            className="m3-kpi-badge"
+            style={{
+              color: '#7B61FF',
+              background: '#F0EDFF',
+            }}
+          >
+            r = {formatCorrelation(unemploymentCorrelation)} (u_rate)
+          </span>
         }
         value={uRate != null ? `${uRate.toFixed(1)}% Jobless Rate` : '—'}
         sub={
           <>
-            Employed force: <strong>{lfMillions != null ? `${lfMillions}M workers` : '—'}</strong> driving peak
+            Employed persons: <strong title={lfMillions != null ? `${lfMillions.toFixed(4)} million persons` : undefined}>{formatEmploymentMillions(lfMillions)}</strong> · DOSM
           </>
         }
       />

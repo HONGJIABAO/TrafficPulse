@@ -1,11 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
-import type { MonthlyDriverData, TimeRangeFilter, DriverFocusFilter } from './types';
+import type { CorrelationPeriod, MonthlyDriverData, TimeRangeFilter, DriverFocusFilter } from './types';
+import { focusCorrelations, formatCorrelation, historicalWindow } from './module3Analytics';
 
 interface Props {
   data: MonthlyDriverData[];
   timeRange: TimeRangeFilter;
   driverFocus: DriverFocusFilter;
+  correlationPeriod: CorrelationPeriod;
   onSelectDriverFocus?: (focus: DriverFocusFilter) => void;
 }
 
@@ -13,6 +15,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
   data,
   timeRange,
   driverFocus,
+  correlationPeriod,
   onSelectDriverFocus,
 }) => {
   // If 'all' is passed from elsewhere, default to 'fuel' for a clean 1-to-1 comparison
@@ -29,15 +32,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
     }
   };
 
-  const filteredData = useMemo(() => {
-    if (timeRange === '12m') {
-      return data.slice(-12);
-    }
-    if (timeRange === '24m') {
-      return data.slice(-24);
-    }
-    return data;
-  }, [data, timeRange]);
+  const filteredData = useMemo(() => historicalWindow(data, timeRange), [data, timeRange]);
 
   const xLabels = useMemo(() => {
     return filteredData.map((d) => d.month_start.slice(0, 7));
@@ -110,10 +105,14 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
       },
     ];
 
-    let correlationBadge = '';
+    const correlations = focusCorrelations(correlationPeriod, activeFocus);
+    const correlationBadge = activeFocus === 'fuel'
+      ? `RON95 r=${formatCorrelation(correlations[0]?.correlation)} · Diesel r=${formatCorrelation(correlations[1]?.correlation)}`
+      : activeFocus === 'registrations'
+        ? `Registrations r=${formatCorrelation(correlations[0]?.correlation)}`
+        : `Jobless r=${formatCorrelation(correlations[0]?.correlation)} · Employment r=${formatCorrelation(correlations[1]?.correlation)}`;
 
     if (activeFocus === 'fuel') {
-      correlationBadge = 'r = +0.67';
       yAxis.push({
         type: 'value',
         position: 'right',
@@ -154,7 +153,6 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         itemStyle: { color: '#EF4444' },
       });
     } else if (activeFocus === 'registrations') {
-      correlationBadge = 'r = +0.60';
       yAxis.push({
         type: 'value',
         position: 'right',
@@ -183,7 +181,6 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
         itemStyle: { color: '#00C48C' },
       });
     } else if (activeFocus === 'labour') {
-      correlationBadge = 'r = -0.93';
       yAxis.push({
         type: 'value',
         position: 'right',
@@ -229,6 +226,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
               <span>${monthLabel}</span>
               <span style="color: #00E5A3; font-size: 10px;">${correlationBadge}</span>
             </div>
+            <div style="color:#CBD5E1;font-size:9.5px;margin-bottom:4px;">${correlationPeriod.label} · n=${correlationPeriod.n_obs} · association ≠ causation${activeFocus === 'labour' ? ' · chart line shows unemployment; employment is ranked separately' : ''}</div>
           `;
           params.forEach((p) => {
             let valStr = p.value;
@@ -291,6 +289,7 @@ export const RidershipVsDriversChart: React.FC<Props> = ({
     regValues,
     uRateValues,
     activeFocus,
+    correlationPeriod,
   ]);
 
   return (

@@ -12,6 +12,12 @@ import { RidershipVsDriversChart } from './RidershipVsDriversChart';
 import { PassengerForecastChart } from './PassengerForecastChart';
 import { KeyInsightsStrip } from './KeyInsightsStrip';
 import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
+import {
+  correlationPeriod,
+  correlationValue,
+  evaluationForHorizon,
+  forecastForHorizon,
+} from './module3Analytics';
 
 const forecastData = rawForecastData as unknown as ForecastDemandSchema;
 
@@ -56,7 +62,6 @@ export function DriversForecast() {
   const [pendingDriverFocus, setPendingDriverFocus] = useState<DriverFocusFilter>('fuel');
   const [pendingHorizon, setPendingHorizon] = useState<ForecastHorizonKey>('6_months');
 
-  // ── Computed stats from JSON (Fix 5: no hardcoded values) ──────────────────
   const kpi = forecastData.kpi_summary ?? null;
 
   // Fallback: derive from monthly_driver_trend if kpi_summary absent (old JSON)
@@ -65,21 +70,19 @@ export function DriversForecast() {
     return list[list.length - 1] || null;
   }, []);
 
-  // CV diagnostics from first forecast horizon (all share same CV metrics)
-  const cvMetrics = useMemo(() => {
-    const fc = forecastData.forecasts?.[0];
-    return {
-      cvMape: fc?.mape_pct ?? null,
-      cvRmse: fc?.rmse ?? null,
-      nCvFolds: fc?.n_cv_folds ?? 0,
-    };
-  }, []);
-
-  // Correlation lookups for KeyInsightsStrip
-  const corrMap = useMemo(
-    () => new Map(forecastData.driver_correlations.map((c) => [c.feature, c.correlation])),
-    []
+  const activeCorrelationPeriod = useMemo(
+    () => correlationPeriod(forecastData, selectedTimeRange),
+    [selectedTimeRange],
   );
+  const activeForecast = useMemo(
+    () => forecastForHorizon(forecastData.forecasts, selectedHorizon),
+    [selectedHorizon],
+  );
+  const activeEvaluation = useMemo(
+    () => evaluationForHorizon(forecastData, selectedHorizon),
+    [selectedHorizon],
+  );
+  const seasonalNaive = activeEvaluation?.models?.['Seasonal Naive']?.endpoint ?? null;
 
   const handleApply = () => {
     setSelectedTimeRange(pendingTimeRange);
@@ -113,6 +116,8 @@ export function DriversForecast() {
       {/* ── 1. Top Metric KPI Strip — all values from JSON (Fix 5) ───────────── */}
       <ForecastKpiStrip
         kpi={kpi}
+        activeForecast={activeForecast}
+        unemploymentCorrelation={correlationValue(activeCorrelationPeriod, 'u_rate')}
         latestFuelPrice={latestHistorical?.ron95_avg ?? null}
         latestRegistrations={latestHistorical?.registrations ?? null}
         latestUnemploymentRate={latestHistorical?.u_rate ?? null}
@@ -135,14 +140,23 @@ export function DriversForecast() {
           pendingDriverFocus={pendingDriverFocus}
           setPendingDriverFocus={setPendingDriverFocus}
           pendingHorizon={pendingHorizon}
-          setPendingHorizon={setPendingHorizon}
+          setPendingHorizon={(horizon) => {
+            setPendingHorizon(horizon);
+            setSelectedHorizon(horizon);
+          }}
           onApply={handleApply}
           onReset={handleReset}
           featureImportance={forecastData.feature_importance || []}
-          driverCorrelations={forecastData.driver_correlations || []}
-          cvMape={cvMetrics.cvMape}
-          cvRmse={cvMetrics.cvRmse}
-          nCvFolds={cvMetrics.nCvFolds}
+          featureImportanceScope={forecastData.feature_importance_scope}
+          correlationPeriod={activeCorrelationPeriod}
+          activeForecast={activeForecast}
+          selectedModel={forecastData.selected_forecast_model}
+          seasonalNaive={seasonalNaive}
+          disclosure={{
+            informationCutoff: forecastData.information_cutoff,
+            forecastOriginMonth: forecastData.forecast_origin_month,
+            lastObservedMonth: kpi?.last_observed_month ?? forecastData.data_freshness.ridership_latest_month,
+          }}
         />
 
         {/* Right Graph Space (Charts + Nested 3 Key Insights) */}
@@ -171,6 +185,7 @@ export function DriversForecast() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                 <SectionTitle icon="chart-bar" variant="cobalt" label="Ridership vs Key Drivers" />
                 <span
+                  title={activeCorrelationPeriod.label}
                   style={{
                     fontSize: 10.5,
                     fontWeight: 600,
@@ -180,7 +195,7 @@ export function DriversForecast() {
                     borderRadius: 5,
                   }}
                 >
-                  Dual-Axis Correlation
+                  Pearson · n={activeCorrelationPeriod.n_obs}
                 </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
@@ -188,6 +203,7 @@ export function DriversForecast() {
                   data={forecastData.monthly_driver_trend}
                   timeRange={selectedTimeRange}
                   driverFocus={selectedDriverFocus}
+                  correlationPeriod={activeCorrelationPeriod}
                   onSelectDriverFocus={(focus) => {
                     setPendingDriverFocus(focus);
                     setSelectedDriverFocus(focus);
@@ -196,11 +212,12 @@ export function DriversForecast() {
               </div>
             </div>
 
-            {/* Chart 2: Passenger Demand Forecast (Fan Chart with 95% CI) */}
+            {/* Chart 2: Passenger Demand Forecast */}
             <div style={{ ...cardStyle, height: '100%', display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <SectionTitle icon="forecast-mesh" variant="indigo" label="Passenger Demand Forecast (Ensemble)" />
+                <SectionTitle icon="forecast-mesh" variant="indigo" label="Passenger Demand Forecast" />
                 <span
+                  title={forecastData.prediction_range_methodology.method}
                   style={{
                     fontSize: 10.5,
                     fontWeight: 600,
@@ -210,7 +227,7 @@ export function DriversForecast() {
                     borderRadius: 5,
                   }}
                 >
-                  95% CI (z=1.960)
+                  {activeForecast?.uncertainty_label ?? 'Prediction Range'}
                 </span>
               </div>
               <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
@@ -230,10 +247,13 @@ export function DriversForecast() {
           {/* Bottom: 3 Key Insights — data from JSON (Fix 5 & 8) */}
           <KeyInsightsStrip
             projectedGrowthPct={kpi?.projected_growth_pct ?? null}
-            dieselCorrR={corrMap.get('diesel_avg') ?? null}
-            registrationsCorrR={corrMap.get('registrations') ?? null}
+            activeForecast={activeForecast}
+            correlationPeriod={activeCorrelationPeriod}
+            dieselCorrR={correlationValue(activeCorrelationPeriod, 'diesel_avg')}
+            registrationsCorrR={correlationValue(activeCorrelationPeriod, 'registrations')}
             regYoYPct={kpi?.reg_yoy_pct ?? null}
             lastRailTotal={kpi?.last_observed_rail_total ?? latestHistorical?.rail_total ?? null}
+            lastObservedMonth={kpi?.last_observed_month ?? null}
           />
         </div>
       </div>

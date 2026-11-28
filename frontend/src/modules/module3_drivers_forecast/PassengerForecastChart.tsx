@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import type { MonthlyDriverData, ForecastHorizon, ForecastHorizonKey } from './types';
+import { validPredictionRange } from './module3Analytics';
 
 interface Props {
   historicalData: MonthlyDriverData[];
@@ -37,21 +38,21 @@ export const PassengerForecastChart: React.FC<Props> = ({
     const fcSeries = [
       ...histDates.slice(0, -1).map(() => null),
       lastHistVal,
-      ...activeForecastObj.forecasts.map((f) => Math.round(f.predicted)),
+      ...activeForecastObj.forecasts.map((f) => f.predicted == null ? null : Math.round(f.predicted)),
     ];
 
     // Confidence Band Lower: null for history, connecting last point
     const lowerCiSeries = [
       ...histDates.slice(0, -1).map(() => null),
       lastHistVal,
-      ...activeForecastObj.forecasts.map((f) => Math.round(f.lower_ci)),
+      ...activeForecastObj.forecasts.map((f) => validPredictionRange(f) ? Math.round(f.lower_ci!) : null),
     ];
 
     // Confidence Band Diff (Upper - Lower): 0 for history, upper - lower for forecast
     const ciDiffSeries = [
       ...histDates.slice(0, -1).map(() => null),
       0,
-      ...activeForecastObj.forecasts.map((f) => Math.round(f.upper_ci - f.lower_ci)),
+      ...activeForecastObj.forecasts.map((f) => validPredictionRange(f) ? Math.round(f.upper_ci! - f.lower_ci!) : null),
     ];
 
     return {
@@ -62,6 +63,8 @@ export const PassengerForecastChart: React.FC<Props> = ({
       ciDiffSeries,
       splitIndex: histDates.length - 1,
       splitDate: histDates[histDates.length - 1],
+      rangeLabel: activeForecastObj.uncertainty_label ?? 'Indicative Prediction Range',
+      modelName: activeForecastObj.model,
     };
   }, [recentHistory, activeForecastObj]);
 
@@ -86,9 +89,9 @@ export const PassengerForecastChart: React.FC<Props> = ({
           </div>`;
 
           const histParam = params.find((p) => p.seriesName === 'Actual Ridership' && p.value !== null);
-          const fcParam = params.find((p) => p.seriesName === 'Ensemble Forecast' && p.value !== null);
+          const fcParam = params.find((p) => p.seriesName === 'Forecast' && p.value !== null);
           const lowerParam = params.find((p) => p.seriesName === 'Lower CI' && p.value !== null);
-          const diffParam = params.find((p) => p.seriesName === 'Confidence Interval' && p.value !== null);
+          const diffParam = params.find((p) => p.seriesName === chartData.rangeLabel && p.value !== null);
 
           if (histParam && isHistorical) {
             html += `
@@ -101,17 +104,18 @@ export const PassengerForecastChart: React.FC<Props> = ({
 
           if (fcParam && !isHistorical) {
             const predVal = fcParam.value;
-            const lower = lowerParam?.value || predVal * 0.9;
-            const upper = lower + (diffParam?.value || predVal * 0.2);
+            const hasRange = lowerParam?.value != null && diffParam?.value != null;
+            const lower = hasRange ? Number(lowerParam.value) : null;
+            const upper = hasRange ? lower! + Number(diffParam.value) : null;
 
             html += `
               <div style="display: flex; justify-content: space-between; gap: 14px; margin: 2px 0;">
-                <span style="color: #00E5A3;">● Predicted:</span>
+                <span style="color: #00E5A3;">● ${chartData.modelName}:</span>
                 <strong style="color: #00E5A3;">${(predVal / 1_000_000).toFixed(2)}M trips</strong>
               </div>
               <div style="display: flex; justify-content: space-between; gap: 14px; margin: 2px 0;">
-                <span style="color: #94A3B8;">95% CI (z=1.960):</span>
-                <span style="color: #FFC400; font-size: 10px;">${(lower / 1_000_000).toFixed(2)}M – ${(upper / 1_000_000).toFixed(2)}M</span>
+                <span style="color: #94A3B8;">${chartData.rangeLabel}:</span>
+                <span style="color: #FFC400; font-size: 10px;">${hasRange ? `${(lower! / 1_000_000).toFixed(2)}M – ${(upper! / 1_000_000).toFixed(2)}M` : 'N/A'}</span>
               </div>
             `;
           }
@@ -127,7 +131,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
         itemHeight: 9,
         itemGap: 12,
         textStyle: { color: '#475569', fontSize: 11.5, fontWeight: 600 },
-        data: ['Actual Ridership', 'Ensemble Forecast', 'Confidence Interval'],
+        data: ['Actual Ridership', 'Forecast', chartData.rangeLabel],
       },
       grid: {
         top: 48,
@@ -175,7 +179,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
         },
         // 2. CI Difference (creates shaded band between lower and upper)
         {
-          name: 'Confidence Interval',
+          name: chartData.rangeLabel,
           type: 'line',
           stack: 'ci-band',
           data: chartData.ciDiffSeries,
@@ -224,7 +228,7 @@ export const PassengerForecastChart: React.FC<Props> = ({
         },
         // 4. Forecast Projected line
         {
-          name: 'Ensemble Forecast',
+          name: 'Forecast',
           type: 'line',
           data: chartData.fcSeries,
           smooth: true,

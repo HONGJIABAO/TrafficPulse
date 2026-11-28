@@ -4,8 +4,13 @@ import type {
   DriverFocusFilter,
   ForecastHorizonKey,
   FeatureImportance,
-  DriverCorrelation,
+  FeatureImportanceScope,
+  CorrelationPeriod,
+  ForecastHorizon,
+  SelectedForecastModel,
+  AccuracyMetrics,
 } from './types';
+import { formatCorrelation, formatMonth } from './module3Analytics';
 import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 
 interface Props {
@@ -18,13 +23,16 @@ interface Props {
   onApply: () => void;
   onReset: () => void;
   featureImportance: FeatureImportance[];
-  driverCorrelations: DriverCorrelation[];
-  /** CV-based MAPE from pipeline backtesting */
-  cvMape?: number | null;
-  /** CV-based RMSE from pipeline backtesting */
-  cvRmse?: number | null;
-  /** Number of walk-forward CV folds used */
-  nCvFolds?: number;
+  featureImportanceScope: FeatureImportanceScope;
+  correlationPeriod: CorrelationPeriod;
+  activeForecast: ForecastHorizon | null;
+  selectedModel: SelectedForecastModel;
+  seasonalNaive: AccuracyMetrics | null;
+  disclosure: {
+    informationCutoff: string;
+    forecastOriginMonth: string;
+    lastObservedMonth: string | null;
+  };
 }
 
 const cardStyle: React.CSSProperties = {
@@ -139,13 +147,16 @@ export const DriversFilterCard: React.FC<Props> = ({
   onApply,
   onReset,
   featureImportance,
-  driverCorrelations,
-  cvMape,
-  cvRmse,
-  nCvFolds,
+  featureImportanceScope,
+  correlationPeriod,
+  activeForecast,
+  selectedModel,
+  seasonalNaive,
+  disclosure,
 }) => {
   const maxImportance = Math.max(...featureImportance.map((f) => f.importance), 1);
-  const maxCorrAbs = Math.max(...driverCorrelations.map((c) => Math.abs(c.correlation)), 1);
+  const driverCorrelations = correlationPeriod.correlations;
+  const maxCorrAbs = Math.max(...driverCorrelations.map((c) => Math.abs(c.correlation ?? 0)), 1);
 
   return (
     <div
@@ -216,7 +227,7 @@ export const DriversFilterCard: React.FC<Props> = ({
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <SectionTitle icon="chart-bar" variant="teal" label="ML Feature Importance" />
-          <span style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>LGBM Splits</span>
+          <span title={featureImportanceScope.metric} style={{ fontSize: 10, color: '#64748B', fontWeight: 600 }}>LGBM Splits</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
@@ -256,6 +267,9 @@ export const DriversFilterCard: React.FC<Props> = ({
             );
           })}
         </div>
+        <div title={featureImportanceScope.model} style={{ fontSize: 9.5, color: '#94A3B8', marginTop: 6, lineHeight: 1.35 }}>
+          Fixed scope: {formatMonth(featureImportanceScope.training_period.split(' to ')[0])}–{formatMonth(featureImportanceScope.training_period.split(' to ')[1])}, n={featureImportanceScope.n_obs}. Split counts are not causal effects or percentage contributions.
+        </div>
       </div>
 
       {/* ── 2b. Pearson Correlations with Ridership ───────────────────────────── */}
@@ -268,9 +282,9 @@ export const DriversFilterCard: React.FC<Props> = ({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {driverCorrelations.slice(0, 5).map((item) => {
-            const pct = Math.round((Math.abs(item.correlation) / maxCorrAbs) * 100);
+            const pct = item.correlation == null ? 0 : Math.round((Math.abs(item.correlation) / maxCorrAbs) * 100);
             const label = FEATURE_NAME_MAP[item.feature] || item.feature;
-            const isPositive = item.correlation > 0;
+            const isPositive = (item.correlation ?? 0) > 0;
             return (
               <div key={item.feature} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#1E293B' }}>
@@ -287,7 +301,7 @@ export const DriversFilterCard: React.FC<Props> = ({
                     {label}
                   </span>
                   <span style={{ fontWeight: 700, color: isPositive ? '#00A389' : '#EF4444' }}>
-                    {item.correlation > 0 ? '+' : ''}{item.correlation.toFixed(2)}
+                    {formatCorrelation(item.correlation)}
                   </span>
                 </div>
                 <div style={{ width: '100%', height: 5, background: '#F1F4F9', borderRadius: 3, overflow: 'hidden' }}>
@@ -306,8 +320,8 @@ export const DriversFilterCard: React.FC<Props> = ({
             );
           })}
         </div>
-        <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 6, fontStyle: 'italic' }}>
-          Bivariate linear (Pearson r). Positive = co-moves with ridership.
+        <div title={correlationPeriod.label} style={{ fontSize: 10, color: '#94A3B8', marginTop: 6, fontStyle: 'italic', lineHeight: 1.35 }}>
+          {correlationPeriod.label} · n={correlationPeriod.n_obs}. Pearson r measures association, not causation. Full-history results include COVID disruption and recovery. Labour chart displays unemployment; employment remains ranked here.
         </div>
       </div>
 
@@ -316,30 +330,44 @@ export const DriversFilterCard: React.FC<Props> = ({
         <SectionTitle icon="ai-chip" variant="indigo" label="Model Diagnostics" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, fontSize: 11.5, color: '#334155' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Architecture:</span>
-            <strong style={{ color: '#0F1E36' }}>LightGBM + HW</strong>
+            <span>Forecast Model:</span>
+            <strong title={selectedModel.specification} style={{ color: '#0F1E36', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{selectedModel.name}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>CV Error (MAPE):</span>
+            <span>{activeForecast?.horizon_months ?? '—'}M Holdout MAPE:</span>
             <span style={{ color: '#00A389', fontWeight: 700 }}>
-              {cvMape != null ? `${cvMape}%` : '—'}
+              {activeForecast?.mape_pct != null ? `${activeForecast.mape_pct.toFixed(2)}%` : 'N/A'}
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>CV RMSE:</span>
+            <span>Endpoint RMSE:</span>
             <strong style={{ color: '#0066FF' }}>
-              {cvRmse != null ? `${(cvRmse / 1_000_000).toFixed(2)}M trips` : '—'}
+              {activeForecast?.rmse != null ? `${(activeForecast.rmse / 1_000_000).toFixed(2)}M trips` : 'N/A'}
             </strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>CV Folds:</span>
+            <span>Evaluation Origins:</span>
             <span style={{ color: '#64748B', fontWeight: 600 }}>
-              {nCvFolds ? `${nCvFolds} walk-forward` : '—'}
+              {activeForecast?.n_cv_folds ? `${activeForecast.n_cv_folds} rolling` : 'N/A'}
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Confidence Level:</span>
-            <span style={{ color: '#64748B', fontWeight: 600 }}>95% Two-Sided CI</span>
+            <span>Prediction Period:</span>
+            <span style={{ color: '#64748B', fontWeight: 600 }}>{activeForecast ? `${formatMonth(activeForecast.start_date)}–${formatMonth(activeForecast.end_date)}` : 'N/A'}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>Seasonal Naive MAPE:</span>
+            <span style={{ color: '#64748B', fontWeight: 600 }}>{seasonalNaive?.mape_pct != null ? `${seasonalNaive.mape_pct.toFixed(2)}%` : 'N/A'}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>Uncertainty:</span>
+            <span style={{ color: '#64748B', fontWeight: 600 }}>{activeForecast?.uncertainty_label ?? 'N/A'}</span>
+          </div>
+          <div title={activeForecast?.evaluation_scope} style={{ fontSize: 9.5, color: '#64748B', lineHeight: 1.35, borderTop: '1px dashed rgba(0, 102, 255, 0.15)', paddingTop: 5 }}>
+            Endpoint evaluation: {activeForecast?.evaluation_scope ?? 'N/A'}; target horizon {activeForecast?.horizon_months ?? 'N/A'} months. LightGBM is used separately for driver split importance only.
+          </div>
+          <div style={{ fontSize: 9.5, color: '#64748B', lineHeight: 1.35 }}>
+            Observed through {formatMonth(disclosure.lastObservedMonth)} · information cutoff {disclosure.informationCutoff}. No nowcast layer; targets after {formatMonth(disclosure.forecastOriginMonth)} are model projections from that cutoff.
           </div>
         </div>
       </div>
@@ -350,13 +378,13 @@ export const DriversFilterCard: React.FC<Props> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7, fontSize: 11, color: '#334155' }}>
           <div>
             <div style={{ fontWeight: 700, color: '#0F1E36', display: 'flex', justifyContent: 'space-between' }}>
-              <span>Fuel Subsidy Rationalization</span>
+              <span>Fuel Market Context</span>
               <span style={{ color: '#FF8C00', fontSize: 10, fontWeight: 700, background: '#FFF3E0', padding: '1px 5px', borderRadius: 4 }}>
-                Active Float
+                Unsubsidised Prices
               </span>
             </div>
             <div style={{ color: '#475569', fontSize: 10.5, marginTop: 2, lineHeight: 1.35 }}>
-              Diesel floating market price; planned RON95 rationalization is associated with higher rail ridership — consistent with modal shift when fuel costs rise.
+              RON95 and Peninsular diesel use unsubsidised retail market prices (RM/L), excluding targeted BUDI95 and SKDS subsidised tiers. Associations are not causal effects.
             </div>
           </div>
           <div style={{ borderTop: '1px dashed rgba(0, 102, 255, 0.15)', paddingTop: 5 }}>
@@ -367,7 +395,7 @@ export const DriversFilterCard: React.FC<Props> = ({
               </span>
             </div>
             <div style={{ color: '#475569', fontSize: 10.5, marginTop: 2, lineHeight: 1.35 }}>
-              High labour participation rate is associated with morning &amp; evening suburban-to-CBD commuter flows.
+              Employment is measured as DOSM employed persons; unemployment is the selected labour chart series. Neither Pearson r nor LightGBM split counts establish causation.
             </div>
           </div>
         </div>
