@@ -422,7 +422,7 @@ def main():
     # Latest labour force (millions)
     latest_lf_employed_m = None
     if last_hist_row.get("lf_employed"):
-        latest_lf_employed_m = round(last_hist_row["lf_employed"] / 1e6, 1)
+        latest_lf_employed_m = round(last_hist_row["lf_employed"] / 1e3, 1)
 
     # Unemployment correlation with ridership (Pearson r)
     urate_corr = next((c["correlation"] for c in corr if c["feature"] == "u_rate"), None)
