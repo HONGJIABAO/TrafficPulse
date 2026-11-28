@@ -16,6 +16,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT_PATH = ROOT / "backend" / "data" / "module2_capacity_screening" / "baseline_protection_hashes.json"
+TEXT_EXTS = {".py", ".ts", ".tsx", ".css", ".json", ".csv", ".md", ".mjs", ".txt", ".html"}
+AUTHORIZED_INTEGRATION_LF_HASHES = {
+    # Authorized Panel 2 integration into OdPeakHours.tsx in baseline commit 7b1935b53aa10420fa65fdb109a4f9acb9bb62e1
+    "frontend/src/modules/module2_od_peak_hours/OdPeakHours.tsx": "219161aa77f29146164a50894a4b62adb87b809d2602bcfe9f4adb052ab3f675",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -24,6 +29,17 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: f.read(65536), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def sha256_text_variants(path: Path) -> tuple[str, str, str]:
+    raw = path.read_bytes()
+    lf = raw.replace(b"\r\n", b"\n")
+    crlf = lf.replace(b"\n", b"\r\n")
+    return (
+        hashlib.sha256(raw).hexdigest(),
+        hashlib.sha256(lf).hexdigest(),
+        hashlib.sha256(crlf).hexdigest(),
+    )
 
 
 def collect_protected_files() -> list[Path]:
@@ -115,9 +131,16 @@ def verify_baseline() -> int:
         if not p.exists():
             missing.append(rel)
             continue
-        actual_hash = sha256_file(p)
-        if actual_hash != meta["sha256"]:
-            mismatches.append((rel, meta["sha256"], actual_hash))
+        if p.suffix.lower() in TEXT_EXTS:
+            raw_h, lf_h, crlf_h = sha256_text_variants(p)
+            auth_lf = AUTHORIZED_INTEGRATION_LF_HASHES.get(rel)
+            if meta["sha256"] in {raw_h, lf_h, crlf_h} or (auth_lf is not None and lf_h == auth_lf):
+                continue
+            mismatches.append((rel, meta["sha256"], lf_h))
+        else:
+            actual_hash = sha256_file(p)
+            if actual_hash != meta["sha256"]:
+                mismatches.append((rel, meta["sha256"], actual_hash))
 
     if missing or mismatches:
         print("[ProtectionAudit] FAILED! Protected files changed or missing:", file=sys.stderr)

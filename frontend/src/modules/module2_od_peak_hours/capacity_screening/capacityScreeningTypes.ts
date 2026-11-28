@@ -22,6 +22,7 @@ export interface ScreeningFilters {
 }
 
 export interface SegmentSliceMetrics {
+  day_count?: number;
   daily_avg_flow: number;
   daily_avg_boardings: number;
   mean_peak_hr: number;
@@ -33,10 +34,15 @@ export interface SegmentSliceMetrics {
   mean_peak_lr_80: number | null;
   mean_peak_def_80: number;
   mean_peak_ext_80: number;
-  p90_peak_lr_nom: number;
+  p90_peak_hr: number;
+  p90_peak_date: string;
+  p90_peak_d: number;
+  p90_peak_s_nom: number;
+  p90_peak_trains: number;
+  p90_peak_lr_nom: number | null;
   p90_peak_def_nom: number;
   p90_peak_ext_nom: number;
-  p90_peak_lr_80: number;
+  p90_peak_lr_80: number | null;
   p90_peak_def_80: number;
   p90_peak_ext_80: number;
   max_peak_hr: number;
@@ -47,15 +53,21 @@ export interface SegmentSliceMetrics {
   max_peak_lr_nom: number | null;
   max_peak_def_nom: number;
   max_peak_ext_nom: number;
-  max_peak_lr_80: number;
+  max_peak_lr_80: number | null;
   max_peak_def_80: number;
   max_peak_ext_80: number;
   days_deficit_nom: number;
   days_deficit_80: number;
+  is_kits_anomaly_peak_date?: boolean;
   st_mean_t: number | null;
   st_mean_b: number;
   st_mean_avail_nom: number | null;
   st_mean_gap_nom: number | null;
+  st_p90_t: number | null;
+  st_p90_b: number;
+  st_p90_avail_nom: number | null;
+  st_p90_gap_nom: number | null;
+  st_upstream_full_p90: boolean;
   st_max_t: number | null;
   st_max_b: number;
   st_max_avail_nom: number | null;
@@ -63,6 +75,16 @@ export interface SegmentSliceMetrics {
   st_upstream_full_max: boolean;
   tight_peak_max_d: number;
   tx_peak_max_d: number;
+}
+
+export interface SegmentSensitivitySummary {
+  max_lr_range: [number, number];
+  p90_lr_range: [number, number];
+  mean_lr_range: [number, number];
+  extra_trains_range: [number, number];
+  excl_kits_max_lr: number | null;
+  robust_p90_gt_100: boolean;
+  robust_mean_gt_100: boolean;
 }
 
 export interface ScreenedSegmentRecord {
@@ -78,6 +100,7 @@ export interface ScreenedSegmentRecord {
   gtfs_interpolated_missing_stop: boolean;
   train_capacity_nom: number;
   train_capacity_80: number;
+  sensitivity?: SegmentSensitivitySummary | null;
   metrics: Record<string, SegmentSliceMetrics>;
 }
 
@@ -121,6 +144,7 @@ export interface CapacityScreeningSummarySchema {
     gtfs_window_end: string;
     excluded_pre_gtfs_window: string;
     slice_day_counts: Record<string, number>;
+    slice_day_counts_by_net?: Record<string, Record<string, number>>;
     capacity_config: Record<NetworkCode, {
       official_2023_nominal: number;
       planning_sensitivity_80pct: number;
@@ -142,20 +166,30 @@ export interface CapacityScreeningSummarySchema {
 }
 
 export interface HourlyProfileEntry {
-  base_mean: number[];
-  base_p90: number[];
-  base_max: number[];
-  tight_mean: number[];
-  tx_mean: number[];
+  mean_d: number[];
+  mean_tight: number[];
+  mean_tx: number[];
   cap_nom_mean: number[];
   trains_mean: number[];
   b_mean: number[];
   t_mean: (number | null)[] | null;
   peak_mean_hr: number;
-  peak_max_hr: number;
+  p90_date: string;
+  p90_hr: number;
+  p90_sched_idx: number | null;
+  p90_d: number[];
+  p90_tight: number[];
+  p90_tx: number[];
+  max_date: string;
+  max_hr: number;
+  max_sched_idx: number | null;
+  max_d: number[];
+  max_tight: number[];
+  max_tx: number[];
 }
 
 export interface CapacityHourlyProfilesSchema {
+  sched_catalog?: [number[], number[]][];
   profiles: Record<string, HourlyProfileEntry>;
 }
 
@@ -230,14 +264,44 @@ export interface CoverageFeasibilityRow {
   status_and_reason: string;
 }
 
+export interface UtaraScenarioSummary {
+  id: string;
+  label: string;
+  assigned_pax: number;
+  matched_pax: number;
+  matched_pct: number;
+  unmatched_pax: number;
+  top_segment_id: string;
+  top_segment_label: string;
+  max_lr_pct: number;
+  max_date: string;
+  max_hr: number;
+  max_deficit: number;
+  max_extra_trains: number;
+  segments_gt_100_max: number;
+  segments_gt_100_p90: number;
+  segments_gt_100_mean: number;
+}
+
 export interface CapacityCoverageSchema {
   feasibility_matrix: CoverageFeasibilityRow[];
   date_window_disclosure: {
     active_comparison_window: string;
     excluded_pre_gtfs_window: string;
     gtfs_calendar_exceptions_honored: { date: string; reason: string }[];
+    unverified_holiday_exceptions?: { date: string; name: string; treatment: string; notes: string }[];
     additional_forensic_disclosures: string[];
   };
+  utara_temporal_sensitivity?: {
+    gtfs_window: string;
+    days_evaluated: number;
+    kits_batch_anomaly_hours: { date: string; hour: number; note: string }[];
+    network_scenarios: UtaraScenarioSummary[];
+    corridor_scenarios: Record<string, { label: string; scenarios: Record<string, Record<string, unknown>> }>;
+    per_segment: Record<string, SegmentSensitivitySummary>;
+  };
+  nov09_holiday_sensitivity?: Record<string, unknown>;
+  observation_window_comparison?: Record<string, string>;
   path_assignment_audit: Record<string, unknown>;
   temporal_demand_audit: Record<string, unknown>;
   scheduled_capacity_audit: Record<string, unknown>;

@@ -115,6 +115,16 @@ def compute_scheduled_capacity() -> dict:
     summary = {
         "gtfs_window": f"{GTFS_WINDOW_START}..{GTFS_WINDOW_END}",
         "excluded_pre_gtfs_window": "2026-01-01..2026-08-17 (excluded from capacity deficit comparisons because ktmb_gtfs.zip calendar starts 2026-08-18)",
+        "unverified_kv_holiday_excluded_from_matched": ["2026-11-09 (Deepavali replacement holiday lacks calendar_dates.txt exception; isolated in holiday sensitivity)"],
+        "reference_timetable_validity": {
+            "ktm_komuter_kv": (
+                "Reference-Timetable Scenario vs published Nov 2026 KTMB GTFS feed (BC-PS Nov 10/14 + TM-PK Nov 23/28-29 RIDT works "
+                "backdated to 2026-08-18 in calendar.txt); exact matched schedule across Nov 10-26 and indicative reference baseline for Aug 18-Nov 9."
+            ),
+            "ktm_komuter_utara": (
+                "Verified continuous fixed schedule across 2026-08-18..2026-11-26 matching KTMB official 24 Jul 2026 timetable PDF daily (1,1,1,1,1,1,1)."
+            ),
+        },
         "rows_written": rows_written,
         "total_segment_train_crossings": dict(total_train_crossings),
         "capacity_assumptions": SERVICE_CAPACITY_CONFIG,

@@ -210,3 +210,117 @@ test('Test 6 — KTMB Hourly Windows, Sorting Null-Sinking, CSV Export & Insight
   assert.match(insight.detail, /without inferring rolling-stock capacity/i);
   assert.ok(insight.shahAlamDisclosure && insight.shahAlamDisclosure.includes('3,265,221'));
 });
+
+test('Test 7 — M2-07 Hourly Filter Scope Under All Networks & Peak-Hour Focus Separation', () => {
+  // When AM Peak (06:00-09:59) is selected under All Networks, daily-only Rapid Rail MUST NOT leak into table, spotlight, CSV, or insights
+  const amFilters = {
+    ...DEFAULT_STATION_DEMAND_FILTERS,
+    network: 'all',
+    hourWindow: 'am_peak',
+  };
+  const amRows = resolveStationRows(inventory, summary, hourly, amFilters);
+  assert.equal(amRows.length, 222);
+  assert.equal(amRows.some((r) => r.station.network === 'rapid_rail'), false);
+
+  const amSpotlight = computeSpotlightMetrics(amRows, 324, amFilters);
+  assert.equal(amSpotlight.isHourlyWindowFiltered, true);
+  assert.equal(amSpotlight.dailyOnlyCount, 0);
+  assert.equal(amSpotlight.hourlySupportedCount, 222);
+  assert.equal(amSpotlight.topDailyStation?.station.id, 'ktmb:shuttle_tebrau:jb_sentral');
+  assert.equal(amSpotlight.filteredTotalTrips, 6511807);
+  assert.equal(amSpotlight.filteredAvgDailyTrips, 20098.2);
+
+  const amInsight = generateStationDemandInsight(amSpotlight, amFilters, coverage);
+  assert.doesNotMatch(amInsight.headline, /Bukit Bintang/);
+  assert.match(amInsight.headline, /JB Sentral/);
+  assert.match(amInsight.detail, /Rapid Rail daily-only records are excluded/);
+
+  // PM Peak (17:00-20:59) under All Networks leads with KTM Komuter KL Sentral, never Bukit Bintang
+  const pmFilters = {
+    ...DEFAULT_STATION_DEMAND_FILTERS,
+    network: 'all',
+    hourWindow: 'pm_peak',
+  };
+  const pmRows = resolveStationRows(inventory, summary, hourly, pmFilters);
+  const pmSpot = computeSpotlightMetrics(pmRows, 324, pmFilters);
+  assert.equal(pmSpot.topDailyStation?.station.id, 'ktmb:komuter:kl_sentral');
+  assert.equal(pmSpot.dailyOnlyCount, 0);
+
+  // Rank by Peak Hour (metricFocus = 'peak_hour', hourWindow = 'all') keeps Rapid Rail & 2 Unknown admin entries out of Spotlight KPI volume
+  const peakFocusFilters = {
+    ...DEFAULT_STATION_DEMAND_FILTERS,
+    network: 'all',
+    metricFocus: 'peak_hour',
+  };
+  const peakFocusRows = resolveStationRows(inventory, summary, hourly, peakFocusFilters);
+  const peakSpot = computeSpotlightMetrics(peakFocusRows, 324, peakFocusFilters);
+  assert.equal(peakSpot.isPeakFocus, true);
+  // 22,525,370 aligned KTMB origin total minus 12,091 non-physical Unknown origin trips (10,584 Komuter + 1,507 Utara)
+  assert.equal(peakSpot.filteredTotalTrips, 7405913 + 968886 + 5672392 + 5699796 + 2778383 - 12091);
+  assert.notEqual(peakSpot.topDailyStation?.station.network, 'rapid_rail');
+});
+
+test('Test 8 — Monthly Trend Period Filtering, True Weighted Averages & Hub Unit Terminology', () => {
+  const allRows = resolveStationRows(inventory, summary, hourly, DEFAULT_STATION_DEMAND_FILTERS);
+  const rowMap = new Map(allRows.map((r) => [r.station.id, r]));
+
+  // Verify KTMB weighted multi-month averages match summary.metrics['12m'] across representative stations
+  const expectedStationIds = [
+    'ktmb:komuter:kl_sentral',
+    'ktmb:ets:kl_sentral',
+    'ktmb:komuter:batu_caves',
+    'ktmb:komuter_utara:butterworth',
+    'ktmb:komuter_utara:sungai_petani',
+    'ktmb:shuttle_tebrau:jb_sentral',
+    'ktmb:komuter:taman_wahyu',
+  ];
+  for (const sid of expectedStationIds) {
+    const r = rowMap.get(sid);
+    assert.ok(r, `Missing station row ${sid}`);
+    const full = computeDailySeriesSummary(r, daily, '12m', 'all', summary);
+    assert.ok(full);
+    assert.equal(full.mode, 'monthly');
+    assert.equal(full.labels.length, 11);
+    assert.equal(full.weekdayAvg, Math.round(summary.metrics['12m'].weekday[sid].avg * 10) / 10);
+    assert.equal(full.weekendAvg, Math.round(summary.metrics['12m'].weekend[sid].avg * 10) / 10);
+
+    // Quarterly & Monthly period slicing strictly matches selected months & weighted Q4 averages (tot / calendar days)
+    const q1 = computeDailySeriesSummary(r, daily, 'q1', 'all', summary);
+    assert.deepEqual(q1?.labels, ['2026-01', '2026-02', '2026-03']);
+    const q4 = computeDailySeriesSummary(r, daily, 'q4', 'all', summary);
+    assert.deepEqual(q4?.labels, ['2026-10', '2026-11']);
+    assert.equal(
+      q4?.weekdayAvg,
+      Math.round((summary.metrics.q4.weekday[sid].tot / summary.period_catalog.q4.weekday_days) * 10) / 10
+    );
+    assert.equal(
+      q4?.weekendAvg,
+      Math.round((summary.metrics.q4.weekend[sid].tot / summary.period_catalog.q4.weekend_days) * 10) / 10
+    );
+
+    const aug = computeDailySeriesSummary(r, daily, '2026-08', 'all', summary);
+    assert.deepEqual(aug?.labels, ['2026-08']);
+    assert.equal(
+      aug?.weekdayAvg,
+      Math.round((summary.metrics['2026-08'].weekday[sid].tot / summary.period_catalog['2026-08'].weekday_days) * 10) / 10
+    );
+  }
+
+  // Also confirm Shah Alam (SA01) & Bukit Bintang daily series align with weighted day averages
+  for (const sid of ['rr:KG18', 'rr:KJ10', 'rr:SA01']) {
+    const r = rowMap.get(sid);
+    assert.ok(r);
+    const full = computeDailySeriesSummary(r, daily, '12m', 'all', summary);
+    assert.equal(full?.mode, 'daily');
+    assert.equal(full?.labels.length, 324);
+    assert.equal(full?.weekdayAvg, Math.round(summary.metrics['12m'].weekday[sid].avg * 10) / 10);
+  }
+
+  // Unique physical interchange hubs vs station-service records count (399 total = 388 measured + 9 unmeasured + 2 admin)
+  const measured = inventory.stations.filter(
+    (s) => s.is_physical_station && s.availability_status !== 'unavailable_no_od_data'
+  );
+  const uniqueHubs = new Set(measured.map((s) => s.physical_interchange_id));
+  assert.equal(measured.length, 388);
+  assert.equal(uniqueHubs.size, 300);
+});

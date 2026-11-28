@@ -64,7 +64,13 @@ test('Test B — Day Profile filter partitions Weekdays (232d) and Weekends (92d
   assert.equal(weDs.activeDaysDenominator, 92);
   assert.equal(wdDs.activeDaysDenominator + weDs.activeDaysDenominator, allDs.activeDaysDenominator);
   assert.equal(wdDs.networkTotalTrips + weDs.networkTotalTrips, allDs.networkTotalTrips);
-  assert.equal(allDs.networkTotalTrips, 7405913);
+  // M2-06: Physical OD volume excludes 18,847 deduplicated Penalty/Unknown admin trips from 7,405,913 source total
+  assert.equal(allDs.networkTotalTrips, 7387066);
+  assert.equal(allDs.sourceReportedTotalTrips, 7405913);
+  assert.equal(allDs.excludedAdminTrips, 18847);
+  assert.equal(allDs.excludedAdminPairs, 185);
+  assert.equal(allDs.uniqueOdCorridorsCount, 3259);
+  assert.equal(wdDs.excludedAdminTrips + weDs.excludedAdminTrips, 18847);
 
   // Weekday heatmap strictly Mon-Fri (ISO 1..5), including Friday (5)
   const wdWeekdays = new Set(wdDs.heatmapPoints.map((p) => p.weekday));
@@ -78,6 +84,7 @@ test('Test B — Day Profile filter partitions Weekdays (232d) and Weekends (92d
 test('Test C — Time Horizon filter updates exact quarterly totals, days, and handles empty/unsupported dates', () => {
   const quarters = ['q1', 'q2', 'q3', 'q4'];
   let qTripsSum = 0;
+  let qAdminSum = 0;
   let qDaysSum = 0;
 
   for (const q of quarters) {
@@ -90,10 +97,13 @@ test('Test C — Time Horizon filter updates exact quarterly totals, days, and h
     assert.equal(ds.hasData, true);
     assert.equal(ds.networkTotalIsExact, true);
     qTripsSum += ds.networkTotalTrips;
+    qAdminSum += ds.excludedAdminTrips;
     qDaysSum += ds.activeDaysDenominator;
   }
 
-  assert.equal(qTripsSum, 7405913);
+  assert.equal(qTripsSum, 7387066);
+  assert.equal(qAdminSum, 18847);
+  assert.equal(qTripsSum + qAdminSum, 7405913);
   assert.equal(qDaysSum, 324);
 
   // Monthly slice updates to August 2026 (31 days)
@@ -158,18 +168,19 @@ test('Test D & E — Dynamic KPIs & Peak Hour Identification match KTM Komuter 2
     timelineMonthKey: null,
   });
 
-  // Weekday peak = 8 AM (3,757.2/hr)
+  // Weekday peak = 8 AM (3,755.1/hr physical OD excl. non-physical Penalty/Unknown admin rows)
   assert.equal(komWd.peakAnalysis.busiestHour?.hour, 8);
   assert.equal(komWd.peakAnalysis.busiestHour?.windowLabel, '8:00 AM – 9:00 AM');
-  assert.equal(komWd.peakAnalysis.busiestHour?.avgTrips, 3757.2);
+  assert.equal(komWd.peakAnalysis.busiestHour?.avgTrips, 3755.1);
 
-  // Evening peak dynamically identified as 6:00 PM – 8:00 PM (Hours 18 & 19: 3051.0 and 3028.0)
+  // Evening peak dynamically identified as 6:00 PM – 8:00 PM (Hours 18 & 19: 3048.3 and 3025.8)
   assert.equal(komWd.peakAnalysis.eveningPeak?.peakHour, 18);
   assert.equal(komWd.peakAnalysis.eveningPeak?.windowLabel, '6:00 PM – 8:00 PM');
 
-  // Weekend peak = 11 AM (1,579.0/hr), NOT contaminated by Friday 8 AM
+  // Weekend peak = 11 AM (1,566.9/hr physical OD), NOT contaminated by Friday 8 AM
   assert.equal(komWe.peakAnalysis.busiestHour?.hour, 11);
   assert.equal(komWe.peakAnalysis.busiestHour?.windowLabel, '11:00 AM – 12:00 PM');
+  assert.equal(komWe.peakAnalysis.busiestHour?.avgTrips, 1566.9);
 
   // Top Intercity corridor dynamically computed
   const ic = selectActiveDataset(odSummary, stationsData.stations, {
@@ -267,5 +278,68 @@ test('Test H — Full-Matrix Rapid Rail Totals, Distance Profile & Shah Alam Dis
   });
   assert.ok(kom.fullDistanceStats);
   assert.equal(kom.fullDistanceStats.avgDist, 24.3);
-  assert.ok(kom.fullDistanceStats.mappedCoveragePct && kom.fullDistanceStats.mappedCoveragePct > 99.5);
+  assert.equal(kom.fullDistanceStats.mappedCoveragePct, 100);
+});
+
+test('Test I — M2-04 Intercity & Upper OD Scope Labels, M2-06 Admin Reconciliation & Zero-Volume Pair Disclosure', () => {
+  // M2-04: Upper OD Intercity must NEVER claim ETS; All-mode insights disclose exact 3 included OD services
+  const ic = selectActiveDataset(odSummary, stationsData.stations, {
+    mode: 'intercity',
+    timeRange: '12m',
+    dayType: 'all',
+    timelineMonthKey: null,
+  });
+  assert.equal(ic.resolvedFlows[0].modeLabel, 'KTM Intercity');
+  assert.doesNotMatch(ic.hourlyCoverageNote, /Intercity\s*&\s*ETS/i);
+  assert.match(ic.hourlyCoverageNote, /Excl\. ETS & Shuttle Tebrau/);
+  const icInsights = generateDynamicInsights(ic, 'intercity', 'all');
+  assert.match(icInsights[2].observation, /^KTM Intercity\b/);
+  assert.doesNotMatch(icInsights[2].observation, /Intercity & ETS/i);
+
+  const allDs = selectActiveDataset(odSummary, stationsData.stations, {
+    mode: 'all',
+    timeRange: '12m',
+    dayType: 'all',
+    timelineMonthKey: null,
+  });
+  assert.equal(allDs.networkTotalTrips, 204987144);
+  assert.equal(allDs.sourceReportedTotalTrips, 205005991);
+  assert.equal(allDs.excludedAdminTrips, 18847);
+  assert.equal(allDs.zeroRidershipPairsDisclosed, 7);
+  const allInsights = generateDynamicInsights(allDs, 'all', 'all');
+  assert.match(allInsights[2].observation, /All Included OD Services \(Rapid Rail, KTM Komuter KV & Intercity\)/);
+  assert.match(allInsights[2].observation, /18,847/);
+
+  // M2-06: Exact source-to-physical reconciliation without double-counting dual-admin (Unknown->Unknown = 35)
+  const rec = odSummary.metadata.data_quality.komuter_2026.admin_reconciliation;
+  assert.equal(rec.source_reported_trips, 7405913);
+  assert.equal(rec.physical_od_trips, 7387066);
+  assert.equal(rec.excluded_admin_trips, 18847);
+  assert.equal(rec.origin_penalty_trips, 0);
+  assert.equal(rec.dest_penalty_trips, 4450);
+  assert.equal(rec.origin_unknown_trips, 10584);
+  assert.equal(rec.dest_unknown_trips, 3848);
+  assert.equal(rec.dual_admin_trips, 35);
+  assert.equal(
+    rec.origin_penalty_trips + rec.dest_penalty_trips + rec.origin_unknown_trips + rec.dest_unknown_trips - rec.dual_admin_trips,
+    rec.excluded_admin_trips
+  );
+
+  // Ensure no Penalty or Unknown code leaks into any period top_od lists
+  for (const periodObj of Object.values(odSummary.periods)) {
+    for (const pairList of [periodObj.komuter.top_od.all, periodObj.intercity.top_od.all]) {
+      for (const p of pairList) {
+        assert.notEqual(p.origin.toLowerCase(), 'penalty');
+        assert.notEqual(p.origin.toLowerCase(), 'unknown');
+        assert.notEqual(p.destination.toLowerCase(), 'penalty');
+        assert.notEqual(p.destination.toLowerCase(), 'unknown');
+      }
+    }
+  }
+
+  // Rapid Rail pair count distinction: 17,048 positive out of 17,055 matrix pairs (7 zero-volume pairs)
+  const rrDq = odSummary.metadata.data_quality.rapid_rail_2026;
+  assert.equal(rrDq.total_non_a0_pairs_all, 17055);
+  assert.equal(rrDq.positive_non_a0_pairs, 17048);
+  assert.equal(rrDq.zero_ridership_pairs, 7);
 });

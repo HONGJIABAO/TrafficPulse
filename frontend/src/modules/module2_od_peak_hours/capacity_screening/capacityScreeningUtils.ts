@@ -45,8 +45,8 @@ export function classifyStatus(
   loadRatioPct: number | null,
   scheduledCapacity: number | null
 ): BottleneckStatus {
+  if (scheduledCapacity !== null && scheduledCapacity <= 0) return 'no_service';
   if (loadRatioPct === null || scheduledCapacity === null) return 'unavailable';
-  if (scheduledCapacity <= 0) return 'no_service';
   if (loadRatioPct > 100.0) return 'deficit';
   if (loadRatioPct >= 80.0) return 'watch';
   return 'within_capacity';
@@ -104,19 +104,16 @@ export function evaluateSegmentMetrics(
     capacityDeficit = isNominal ? slice.mean_peak_def_nom : slice.mean_peak_def_80;
     extraTrainsNeeded = isNominal ? slice.mean_peak_ext_nom : slice.mean_peak_ext_80;
     demandValue = slice.mean_peak_d;
-    scheduledCapacity = Math.round(slice.mean_peak_s_nom * ratioFactor);
+    scheduledCapacity = Math.round(slice.mean_peak_s_nom * ratioFactor * 10) / 10;
     peakHour = slice.mean_peak_hr;
   } else if (statMode === 'p90') {
     loadRatioPct = isNominal ? slice.p90_peak_lr_nom : slice.p90_peak_lr_80;
     capacityDeficit = isNominal ? slice.p90_peak_def_nom : slice.p90_peak_def_80;
     extraTrainsNeeded = isNominal ? slice.p90_peak_ext_nom : slice.p90_peak_ext_80;
-    scheduledCapacity = Math.round(slice.max_peak_s_nom * ratioFactor);
-    // Reconstruct implied P90 passenger equivalent when single-date denominator matches
-    demandValue =
-      loadRatioPct !== null && scheduledCapacity > 0
-        ? Math.round(((loadRatioPct / 100) * scheduledCapacity) * 10) / 10
-        : null;
-    peakHour = slice.max_peak_hr;
+    demandValue = slice.p90_peak_d;
+    scheduledCapacity = Math.round(slice.p90_peak_s_nom * ratioFactor);
+    peakHour = slice.p90_peak_hr;
+    peakDate = slice.p90_peak_date || null;
   } else {
     loadRatioPct = isNominal ? slice.max_peak_lr_nom : slice.max_peak_lr_80;
     capacityDeficit = isNominal ? slice.max_peak_def_nom : slice.max_peak_def_80;
@@ -124,14 +121,29 @@ export function evaluateSegmentMetrics(
     demandValue = slice.max_peak_d;
     scheduledCapacity = Math.round(slice.max_peak_s_nom * ratioFactor);
     peakHour = slice.max_peak_hr;
-    peakDate = slice.max_peak_date;
+    peakDate = slice.max_peak_date || null;
   }
 
-  // Station boarding metrics scaled accurately to nominal or 80% mode
+  // Coherent station boarding metrics matching the exact active statMode (never mix st_max_* into p90)
   const isFallback = segment.boarding_screening_mode === 'fallback_downstream_segment';
-  const rawT = statMode === 'mean' ? slice.st_mean_t : slice.st_max_t;
-  const rawB = statMode === 'mean' ? slice.st_mean_b : slice.st_max_b;
-  const baseCapS = statMode === 'mean' ? slice.mean_peak_s_nom : slice.max_peak_s_nom;
+  const rawT =
+    statMode === 'mean'
+      ? slice.st_mean_t
+      : statMode === 'p90'
+        ? slice.st_p90_t
+        : slice.st_max_t;
+  const rawB =
+    statMode === 'mean'
+      ? slice.st_mean_b
+      : statMode === 'p90'
+        ? slice.st_p90_b
+        : slice.st_max_b;
+  const baseCapS =
+    statMode === 'mean'
+      ? slice.mean_peak_s_nom
+      : statMode === 'p90'
+        ? slice.p90_peak_s_nom
+        : slice.max_peak_s_nom;
   const scaledCapS = baseCapS * ratioFactor;
 
   let boardingThroughT: number | null = isFallback ? null : rawT;
@@ -348,7 +360,13 @@ export function computeKpiSummary(
   filters: ScreeningFilters
 ): DynamicKpiSummary {
   const sliceKey = `${filters.period}|${filters.dayProfile}`;
-  const activeDaysCount = summary.metadata.slice_day_counts[sliceKey] ?? 0;
+  const byNetCounts = summary.metadata.slice_day_counts_by_net;
+  const activeDaysCount =
+    filters.network === 'ktm_komuter_utara'
+      ? (byNetCounts?.ktm_komuter_utara?.[sliceKey] ?? summary.metadata.slice_day_counts[sliceKey] ?? 0)
+      : filters.network === 'ktm_komuter_kv'
+        ? (byNetCounts?.ktm_komuter_kv?.[sliceKey] ?? summary.metadata.slice_day_counts[sliceKey] ?? 0)
+        : (byNetCounts?.ktm_komuter_kv?.[sliceKey] ?? summary.metadata.slice_day_counts[sliceKey] ?? 0);
 
   let peakLoadRatioPct: number | null = null;
   let peakSegmentLabel = 'No Active Segments';
@@ -406,8 +424,24 @@ export function generateDynamicDirectives(
   filters: ScreeningFilters,
   kpis: DynamicKpiSummary
 ): DynamicDirectiveItem[] {
-  const topByNet = (net: NetworkCode): { label: string; ratio: number | null; ext: number; hr: number | null; days: number } | null => {
-    let best: { label: string; ratio: number; ext: number; hr: number | null; days: number } | null = null;
+  const topByNet = (
+    net: NetworkCode
+  ): {
+    label: string;
+    ratio: number | null;
+    ext: number;
+    hr: number | null;
+    days: number;
+    seg: ScreenedSegmentRecord;
+  } | null => {
+    let best: {
+      label: string;
+      ratio: number;
+      ext: number;
+      hr: number | null;
+      days: number;
+      seg: ScreenedSegmentRecord;
+    } | null = null;
     for (const seg of summary.segments) {
       if (seg.network_code !== net) continue;
       const ev = evaluateSegmentMetrics(
@@ -423,6 +457,7 @@ export function generateDynamicDirectives(
           ext: ev.extraTrainsNeeded ?? 0,
           hr: ev.peakHour,
           days: ev.daysDeficit,
+          seg,
         };
       }
     }
@@ -436,26 +471,30 @@ export function generateDynamicDirectives(
   const directives: DynamicDirectiveItem[] = [];
 
   if (utaraTop && (filters.network === 'all' || filters.network === 'ktm_komuter_utara')) {
+    const sens = utaraTop.seg.sensitivity;
+    const sensNote = sens
+      ? ` Scenario band across forward/arrival/mixed & ex-KITS batch sensitivity: ${sens.max_lr_range[0].toFixed(1)}%–${sens.max_lr_range[1].toFixed(1)}% (P90 band: ${sens.p90_lr_range[0].toFixed(1)}%–${sens.p90_lr_range[1].toFixed(1)}%).`
+      : '';
     directives.push({
       id: 'utara_peak_pressure',
-      badge: utaraTop.ratio && utaraTop.ratio > 100 ? 'Capacity Deficit' : 'Watch',
+      badge: utaraTop.ratio && utaraTop.ratio > 100 ? 'Structural Deficit (Assumption-Sensitive Peak)' : 'Watch',
       tone: utaraTop.ratio && utaraTop.ratio > 100 ? 'crimson' : 'amber',
       title: 'Komuter Utara 3-Car EMU Bottleneck Relief',
       metricHighlight: `${utaraTop.label} (${utaraTop.ratio?.toFixed(1)}% | +${utaraTop.ext} trains)`,
-      description: `Single 3-car EMU departures (400-pax reference) on the Northern spine trigger ${utaraTop.days} deficit day(s) in the selected window under ${modeLabel}, peaking at ${formatHourLabel(utaraTop.hr)}.`,
-      actionHint: 'Evaluate 6-car double-set coupling or targeted weekend/festive relief departures north of Bukit Mertajam.',
+      description: `Single 3-car EMU departures (400-pax reference) on the Northern spine trigger ${utaraTop.days} deficit day(s) in the selected window under ${modeLabel}, peaking at ${formatHourLabel(utaraTop.hr)}.${sensNote}`,
+      actionHint: 'Peak magnitudes reflect KITS ticket-timestamp uncertainty & 2h headways; structural >100% corridor pressure persists across schedule-aligned temporal models (adopted 50/50 mixed, forward-departure, and arrival-hybrid); conservative under raw transaction-hour cohort.',
     });
   }
 
   if (kvTop && (filters.network === 'all' || filters.network === 'ktm_komuter_kv')) {
     directives.push({
       id: 'kvdt2_seremban_corridor',
-      badge: kvTop.ratio && kvTop.ratio > 100 ? 'KVDT2 Bottleneck' : kvTop.ratio && kvTop.ratio >= 80 ? 'Near Threshold' : 'Within Limit',
+      badge: kvTop.ratio && kvTop.ratio > 100 ? 'KVDT2 Bottleneck (Ref. Timetable)' : kvTop.ratio && kvTop.ratio >= 80 ? 'Near Threshold (Ref. Timetable)' : 'Within Limit (Ref. Timetable)',
       tone: kvTop.ratio && kvTop.ratio > 100 ? 'crimson' : kvTop.ratio && kvTop.ratio >= 80 ? 'amber' : 'cobalt',
-      title: 'KVDT2 Southern Seremban Corridor Compression',
+      title: 'KVDT2 Southern Seremban Reference-Timetable Screening',
       metricHighlight: `${kvTop.label} (${kvTop.ratio?.toFixed(1)}%)`,
-      description: `KVDT2 track closures confine through-Seremban weekday departures to 5 peak trips each way, concentrating demand along Kajang–Bangi segments (${formatHourLabel(kvTop.hr)}).`,
-      actionHint: 'Monitor Seremban–Kajang load evolution alongside off-peak Salak Selatan shuttle feeder transfers until KVDT2 completes.',
+      description: `Evaluated against Nov 2026 KTMB GTFS reference schedule (excl. unverified Nov 9 Deepavali holiday): KVDT2 confines Seremban weekday through-trips to 5 peak pairs, concentrating loads near Kajang (${formatHourLabel(kvTop.hr)}).`,
+      actionHint: 'Interpret pre-Nov 10 KV loads as reference-timetable comparisons; monitor Seremban–Kajang corridors until KVDT2 completion.',
     });
   }
 
@@ -465,8 +504,8 @@ export function generateDynamicDirectives(
     tone: 'slate',
     title: 'Multi-Network Verification & Honest Boundaries',
     metricHighlight: `${kpis.totalEvaluatedCount} screened segments | ${summary.unavailable_stations.length} unavailable nodes`,
-    description: `Capacity deficits cover 2026-08-18..2026-11-26 GTFS overlap only. Rapid Rail (daily-only), ETS/Intercity (seated-only mix), Shuttle Tebrau, and Segambut Utara (absent from GTFS) remain unfabricated.`,
-    actionHint: 'Inspect the Coverage & Feasibility Matrix before comparing service performance across ETS or Rapid Rail lines.',
+    description: `Matched screening spans 2026-08-18..2026-11-26 (100 KV days excl. Nov 9 holiday; 101 Utara days). Rapid Rail (daily-only), ETS/Intercity, Shuttle Tebrau, and Segambut Utara remain unfabricated.`,
+    actionHint: 'Inspect Coverage & Provenance for full Utara temporal sensitivity matrix and Nov 9 holiday audit.',
   });
 
   return directives;

@@ -3,17 +3,17 @@
     {
       "id": "schedule_traversal_base",
       "label": "Schedule-Aligned Traversal (+5m Base)",
-      "description": "Maps hourly OD volume onto active GTFS scheduled train departures along the unique physical path. Reconciles empirical KTMB ticketing differences: Klang Valley AFC tap-out timestamps align primarily via latest arrival within 90m before exit tap (+ bounded pre-departure QR/token fallback), while Komuter Utara gate/ticket timestamps align forward to earliest departure >= t_tx + 5m. Downstream crossings shift into the exact clock hour trains traverse each segment (handling >=24:00:00 trips)."
+      "description": "Maps hourly OD volume onto active GTFS scheduled trips along the unique physical path. Klang Valley AFC tap-out timestamps align primarily via latest arrival within 90m before exit tap (+ bounded 90m forward fallback). Komuter Utara KITS timestamps adopt symmetric 50/50 bounded mixed matching (50% arrival-aligned within 120m w/ 120m forward fallback + 50% forward departure-aligned within 120m, +5m buffer), preventing unbounded overnight/2h-gap pooling while exposing forward, arrival, transaction-hour, and KITS anomaly-excluded scenario ranges."
     },
     {
       "id": "schedule_traversal_tight_0m",
       "label": "Tight Schedule Sensitivity (0m Buffer)",
-      "description": "Zero-minute boarding buffer sensitivity testing sensitivity of boundary-minute trips vs +5m base."
+      "description": "Zero-minute boarding buffer sensitivity testing boundary-minute sensitivity under the identical matching framework."
     },
     {
       "id": "transaction_hour_cohort",
       "label": "Transaction-Hour Baseline (Diagnostic)",
-      "description": "Projects raw OD volume instantaneously along all path segments in the transaction clock hour without travel-time propagation or train departure matching."
+      "description": "Projects raw OD volume instantaneously along all path segments in the transaction clock hour without timetable train concentration."
     }
   ],
   "capacity_modes": [
@@ -36,8 +36,8 @@
     "station_conservation": "D_in - A + B == D_out; Remaining = max(0, S_out - T); Boarding Gap = max(0, B - Remaining); Upstream Full Flag = (T > S_out)"
   },
   "stat_aggregations": {
-    "mean": "Average peak-hour load across all calendar dates in the selected Day Profile & Period slice (including lower-demand days).",
-    "p90": "90th percentile daily peak segment load ratio / deficit across observed dates in slice.",
-    "max_date": "Single highest observed date-hour overload within the selected slice (surface-checks event & holiday surges such as Deepavali)."
+    "mean": "Ratio of slice-mean hourly demand divided by slice-mean hourly scheduled capacity at the peak mean hour across verified dates in the slice.",
+    "p90": "Coherent 90th-percentile daily-peak representative observation (nearest-rank P90 across verified operating dates), pulling exact matching date, hour, demand, scheduled trains, capacity, and upstream through-load.",
+    "max_date": "Single highest observed verified date-hour overload within the selected slice, with matching same-date 24h scheduled capacity (never blended mean schedules)."
   }
 }

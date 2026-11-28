@@ -1,52 +1,114 @@
 import React, { useMemo, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-import type { CapacityMode, DayProfileFilter, HourlyProfileEntry, NetworkCode, StatMode } from './capacityScreeningTypes';
+import type { CapacityMode, DayProfileFilter, HourlyProfileEntry, NetworkCode, PeriodScope, StatMode } from './capacityScreeningTypes';
 
 interface HourlyDemandCapacityChartProps {
   profileKey: string;
   profile: HourlyProfileEntry | null;
+  schedCatalog?: [number[], number[]][];
   segmentLabel: string;
   networkCode: NetworkCode;
   capacityMode: CapacityMode;
   statMode: StatMode;
   dayProfile: DayProfileFilter;
+  period: PeriodScope;
+  periodLabel: string;
   trainCapNom: number;
   trainCap80: number;
 }
 
 const HOUR_LABELS = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
 
+const DAY_PROFILE_LABELS: Record<DayProfileFilter, string> = {
+  weekday: 'Verified Weekday (excl. holidays)',
+  weekend: 'Weekend & GTFS Holidays',
+  all: 'All Verified Days',
+};
+
 export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps> = ({
   profile,
+  schedCatalog = [],
   segmentLabel,
   capacityMode,
   statMode,
   dayProfile,
+  periodLabel,
   trainCapNom,
   trainCap80,
 }) => {
   const [showTxBaseline, setShowTxBaseline] = useState<boolean>(true);
   const [showTightBuffer, setShowTightBuffer] = useState<boolean>(false);
 
-  const chartOption = useMemo(() => {
+  const resolvedCurves = useMemo(() => {
     if (!profile) return null;
-
     const factor = capacityMode === 'official_2023_nominal' ? 1 : trainCap80 / trainCapNom;
-    const capArr = profile.cap_nom_mean.map((v) => Math.round(v * factor * 10) / 10);
+    const dayLabel = DAY_PROFILE_LABELS[dayProfile];
 
-    const primaryDemand =
-      statMode === 'mean'
-        ? profile.base_mean
-        : statMode === 'p90'
-          ? profile.base_p90
-          : profile.base_max;
+    let primaryDemand: number[];
+    let rawCapNom: number[];
+    let trainsArr: number[];
+    let tightArr: number[];
+    let txArr: number[];
+    let primaryLabel: string;
+    let profileScopeCaption: string;
 
-    const primaryLabel =
-      statMode === 'mean'
-        ? 'Estimated Demand (Mean Day, +5m Base)'
-        : statMode === 'p90'
-          ? 'Estimated Demand (P90 High Day, +5m Base)'
-          : 'Estimated Demand (Max Observed Day, +5m Base)';
+    if (statMode === 'mean') {
+      primaryDemand = profile.mean_d;
+      rawCapNom = profile.cap_nom_mean;
+      trainsArr = profile.trains_mean;
+      tightArr = profile.mean_tight;
+      txArr = profile.mean_tx;
+      primaryLabel = 'Estimated Demand (Slice Mean, +5m Base)';
+      profileScopeCaption = `Full 24h mean profile across ${periodLabel} (${dayLabel})`;
+    } else if (statMode === 'p90') {
+      const schedEntry =
+        profile.p90_sched_idx !== null && schedCatalog[profile.p90_sched_idx]
+          ? schedCatalog[profile.p90_sched_idx]
+          : [Array(24).fill(0), Array(24).fill(0)];
+      primaryDemand = profile.p90_d;
+      rawCapNom = schedEntry[0];
+      trainsArr = schedEntry[1];
+      tightArr = profile.p90_tight;
+      txArr = profile.p90_tx;
+      primaryLabel = profile.p90_date
+        ? `Representative P90 Date (${profile.p90_date})`
+        : 'Representative P90 Date (+5m Base)';
+      profileScopeCaption = profile.p90_date
+        ? `Coherent 24h profile & matching schedule for representative P90 date ${profile.p90_date} (${periodLabel} · ${dayLabel})`
+        : `No operating P90 service date in ${periodLabel} (${dayLabel})`;
+    } else {
+      const schedEntry =
+        profile.max_sched_idx !== null && schedCatalog[profile.max_sched_idx]
+          ? schedCatalog[profile.max_sched_idx]
+          : [Array(24).fill(0), Array(24).fill(0)];
+      primaryDemand = profile.max_d;
+      rawCapNom = schedEntry[0];
+      trainsArr = schedEntry[1];
+      tightArr = profile.max_tight;
+      txArr = profile.max_tx;
+      primaryLabel = profile.max_date
+        ? `Max Surge Date (${profile.max_date})`
+        : 'Max Observed Date (+5m Base)';
+      profileScopeCaption = profile.max_date
+        ? `Coherent 24h profile & exact matching schedule on peak date ${profile.max_date} (${periodLabel} · ${dayLabel})`
+        : `No operating peak date in ${periodLabel} (${dayLabel})`;
+    }
+
+    const capArr = rawCapNom.map((v) => Math.round(v * factor * 10) / 10);
+    return {
+      primaryDemand,
+      capArr,
+      trainsArr,
+      tightArr,
+      txArr,
+      primaryLabel,
+      profileScopeCaption,
+    };
+  }, [profile, schedCatalog, capacityMode, statMode, dayProfile, periodLabel, trainCapNom, trainCap80]);
+
+  const chartOption = useMemo(() => {
+    if (!resolvedCurves) return null;
+    const { primaryDemand, capArr, trainsArr, tightArr, txArr, primaryLabel } = resolvedCurves;
 
     // Red deficit overlay bars/points ONLY where Demand > Scheduled Capacity (strictly S > 0)
     const deficitExceedance = primaryDemand.map((d, idx) => {
@@ -111,11 +173,11 @@ export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps>
 
     if (showTxBaseline) {
       series.push({
-        name: 'Transaction-Hour Baseline (Mean)',
+        name: statMode === 'mean' ? 'Transaction-Hour Baseline (Mean)' : 'Transaction-Hour Cohort (Same Date)',
         type: 'line',
         smooth: 0.2,
         symbol: 'none',
-        data: profile.tx_mean,
+        data: txArr,
         lineStyle: { width: 1.5, type: 'dotted', color: '#64748B' },
         itemStyle: { color: '#64748B' },
         z: 2,
@@ -124,11 +186,11 @@ export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps>
 
     if (showTightBuffer) {
       series.push({
-        name: 'Schedule Sensitivity (0m Buffer Mean)',
+        name: statMode === 'mean' ? 'Schedule Sensitivity (0m Buffer Mean)' : '0m Buffer Sensitivity (Same Date)',
         type: 'line',
         smooth: 0.2,
         symbol: 'none',
-        data: profile.tight_mean,
+        data: tightArr,
         lineStyle: { width: 1.5, type: 'dashed', color: '#0D9488' },
         itemStyle: { color: '#0D9488' },
         z: 2,
@@ -145,16 +207,21 @@ export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps>
           const i = params[0]?.dataIndex ?? 0;
           const d = primaryDemand[i];
           const s = capArr[i];
-          const nTr = profile.trains_mean[i];
-          const lr = s > 0 ? `${((d / s) * 100).toFixed(1)}%` : 'No Service';
-          const def = s > 0 && d > s ? `${(d - s).toFixed(1)} pax deficit` : 'Within capacity';
+          const nTr = trainsArr[i];
+          const lr = s > 0 ? `${((d / s) * 100).toFixed(1)}%` : 'No Scheduled Service';
+          const def =
+            s <= 0
+              ? 'Unscheduled hour (0 trains)'
+              : d > s
+                ? `${(d - s).toFixed(1)} pax deficit`
+                : 'Within capacity';
           return [
             `<div style="font-weight:700;margin-bottom:4px;color:#0F1E36">${HOUR_LABELS[i]} — ${segmentLabel}</div>`,
             `<div>Primary Demand: <strong style="color:#0066FF">${d.toLocaleString()} pax</strong></div>`,
             `<div>Scheduled Capacity: <strong>${s.toLocaleString()} pax</strong> (${nTr} trains/hr)</div>`,
             `<div>Load Ratio: <strong style="color:${s > 0 && d > s ? '#DC2626' : '#0F1E36'}">${lr}</strong> (${def})</div>`,
-            showTxBaseline ? `<div style="color:#64748B">Tx-Hour Mean: ${profile.tx_mean[i].toLocaleString()} pax</div>` : '',
-            showTightBuffer ? `<div style="color:#0D9488">0m Buffer Mean: ${profile.tight_mean[i].toLocaleString()} pax</div>` : '',
+            showTxBaseline ? `<div style="color:#64748B">Tx-Hour Baseline: ${txArr[i].toLocaleString()} pax</div>` : '',
+            showTightBuffer ? `<div style="color:#0D9488">0m Buffer Sensitivity: ${tightArr[i].toLocaleString()} pax</div>` : '',
           ].join('');
         },
       },
@@ -180,9 +247,9 @@ export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps>
       },
       series,
     };
-  }, [profile, capacityMode, statMode, trainCapNom, trainCap80, showTxBaseline, showTightBuffer, segmentLabel]);
+  }, [resolvedCurves, capacityMode, statMode, showTxBaseline, showTightBuffer, segmentLabel]);
 
-  if (!profile || !chartOption) {
+  if (!profile || !resolvedCurves || !chartOption) {
     return (
       <div
         style={{
@@ -208,7 +275,7 @@ export const HourlyDemandCapacityChart: React.FC<HourlyDemandCapacityChartProps>
     <div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: 8 }}>
         <div style={{ fontSize: 11, color: '#64748B' }}>
-          Full 24h profile across Aug 18–Nov 26 ({dayProfile} day profile)
+          {resolvedCurves.profileScopeCaption}
         </div>
         <div style={{ display: 'flex', gap: 12, fontSize: 11, color: '#334155' }}>
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>

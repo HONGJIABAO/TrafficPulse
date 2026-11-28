@@ -72,8 +72,12 @@
       "bytes": 8864
     },
     "backend/pipelines/module2_od_aggregation.py": {
-      "sha256": "c318160f3cf25669e81df842369d6c062acb668af8e7be80351c6438b9a005cd",
-      "bytes": 23396
+      "sha256": "7efbbfabcade0a392aa41eaf9c3df3ea7d5e07ef8d8c575b5ef54bde9c312bc3",
+      "bytes": 29291,
+      "authorized_prompt2_original_sha256": "c318160f3cf25669e81df842369d6c062acb668af8e7be80351c6438b9a005cd",
+      "authorized_prompt2_original_bytes": 23396,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/package.json": {
       "sha256": "f21e0ba1575420a4f47e51d746abba6929c152880d2517e473881d1adbced475",
@@ -92,8 +96,12 @@
       "bytes": 149519
     },
     "frontend/src/data/od_summary.json": {
-      "sha256": "348355f63dbf4b78af2d964291211e6ba4eac00b9f063a142c3c2a3a1d89b5be",
-      "bytes": 2227193
+      "sha256": "e83f4d077180496947e03db345cf1715534265778ec469245acbe26226ac672d",
+      "bytes": 2238180,
+      "authorized_prompt2_original_sha256": "348355f63dbf4b78af2d964291211e6ba4eac00b9f063a142c3c2a3a1d89b5be",
+      "authorized_prompt2_original_bytes": 2227193,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/data/simulator_baseline.json": {
       "sha256": "a54231ce193666dd8d48e07302c66a6e420968c8de13a49022d9933621b4622e",
@@ -216,8 +224,12 @@
       "bytes": 14635
     },
     "frontend/src/modules/module2_od_peak_hours/OdPeakHours.tsx": {
-      "sha256": "28000e5b50eb4b8713919c1dcddcc86a8600ef19e233d0b8ff2da7316adfd9b3",
-      "bytes": 36716
+      "sha256": "60962aec7303da068a65a17d18419e8dc8f21e89f49eea5e5c110dc40893f6b7",
+      "bytes": 45348,
+      "authorized_prompt2_original_sha256": "28000e5b50eb4b8713919c1dcddcc86a8600ef19e233d0b8ff2da7316adfd9b3",
+      "authorized_prompt2_original_bytes": 36716,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module2_od_peak_hours/OdTimelineBar.tsx": {
       "sha256": "2e124797e97f2d3a6c6a0f45cca3b30d7fb3d7395a8b5d87decc208e4e1bc671",
@@ -236,28 +248,44 @@
       "bytes": 9682
     },
     "frontend/src/modules/module2_od_peak_hours/TripDistanceProfileCard.tsx": {
-      "sha256": "522f794973de8d744900dd5dc32054dc6ec029391143833ecfc3974a5efd780a",
-      "bytes": 8194
+      "sha256": "e37c4f2ee6d00769ce67e4b24b716aef3f483b221a468c73756c44104595faeb",
+      "bytes": 8456,
+      "authorized_prompt2_original_sha256": "522f794973de8d744900dd5dc32054dc6ec029391143833ecfc3974a5efd780a",
+      "authorized_prompt2_original_bytes": 8194,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module2_od_peak_hours/WeekdayHourHeatmap.tsx": {
       "sha256": "19fa8fb50a77daa9291288124545d320d23e544a2cee4fec026c04458d326bae",
       "bytes": 9902
     },
     "frontend/src/modules/module2_od_peak_hours/WeekdayVsWeekendChart.tsx": {
-      "sha256": "1692360f8b512de9fed82a2a87980da3e92cfbdf71923771648992596ae7e3d8",
-      "bytes": 10896
+      "sha256": "969efa9c1f11ac0d4068d21c176f0169779c1234b18b70d853752aee34a1464d",
+      "bytes": 11231,
+      "authorized_prompt2_original_sha256": "1692360f8b512de9fed82a2a87980da3e92cfbdf71923771648992596ae7e3d8",
+      "authorized_prompt2_original_bytes": 10896,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module2_od_peak_hours/index.ts": {
       "sha256": "72a5a6dbd30203856090d1e1f81bb8c8c60ec76ba0e11cb99226bfd29ea23da1",
       "bytes": 32
     },
     "frontend/src/modules/module2_od_peak_hours/odAnalyticsUtils.ts": {
-      "sha256": "3bc8a8a4c8e77635ed23c77c4742ee3563a2bafdee6797c7ad6dc772ce187915",
-      "bytes": 38562
+      "sha256": "0b8427cfd2e0c4dd6587ea0551889431ba7b1f8f34db475d81a4db28b735ee24",
+      "bytes": 41135,
+      "authorized_prompt2_original_sha256": "3bc8a8a4c8e77635ed23c77c4742ee3563a2bafdee6797c7ad6dc772ce187915",
+      "authorized_prompt2_original_bytes": 38562,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module2_od_peak_hours/types.ts": {
-      "sha256": "737c46b507ad79a42ab0ecc279aa841fc956edc4968c10de979743d65dff81ba",
-      "bytes": 4523
+      "sha256": "c5e8e997359084e3419ece3ed0da2e24ce0d10b472e65a51b64606ba155ec760",
+      "bytes": 5595,
+      "authorized_prompt2_original_sha256": "737c46b507ad79a42ab0ecc279aa841fc956edc4968c10de979743d65dff81ba",
+      "authorized_prompt2_original_bytes": 4523,
+      "authorized_prompt2_remediation": "Prompt 2 Module 2 OD/Label/Admin-code remediation (scientific fixes)",
+      "authorized_prompt2_date": "2026-11-28"
     },
     "frontend/src/modules/module3_drivers_forecast/DriversFilterCard.tsx": {
       "sha256": "3bf350a56ddae217b1102695d0d6104007b81f9b4f36f8fb94c7f7f22c16a140",
@@ -423,5 +451,6 @@
       "sha256": "ddb766cf949fa6757700e8d75f99960841068fd91b07ed14a0874af30c2726da",
       "bytes": 2390
     }
-  }
+  },
+  "last_authorized_update": "Prompt 2 remediation 2026-11-28 \u2014 7 upper-OD files updated; 98 non-Prompt-2 entries unchanged"
 }

@@ -67,6 +67,11 @@ export interface ModePeriodSummary {
   total_trips: number;
   weekday_trips: number;
   weekend_trips: number;
+  source_reported_total_trips?: number;
+  source_reported_weekday_trips?: number;
+  source_reported_weekend_trips?: number;
+  excluded_admin_trips?: number;
+  excluded_admin_pairs?: number;
   unique_od_all: number;
   unique_od_weekday: number;
   unique_od_weekend: number;
@@ -106,7 +111,11 @@ export interface MonthlyTotalRecord {
   weekend_days: number;
   date_range: string;
   komuter_trips: number;
+  komuter_source_trips?: number;
+  komuter_excluded_admin_trips?: number;
   intercity_trips: number;
+  intercity_source_trips?: number;
+  intercity_excluded_admin_trips?: number;
   rapid_rail_trips?: number;
 }
 
@@ -122,6 +131,21 @@ export interface DatasetQualityReport {
   expected_days: number;
   actual_days: number;
   missing_days: number;
+  admin_reconciliation?: {
+    source_reported_trips: number;
+    physical_od_trips: number;
+    excluded_admin_trips: number;
+    excluded_admin_rows: number;
+    excluded_admin_pairs: number;
+    origin_penalty_trips: number;
+    dest_penalty_trips: number;
+    origin_unknown_trips: number;
+    dest_unknown_trips: number;
+    dual_admin_trips: number;
+    dual_admin_rows: number;
+    physical_self_loop_trips: number;
+    physical_self_loop_pairs: number;
+  };
 }
 
 export interface OdSummarySchema {
@@ -133,6 +157,9 @@ export interface OdSummarySchema {
     weekend_days: number;
     day_classification_rule: string;
     corridor_definition: string;
+    included_od_services?: string[];
+    excluded_od_services_note?: string;
+    admin_exclusion_policy?: string;
     distance_methodology?: string;
     data_quality: {
       komuter_2026: DatasetQualityReport;
@@ -142,6 +169,9 @@ export interface OdSummarySchema {
         top_pairs_count?: number;
         top_pairs_visual_limit?: number;
         non_a0_total_trips?: number;
+        total_non_a0_pairs_all?: number;
+        positive_non_a0_pairs?: number;
+        zero_ridership_pairs?: number;
         shah_alam_discrepancy?: {
           note: string;
           jan_jul_od_trips: number;

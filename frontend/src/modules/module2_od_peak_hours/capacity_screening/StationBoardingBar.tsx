@@ -57,12 +57,12 @@ export const StationBoardingBar: React.FC<StationBoardingBarProps> = ({
           {unavailableReason || 'Capacity and hourly boarding data are not supported for this station or service.'}
         </p>
         {(observedPaxWindow !== undefined || observedPaxFull2026 !== undefined) && (
-          <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#475569', borderTop: '1px solid #CBD5E1', paddingTop: 8 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: 12, color: '#475569', borderTop: '1px solid #CBD5E1', paddingTop: 8 }}>
             <span>
-              Aug 18–Nov 26 observed trips: <strong>{formatCompactNumber(observedPaxWindow)}</strong>
+              GTFS overlap window (Aug 18–Nov 26, 101d): <strong>{formatCompactNumber(observedPaxWindow)}</strong>
             </span>
             <span>
-              Full 2026 observed trips: <strong>{formatCompactNumber(observedPaxFull2026)}</strong>
+              Panel 2 full archive (Jan 1–Nov 26, 330d; vs Panel 1 Nov 20, 324d): <strong>{formatCompactNumber(observedPaxFull2026)}</strong>
             </span>
           </div>
         )}
@@ -153,7 +153,8 @@ export const StationBoardingBar: React.FC<StationBoardingBarProps> = ({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <div>
           <span style={{ fontSize: 12, fontWeight: 700, color: '#0F1E36' }}>
-            Station Boarding Capacity Breakdown ({formatHourLabel(evalData.peakHour)})
+            Station Boarding Capacity Breakdown ({formatHourLabel(evalData.peakHour)}
+            {evalData.peakDate ? ` on ${evalData.peakDate}` : ''})
           </span>
           <div style={{ fontSize: 11, color: '#64748B' }}>
             Outbound {directionLabel} | Conservation: D_in - A + B = D_out

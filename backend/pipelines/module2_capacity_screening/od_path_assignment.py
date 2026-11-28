@@ -87,7 +87,9 @@ def run_path_assignment_audit() -> dict:
 
         with (RAW_DIR / csv_name).open("r", encoding="utf-8-sig", newline="") as f:
             for r in csv.DictReader(f):
-                d = r["date"]
+                d = r["date"][:10]
+                if d > GTFS_WINDOW_END:
+                    continue
                 orig, dest = r["origin"], r["destination"]
                 pax = int(float(r["ridership"]))
                 in_win = GTFS_WINDOW_START <= d <= GTFS_WINDOW_END

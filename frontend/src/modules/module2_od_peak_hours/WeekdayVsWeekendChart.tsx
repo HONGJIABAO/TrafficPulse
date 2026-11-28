@@ -256,7 +256,7 @@ export const WeekdayVsWeekendChart: React.FC<Props> = ({
         </div>
         <div style={{ fontSize: 11, color: '#64748B', maxWidth: 400, lineHeight: 1.45 }}>
           {emptyReason ||
-            'Rapid Rail datasets provide daily totals without hourly timestamps. Select KTM Komuter, KTM Intercity, or All Rail Modes to inspect average hourly demand.'}
+            'Rapid Rail datasets provide daily totals without hourly timestamps. Select KTM Komuter (KV), KTM Intercity, or All Included OD Services to inspect average hourly demand.'}
         </div>
       </div>
     );
