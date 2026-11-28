@@ -18,6 +18,7 @@ import { OdTimelineBar } from './OdTimelineBar';
 import { TripDistanceProfileCard } from './TripDistanceProfileCard';
 import { TelemetryIcon, type TelemetryIconName, type TelemetryVariant } from '@/modules/shared/TelemetryIcon';
 import { generateDynamicInsights, selectActiveDataset } from './odAnalyticsUtils';
+import { OdKpiCard } from './OdKpiCard';
 
 const StationDemandIntelligence = React.lazy(
   () => import('./station_demand/StationDemandIntelligence')
@@ -377,131 +378,84 @@ export function OdPeakHours() {
       {/* ── 1. Top Dynamic Metric KPI Strip (4 Cards) ────────────────────────── */}
       <div className="od-kpi-grid">
         {/* KPI 1: Peak-Hour Passenger Demand */}
-        <div style={cardStyle} data-testid="kpi-peak-demand">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <TelemetryIcon name="clock-radar" variant="amber" badge />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Peak-Hour Demand</span>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: dataset.hourlySupported && peak.hasData ? '#EF4444' : '#64748B',
-                background: dataset.hourlySupported && peak.hasData ? '#FEE2E2' : '#F1F5F9',
-                borderRadius: 4,
-                padding: '1px 6px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {dataset.hourlySupported && peak.busiestHour
-                ? `${selectedMode === 'all' ? 'KTMB · ' : ''}+${peak.busiestHour.pctAboveDailyMean}% vs hr avg`
-                : 'Daily OD Only'}
-            </span>
-          </div>
-          <div style={{ fontSize: 19, fontWeight: 800, color: '#0F1E36', marginTop: 4 }}>
-            {dataset.hourlySupported && peak.busiestHour
+        <OdKpiCard
+          variant="peak"
+          delayIndex={0}
+          testId="kpi-peak-demand"
+          label="Peak-Hour Demand"
+          badgeText={
+            dataset.hourlySupported && peak.busiestHour
+              ? `${selectedMode === 'all' ? 'KTMB · ' : ''}+${peak.busiestHour.pctAboveDailyMean}% vs hr avg`
+              : 'Daily OD Only'
+          }
+          badgeColor={dataset.hourlySupported && peak.hasData ? '#EF4444' : '#64748B'}
+          badgeBg={dataset.hourlySupported && peak.hasData ? '#FEE2E2' : '#F1F5F9'}
+          value={
+            dataset.hourlySupported && peak.busiestHour
               ? peak.busiestHour.windowLabel
-              : 'Hourly Unavailable'}
-          </div>
-          <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, lineHeight: 1.35 }}>
-            {dataset.hourlySupported && peak.busiestHour
+              : 'Hourly Unavailable'
+          }
+          subText={
+            dataset.hourlySupported && peak.busiestHour
               ? `${selectedMode === 'all' ? 'KTMB only · ' : ''}${Math.round(
                   peak.busiestHour.avgTrips
                 ).toLocaleString()} trips/hr · Eve: ${
                   peak.eveningPeak ? peak.eveningPeak.windowLabel : '—'
                 }`
-              : 'Rapid Rail open data contains daily totals without hourly timestamps'}
-          </div>
-        </div>
+              : 'Rapid Rail open data contains daily totals without hourly timestamps'
+          }
+        />
 
         {/* KPI 2: Top Directional OD Corridor */}
-        <div style={cardStyle} data-testid="kpi-top-corridor">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <TelemetryIcon name="od-route" variant="cobalt" badge />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Top OD Corridor</span>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: '#0066FF',
-                background: '#E8F0FF',
-                borderRadius: 4,
-                padding: '1px 6px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {topCorridor ? `#1 Directional OD` : 'No Match'}
-            </span>
-          </div>
-          <div
-            style={{
-              fontSize: 17,
-              fontWeight: 800,
-              color: '#0F1E36',
-              marginTop: 4,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-            title={topCorridor ? `${topCorridor.originClean} ➔ ${topCorridor.destinationClean}` : 'Unavailable'}
-          >
-            {topCorridor ? `${topCorridor.originClean} ➔ ${topCorridor.destinationClean}` : 'No OD Pair'}
-          </div>
-          <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
-            {topCorridor
+        <OdKpiCard
+          variant="corridor"
+          delayIndex={1}
+          testId="kpi-top-corridor"
+          label="Top OD Corridor"
+          badgeText={topCorridor ? '#1 Directional OD' : 'No Match'}
+          badgeColor="#0066FF"
+          badgeBg="#E8F0FF"
+          compactValue
+          value={topCorridor ? `${topCorridor.originClean} ➔ ${topCorridor.destinationClean}` : 'No OD Pair'}
+          valueTitle={topCorridor ? `${topCorridor.originClean} ➔ ${topCorridor.destinationClean}` : 'Unavailable'}
+          subText={
+            topCorridor
               ? `${topCorridor.volume.toLocaleString()} trips · ${Math.round(
                   topCorridor.avgDaily
                 ).toLocaleString()}/day (${topCorridor.observationDays}d)`
-              : 'Adjust filters to inspect corridor rankings'}
-          </div>
-        </div>
+              : 'Adjust filters to inspect corridor rankings'
+          }
+        />
 
         {/* KPI 3: Total Trips & Directional Corridors */}
-        <div style={cardStyle} data-testid="kpi-total-trips">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <TelemetryIcon name="ranked-corridors" variant="indigo" badge />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>
-                {dataset.networkTotalIsExact ? 'Total Passenger Trips' : 'Observed OD Volume'}
-              </span>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: '#4F46E5',
-                background: '#EEF2FF',
-                borderRadius: 4,
-                padding: '1px 6px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {dataset.uniqueOdCorridorsCount !== null
-                ? `${dataset.uniqueOdCorridorsCount.toLocaleString()} Dir. Pairs`
-                : '0 Pairs'}
-            </span>
-          </div>
-          <div
-            style={{ fontSize: 19, fontWeight: 800, color: '#0F1E36', marginTop: 4 }}
-            title={
-              dataset.networkTotalTrips !== null
-                ? `Physical station-to-station OD: ${dataset.networkTotalTrips.toLocaleString()} trips${
-                    dataset.excludedAdminTrips > 0
-                      ? ` (excluded ${dataset.excludedAdminTrips.toLocaleString()} non-physical Penalty/Unknown admin trips from ${(dataset.sourceReportedTotalTrips ?? dataset.networkTotalTrips).toLocaleString()} source-reported total)`
-                      : ''
-                  }`
-                : undefined
-            }
-          >
-            {dataset.networkTotalTrips !== null
+        <OdKpiCard
+          variant="trips"
+          delayIndex={2}
+          testId="kpi-total-trips"
+          label={dataset.networkTotalIsExact ? 'Total Passenger Trips' : 'Observed OD Volume'}
+          badgeText={
+            dataset.uniqueOdCorridorsCount !== null
+              ? `${dataset.uniqueOdCorridorsCount.toLocaleString()} Dir. Pairs`
+              : '0 Pairs'
+          }
+          badgeColor="#4F46E5"
+          badgeBg="#EEF2FF"
+          value={
+            dataset.networkTotalTrips !== null
               ? `${formatMillions(dataset.networkTotalTrips)} trips`
-              : 'Unavailable'}
-          </div>
-          <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
-            {dataset.networkAvgDailyTrips !== null
+              : 'Unavailable'
+          }
+          valueTitle={
+            dataset.networkTotalTrips !== null
+              ? `Physical station-to-station OD: ${dataset.networkTotalTrips.toLocaleString()} trips${
+                  dataset.excludedAdminTrips > 0
+                    ? ` (excluded ${dataset.excludedAdminTrips.toLocaleString()} non-physical Penalty/Unknown admin trips from ${(dataset.sourceReportedTotalTrips ?? dataset.networkTotalTrips).toLocaleString()} source-reported total)`
+                    : ''
+                }`
+              : undefined
+          }
+          subText={
+            dataset.networkAvgDailyTrips !== null
               ? `Avg ${Math.round(dataset.networkAvgDailyTrips).toLocaleString()}/day across ${
                   dataset.activeDaysDenominator
                 } valid days${!dataset.networkTotalIsExact ? ' (RR Top-20)' : ''}${
@@ -509,48 +463,37 @@ export function OdPeakHours() {
                     ? ` · Excl. ${dataset.excludedAdminTrips.toLocaleString()} admin`
                     : ''
                 }`
-              : 'No valid observations for current filter'}
-          </div>
-        </div>
+              : 'No valid observations for current filter'
+          }
+        />
 
         {/* KPI 4: Weekday vs Weekend Avg Daily & Midday Off-Peak */}
-        <div style={cardStyle} data-testid="kpi-wd-we-comparison">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <TelemetryIcon name="offpeak-drop" variant="teal" badge />
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#64748B' }}>Weekday vs Weekend</span>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: wdWeRatioText ? '#0D9488' : '#64748B',
-                background: wdWeRatioText ? '#E0FFF6' : '#F1F5F9',
-                borderRadius: 4,
-                padding: '1px 6px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {wdWeRatioText || 'Daily Agg. Only'}
-            </span>
-          </div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: '#0F1E36', marginTop: 4 }}>
-            {dataset.weekdayAvgDailyTrips !== null && dataset.weekendAvgDailyTrips !== null
+        <OdKpiCard
+          variant="split"
+          delayIndex={3}
+          testId="kpi-wd-we-comparison"
+          label="Weekday vs Weekend"
+          badgeText={wdWeRatioText || 'Daily Agg. Only'}
+          badgeColor={wdWeRatioText ? '#0D9488' : '#64748B'}
+          badgeBg={wdWeRatioText ? '#E0FFF6' : '#F1F5F9'}
+          compactValue
+          value={
+            dataset.weekdayAvgDailyTrips !== null && dataset.weekendAvgDailyTrips !== null
               ? `${Math.round(dataset.weekdayAvgDailyTrips).toLocaleString()} vs ${Math.round(
                   dataset.weekendAvgDailyTrips
                 ).toLocaleString()}/d`
-              : 'Split Unavailable'}
-          </div>
-          <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>
-            {dataset.hourlySupported && peak.middayLull
+              : 'Split Unavailable'
+          }
+          subText={
+            dataset.hourlySupported && peak.middayLull
               ? `${selectedMode === 'all' ? 'KTMB hourly · ' : ''}12 PM: ${Math.round(
                   peak.middayLull.noonTrips
                 ).toLocaleString()}/hr (-${peak.middayLull.dropVsBusiestPct}% vs peak)`
               : dataset.weekdayAvgDailyTrips !== null && dataset.weekendAvgDailyTrips !== null
               ? `Mon–Fri (${dataset.weekdayDays}d) vs Sat–Sun (${dataset.weekendDays}d) · Midday hr N/A`
-              : `Mon–Fri (${dataset.weekdayDays}d) vs Sat–Sun (${dataset.weekendDays}d) unavailable`}
-          </div>
-        </div>
+              : `Mon–Fri (${dataset.weekdayDays}d) vs Sat–Sun (${dataset.weekendDays}d) unavailable`
+          }
+        />
       </div>
 
       {/* Transparent Coverage Disclosure Banner (whenever sub-period/day limitations or Shah Alam note apply) */}
